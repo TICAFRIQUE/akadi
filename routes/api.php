@@ -50,7 +50,6 @@ Route::prefix('v1')->group(function () {
 
         // quelques produits sur la page accueil
         Route::get('/someProduct', 'someProduct');
-
     });
 
 
@@ -59,7 +58,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/detailProduct', 'detailProduct');
         // Liste de tous les produits || ou avec parametre 
         Route::get('/allProduct', 'allProduct');
-//Rechercher un produit
+        //Rechercher un produit
         Route::get('/product', 'searchProduct'); //search product
 
     });
@@ -73,13 +72,7 @@ Route::prefix('v1')->group(function () {
         //Afficher la liste des commandes du client
         Route::get('userOrderList', 'userOrder')->middleware('auth:sanctum');
         Route::get('userOrder/{id}', 'userOrderDetail')->middleware('auth:sanctum');
-
-
-
-       
-    });   
-
-
+    });
 });
 
 
