@@ -1,7 +1,7 @@
 
 
         @if ($message = Session::get('success'))
-            <div class="alert alert-success text-white alert-dismissible show fade" style="background-color:rgb(9, 156, 9)">
+            <div class="alert alert-success text-white alert-dismissible show fade msg" style="background-color:rgb(9, 156, 9)">
                 <div class="alert-body">
                     {{-- <button class="close" data-dismiss="alert">
                         <span>&times;</span>
@@ -13,7 +13,7 @@
 
 
         @if ($message = Session::get('error'))
-            <div class="alert alert-danger alert-dismissible text-white show fade" style="background-color: rgb(202, 36, 36)">
+            <div class="alert alert-danger alert-dismissible text-white show fade msg" style="background-color: rgb(202, 36, 36)">
                 <div class="alert-body">
                     {{-- <button class="close" data-dismiss="alert">
                         <span>&times;</span>
@@ -68,4 +68,11 @@
           This is a dark alert.
         </div>
       </div> --}}
+
+        <script>
+        $(document).ready(function () {
+          $('.msg').delay(5000).fadeOut('slow');
+          
+        });
+      </script>
 

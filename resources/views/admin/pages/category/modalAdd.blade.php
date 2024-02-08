@@ -9,6 +9,10 @@
       }
   </style>
 
+  @php
+      $msg_validation = 'Champs obligatoire';
+  @endphp
+
   <script>
       function readURL(input) {
           let noimage =
@@ -54,7 +58,7 @@
       <div class="modal-dialog" role="document">
           <div class="modal-content">
               <div class="modal-header">
-                  <h5 class="modal-title" id="formModal">New category</h5>
+                  <h5 class="modal-title" id="formModal">Ajouter une categorie</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                   </button>
@@ -65,16 +69,16 @@
                       @csrf
                       <div class="card-body">
                           <div class="form-group row">
-                              <label class="col-sm-3 col-form-label">Name</label>
+                              <label class="col-sm-3 col-form-label">Nom de la categorie</label>
                               <div class="col-sm-9">
                                   <input type="text" name="name" class="form-control" required="">
                                   <div class="invalid-feedback">
-                                      Champ obligatoire
+                                      {{ $msg_validation }}
                                   </div>
                               </div>
                           </div>
 
-                          <div class="form-group row">
+                          {{-- <div class="form-group row">
                               <label class="col-sm-3 col-form-label">Type</label>
                               <div class="col-sm-9">
                                   <select name="type" class="form-control selectric " required>
@@ -89,9 +93,9 @@
                                   </div>
 
                               </div>
-                          </div>
+                          </div> --}}
 
-                          <div class="form-group row">
+                          {{-- <div class="form-group row">
                               <label class="col-sm-3 col-form-label">Type d'affichage</label>
                               <div class="col-sm-9">
                                   <select name="type_affichage" class="form-control selectric " required>
@@ -104,24 +108,20 @@
                                   </div>
 
                               </div>
-                          </div>
+                          </div> --}}
 
                           <div class="form-group row">
-                              <label class="col-sm-3 col-form-label">category image (551 * 551) </label>
+                              <label class="col-sm-3 col-form-label">Image de la categorie </label>
                               <div class="col-sm-9">
                                   <img id="img-preview"
                                       src="https://ami-sni.com/wp-content/themes/consultix/images/no-image-found-360x250.png"
                                       width="250px" />
-                                  <input type="file" name="cat_img" class="form-control" onchange="readURL(this);"
-                                      required="">
-                                  <div class="invalid-feedback">
-                                      enter category image
-                                  </div>
+                                  <input type="file" name="cat_img" class="form-control" onchange="readURL(this);">
                               </div>
                           </div>
 
                           <div class="form-group row">
-                              <label class="col-sm-3 col-form-label">category banner (1121 * 414) </label>
+                              <label class="col-sm-3 col-form-label">Banniere de la categorie (1920 * 350) </label>
                               <div class="col-sm-9">
                                   <img id="_img-preview"
                                       src="https://ami-sni.com/wp-content/themes/consultix/images/no-image-found-360x250.png"
@@ -129,7 +129,7 @@
                                   <input type="file" name="cat_banner" class="form-control"
                                       onchange="_readURL(this);" required="">
                                   <div class="invalid-feedback">
-                                      enter category banner
+                                      {{ $msg_validation }}
                                   </div>
                               </div>
                           </div>
@@ -138,7 +138,7 @@
 
                       </div>
                       <div class="card-footer text-right">
-                          <button type="submit" class="btn btn-primary">Submit</button>
+                          <button type="submit" class="btn btn-primary">Valider</button>
                       </div>
                   </form>
               </div>

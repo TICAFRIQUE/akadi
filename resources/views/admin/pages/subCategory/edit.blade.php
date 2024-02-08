@@ -1,6 +1,13 @@
 @extends('admin.layouts.app')
 
+
+@section('title', 'sous-categorie')
+@section('sub-title', 'Modification')
+
 @section('content')
+
+
+
     <style>
         img {
             max-width: 180px;
@@ -26,7 +33,7 @@
             @csrf
             <div class="card-body">
                 <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Name</label>
+                    <label class="col-sm-3 col-form-label">Nom de la sous categorie</label>
                     <div class="col-sm-9">
                         <input type="text" name="name" value="{{$subCategory['name']}}"  class="form-control" required="">
                         <div class="invalid-feedback">
@@ -36,7 +43,7 @@
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Categorie parent</label>
+                    <label class="col-sm-3 col-form-label">Categorie</label>
                     <div class="col-sm-9">
                         <select name="category" class="form-control selectric " required>
                             <option disabled selected value>Choisir une categorie</option>
@@ -50,7 +57,7 @@
 
                     </div>
                 </div>
-                <div class="form-group row">
+                {{-- <div class="form-group row">
                     <label class="col-sm-3 col-form-label">Type d'affichage</label>
                     <div class="col-sm-9">
                         <select name="type_affichage" class="form-control selectric " required>
@@ -63,23 +70,12 @@
                         </div>
 
                     </div>
-                </div>
-
-                {{-- <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Position</label>
-                    <div class="col-sm-9">
-                        <select name="position" class="form-control">
-                            <option disabled selected value>Changer la position</option>
-                            @foreach ($other_position as $item)
-                            <option value="{{$item['position']}}"> Apres- {{$item['name']}} </option>
-                            @endforeach
-                        </select>
-                    </div>
                 </div> --}}
+
     
                 <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">category
-                        image</label>
+                    <label class="col-sm-3 col-form-label">Image de la sous categorie
+                        </label>
                     <div class="col-sm-9">
                         <img id="_blah" src=" {{ $subCategory->getFirstMediaUrl('subcategory_image') }}" alt="{{$category->getFirstMediaUrl('subcategory_image')}}" />
                         <input type="file" name="subcat_image" class="form-control" onchange="_readURL(this);">
@@ -87,8 +83,8 @@
                 </div>
     
                 <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">category
-                        banner</label>
+                    <label class="col-sm-3 col-form-label">Banniere de la sous categorie (1920 * 350)
+                        </label>
                     <div class="col-sm-9">
                         <img id="blah" src=" {{ $subCategory->getFirstMediaUrl('subcategory_banner') }}" alt="{{$category->getFirstMediaUrl('category_banner')}}" />
                         <input type="file" name="subcat_banner" class="form-control" onchange="readURL(this);">
@@ -100,7 +96,7 @@
     
             </div>
             <div class="card-footer text-right">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Valider</button>
             </div>
         </form>
           </div>

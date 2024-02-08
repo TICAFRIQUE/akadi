@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/bundles/bootstrap-tagsinput/dist/bootstrap-tagsinput.css') }}">
 
     @yield('css')
+    @stack('css')
 
     <!-- Template CSS -->
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
@@ -41,8 +42,8 @@
     https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
     " rel="stylesheet">
     <script src="
-                https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
-                "></script>
+                    https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
+                    "></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
 
@@ -253,8 +254,9 @@
                         <div class="sidebar-brand">
                             <a href="{{ route('dashboard.index') }}">
                                 <span class="logo-name">
-                                    <img src="{{ asset('admin/assets/img/logo.jpg') }}"
-                                        width="80" class="m-auto" alt="">
+                                    <h4 class="p-3">AKADI</h4>
+                                    {{-- <img src="{{ asset('admin/assets/img/logo.jpg') }}"
+                                        width="80" class="m-auto" alt=""> --}}
                                 </span>
                             </a>
                         </div>
@@ -273,10 +275,10 @@
                                 <a href="{{ route('sub-category.index') }}" class="nav-link"><i
                                         data-feather="grid"></i><span>Sous Categories</span></a>
                             </li>
-                            <li class="dropdown">
+                            {{-- <li class="dropdown">
                                 <a href="{{ route('collection.index') }}" class="nav-link"><i
                                         data-feather="grid"></i><span>Collections</span></a>
-                            </li>
+                            </li> --}}
 
                             <li class="dropdown">
                                 <a href="{{ route('product.index') }}" class="nav-link"><i
@@ -316,10 +318,10 @@
                                         data-feather="truck"></i><span>Livraisons</span></a>
                             </li>
 
-                            <li class="dropdown">
+                            {{-- <li class="dropdown">
                                 <a href="{{ route('publicite.index') }}" class="nav-link"><i
                                         data-feather="image"></i><span>Publicités</span></a>
-                            </li>
+                            </li> --}}
 
                             {{-- <li class="dropdown">
                                 <a href="#" class="menu-toggle nav-link has-dropdown"><i
@@ -340,6 +342,7 @@
 
             <!-- Main Content -->
             <div class="main-content">
+                @include('admin.components.breadcrumb')
                 @yield('content')
             </div>
             <!-- End Main Content -->
@@ -350,8 +353,8 @@
 
 
             <footer class="main-footer">
-                <div class="footer-left">
-                    <a href="#">Dolubux</a></a>
+                <div class="text-center">
+                    <a href="https://ticafrique.com/" target="_blank">Conçu par Ticafrique</a></a>
                 </div>
                 <div class="footer-right">
                 </div>
@@ -386,11 +389,12 @@
     <script src="{{ asset('admin/assets/bundles/datatables/export-tables/buttons.print.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/page/datatables.js') }}"></script>
     {{-- <script src="{{ asset('admin/assets/js/page/create-post.js') }}"></script> --}}
-    <script src="{{ asset('admin/assets/js/scripts.js') }}"></script>
     {{-- <script src="{{ asset('admin/assets/js/page/forms-advanced-forms.js') }}"></script> --}}
     <script src="{{ asset('admin/assets/bundles/sweetalert/sweetalert.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/page/sweetalert.js') }}"></script>
     @yield('script')
+    @stack('js')
+    <script src="{{ asset('admin/assets/js/scripts.js') }}"></script>
 
     <!-- Template JS File -->
     <!-- Custom JS File -->

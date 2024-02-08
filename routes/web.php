@@ -138,7 +138,7 @@ Route::middleware(['admin'])->group(function () {
 
 
     /** Category **/
-    Route::prefix('admin/category')->controller(CategoryController::class)->group(function () {
+    Route::prefix('admin/categorie')->controller(CategoryController::class)->group(function () {
         route::get('', 'index')->name('category.index');
         route::post('', 'store')->name('category.store');
         route::get('edit/{id}', 'edit')->name('category.edit');
@@ -147,7 +147,7 @@ Route::middleware(['admin'])->group(function () {
     });
 
     /***Sous category */
-    Route::prefix('admin/sub-category')->controller(SubCategoryController::class)->group(function () {
+    Route::prefix('admin/sous-categorie')->controller(SubCategoryController::class)->group(function () {
         route::get('', 'index')->name('sub-category.index');
         route::post('', 'store')->name('sub-category.store');
         route::get('edit/{id}', 'edit')->name('sub-category.edit');
@@ -177,7 +177,7 @@ Route::middleware(['admin'])->group(function () {
     });
 
     /** Product **/
-    Route::prefix('admin/product')->controller(ProductController::class)->group(function () {
+    Route::prefix('admin/produit')->controller(ProductController::class)->group(function () {
         route::get('', 'index')->name('product.index');
         route::get('add', 'create')->name('product.create');
         route::post('add', 'store')->name('product.store');

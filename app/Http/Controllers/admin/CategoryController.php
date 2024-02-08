@@ -15,7 +15,7 @@ class CategoryController extends Controller
     public function index()
     {
         //
-        $category = Category::orderBy('name','ASC')->get();
+        $category = Category::orderBy('name', 'ASC')->get();
 
         return view('admin.pages.category.index', compact('category'));
     }
@@ -36,8 +36,8 @@ class CategoryController extends Controller
         //
         $data =  $request->validate([
             'name' => 'required',
-            'type' => 'required',
-            'type_affichage' => 'required',
+            // 'type' => 'required',
+            // 'type_affichage' => 'required',
 
 
 
@@ -59,8 +59,8 @@ class CategoryController extends Controller
             $category->addMediaFromRequest('cat_img')->toMediaCollection('category_image');
         }
 
-          //upload category_banner
-          if ($request->has('cat_banner')) {
+        //upload category_banner
+        if ($request->has('cat_banner')) {
             $category->addMediaFromRequest('cat_banner')->toMediaCollection('category_banner');
         }
 
@@ -110,17 +110,17 @@ class CategoryController extends Controller
         ]);
 
 
-             //upload category_image
-             if ($request->has('cat_img')) {
-                $category->clearMediaCollection('category_image');
-                $category->addMediaFromRequest('cat_img')->toMediaCollection('category_image');
-            }
-    
-              //upload category_banner
-              if ($request->has('cat_banner')) {
-                $category->clearMediaCollection('category_banner');
-                $category->addMediaFromRequest('cat_banner')->toMediaCollection('category_banner');
-            }
+        //upload category_image
+        if ($request->has('cat_img')) {
+            $category->clearMediaCollection('category_image');
+            $category->addMediaFromRequest('cat_img')->toMediaCollection('category_image');
+        }
+
+        //upload category_banner
+        if ($request->has('cat_banner')) {
+            $category->clearMediaCollection('category_banner');
+            $category->addMediaFromRequest('cat_banner')->toMediaCollection('category_banner');
+        }
 
         return back()->withSuccess('Categorie modifiée avec success');
     }
@@ -133,7 +133,7 @@ class CategoryController extends Controller
         //
         Category::whereId($id)->delete();
         return response()->json([
-            'status'=>200
+            'status' => 200
         ]);
     }
 }

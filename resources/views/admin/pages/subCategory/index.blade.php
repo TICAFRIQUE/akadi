@@ -1,4 +1,6 @@
 @extends('admin.layouts.app')
+@section('title', 'sous-categorie')
+@section('sub-title', 'Liste des sous categorie')
 
 
 @section('content')
@@ -28,7 +30,8 @@
                                             </th>
                                             <th>Name</th>
                                             <th>image</th>
-                                            <th>Category</th>
+                                            <th>Banniere</th>
+                                            <th>Categorie</th>
                                             <th>A N</th>
                                             <th>Action</th>
                                         </tr>
@@ -43,6 +46,11 @@
                                                 <td>
                                                     <img alt="{{ $item->getFirstMediaUrl('subcategory_image') }}"
                                                         src="{{ $item->getFirstMediaUrl('subcategory_image') }}"
+                                                        width="35">
+                                                </td>
+                                                   <td>
+                                                    <img alt="{{ $item->getFirstMediaUrl('subcategory_banner') }}"
+                                                        src="{{ $item->getFirstMediaUrl('subcategory_banner') }}"
                                                         width="35">
                                                 </td>
                                                 <td class="align-middle">
@@ -100,7 +108,7 @@
                     if (result) {
                         $.ajax({
                             type: "POST",
-                            url: "/admin/sub-category/destroy/" + Id,
+                            url: "/admin/sous-categorie/destroy/" + Id,
                             dataType: "json",
                             data: {
                                 _token: '{{ csrf_token() }}',
@@ -111,7 +119,7 @@
                                     Swal.fire({
                                         toast: true,
                                         icon: 'success',
-                                        title: 'Le produit a été retiré du panier',
+                                        title: 'Suppression reussi',
                                         animation: false,
                                         position: 'top',
                                         background: '#3da108e0',

@@ -1,5 +1,9 @@
 @extends('admin.layouts.app')
 
+@section('title', 'categorie')
+@section('sub-title', 'Liste des categories')
+
+
 
 @section('content')
     <section class="section">
@@ -40,7 +44,7 @@
                                                     {{ ++$key }}
                                                 </td>
                                                 <td> {{ $item['name'] }}
-                                                    <br>#<small class="text-dark">{{ $item['type'] }} </small>
+                                                    {{-- <br>#<small class="text-dark">{{ $item['type'] }} </small> --}}
 
                                                 </td>
                                                 <td>
@@ -97,7 +101,7 @@
                 swal({
                     title: "Suppression",
                     text: "Veuillez confirmer la suppression",
-                    type: "warning",
+                    icon: "warning",
                     showCancelButton: true,
                     confirmButtonText: "Confirmer",
                     cancelButtonText: "Annuler",
@@ -105,7 +109,7 @@
                     if (result) {
                         $.ajax({
                             type: "POST",
-                            url: "/admin/category/destroy/" + Id,
+                            url: "/admin/categorie/destroy/" + Id,
                             dataType: "json",
                             data: {
                                 _token: '{{ csrf_token() }}',
@@ -116,14 +120,14 @@
                                     Swal.fire({
                                         toast: true,
                                         icon: 'success',
-                                        title: 'Le produit a été retiré du panier',
+                                        title: 'La categorie a été supprimée avec succès!',
                                         animation: false,
                                         position: 'top',
                                         background: '#3da108e0',
                                         iconColor: '#fff',
                                         color: '#fff',
                                         showConfirmButton: false,
-                                        timer: 500,
+                                        timer: 1000,
                                         timerProgressBar: true,
                                     });
                                     setTimeout(function() {

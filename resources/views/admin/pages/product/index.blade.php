@@ -1,4 +1,7 @@
 @extends('admin.layouts.app')
+@section('title', 'produit')
+@section('sub-title', 'Liste des produits')
+
 
 
 @section('content')
@@ -114,7 +117,7 @@
                     if (result) {
                         $.ajax({
                             type: "POST",
-                            url: "/admin/product/destroy/" + Id,
+                            url: "/admin/produit/destroy/" + Id,
                             dataType: "json",
                             data: {
                                 _token: '{{ csrf_token() }}',
