@@ -57,8 +57,6 @@ class ProductController extends Controller
             'categories' => ['required'],
         ]);
 
-        $getLastId = Product::max('id'); //recuperer le dernier ID
-        $userId = '';
         if (request('user')) {
            $userId  = request('user');
         }else{
@@ -66,7 +64,6 @@ class ProductController extends Controller
         }
 
         $product = Product::create([
-            // 'code' => 'Z-' . $getLastId,
             'title' => $request['title'],
             'description' => $request['description'],
             'price' => $request['price'],
@@ -86,28 +83,28 @@ class ProductController extends Controller
 
         }
 
-        if ($request->has('category_section')) {
+        // if ($request->has('category_section')) {
 
-            // DB::table('category_product')->insert([
-            //     'category_id' => $request['category_section'],
-            //     'product_id' => $product->id
-            // ]);
-            $product->categories()->attach($request['category_section']);
-        }
+        //     // DB::table('category_product')->insert([
+        //     //     'category_id' => $request['category_section'],
+        //     //     'product_id' => $product->id
+        //     // ]);
+        //     $product->categories()->attach($request['category_section']);
+        // }
 
         //insert taille in table
-        if ($request->has('tailles')) {
-            foreach ($request->input('tailles') as $key => $value) {
-                Taille::create(['taille' => $value, 'product_id' => $product->id]);
-            }
-        }
+        // if ($request->has('tailles')) {
+        //     foreach ($request->input('tailles') as $key => $value) {
+        //         Taille::create(['taille' => $value, 'product_id' => $product->id]);
+        //     }
+        // }
 
         //insert pointure in table
-        if ($request->has('pointures')) {
-            foreach ($request->input('pointures') as $key => $value) {
-                Pointure::create(['pointure' => $value, 'product_id' => $product->id]);
-            }
-        }
+        // if ($request->has('pointures')) {
+        //     foreach ($request->input('pointures') as $key => $value) {
+        //         Pointure::create(['pointure' => $value, 'product_id' => $product->id]);
+        //     }
+        // }
 
         //upload images with spatie
         if ($request->has('files')) {
@@ -117,7 +114,10 @@ class ProductController extends Controller
             }
         }
 
-        return back()->withSuccess('nouveau produit ajouté avec success');
+        return response()->json($request);
+
+
+        // return back()->withSuccess('nouveau produit ajouté avec success');
     }
 
     /**
@@ -213,9 +213,9 @@ class ProductController extends Controller
             $product->categories()->attach($request['categories']);
         }
 
-        if ($request->has('category_section')) {
-            $product->categories()->attach($request['category_section']);
-        }
+        // if ($request->has('category_section')) {
+        //     $product->categories()->attach($request['category_section']);
+        // }
 
         //upload images with spatie
         if ($request->has('files')) {
@@ -226,26 +226,27 @@ class ProductController extends Controller
         }
 
         //insert taille in table
-        if ($request->has('tailles')) {
-            Taille::where('product_id', $id)->delete();
+        // if ($request->has('tailles')) {
+        //     Taille::where('product_id', $id)->delete();
 
-            foreach ($request->input('tailles') as $key => $value) {
-                Taille::create(['taille' => $value, 'product_id' => $product->id]);
-            }
-        } else {
-            Taille::where('product_id', $id)->delete();
-        }
+        //     foreach ($request->input('tailles') as $key => $value) {
+        //         Taille::create(['taille' => $value, 'product_id' => $product->id]);
+        //     }
+        // } else {
+        //     Taille::where('product_id', $id)->delete();
+        // }
 
         //insert pointure in table
-        if ($request->has('pointures')) {
-            Pointure::where('product_id', $id)->delete();
+        // if ($request->has('pointures')) {
+        //     Pointure::where('product_id', $id)->delete();
 
-            foreach ($request->input('pointures') as $key => $value) {
-                Pointure::create(['pointure' => $value, 'product_id' => $product->id]);
-            }
-        } else {
-            Pointure::where('product_id', $id)->delete();
-        }
+        //     foreach ($request->input('pointures') as $key => $value) {
+        //         Pointure::create(['pointure' => $value, 'product_id' => $product->id]);
+        //     }
+        // } else {
+        //     Pointure::where('product_id', $id)->delete();
+        // }
+
 
         return back()->withSuccess('Produit modifié avec success ');
     }

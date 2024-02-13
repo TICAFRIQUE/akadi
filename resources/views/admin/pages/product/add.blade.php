@@ -256,66 +256,92 @@
         let imgArray = [];
 
         // Gestion upload image
+        // if (window.File && window.FileList && window.FileReader) {
+        //     $("#files").on("change", function(e) {
+        //         var files = e.target.files,
+        //             filesLength = files.length;
+        //         for (var i = 0; i < filesLength; i++) {
+        //             var f = files[i]
+        //             imgArray.push(f);
+
+        //             for (let i = 0; i < imgArray.length; i++) {
+        //                 var fileReader = new FileReader();
+        //                 fileReader.onload = (function(e) {
+        //                     var file = e.target;
+        //                     $("<span class=\"pip\">" +
+        //                         "<img class=\"imageThumb\" src=\"" + e.target.result +
+        //                         "\" title=\"" + imgArray[i]
+        //                         .name + "\"/>" +
+        //                         "<br/><span class=\"remove\"data-id=\"" +
+        //                         i + "\">x</span>" +
+        //                         "</span>").insertAfter("#files");
+        //                     $(".remove").click(function(e) {
+        //                         let filename = $(this).parent().find("img")
+        //                             .attr("title");
+        //                         var removeId = $(this).attr(
+        //                             'data-id');
+
+        //                         if (imgArray[i].name === filename) {
+        //                             var remove = imgArray.splice(removeId, 1);
+        //                         }
+
+        //                         console.log('media', imgArray);
+
+        //                         $(this).parent(".pip").remove();
+        //                     });
+
+        //                 });
+
+        //             }
+
+        //             fileReader.readAsDataURL(f);
+        //         }
+
+        //     });
+
+        //     // console.log(imgArray);
+
+        // } else {
+        //     alert("Your browser doesn't support to File API")
+        // }
+
+
+
+        // Gestion upload image
         if (window.File && window.FileList && window.FileReader) {
             $("#files").on("change", function(e) {
                 var files = e.target.files,
                     filesLength = files.length;
                 for (var i = 0; i < filesLength; i++) {
                     var f = files[i]
-                    imgArray.push(f);
-
                     var fileReader = new FileReader();
                     fileReader.onload = (function(e) {
                         var file = e.target;
                         $("<span class=\"pip\">" +
                             "<img class=\"imageThumb\" src=\"" + e.target.result +
-                            "\" title=\"" + f
+                            "\" title=\"" + file
                             .name + "\"/>" +
                             "<br/><span class=\"remove\">x</span>" +
                             "</span>").insertAfter("#files");
                         $(".remove").click(function() {
-                            var file = $(this).parent(".pip").children()[0]['title'];
-                            // console.log('name', file);
-                            for (var i = 0; i < imgArray.length; i++) {
-                                if (imgArray[i].name === file) {
-                                    imgArray.splice(i, 1);
-                                    break;
-                                }
-                            }
-
                             $(this).parent(".pip").remove();
                         });
 
+                        // Old code here
+                        /*$("<img></img>", {
+                          class: "imageThumb",
+                          src: e.target.result,
+                          title: file.name + " | Click to remove"
+                        }).insertAfter("#files").click(function(){$(this).remove();});*/
+
                     });
                     fileReader.readAsDataURL(f);
-                   
-
-                    for (var i = 0; i < imgArray.length; i++) {
-                        var media = $('.media').val(imgArray[i].name);
-
-                        console.log(media);
-                    }
                 }
-             
+                // console.log(img);
             });
-
-            // console.log(imgArray);
-
         } else {
             alert("Your browser doesn't support to File API")
         }
-
-
-
-
-
-
-
-
-
-
-        
-
 
 
         //load sub cat
@@ -387,6 +413,28 @@
         //     $('#sectionDiv').toggle(200);
         // });
 
+        // $('.btn-submit').click(function(e) {
+        //     e.preventDefault();
+        //     $.ajaxSetup({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         }
+        //     });
+
+        //     var img = $('#files').val();
+        //     console.log(img);
+            
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "/admin/produit/add",
+        //         data: imgArray,
+        //         dataType: "json",
+        //         success: function(response) {
+        //             console.log(response);
+        //         }
+        //     });
+
+        // });
 
 
 
