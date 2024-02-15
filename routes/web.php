@@ -10,12 +10,14 @@ use App\Http\Controllers\site\VendorController;
 use App\Http\Controllers\site\AccountController;
 use App\Http\Controllers\site\SupportController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\site\HomePageController;
 use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\DeliveryController;
 use App\Http\Controllers\admin\AuthAdminController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\PubliciteController;
 use App\Http\Controllers\admin\CollectionController;
+use App\Http\Controllers\site\ProductPageController;
 use App\Http\Controllers\admin\SubCategoryController;
 
 /*
@@ -111,7 +113,7 @@ use App\Http\Controllers\admin\SubCategoryController;
 
 
 
-/******************************************controller Admin****************************** **/
+/******************************************Route  Admin****************************** **/
 ##login  for dashboard
 Route::controller(AuthAdminController::class)->group(function () {
     route::get('/sign-in', 'login')->name('auth.login');
@@ -206,4 +208,20 @@ Route::middleware(['admin'])->group(function () {
         route::post('update/{id}', 'update')->name('publicite.update');
         route::post('destroy/{id}', 'destroy')->name('publicite.destroy');
     });
+});
+
+
+
+
+
+/***************************************** Route Site ********************************************/
+
+Route::controller(HomePageController::class)->group(function () {
+    route::get('/', 'page_acceuil')->name('page-acceuil');
+});
+
+Route::controller(ProductPageController::class)->group(function () {
+    route::get('produit/detail/{slug}', 'detail_produit')->name('detail-produit');
+    route::get('produit', 'liste_produit')->name('liste-produit');
+
 });

@@ -49,7 +49,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
-        dd($request->toArray());
+        // dd($request->toArray());
         $data = $request->validate([
             'title' => ['required'],
             'description' => '',
@@ -114,10 +114,10 @@ class ProductController extends Controller
             }
         }
 
-        return response()->json($request);
+        // return response()->json($request);
 
 
-        // return back()->withSuccess('nouveau produit ajouté avec success');
+        return back()->withSuccess('nouveau produit ajouté avec success');
     }
 
     /**

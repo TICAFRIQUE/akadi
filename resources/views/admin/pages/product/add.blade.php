@@ -373,7 +373,7 @@
 
                         } else {
                             $('.subcat').hide(200);
-                            $('.subCat_required').prop('required', false);
+                            $('.subCat_required').prop('required', false);  
 
                         }
                     }
@@ -413,28 +413,7 @@
         //     $('#sectionDiv').toggle(200);
         // });
 
-        // $('.btn-submit').click(function(e) {
-        //     e.preventDefault();
-        //     $.ajaxSetup({
-        //         headers: {
-        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //         }
-        //     });
-
-        //     var img = $('#files').val();
-        //     console.log(img);
-            
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "/admin/produit/add",
-        //         data: imgArray,
-        //         dataType: "json",
-        //         success: function(response) {
-        //             console.log(response);
-        //         }
-        //     });
-
-        // });
+     
 
 
 

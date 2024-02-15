@@ -54,34 +54,34 @@
                                                         {{ $items['name'] }}
                                                     @endforeach
                                                 </td>
-                                                <td>{{ $item['collection'] ? $item['collection']['name'] : '' }}</td>
+                                                {{-- <td>{{ $item['collection'] ? $item['collection']['name'] : '' }}</td> --}}
                                                 <td>{{ number_format($item['price'], 0) }} FCFA</td>
-                                                <td>
+                                                {{-- <td>
                                                     @foreach ($item['pointures'] as $items)
                                                         {{ $items['pointure'] }}
                                                     @endforeach
-                                                </td>
-                                                <td>
+                                                </td> --}}
+                                                {{-- <td>
                                                     @foreach ($item['tailles'] as $items)
                                                         {{ $items['taille'] }}
                                                     @endforeach
-                                                </td>
+                                                </td> --}}
                                                 <td>{{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}</td>
                                                 <td>
                                                     <div class="dropdown">
                                                         <a href="#" data-toggle="dropdown"
-                                                            class="btn btn-warning dropdown-toggle">Options</a>
+                                                            class="btn btn-warning dropdown-toggle">Actions</a>
                                                         <div class="dropdown-menu">
                                                             <a href="#"
                                                                 class="dropdown-item has-icon"><i class="fas fa-eye"></i>
-                                                                View</a>
+                                                                Voir</a>
                                                             <a href="{{ route('product.edit', $item['id']) }}"
                                                                 class="dropdown-item has-icon"><i class="far fa-edit"></i>
-                                                                Edit</a>
+                                                                Modifier</a>
 
                                                             <a href="#" role="button" data-id="{{ $item['id'] }}"
                                                                 class="dropdown-item has-icon text-danger delete"><i
-                                                                    class="far fa-trash-alt"></i>Delete</a>
+                                                                    class="far fa-trash-alt"></i>Supprimer</a>
 
                                                         </div>
                                                     </div>
