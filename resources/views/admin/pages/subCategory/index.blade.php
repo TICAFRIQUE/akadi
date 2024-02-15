@@ -30,9 +30,9 @@
                                             </th>
                                             <th>Name</th>
                                             <th>image</th>
-                                            <th>Banniere</th>
+                                            {{-- <th>Banniere</th> --}}
                                             <th>Categorie</th>
-                                            <th>A N</th>
+                                            <th>Nombre d'article</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -48,11 +48,11 @@
                                                         src="{{ $item->getFirstMediaUrl('subcategory_image') }}"
                                                         width="35">
                                                 </td>
-                                                   <td>
+                                                {{-- <td>
                                                     <img alt="{{ $item->getFirstMediaUrl('subcategory_banner') }}"
                                                         src="{{ $item->getFirstMediaUrl('subcategory_banner') }}"
                                                         width="35">
-                                                </td>
+                                                </td> --}}
                                                 <td class="align-middle">
                                                     {{ $item->category['name'] }}
                                                 </td>

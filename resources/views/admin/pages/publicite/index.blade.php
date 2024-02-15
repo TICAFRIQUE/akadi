@@ -26,7 +26,7 @@
                                             <th class="text-center">
                                                 #
                                             </th>
-                                            <th>Type</th>
+                                            {{-- <th>Type</th> --}}
                                             <th>image</th>
                                             <th>Url</th>
                                             <th>Action</th>
@@ -38,7 +38,7 @@
                                                 <td>
                                                     {{ ++$key }}
                                                 </td>
-                                                <td> {{ $item['type'] }} </td>
+                                                {{-- <td> {{ $item['type'] }} </td> --}}
                                                 <td>
                                                     <img alt="{{ $item->getFirstMediaUrl('publicite_image') }}"
                                                         src="{{ $item->getFirstMediaUrl('publicite_image') }}" width="35">

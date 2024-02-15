@@ -32,7 +32,7 @@
                                             </th>
                                             <th>Name</th>
                                             <th>image</th>
-                                            <th>banner</th>
+                                            {{-- <th>banner</th> --}}
                                             <th>Nombre article</th>
                                             <th>Action</th>
                                         </tr>
@@ -52,11 +52,11 @@
                                                         src="{{ $item->getFirstMediaUrl('category_image') }}"
                                                         width="35">
                                                 </td>
-                                                <td>
+                                                {{-- <td>
                                                     <img alt="{{ $item->getFirstMediaUrl('category_banner') }}"
                                                         src="{{ $item->getFirstMediaUrl('category_banner') }}"
                                                         width="35">
-                                                </td>
+                                                </td> --}}
                                                 <td class="align-middle">
                                                     {{ $item->products->count() }}
                                                 </td>

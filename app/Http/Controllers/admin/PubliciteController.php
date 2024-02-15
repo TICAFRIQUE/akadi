@@ -35,7 +35,7 @@ class PubliciteController extends Controller
         //
         // dd($request->toArray());
         $data =  $request->validate([
-            'type' => 'required',
+            'type' => '',
         ]);
 
 
@@ -81,7 +81,7 @@ class PubliciteController extends Controller
         //
          //
          $data =  $request->validate([
-            'type' => 'required',
+            'type' => '',
         ]);
 
 
