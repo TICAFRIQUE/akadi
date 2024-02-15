@@ -61,8 +61,16 @@ class ProductPageController extends Controller
                 ->with(['categories', 'media'])
                 ->firstOrFail();
 
-                // dd($product->toArray());
-            return view('site.pages.detail-produit', compact('product'));
+
+            $product_related =
+                Product::with(['media', 'categories', 'subcategorie'])
+                ->whereHas('categories', fn ($q) => $q->where('category_product.category_id', $product['categories'][0]['id']))
+                ->Where('sub_category_id', $product['sub_category_id'])
+                ->where('id', '!=',  $product['id'])
+                ->inRandomOrder()->take(10)->get();
+
+                // dd($product_related->toArray());
+            return view('site.pages.detail-produit', compact('product', 'product_related'));
         } catch (Exception $error) {
             return redirect()->action([HomePageController::class, 'page_acceuil']);
         }

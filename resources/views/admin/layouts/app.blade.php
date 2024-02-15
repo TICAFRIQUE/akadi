@@ -318,10 +318,10 @@
                                         data-feather="truck"></i><span>Livraisons</span></a>
                             </li>
 
-                            {{-- <li class="dropdown">
+                            <li class="dropdown">
                                 <a href="{{ route('publicite.index') }}" class="nav-link"><i
-                                        data-feather="image"></i><span>Publicités</span></a>
-                            </li> --}}
+                                        data-feather="image"></i><span>Slider</span></a>
+                            </li>
 
                             {{-- <li class="dropdown">
                                 <a href="#" class="menu-toggle nav-link has-dropdown"><i

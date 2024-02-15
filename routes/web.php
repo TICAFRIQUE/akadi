@@ -10,6 +10,7 @@ use App\Http\Controllers\site\VendorController;
 use App\Http\Controllers\site\AccountController;
 use App\Http\Controllers\site\SupportController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\site\CartPageController;
 use App\Http\Controllers\site\HomePageController;
 use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\DeliveryController;
@@ -223,5 +224,21 @@ Route::controller(HomePageController::class)->group(function () {
 Route::controller(ProductPageController::class)->group(function () {
     route::get('produit/detail/{slug}', 'detail_produit')->name('detail-produit');
     route::get('produit', 'liste_produit')->name('liste-produit');
-
 });
+
+
+
+// //Cart route
+Route::get('panier', [CartPageController::class, 'panier'])->name('panier');
+Route::get('add-to-cart/{id}', [CartPageController::class, 'addToCart'])->name('add.to.cart');
+// Route::patch('update-cart', [CartController::class, 'update'])->name('update.cart');
+// Route::delete('remove-from-cart', [CartController::class, 'remove'])->name('remove.from.cart');
+// Route::get('checkout', [CartController::class, 'checkout'])->middleware(['auth'])->name('checkout');
+// Route::get('refresh-shipping/{id}', [CartController::class, 'refreshShipping']);
+// Route::get('save-order', [CartController::class, 'storeOrder'])->name('store.order')->middleware(['auth']);
+
+
+
+
+
+

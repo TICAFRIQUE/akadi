@@ -34,13 +34,16 @@
                                      </div>
                                      (4.00)
                                  </div>
-                                 <h3 class="product-title"><a href="{{route('detail-produit', $item['id'])}}">{{ $plat['title'] }}</a></h3>
+                                 <h3 class="product-title"><a href="{{route('detail-produit', $plat['slug'])}}">{{ $plat['title'] }}</a></h3>
                                  <span class="price"> {{ number_format($plat['price'], 0) }} FCFA <del></del></span>
                                  <div class="actions">
-                                     <a href="#QuickView" class="icon-btn popup-content"><i class="fal fa-eye"></i></a>
+                            <button class="th-btn"> <i class="fal fa-cart-plus"></i> </button>
+
+                                     {{-- <a href="#QuickView" class="icon-btn popup-content"><i class="fal fa-eye"></i></a>
                                      <a href="cart.html" class="icon-btn"><i class="fal fa-cart-plus"></i></a>
                                      <a href="wishlist.html" class="icon-btn"><i class="fal fa-heart"></i></a>
-                                 </div>
+                                  --}}
+                                    </div>
                              </div>
                          </div>
 

@@ -26,12 +26,9 @@
                                                 #
                                             </th>
                                             <th>image</th>
-                                            <th>Name</th>
+                                            <th>Nom</th>
                                             <th>categories</th>
-                                            <th>collection</th>
                                             <th>prix</th>
-                                            <th>Pointure</th>
-                                            <th>Taille</th>
                                             <th>date</th>
                                             <th>Action</th>
                                         </tr>

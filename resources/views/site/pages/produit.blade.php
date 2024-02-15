@@ -47,7 +47,7 @@
                                  <span class="price"> {{ number_format($item['price'], 0) }} FCFA <del></del></span>
                             <div class="actions">
                                 {{-- <a href="" class=""><i class="fal fa-eye"></i>Ajouter</a> --}}
-                                <a href="" class="btn btn-outline-danger"><i class="fal fa-cart-plus"></i> Ajouter au panier</a>
+                                <button class="btn btn-outline-danger addCart" data-id="{{$item['id']}}"><i class="fal fa-cart-plus "></i> Ajouter au panier</button>
                                 
                                 {{-- <a href="wishlist.html" class="icon-btn"><i class="fal fa-heart"></i></a> --}}
                             </div>
@@ -57,14 +57,16 @@
                 @endforeach
                
             </div>
-            <div class="th-pagination text-center pt-50">
+            {{-- <div class="th-pagination text-center pt-50">
                 <ul>
                     <li><a href="blog.html">1</a></li>
                     <li><a href="blog.html">2</a></li>
                     <li><a href="blog.html">3</a></li>
                     <li><a href="blog.html"><i class="far fa-arrow-right"></i></a></li>
                 </ul>
-            </div>
+            </div> --}}
         </div>
     </section>
+
+    @include('site.components.ajouter-au-panier')
 @endsection

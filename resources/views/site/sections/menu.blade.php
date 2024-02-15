@@ -8,9 +8,9 @@
           <div class="th-mobile-menu">
               <ul>
                   <li class="menu-item-has-children">
-                      <a href="{{route('page-acceuil')}}">Accueil</a>
+                      <a href="{{ route('page-acceuil') }}">Accueil</a>
                   </li>
-                  <li class="menu-item-has-children">
+                  {{-- <li class="menu-item-has-children">
                       <a href="#">Menu</a>
                       <ul class="sub-menu">
                           <li><a href="menu-fast.html">Fast Food Menu</a></li>
@@ -18,24 +18,10 @@
                           <li><a href="menu-rest.html">Restaurant Food Menu</a></li>
                           <li><a href="menu-rest-v2.html">Restaurant Food Menu v2</a></li>
                       </ul>
-                  </li>
-                  <li class="menu-item-has-children">
-                      <a href="#">Categorie</a>
-                      <ul class="sub-menu">
-                          <li><a href="shop.html">Shop</a></li>
-                          <li><a href="shop-v2.html">Shop v2</a></li>
-                          <li><a href="shop-details.html">Shop Details</a></li>
-                          <li><a href="shop-details-v2.html">Shop Details v2</a></li>
-                      </ul>
-                  </li>
+                  </li> --}}
 
-                  <li class="menu-item-has-children">
-                      <a href="#">News</a>
-                      <ul class="sub-menu">
-                          <li><a href="blog.html">News</a></li>
-                          <li><a href="blog-details.html">News Details</a></li>
-                      </ul>
-                  </li>
+
+
 
               </ul>
           </div>
@@ -46,32 +32,33 @@
 
   <!-- ========== Start main menu ========== -->
   <header class="th-header header-layout6">
-     <div class="header-top">
-            <div class="container">
-                <div class="row justify-content-center justify-content-lg-between align-items-center">
-                    <div class="col-auto d-none d-lg-block">
-                        <p class="header-notice">
-                            <i class="fal fa-phone"></i>
-                            Appelez nous au +225 07 58 83 83 38</p>
-                    </div>
-                    <div class="col-auto">
-                        <div class="header-links">
-                            <ul>
-                                <li><i class="fal fa-location-dot"></i>Abidjan , Koumassi</li>
-                                <li>
-                                    <div class="header-social">
-                                        <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
-                                        <a href="https://www.twitter.com/"><i class="fab fa-twitter"></i></a>
-                                        <a href="https://www.linkedin.com/"><i class="fab fa-linkedin-in"></i></a>
-                                        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div class="header-top">
+          <div class="container">
+              <div class="row justify-content-center justify-content-lg-between align-items-center">
+                  <div class="col-auto d-none d-lg-block">
+                      <p class="header-notice">
+                          <i class="fal fa-phone"></i>
+                          Appelez nous au +225 07 58 83 83 38
+                      </p>
+                  </div>
+                  <div class="col-auto">
+                      <div class="header-links">
+                          <ul>
+                              <li><i class="fal fa-location-dot"></i>Abidjan , Koumassi</li>
+                              <li>
+                                  <div class="header-social">
+                                      <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
+                                      <a href="https://www.twitter.com/"><i class="fab fa-twitter"></i></a>
+                                      <a href="https://www.linkedin.com/"><i class="fab fa-linkedin-in"></i></a>
+                                      <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                                  </div>
+                              </li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
       <div class="sticky-wrapper">
           <!-- Main Menu Area -->
           <div class="menu-area">
@@ -80,16 +67,17 @@
                       <div class="col-auto">
                           <div class="header-logo">
                               <a href="index.html">
-                                  <img src="{{ asset('site/assets/img/custom/logo.png') }}" width=65px alt="logo akadi"> </a>
+                                  <img src="{{ asset('site/assets/img/custom/logo.png') }}" width=65px alt="logo akadi">
+                              </a>
                           </div>
                       </div>
                       <div class="col-auto">
                           <nav class="main-menu d-none d-lg-inline-block">
                               <ul>
-                                  <li class="menu-item-has-children">
-                                      <a href="{{route('page-acceuil')}}">Accueil</a>
+                                  <li class="menu-item">
+                                      <a href="{{ route('page-acceuil') }}">Accueil</a>
                                   </li>
-                                  <li class="menu-item-has-children">
+                                  {{-- <li class="menu-item-has-children">
                                       <a href="#">Menu</a>
                                       <ul class="sub-menu">
                                           <li><a href="menu-fast.html">Fast Food Menu</a></li>
@@ -97,24 +85,20 @@
                                           <li><a href="menu-rest.html">Restaurant Food Menu</a></li>
                                           <li><a href="menu-rest-v2.html">Restaurant Food Menu v2</a></li>
                                       </ul>
-                                  </li>
-                                  <li class="menu-item-has-children">
-                                      <a href="#">Categorie</a>
-                                      <ul class="sub-menu">
-                                          <li><a href="shop.html">Shop</a></li>
-                                          <li><a href="shop-v2.html">Shop v2</a></li>
-                                          <li><a href="shop-details.html">Shop Details</a></li>
-                                          <li><a href="shop-details-v2.html">Shop Details v2</a></li>
-                                      </ul>
-                                  </li>
+                                  </li> --}}
 
-                                  <li class="menu-item-has-children">
-                                      <a href="#">News</a>
-                                      <ul class="sub-menu">
-                                          <li><a href="blog.html">News</a></li>
-                                          <li><a href="blog-details.html">News Details</a></li>
-                                      </ul>
-                                  </li>
+                                  @foreach ($categories as $item)
+                                      <li class="menu-item-has-children">
+                                          <a href="/produit?categorie={{ $item['id'] }}"> {{ $item['name'] }} </a>
+                                          @foreach ($item['subcategories'] as $item)
+                                              <ul class="sub-menu">
+                                                  <li><a href="/produit?sous-categorie={{ $item['id'] }}">
+                                                          {{ $item['name'] }} </a></li>
+                                              </ul>
+                                          @endforeach
+                                      </li>
+                                  @endforeach
+
 
                               </ul>
                           </nav>
@@ -123,10 +107,10 @@
                           <div class="header-button">
                               <button type="button" class="simple-icon searchBoxToggler"><i
                                       class="far fa-search"></i></button>
-                              <button type="button" class="simple-icon sideMenuToggler">
+                              <a href="{{route('panier')}}" class="simple-icon">
                                   <i class="far fa-cart-shopping"></i>
-                                  <span class="badge">5</span>
-                              </button>
+                                  <span class="badge"> {{Session::get('totalQuantity')}} </span>
+                              </a>
                               <button type="button" class="simple-icon sideMenuToggler">
                                   <i class="far fa-user"></i>
                               </button>

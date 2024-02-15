@@ -107,14 +107,13 @@ Product Lightbox
 
 
 
-    <footer class="footer-wrapper footer-layout5"
-        data-bg-src="">
+    <footer class="footer-wrapper footer-layout5" data-bg-src="">
         <div class="widget-area">
             <div class="container">
                 <div class="row justify-content-between">
                     <div class="col-md-6 col-xl-3">
                         <div class="widget footer-widget">
-                            <h3 class="widget_title">About Restaurant</h3>
+                            <h3 class="widget_title">A propos de AKADI</h3>
                             <div class="th-widget-about">
                                 <p class="about-text">Quickly supply alternative strategic theme areas vis-a-vis B2C
                                     mindshare. Objectively repurpose stand-alone synergy via user-centric architectures.
@@ -130,7 +129,7 @@ Product Lightbox
                     </div>
                     <div class="col-md-6 col-xl-auto">
                         <div class="widget widget_nav_menu footer-widget">
-                            <h3 class="widget_title">Our Menu</h3>
+                            <h3 class="widget_title">MENU</h3>
                             <div class="menu-all-pages-container">
                                 <ul class="menu">
                                     <li><a href="menu-fast.html">Chicken Barger</a></li>
@@ -142,7 +141,7 @@ Product Lightbox
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-xl-auto">
+                    {{-- <div class="col-md-6 col-xl-auto">
                         <div class="widget footer-widget">
                             <h3 class="widget_title">Recent Posts</h3>
                             <div class="recent-post-wrap">
@@ -179,10 +178,10 @@ Product Lightbox
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-md-6 col-xl-auto">
                         <div class="widget footer-widget">
-                            <h3 class="widget_title">Contact Now</h3>
+                            <h3 class="widget_title">Nous suivre</h3>
                             <div class="th-widget-contact">
                                 <div class="info-box">
                                     <div class="info-box_icon">
@@ -220,8 +219,10 @@ Product Lightbox
             <div class="copyright-wrap border-top">
                 <div class="row justify-content-between align-items-center">
                     <div class="col-lg-6">
-                        <p class="copyright-text">Copyright <i class="fal fa-copyright"></i> 2023 <a
-                                href="https://themeforest.net/user/themeholy">Themeholy</a>. All Rights Reserved.</p>
+                        <p class="copyright-text">Copyright <i class="fal fa-copyright"></i> @php
+                        echo date('Y'); @endphp Akadi
+                             All Rights
+                            Reserved.</p>
                     </div>
                     <div class="col-lg-6 text-end d-none d-lg-block">
                         <div class="footer-links">

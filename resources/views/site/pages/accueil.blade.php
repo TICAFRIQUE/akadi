@@ -15,7 +15,7 @@
 
 
     <!-- ========== Start categorie-with-plats-recent ========== -->
-    @include('site.sections.categorie-plats')
+    @include('site.sections.categorie-produits')
     <!-- ========== End categorie-with-plats-recent ========== -->
 
 @endsection
