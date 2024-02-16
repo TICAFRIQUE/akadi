@@ -231,8 +231,8 @@ Route::controller(ProductPageController::class)->group(function () {
 // //Cart route
 Route::get('panier', [CartPageController::class, 'panier'])->name('panier');
 Route::get('add-to-cart/{id}', [CartPageController::class, 'addToCart'])->name('add.to.cart');
-// Route::patch('update-cart', [CartController::class, 'update'])->name('update.cart');
-// Route::delete('remove-from-cart', [CartController::class, 'remove'])->name('remove.from.cart');
+Route::patch('update-cart', [CartPageController::class, 'update'])->name('update.cart');
+Route::delete('remove-from-cart', [CartPageController::class, 'remove'])->name('remove.from.cart');
 // Route::get('checkout', [CartController::class, 'checkout'])->middleware(['auth'])->name('checkout');
 // Route::get('refresh-shipping/{id}', [CartController::class, 'refreshShipping']);
 // Route::get('save-order', [CartController::class, 'storeOrder'])->name('store.order')->middleware(['auth']);

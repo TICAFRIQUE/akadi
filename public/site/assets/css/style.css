@@ -8271,7 +8271,7 @@ table.woocommerce-product-attributes {
   color: var(--white-color);
 }
 
-.cart_table .qty-input {
+.cart_table .qte-input {
   vertical-align: middle;
   border: 2px solid var(--smoke-color);
   width: 70px;

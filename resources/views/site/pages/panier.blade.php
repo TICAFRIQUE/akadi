@@ -24,9 +24,10 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="woocommerce-notices-wrapper">
-                        <div class="woocommerce-message">Panier ({{ count((array) session('cart')) }})</div>
+                        <div class="woocommerce-message">Panier <span
+                                class="quantityProduct">({{ count((array) session('cart')) }})</span></div>
                     </div>
-                    @php $total = 0 @endphp
+                    @php $sousTotal = 0 @endphp
 
                     @if (session('cart'))
                         <form action="#" class="woocommerce-cart-form">
@@ -44,36 +45,50 @@
 
 
                                     @foreach (session('cart') as $id => $details)
-                                        <tr class="cart_item">
+                                        @php $sousTotal += $details['price'] * $details['quantity'] @endphp
+
+                                        <tr class="cart_item" id="row_{{ $id }}">
                                             <td data-title="Product">
                                                 <a class="cart-productimage"
                                                     href="{{ route('detail-produit', $details['slug']) }}"><img
                                                         width="91" height="91" src="{{ $details['image'] }} "
                                                         alt="Image">
-                                                   <br> <span>{{ $details['title'] }}</span>
+                                                    <br> <span>{{ $details['title'] }} * </span> <span class="text-dark"
+                                                        id="qte{{ $id }}"> {{ $details['quantity'] }}</span>
 
                                                 </a>
                                             </td>
                                             <td data-title="Price">
                                                 <span class="amount text-dark"><bdi>
-                                                        {{ number_format($details['price'], 0) }} <span>FCFA</span>
+                                                        {{ number_format($details['price'], 0) }}
+                                                        <span></span>
                                                     </bdi></span>
                                             </td>
                                             <td data-title="Quantity">
                                                 <div class="quantity">
-                                                    <button class="quantity-minus qty-btn"><i
+                                                    <button class="quantity-minus qty-btn qte-decrease_{{ $id }}"
+                                                        onclick="decreaseValue({{ $id }})"><i
                                                             class="far fa-minus"></i></button>
-                                                    <input type="number" class="qty-input" value="1" min="1"
-                                                        max="99">
-                                                    <button class="quantity-plus qty-btn"><i
+                                                    <input type="number" id="{{ $id }}" id="qty-input"
+                                                        class="qty-input{{ $id }}  qte-input"
+                                                        value="{{ $details['quantity'] ?? 1 }}" min="1"
+                                                        max="99" readonly>
+                                                    <button class="quantity-plus qty-btn qte-increase_{{ $id }}"
+                                                        onclick="increaseValue({{ $id }})"><i
                                                             class="far fa-plus"></i></button>
                                                 </div>
                                             </td>
                                             <td data-title="Total">
-                                                <span class="amount"><bdi><span>$</span>18</bdi></span>
+                                                @php
+                                                    $total = $details['price'] * $details['quantity'];
+                                                @endphp
+                                                <span class="amount"><bdi><span id="totalPriceQty{{ $id }}">
+                                                            {{ number_format($total) }}
+                                                        </span>FCFA</bdi></span>
                                             </td>
                                             <td data-title="Remove">
-                                                <a href="#" class="remove"><i class="fal fa-trash-alt"></i></a>
+                                                <a href="#" data-id="{{ $id }}"
+                                                    class="remove remove-from-cart"><i class="fal fa-trash-alt"></i></a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -107,7 +122,7 @@
                             <div class="">
                                 <h2 class="h4 summary-title">TotaL du panier</h2>
                                 <table class="cart_totals">
-                                    <tbody>
+                                    {{-- <tbody>
                                         <tr>
                                             <td>Sous total</td>
                                             <td data-title="Cart Subtotal">
@@ -132,12 +147,19 @@
                                                 </form>
                                             </td>
                                         </tr>
-                                    </tbody>
+                                    </tbody> --}}
                                     <tfoot>
                                         <tr class="order-total">
-                                            <td>Total</td>
+
+                                            <td>
+                                                <h6>Sous-Total</h6>
+                                            </td>
                                             <td data-title="Total">
-                                                <strong><span class="amount"><bdi><span>$</span>47</bdi></span></strong>
+                                                <strong><span class="amount sousTotal">
+                                                        <h6 class="text-danger">{{ number_format($sousTotal) }} FCFA</h6>
+                                                    </span>
+
+                                                </strong>
                                             </td>
                                         </tr>
                                     </tfoot>
@@ -157,5 +179,183 @@
         </div>
     </div>
     <!-- ========== End panier ========== -->
+    <link href="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
+" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script>
+        function increaseValue(id) {
+            var value = parseInt(document.getElementById(id).value);
+            value = isNaN(value) ? 0 : value;
+            value++;
+            document.getElementById(id).value = value;
+
+            let IdProduct = id;
+            if (value > 1) {
+                $('.qte-decrease_' + id).attr("disabled", false);
+            }
+
+            $.ajax({
+                url: '{{ route('update.cart') }}',
+                method: "patch",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: IdProduct,
+                    quantity: value
+                },
+                success: function(response) {
+                    //on modifie la quantité
+
+                    $('.qty-input' + IdProduct).val(response.cart[id].quantity);
+                    $('#qte' + IdProduct).html(response.cart[id].quantity);
+
+                    var totalPriceQty = response.cart[id].quantity * response.cart[id].price
+                    var totalPriceQty = totalPriceQty.toLocaleString("en-US");
+                    $('#totalPriceQty' + IdProduct).html(totalPriceQty);
+                    $('.sousTotal').html('<h6 class="text-danger">' + response.sousTotal + ' FCFA' + '</h6>');
+                    $('.badge').html(response.totalQte);
+
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: 'Quantité modifié avec succès',
+                        animation: false,
+                        position: 'top-right',
+                        background: '#3da108e0',
+                        iconColor: '#fff',
+                        color: '#fff',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                    });
+
+                    // window.location.reload();
+                }
+            });
+        }
+
+
+
+        function decreaseValue(id) {
+            var value = parseInt(document.getElementById(id).value, 10);
+            value = isNaN(value) ? 0 : value;
+            value < 1 ? value = 1 : '';
+            value--;
+
+            let IdProduct = id;
+            if (value === 1) {
+                $('.qte-decrease_' + id).attr('disabled', true);
+            }
+
+            document.getElementById(id).value = value;
+            $.ajax({
+                url: '{{ route('update.cart') }}',
+                method: "patch",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: IdProduct,
+                    quantity: value
+                },
+                success: function(response) {
+
+                    $('#qty-input' + IdProduct).val(response.cart[id].quantity);
+                    $('#qte' + IdProduct).html(response.cart[id].quantity);
+
+                    var totalPriceQty = response.cart[id].quantity * response.cart[id].price
+                    var totalPriceQty = totalPriceQty.toLocaleString("en-US");
+                    $('#totalPriceQty' + IdProduct).html(totalPriceQty);
+                    $('.sousTotal').html('<h6 class="text-danger">' + response.sousTotal + ' FCFA' + '</h6>');
+                    $('.badge').html(response.totalQte);
+
+
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: 'Panier mis à jour avec succès',
+                        animation: false,
+                        position: 'top',
+                        background: '#3da108e0',
+                        iconColor: '#fff',
+                        color: '#fff',
+                        showConfirmButton: false,
+                        timer: 1500,
+                        timerProgressBar: true,
+                    });
+
+                }
+            });
+
+        }
+
+
+        //remove product from cart
+        $(".remove-from-cart").click(function(e) {
+            e.preventDefault();
+
+            var IdProduct = $(this).attr('data-id');
+            // console.log(productId);
+
+            Swal.fire({
+                title: 'Retirer du panier',
+                text: "Voulez-vous vraiment supprimer ce produit du panier ?",
+                // icon: 'warning',
+                width: '350px',
+                showCancelButton: true,
+                cancelButtonText: 'Annuler',
+                confirmButtonColor: '#212529',
+                cancelButtonColor: '#212529',
+                confirmButtonText: 'Oui, supprimer'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route('remove.from.cart') }}',
+                        method: "DELETE",
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            id: IdProduct
+                        },
+                        success: function(response) {
+                            $('.sousTotal').html('<h6 class="text-danger">' +
+                                response
+                                .sousTotal + ' FCFA' + '</h6>');
+                            $('.badge').html(response.totalQte);
+                            $('.quantityProduct').html('(' + response.countCart + ')');
+
+
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: 'Le produit a été retiré du panier',
+                                animation: false,
+                                position: 'top',
+                                background: '#3da108e0',
+                                iconColor: '#fff',
+                                color: '#fff',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true,
+                            });
+                            $('#row_' + IdProduct).remove();
+                            if (response.countCart == 0) {
+                                window.location.href = "{{ route('panier') }}";
+
+                            }
+
+                           
+                        }
+                    });
+
+
+                }
+            })
+
+
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+
 
 @endsection

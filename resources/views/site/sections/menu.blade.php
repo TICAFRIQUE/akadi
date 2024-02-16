@@ -109,7 +109,7 @@
                                       class="far fa-search"></i></button>
                               <a href="{{route('panier')}}" class="simple-icon">
                                   <i class="far fa-cart-shopping"></i>
-                                  <span class="badge"> {{Session::get('totalQuantity')}} </span>
+                                  <span class="badge"> {{Session::get('totalQuantity')  ?? '0'}} </span>
                               </a>
                               <button type="button" class="simple-icon sideMenuToggler">
                                   <i class="far fa-user"></i>
