@@ -12,7 +12,7 @@
                     <li><a class="" href="{{route('page-acceuil')}}">Accueil</a></li>
                     <li><a class="" href="#">Categorie</a></li>
                     <li class="active">
-                         @if (count($product) > 0)
+                         @if (request('categorie'))
                         {{$product[0]['categories'][0]['name']}} 
                         @else
                         Liste de tous les plats

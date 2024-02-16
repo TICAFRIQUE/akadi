@@ -33,7 +33,7 @@ class ProductPageController extends Controller
                 $product = Product::with(['media', 'categories'])
                 ->where('sub_category_id', $subcategory)->inRandomOrder()->paginate(36);
             } else {
-                $product = Product::with(['media', 'categories'])->inRandomOrder()->paginate(36);
+                $product = Product::with(['media', 'categories'])->paginate(36);
             }
 
             return view(
