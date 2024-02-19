@@ -107,14 +107,15 @@
                                 <h2 class="h4 summary-title">Resumé du panier</h2>
 
                                 <div class="mb-3">
-                                      <h6>Informations du client</h6>
-                                                <span>Nom : {{Auth::user()->name}} </span>
-                                               <br> <span>Telephone : {{Auth::user()->phone}} </span>
-                                                <br><span class="{{Auth::user()->email ?? 'd-none '}}">Email : {{Auth::user()->email}} </span>
+                                    <h6>Informations du client</h6>
+                                    <span>Nom : {{ Auth::user()->name }} </span>
+                                    <br> <span>Telephone : {{ Auth::user()->phone }} </span>
+                                    <br><span class="{{ Auth::user()->email ?? 'd-none ' }}">Email :
+                                        {{ Auth::user()->email }} </span>
                                 </div>
                                 <table class="cart_totals" cellspacing="0">
                                     <tbody>
-                                       
+
                                         <tr>
                                             <td>Sous total</td>
                                             <td data-title="Total">
@@ -173,9 +174,9 @@
 
                                 <div class="wc-proceed-to-checkout mb-30">
                                     @auth
-                                        <a href="" class="th-btn rounded-2 confirmOrder">Confirmer la commande</a>
+                                        <a href="#" class="th-btn rounded-2 confirmOrder">Confirmer la commande</a>
                                     @endauth
-                                   
+
 
                                 </div>
                             </div>
@@ -196,8 +197,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <script>
-
-        //Get price delivery
+        //Recuperer les information du lieu de livraison
         $('.delivery').change(function(e) {
             e.preventDefault();
             var deliveryId = $('.delivery option:selected').val();
@@ -214,12 +214,76 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                     $('.delivery_price').html(response.delivery_price + 'FCFA');
                     $('.delivery_name').html('(' + response.delivery_name + ')');
                     $('.total_order').html(response.total_price + 'FCFA');
-
-
                 }
             });
 
 
+        });
+
+
+        //Enregistrer les informations de la commande
+        $('.confirmOrder').click(function(e) {
+            e.preventDefault()
+            var deliveryId = $('.delivery').val();
+            //si le lieu de livraison n'est pas choisi , on affiche un message d'alerte
+            if (!deliveryId) {
+                Swal.fire({
+                    title: 'Choisir son Lieu de livraison',
+                    text: "Veuillez choisir un lieu de livraison pour recevoir votre commande",
+                    icon: 'warning',
+                    width: '500px',
+                    confirmButtonColor: '#212529',
+                    confirmButtonText: 'D\'accord'
+                })
+            } else {
+                //send data to back
+                var subTotal = $('.sousTotal').attr('data-subTotal');
+                // var total_order = $('.total_order').html();
+
+                var data = {
+                    subTotal,
+                    deliveryId
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: "save-order",
+                    data: {
+                        data
+                    },
+                    dataType: "json",
+                    success: function(response) {
+
+                        if (response.status === 200) {
+                            let timerInterval
+                            Swal.fire({
+                                title: 'Enregistrement de la commande',
+                                html: 'Veuillez patienter dans <b></b> Secondes.',
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                    const b = Swal.getHtmlContainer().querySelector('b')
+                                    timerInterval = setInterval(() => {
+                                        b.textContent = Swal.getTimerLeft()
+                                    }, 100)
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval)
+                                }
+                            }).then((result) => {
+                                /* Read more about handling dismissals below */
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    window.location.href = "{{ route('user-order') }}";
+                                }
+                            })
+
+                        }
+                    }
+                });
+
+
+            }
         });
     </script>
 

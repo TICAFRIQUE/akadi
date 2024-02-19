@@ -18,6 +18,7 @@ use App\Http\Controllers\admin\AuthAdminController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\PubliciteController;
 use App\Http\Controllers\admin\CollectionController;
+use App\Http\Controllers\site\AccountPageController;
 use App\Http\Controllers\site\ProductPageController;
 use App\Http\Controllers\admin\SubCategoryController;
 
@@ -234,8 +235,8 @@ Route::get('add-to-cart/{id}', [CartPageController::class, 'addToCart'])->name('
 Route::patch('update-cart', [CartPageController::class, 'update'])->name('update.cart');
 Route::delete('remove-from-cart', [CartPageController::class, 'remove'])->name('remove.from.cart');
 Route::get('finaliser-ma-commande', [CartPageController::class, 'checkout'])->name('checkout')->middleware(['auth']);
-Route::get('refresh-shipping/{id}', [CartPageController::class, 'refreshShipping']);
-// Route::get('save-order', [CartController::class, 'storeOrder'])->name('store.order')->middleware(['auth']);
+Route::get('refresh-shipping/{id}', [CartPageController::class, 'refreshShipping'])->middleware(['auth']);
+Route::get('save-order', [CartPageController::class, 'storeOrder'])->name('store.order')->middleware(['auth']);
 
 
 //Authentification user
@@ -244,6 +245,15 @@ Route::controller(AuthController::class)->group(function () {
     route::post('/login', 'login')->name('login');
     route::get('/inscription', 'register')->name('register-form');
     route::post('/inscription', 'register')->name('register');
+    route::get('/mes-commandes', 'userOrder')->name('user-order');
+    route::get('/se-deconnecter', 'logout')->name('logout');
+});
+
+//Authentification user
+Route::controller(AccountPageController::class)->group(function () {
+    route::get('/mes-commandes', 'userOrder')->name('user-order')->middleware(['auth']);
+    route::get('/annuler-commande/{id}', 'cancelOrder')->name('cancel-order')->middleware(['auth']);
+
 });
 
 

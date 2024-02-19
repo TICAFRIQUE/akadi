@@ -37,7 +37,7 @@
                                  <h3 class="product-title"><a href="{{route('detail-produit', $plat['slug'])}}">{{ $plat['title'] }}</a></h3>
                                  <span class="price"> {{ number_format($plat['price'], 0) }} FCFA <del></del></span>
                                  <div class="actions">
-                            <button class="th-btn addCart" data-id="{{$plat['id']}}"> <i class="fal fa-cart-plus"></i> </button>
+                            <button class="th-btn addCart" data-id="{{$plat['id']}}"> <i class="fal fa-cart-plus"></i> Ajouter </button>
 
                                      {{-- <a href="#QuickView" class="icon-btn popup-content"><i class="fal fa-eye"></i></a>
                                      <a href="cart.html" class="icon-btn"><i class="fal fa-cart-plus"></i></a>

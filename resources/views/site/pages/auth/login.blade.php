@@ -18,6 +18,7 @@
             </div>
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-auto my-3">
+            @include('admin.components.validationMessage')
             <form action="{{ route('login') }}" method="post" class="woocommerce-form-login mb-30">
                 @csrf
                 <div class="form-group">
@@ -27,7 +28,7 @@
 
                 <div class="form-group">
                     <label>Mot de passe</label>
-                    <input type="password" class="form-control" name="password" placeholder="de********">
+                    <input type="password" name="password" class="form-control" name="password" placeholder="de********">
                 </div>
                 <input type="text" name="url_previous" value="{{ url()->previous() }}" hidden>
 

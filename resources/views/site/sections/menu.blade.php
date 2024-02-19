@@ -107,13 +107,41 @@
                           <div class="header-button">
                               <button type="button" class="simple-icon searchBoxToggler"><i
                                       class="far fa-search"></i></button>
-                              <a href="{{route('panier')}}" class="simple-icon">
+                              <a href="{{ route('panier') }}" class="simple-icon">
                                   <i class="far fa-cart-shopping"></i>
-                                  <span class="badge"> {{Session::get('totalQuantity')  ?? '0'}} </span>
+                                  <span class="badge"> {{ Session::get('totalQuantity') ?? '0' }} </span>
                               </a>
-                              <button type="button" class="simple-icon sideMenuToggler">
-                                  <i class="far fa-user"></i>
-                              </button>
+
+                              @guest
+                                  <a href="{{route('login')}}"  class="simple-icon">
+                                      <i class="far fa-user"></i>
+                                  </a>
+
+                              @endguest
+                              @auth
+
+
+                                  <div class="dropdown">
+                                      <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton2"
+                                          data-bs-toggle="dropdown" aria-expanded="false">
+                                          Salut, {{ Auth::user()->name }}
+
+                                      </button>
+                                      <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="dropdownMenuButton2">
+                                          <li><a class="dropdown-item" href="#"> <i class="far fa-user-check"></i> Mon
+                                                  compte</a></li>
+                                          <li><a class="dropdown-item" href="{{route('user-order')}}"> <i class="far fa-cart-shopping"></i>
+                                                  Mes commandes</a></li>
+                                          <li>
+                                              <hr class="dropdown-divider">
+                                          </li>
+                                          <li> <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                                                  class="simple-icon">
+                                                  <i class="far fa-sign-out"></i> Déconnexion
+                                              </a></li>
+                                      </ul>
+                                  </div>
+                              @endauth
                               {{-- <a href="contact.html" class="th-btn rounded-2 style3">Book a Table<i
                                         class="fa-solid fa-arrow-right ms-2"></i></a> --}}
                               <button type="button" class="th-menu-toggle d-inline-block d-lg-none"><i

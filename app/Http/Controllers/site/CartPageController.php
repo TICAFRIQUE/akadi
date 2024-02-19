@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\site;
 
+use Carbon\Carbon;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Delivery;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CartPageController extends Controller
@@ -134,17 +137,80 @@ class CartPageController extends Controller
         $total_price =  $sub_total +  $delivery_price;
 
         return response()->json([
-            'delivery_price' => number_format($delivery_price, 0) ,
-            'total_price' => number_format($total_price, 0) ,
+            'delivery_price' => number_format($delivery_price, 0),
+            'total_price' => number_format($total_price, 0),
             'delivery_name' => $delivery_name,
 
         ]);
     }
 
-
-    public function checkout(){
+    //caisse--resumé du panier
+    public function checkout()
+    {
         $delivery = Delivery::orderBy('zone', 'ASC')->get();
 
         return view('site.pages.caisse', compact('delivery'));
+    }
+
+
+    //store order
+    public function storeOrder(Request $request)
+    {
+        if (Auth::check()) {
+
+            if (session('cart')) {
+
+                //informations depuis ajax
+                $subTotal = $_GET['data']['subTotal'];
+                $deliveryId = $_GET['data']['deliveryId'];
+
+                //recuperer les information de livraison
+                $delivery = Delivery::whereId($deliveryId)->first();
+
+                //calculer le montant total de la commande avec le tarif de la livraison
+                $totalOrder = $subTotal + $delivery->tarif;
+
+               
+
+                //quantité des produit au panier
+                $quantity_product = count((array) session('cart'));
+                
+                //enregistrer la commande
+
+                $order = Order::firstOrCreate([
+                    "user_id" => Auth::user()->id,
+                    'quantity_product' => $quantity_product,
+                    'subtotal' => $subTotal,
+                    'total' => $totalOrder,
+                    'delivery_name' =>   $delivery['zone'],
+                    'delivery_price' => $delivery['tarif'],
+                    // 'discount' => '',
+                    // 'delivery_planned' => Carbon::now()->addDay(3), //date de livraison prevue
+                    // 'delivery_date' => '', //date de livraison
+                    'status' => 'attente',         // livré, en attente
+                    // 'available_product' =>  '' //disponibilite
+                    'payment method' => 'paiement à la livraison',
+                    'date_order' => Carbon::now()->format('Y-m-d')
+                ]);
+
+                //insert data in pivot order_product
+                foreach (session('cart') as $key => $value) {
+                    $order->products()->attach($key, [
+                        'quantity' => $value['quantity'],
+                        'unit_price' => $value['price'],
+                        'total' => $value['price'] * $value['quantity'],
+                    ]);
+                }
+
+                //supprimer la session du panier
+                Session::forget('cart');
+                Session::forget('totalQuantity');
+
+                return response()->json([
+                    'message' => 'commande enregistrée avec success',
+                    'status' => 200,
+                ], 200);
+            }
+        }
     }
 }

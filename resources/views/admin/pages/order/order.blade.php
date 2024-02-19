@@ -8,7 +8,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Commandes {{request('d') ? request('d') : request('s')}} </h4>
+                            <h4>Commandes {{ request('d') ? request('d') : request('s') }} </h4>
                         </div>
 
                         @include('admin.components.validationMessage')
@@ -34,7 +34,8 @@
                                             <tr>
                                                 <td>{{ ++$key }} </td>
                                                 <td><span style="font-weight:bold">{{ $item['code'] }}</span>
-                                                    <br> <span class="{{$item['status']=='attente' ? 'bg-primary': ($item['status']=='livrée' ? 'bg-success' : ($item['status']=='confirmée' ? 'bg-blue' :  ($item['status']=='annulée' ? 'bg-danger' : '')))}} text-white p-1 px-3">{{ $item['status'] }}
+                                                    <br> <span
+                                                        class="{{ $item['status'] == 'attente' ? 'bg-primary' : ($item['status'] == 'livrée' ? 'bg-success' : ($item['status'] == 'confirmée' ? 'bg-blue' : ($item['status'] == 'annulée' ? 'bg-danger' : ''))) }} text-white p-1 px-3">{{ $item['status'] }}
                                                     </span>
                                                 </td>
                                                 <td>{{ $item['user']['name'] }} </td>
@@ -56,33 +57,33 @@
                                                                 class="dropdown-item has-icon"><i class="fas fa-eye"></i>
                                                                 Detail</a>
 
-                                                                @if ($item['status']!='livrée')
-                                                                <a href="/admin/order/changeState?cs=confirmée && id={{$item['id']}}"
-                                                                class="dropdown-item has-icon"><i
-                                                                    class="fas fa-check"></i>
-                                                                Confirmée</a>
-                                                                <a href="/admin/order/changeState?cs=livrée && id={{$item['id']}}"
-                                                                class="dropdown-item has-icon"><i
-                                                                    class="fas fa-shipping-fast"></i>
-                                                                Livrée</a>
-                                                            <a href="/admin/order/changeState?cs=attente && id={{$item['id']}}"
-                                                                class="dropdown-item has-icon"><i
-                                                                    class="fas fa-arrow-down"></i>
-                                                                Attente</a>
+                                                            @if ($item['status'] != 'livrée')
+                                                                <a href="/admin/order/changeState?cs=confirmée && id={{ $item['id'] }}"
+                                                                    class="dropdown-item has-icon"><i
+                                                                        class="fas fa-check"></i>
+                                                                    Confirmée</a>
+                                                                <a href="/admin/order/changeState?cs=livrée && id={{ $item['id'] }}"
+                                                                    class="dropdown-item has-icon"><i
+                                                                        class="fas fa-shipping-fast"></i>
+                                                                    Livrée</a>
+                                                                <a href="/admin/order/changeState?cs=attente && id={{ $item['id'] }}"
+                                                                    class="dropdown-item has-icon"><i
+                                                                        class="fas fa-arrow-down"></i>
+                                                                    Attente</a>
 
-                                                            <a href="/admin/order/changeState?cs=annulée && id={{$item['id']}}" role="button" data-id="{{ $item['id'] }}"
-                                                                class="dropdown-item has-icon text-danger delete"><i
-                                                                    data-feather="x-circle"></i> Annuler</a>
+                                                                <a href="/admin/order/changeState?cs=annulée && id={{ $item['id'] }}"
+                                                                    role="button" data-id="{{ $item['id'] }}"
+                                                                    class="dropdown-item has-icon text-danger delete"><i
+                                                                        data-feather="x-circle"></i> Annuler</a>
+                                                            @endif
 
-                                                                @endif
 
-                                                               
                                                         </div>
                                                     </div>
                                                 </td>
 
 
-                                              
+
                                             </tr>
                                         @endforeach
 
@@ -95,6 +96,4 @@
             </div>
         </div>
     </section>
-
-   
 @endsection

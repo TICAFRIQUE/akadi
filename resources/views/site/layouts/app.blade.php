@@ -132,11 +132,9 @@ Product Lightbox
                             <h3 class="widget_title">MENU</h3>
                             <div class="menu-all-pages-container">
                                 <ul class="menu">
-                                    <li><a href="menu-fast.html">Chicken Barger</a></li>
-                                    <li><a href="menu-fast.html">Brief Pizza</a></li>
-                                    <li><a href="menu-fast.html">Fresh Vegetable</a></li>
-                                    <li><a href="menu-fast.html">Sea Foods</a></li>
-                                    <li><a href="menu-fast.html">Indian Kabab</a></li>
+                                    @foreach ($categories as $item)
+                                    <li><a href="/produit?categorie={{ $item['id'] }}">{{$item['name']}}</a></li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
@@ -224,14 +222,7 @@ Product Lightbox
                              All Rights
                             Reserved.</p>
                     </div>
-                    <div class="col-lg-6 text-end d-none d-lg-block">
-                        <div class="footer-links">
-                            <ul>
-                                <li><a href="about.html">Privacy Policy</a></li>
-                                <li><a href="about.html">Terms & Condition</a></li>
-                            </ul>
-                        </div>
-                    </div>
+                   
                 </div>
             </div>
         </div>

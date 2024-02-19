@@ -58,9 +58,9 @@ class AuthController extends Controller
     {
         if (request()->method() == 'GET') {
             return view('site.pages.auth.login');
-        }elseif (request()->method() == 'POST') {
+        } elseif (request()->method() == 'POST') {
             $credentials = $request->validate([
-                'email' => ['required'],
+                'phone' => ['required'],
                 'password' => ['required'],
             ]);
 
@@ -69,8 +69,18 @@ class AuthController extends Controller
             if (Auth::attempt($credentials)) {
                 return redirect()->away($url_previous)->withSuccess('connexion reussi');
             } else {
-                return redirect()->route('login-form')->withError('Email ou mot de passe incorrect');
+                return redirect()->route('login-form')->withError('Contact ou mot de passe incorrect');
             }
         }
+    }
+
+
+
+    //Deconnexion
+    public function logout()
+    {
+        Auth::logout();
+        // Session::flush();
+        return Redirect('/')->withSuccess('deconnexion réussi');
     }
 }
