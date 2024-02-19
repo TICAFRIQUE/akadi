@@ -58,6 +58,19 @@ class AuthController extends Controller
     {
         if (request()->method() == 'GET') {
             return view('site.pages.auth.login');
+        }elseif (request()->method() == 'POST') {
+            $credentials = $request->validate([
+                'email' => ['required'],
+                'password' => ['required'],
+            ]);
+
+            $url_previous = $request['url_previous'];
+
+            if (Auth::attempt($credentials)) {
+                return redirect()->away($url_previous)->withSuccess('connexion reussi');
+            } else {
+                return redirect()->route('login-form')->withError('Email ou mot de passe incorrect');
+            }
         }
     }
 }

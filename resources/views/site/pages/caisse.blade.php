@@ -105,8 +105,16 @@
                         <div class="row">
                             <div class="">
                                 <h2 class="h4 summary-title">Resumé du panier</h2>
+
+                                <div class="mb-3">
+                                      <h6>Informations du client</h6>
+                                                <span>Nom : {{Auth::user()->name}} </span>
+                                               <br> <span>Telephone : {{Auth::user()->phone}} </span>
+                                                <br><span class="{{Auth::user()->email ?? 'd-none '}}">Email : {{Auth::user()->email}} </span>
+                                </div>
                                 <table class="cart_totals" cellspacing="0">
                                     <tbody>
+                                       
                                         <tr>
                                             <td>Sous total</td>
                                             <td data-title="Total">
@@ -167,9 +175,7 @@
                                     @auth
                                         <a href="" class="th-btn rounded-2 confirmOrder">Confirmer la commande</a>
                                     @endauth
-                                    @guest
-                                        <a href="#" class="th-btn rounded-2 confirmOrder">Confirmer la commande</a>
-                                    @endguest
+                                   
 
                                 </div>
                             </div>
@@ -190,174 +196,6 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <script>
-        function increaseValue(id) {
-            var value = parseInt(document.getElementById(id).value);
-            value = isNaN(value) ? 0 : value;
-            value++;
-            document.getElementById(id).value = value;
-
-            let IdProduct = id;
-            if (value > 1) {
-                $('.qte-decrease_' + id).attr("disabled", false);
-            }
-
-            $.ajax({
-                url: '{{ route('update.cart') }}',
-                method: "patch",
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    id: IdProduct,
-                    quantity: value
-                },
-                success: function(response) {
-                    //on modifie la quantité
-
-                    $('.qty-input' + IdProduct).val(response.cart[id].quantity);
-                    $('#qte' + IdProduct).html(response.cart[id].quantity);
-
-                    var totalPriceQty = response.cart[id].quantity * response.cart[id].price
-                    var totalPriceQty = totalPriceQty.toLocaleString("en-US");
-                    $('#totalPriceQty' + IdProduct).html(totalPriceQty);
-                    $('.sousTotal').html('<h6 class="text-danger">' + response.sousTotal + ' FCFA' + '</h6>');
-                    $('.badge').html(response.totalQte);
-
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: 'Quantité modifié avec succès',
-                        animation: false,
-                        position: 'top-right',
-                        background: '#3da108e0',
-                        iconColor: '#fff',
-                        color: '#fff',
-                        showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true,
-                    });
-
-                    // window.location.reload();
-                }
-            });
-        }
-
-
-
-        function decreaseValue(id) {
-            var value = parseInt(document.getElementById(id).value, 10);
-            value = isNaN(value) ? 0 : value;
-            value < 1 ? value = 1 : '';
-            value--;
-
-            let IdProduct = id;
-            if (value === 1) {
-                $('.qte-decrease_' + id).attr('disabled', true);
-            }
-
-            document.getElementById(id).value = value;
-            $.ajax({
-                url: '{{ route('update.cart') }}',
-                method: "patch",
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    id: IdProduct,
-                    quantity: value
-                },
-                success: function(response) {
-
-                    $('#qty-input' + IdProduct).val(response.cart[id].quantity);
-                    $('#qte' + IdProduct).html(response.cart[id].quantity);
-
-                    var totalPriceQty = response.cart[id].quantity * response.cart[id].price
-                    var totalPriceQty = totalPriceQty.toLocaleString("en-US");
-                    $('#totalPriceQty' + IdProduct).html(totalPriceQty);
-                    $('.sousTotal').html('<h6 class="text-danger">' + response.sousTotal + ' FCFA' + '</h6>');
-                    $('.badge').html(response.totalQte);
-
-
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: 'Panier mis à jour avec succès',
-                        animation: false,
-                        position: 'top',
-                        background: '#3da108e0',
-                        iconColor: '#fff',
-                        color: '#fff',
-                        showConfirmButton: false,
-                        timer: 1500,
-                        timerProgressBar: true,
-                    });
-
-                }
-            });
-
-        }
-
-
-        //remove product from cart
-        $(".remove-from-cart").click(function(e) {
-            e.preventDefault();
-
-            var IdProduct = $(this).attr('data-id');
-            // console.log(productId);
-
-            Swal.fire({
-                title: 'Retirer du panier',
-                text: "Voulez-vous vraiment supprimer ce produit du panier ?",
-                // icon: 'warning',
-                width: '350px',
-                showCancelButton: true,
-                cancelButtonText: 'Annuler',
-                confirmButtonColor: '#212529',
-                cancelButtonColor: '#212529',
-                confirmButtonText: 'Oui, supprimer'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '{{ route('remove.from.cart') }}',
-                        method: "DELETE",
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            id: IdProduct
-                        },
-                        success: function(response) {
-                            $('.sousTotal').html('<h6 class="text-danger">' +
-                                response
-                                .sousTotal + ' FCFA' + '</h6>');
-                            $('.badge').html(response.totalQte);
-                            $('.quantityProduct').html('(' + response.countCart + ')');
-
-
-                            Swal.fire({
-                                toast: true,
-                                icon: 'success',
-                                title: 'Le produit a été retiré du panier',
-                                animation: false,
-                                position: 'top',
-                                background: '#3da108e0',
-                                iconColor: '#fff',
-                                color: '#fff',
-                                showConfirmButton: false,
-                                timer: 1000,
-                                timerProgressBar: true,
-                            });
-                            $('#row_' + IdProduct).remove();
-                            if (response.countCart == 0) {
-                                window.location.href = "{{ route('panier') }}";
-
-                            }
-
-
-                        }
-                    });
-
-
-                }
-            })
-
-
-        });
-
 
         //Get price delivery
         $('.delivery').change(function(e) {

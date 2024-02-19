@@ -6,7 +6,7 @@
     @include('admin.components.validationMessage')
 
     <!-- ========== Start slider ========== -->
-    @include('site.sections.slider')
+    @include('site.sections.slider2')
     <!-- ========== End slider ========== -->
 
 

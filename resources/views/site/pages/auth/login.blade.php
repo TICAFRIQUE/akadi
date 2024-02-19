@@ -22,7 +22,7 @@
                 @csrf
                 <div class="form-group">
                     <label>Telephone </label>
-                    <input type="number" name="phone" class="form-control" placeholder="Ex: jhon Olivier" required>
+                    <input type="number" name="phone" class="form-control" placeholder="Ex: 000000000" required>
                 </div>
 
                 <div class="form-group">
