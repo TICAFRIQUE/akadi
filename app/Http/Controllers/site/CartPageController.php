@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\site;
 
 use App\Models\Product;
+use App\Models\Delivery;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
@@ -12,6 +13,7 @@ class CartPageController extends Controller
     //voir le panier
     public function panier()
     {
+
         return view('site.pages.panier');
     }
 
@@ -117,5 +119,32 @@ class CartPageController extends Controller
             'countCart' => $countCart,
             "sousTotal" => number_format($sousTotal),
         ]);
+    }
+
+
+    //recuperer le prix du lieu de livraison par get AJax
+    public function refreshShipping($id)
+    {
+
+        $sub_total = $_GET['sub_total'];
+        $delivery = Delivery::whereId($id)->first();
+        $delivery_name = $delivery['zone'];
+        $delivery_price = $delivery['tarif'];
+
+        $total_price =  $sub_total +  $delivery_price;
+
+        return response()->json([
+            'delivery_price' => number_format($delivery_price, 0) ,
+            'total_price' => number_format($total_price, 0) ,
+            'delivery_name' => $delivery_name,
+
+        ]);
+    }
+
+
+    public function checkout(){
+        $delivery = Delivery::orderBy('zone', 'ASC')->get();
+
+        return view('site.pages.caisse', compact('delivery'));
     }
 }

@@ -3,6 +3,7 @@
 @section('title', 'Accueil')
 
 @section('content')
+    @include('admin.components.validationMessage')
 
     <!-- ========== Start slider ========== -->
     @include('site.sections.slider')

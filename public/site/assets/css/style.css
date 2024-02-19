@@ -8363,7 +8363,7 @@ table.woocommerce-product-attributes {
 .cart_totals th,
 .cart_totals td {
   vertical-align: top;
-  padding: 20px 20px;
+  padding: 10px 10px;
   border: none;
   border-bottom: 1px solid #ecf0f1;
   font-size: 14px;

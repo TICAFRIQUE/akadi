@@ -1,30 +1,29 @@
 @extends('site.layouts.app')
 
-@section('title', 'Panier')
+@section('title', 'Finaliser ma commande')
 
 @section('content')
     <div class="breadcumb-wrapper " data-bg-src="">
         <div class="container z-index-common">
             <div class="breadcumb-content">
-                <h1 class="breadcumb-title">Panier</h1>
+                <h1 class="breadcumb-title">Caisse</h1>
                 <ul class="breadcumb-menu">
                     <li><a href="{{ route('liste-produit') }}">Liste des plats</a></li>
                     <li><a href="i{{ route('page-acceuil') }}">Accueil</a></li>
-                    <li>Panier</li>
+                    <li>Resumé de ma commande</li>
                 </ul>
             </div>
         </div>
     </div>
 
 
+    @include('admin.components.validationMessage')
 
     <!-- ========== Start panier ========== -->
     <div class="th-cart-wrapper mt-3">
         <div class="container">
             <div class="row">
-                @include('admin.components.validationMessage')
-
-                <div class="col-md-12">
+                <div class="col-md-8">
                     <div class="woocommerce-notices-wrapper">
                         <div class="woocommerce-message">Panier <span
                                 class="quantityProduct">({{ count((array) session('cart')) }})</span></div>
@@ -40,7 +39,6 @@
                                         <th class="cart-col-price">Prix</th>
                                         <th class="cart-col-quantity">Quantité</th>
                                         <th class="cart-col-total">Total</th>
-                                        <th class="cart-col-remove">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -55,9 +53,7 @@
                                                     href="{{ route('detail-produit', $details['slug']) }}"><img
                                                         width="91" height="91" src="{{ $details['image'] }} "
                                                         alt="Image">
-                                                    <br> <span>{{ $details['title'] }} * </span> <span class="text-dark"
-                                                        id="qte{{ $id }}"> {{ $details['quantity'] }}</span>
-
+                                                    <br> <span>{{ $details['title'] }}</span>
                                                 </a>
                                             </td>
                                             <td data-title="Price">
@@ -67,18 +63,7 @@
                                                     </bdi></span>
                                             </td>
                                             <td data-title="Quantity">
-                                                <div class="quantity">
-                                                    <button class="quantity-minus qty-btn qte-decrease_{{ $id }}"
-                                                        onclick="decreaseValue({{ $id }})"><i
-                                                            class="far fa-minus"></i></button>
-                                                    <input type="number" id="{{ $id }}" id="qty-input"
-                                                        class="qty-input{{ $id }}  qte-input"
-                                                        value="{{ $details['quantity'] ?? 1 }}" min="1"
-                                                        max="99" readonly>
-                                                    <button class="quantity-plus qty-btn qte-increase_{{ $id }}"
-                                                        onclick="increaseValue({{ $id }})"><i
-                                                            class="far fa-plus"></i></button>
-                                                </div>
+                                                <span> {{ $details['quantity'] }} </span>
                                             </td>
                                             <td data-title="Total">
                                                 @php
@@ -88,23 +73,20 @@
                                                             {{ number_format($total) }}
                                                         </span>FCFA</bdi></span>
                                             </td>
-                                            <td data-title="Remove">
-                                                <a href="#" data-id="{{ $id }}"
-                                                    class="remove remove-from-cart"><i class="fal fa-trash-alt"></i></a>
-                                            </td>
+
                                         </tr>
                                     @endforeach
 
 
                                     <tr>
-                                        <td colspan="2" class="actions">
+                                        <td colspan="6" class="actions">
                                             {{-- <button type="submit" class="th-btn rounded-2">Update cart</button> --}}
-                                            <a href="{{ route('liste-produit') }}" class="th-btn rounded-2">Continuer
+                                            <a href="{{ route('liste-produit') }}" class="th-btn rounded-2 w-100">Continuer
                                                 les achats</a>
-
-                                            <a href="{{ route('checkout') }}" class="th-btn rounded-2 ">Finaliser
-                                                La commande <span class="sousTotal"> <b> ({{ number_format($sousTotal) }})
-                                                        FCFA</b></span> </a>
+                                            {{-- <div class="th-cart-coupon">
+                                                <input type="text" class="form-control" placeholder="Coupon Code...">
+                                                <button type="submit" class="th-btn rounded-2">Appliquer</button>
+                                            </div> --}}
 
                                         </td>
                                     </tr>
@@ -118,7 +100,7 @@
                     @endif
                 </div>
 
-                {{-- @if (session('cart'))
+                @if (session('cart'))
                     <div class="col-md-4">
                         <div class="row">
                             <div class="">
@@ -128,23 +110,72 @@
                                         <tr>
                                             <td>Sous total</td>
                                             <td data-title="Total">
-                                                <span data-subTotal="{{$sousTotal}}" class="amount sousTotal">
-                                                    <h6 class="text-danger"> FCFA</h6>
+                                                <span data-subTotal="{{ $sousTotal }}" class="amount sousTotal">
+                                                    <h6 class="text-danger">{{ number_format($sousTotal) }} FCFA</h6>
                                                 </span>
                                             </td>
                                         </tr>
-                                       
+                                        <tr>
+                                            <td>Livraison
+                                                <span class=" text-danger delivery_name"></span>
+                                            </td>
+                                            <td data-title="Total">
+                                                <span class="amount delivery_price">
+                                                    <h6 class="text-danger delivery_price">0 FCFA</h6>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr class="shipping">
+                                            {{-- <th>Lieu de livraison</th> --}}
+                                            <td colspan="2" data-title="Shipping and Handling">
+                                                <form action="#" method="post">
+                                                    <a href="#" class="shipping-calculator-button">Choisir un lieu de
+                                                        livraison</a>
+                                                    <div class="shipping-calculator-form">
+                                                        <select class="form-control delivery">
+                                                            <option disabled selected value> Choisir un lieu de
+                                                                livraison</option>
+                                                            @foreach ($delivery as $item)
+                                                                <option value="{{ $item['id'] }}">
+                                                                    {{ $item['zone'] }} ({{ $item['tarif'] }}) FCFA
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
                                     </tbody>
-                                  
+                                    <tfoot>
+                                        <tr class="order-total">
+
+                                            <td>
+                                                <h6>TOTAL TTC</h6>
+                                            </td>
+                                            <td data-title="Total">
+                                                <strong><span class="amount">
+                                                        <h6 class="text-danger total_order"> </h6>
+                                                    </span>
+
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
 
                                 <div class="wc-proceed-to-checkout mb-30">
-                                    <a href="#" class="th-btn rounded-2 confirmOrder">Finaliser la commande</a>
+                                    @auth
+                                        <a href="" class="th-btn rounded-2 confirmOrder">Confirmer la commande</a>
+                                    @endauth
+                                    @guest
+                                        <a href="#" class="th-btn rounded-2 confirmOrder">Confirmer la commande</a>
+                                    @endguest
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                @endif --}}
+                @endif
             </div>
 
 
@@ -187,7 +218,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                     var totalPriceQty = response.cart[id].quantity * response.cart[id].price
                     var totalPriceQty = totalPriceQty.toLocaleString("en-US");
                     $('#totalPriceQty' + IdProduct).html(totalPriceQty);
-                    $('.sousTotal').html('(' + response.sousTotal + ') FCFA');
+                    $('.sousTotal').html('<h6 class="text-danger">' + response.sousTotal + ' FCFA' + '</h6>');
                     $('.badge').html(response.totalQte);
 
                     Swal.fire({
@@ -239,7 +270,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                     var totalPriceQty = response.cart[id].quantity * response.cart[id].price
                     var totalPriceQty = totalPriceQty.toLocaleString("en-US");
                     $('#totalPriceQty' + IdProduct).html(totalPriceQty);
-                    $('.sousTotal').html('(' + response.sousTotal + ') FCFA');
+                    $('.sousTotal').html('<h6 class="text-danger">' + response.sousTotal + ' FCFA' + '</h6>');
                     $('.badge').html(response.totalQte);
 
 
@@ -323,6 +354,32 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
 
                 }
             })
+
+
+        });
+
+
+        //Get price delivery
+        $('.delivery').change(function(e) {
+            e.preventDefault();
+            var deliveryId = $('.delivery option:selected').val();
+            var subTotal = $('.sousTotal').attr('data-subTotal');
+
+            $.ajax({
+                type: "GET",
+                url: "/refresh-shipping/" + deliveryId,
+                data: {
+                    sub_total: subTotal
+                },
+                dataType: "json",
+                success: function(response) {
+                    $('.delivery_price').html(response.delivery_price + 'FCFA');
+                    $('.delivery_name').html('(' + response.delivery_name + ')');
+                    $('.total_order').html(response.total_price + 'FCFA');
+
+
+                }
+            });
 
 
         });

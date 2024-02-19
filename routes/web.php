@@ -233,10 +233,18 @@ Route::get('panier', [CartPageController::class, 'panier'])->name('panier');
 Route::get('add-to-cart/{id}', [CartPageController::class, 'addToCart'])->name('add.to.cart');
 Route::patch('update-cart', [CartPageController::class, 'update'])->name('update.cart');
 Route::delete('remove-from-cart', [CartPageController::class, 'remove'])->name('remove.from.cart');
-// Route::get('checkout', [CartController::class, 'checkout'])->middleware(['auth'])->name('checkout');
-// Route::get('refresh-shipping/{id}', [CartController::class, 'refreshShipping']);
+Route::get('finaliser-ma-commande', [CartPageController::class, 'checkout'])->name('checkout')->middleware(['auth']);
+Route::get('refresh-shipping/{id}', [CartPageController::class, 'refreshShipping']);
 // Route::get('save-order', [CartController::class, 'storeOrder'])->name('store.order')->middleware(['auth']);
 
+
+//Authentification user
+Route::controller(AuthController::class)->group(function () {
+    route::get('/login', 'login')->name('login-form');
+    route::post('/login', 'login')->name('login');
+    route::get('/inscription', 'register')->name('register-form');
+    route::post('/inscription', 'register')->name('register');
+});
 
 
 
