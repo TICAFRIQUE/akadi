@@ -8,6 +8,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Spatie\Permission\Traits\HasPermissions;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -51,6 +52,11 @@ class User extends Authenticatable
 
     public function products(){
         return $this->hasMany(Product::class);
+    }
+
+    public function commentaires(): HasMany
+    {
+        return $this->hasMany(Commentaire::class);
     }
 
     

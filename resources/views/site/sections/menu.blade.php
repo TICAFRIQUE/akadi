@@ -38,7 +38,7 @@
                   <div class="col-auto d-none d-lg-block">
                       <p class="header-notice">
                           <i class="fal fa-phone"></i>
-                          Appelez nous au +225 07 58 83 83 38
+                          Appelez nous au <a href="tel:+225 07 58 83 83 38">+225 07 58 83 83 38</a>
                       </p>
                   </div>
                   <div class="col-auto">
@@ -66,7 +66,7 @@
                   <div class="row align-items-center justify-content-between">
                       <div class="col-auto">
                           <div class="header-logo">
-                              <a href="index.html">
+                              <a href="{{route('page-acceuil')}}">
                                   <img src="{{ asset('site/assets/img/custom/logo.png') }}" width=65px alt="logo akadi">
                               </a>
                           </div>
@@ -128,7 +128,7 @@
 
                                       </button>
                                       <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="dropdownMenuButton2">
-                                          <li><a class="dropdown-item" href="#"> <i class="far fa-user-check"></i> Mon
+                                          <li><a class="dropdown-item" href="{{route('user-profil')}}"> <i class="far fa-user-check"></i> Mon
                                                   compte</a></li>
                                           <li><a class="dropdown-item" href="{{route('user-order')}}"> <i class="far fa-cart-shopping"></i>
                                                   Mes commandes</a></li>

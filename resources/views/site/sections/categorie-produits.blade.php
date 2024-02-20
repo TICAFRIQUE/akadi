@@ -26,14 +26,7 @@
                                  <img src="{{ asset($plat->getFirstMediaUrl('product_image')) }}" alt="Product Image">
                              </div>
                              <div class="product-content">
-                                 <a href="shop.html" class="category"> {{$categorie['name']}} </a>
-                                 <div class="product-rating">
-                                     <div class="star-rating" role="img" aria-label="Rated 4.00 out of 5">
-                                         <span style="width:75%">Rated <strong class="rating">4.00</strong> out of
-                                             5</span>
-                                     </div>
-                                     (4.00)
-                                 </div>
+                                 <a href="/produit?categorie={{ $categorie['id'] }}" class="category"> {{$categorie['name']}} </a>
                                  <h3 class="product-title"><a href="{{route('detail-produit', $plat['slug'])}}">{{ $plat['title'] }}</a></h3>
                                  <span class="price"> {{ number_format($plat['price'], 0) }} FCFA <del></del></span>
                                  <div class="actions">

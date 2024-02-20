@@ -172,7 +172,7 @@ Route::middleware(['admin'])->group(function () {
 
 
     /** Delivery **/
-    Route::prefix('admin/delivery')->controller(DeliveryController::class)->group(function () {
+    Route::prefix('admin/livraison')->controller(DeliveryController::class)->group(function () {
         route::get('', 'index')->name('delivery.index');
         route::post('', 'store')->name('delivery.store');
         route::get('edit/{id}', 'edit')->name('delivery.edit');
@@ -225,6 +225,8 @@ Route::controller(HomePageController::class)->group(function () {
 Route::controller(ProductPageController::class)->group(function () {
     route::get('produit/detail/{slug}', 'detail_produit')->name('detail-produit');
     route::get('produit', 'liste_produit')->name('liste-produit');
+    route::get('commentaire', 'commentaire')->name('commentaire')->middleware('auth');
+    Route::get('produit/q', 'recherche')->name('recherche');
 });
 
 
@@ -241,8 +243,8 @@ Route::get('save-order', [CartPageController::class, 'storeOrder'])->name('store
 
 //Authentification user
 Route::controller(AuthController::class)->group(function () {
-    route::get('/login', 'login')->name('login-form');
-    route::post('/login', 'login')->name('login');
+    route::get('/se connecter', 'login')->name('login-form');
+    route::post('/se-connecter', 'login')->name('login');
     route::get('/inscription', 'register')->name('register-form');
     route::post('/inscription', 'register')->name('register');
     route::get('/mes-commandes', 'userOrder')->name('user-order');
@@ -253,10 +255,6 @@ Route::controller(AuthController::class)->group(function () {
 Route::controller(AccountPageController::class)->group(function () {
     route::get('/mes-commandes', 'userOrder')->name('user-order')->middleware(['auth']);
     route::get('/annuler-commande/{id}', 'cancelOrder')->name('cancel-order')->middleware(['auth']);
+    route::get('/mon-profil', 'profil')->name('user-profil')->middleware(['auth']);
 
 });
-
-
-
-
-

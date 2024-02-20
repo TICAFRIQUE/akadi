@@ -27,9 +27,19 @@
 
 
 
-    <section class="th-product-wrapper space-top space-extra-bottom">
+    <section class="th-product-wrapper space-extra-bottom">
         <div class="container">
+           <div class="mt-2">
+             <p class="d-flex justify-content-between">
+                @if (request('q'))
+              <span style="color: #ff7419;"> Recherche pour : <i class="text-dark">{{ request('q') }}</i> </span>
+                <span>
+                    {{count($product)}} produits trouvé(s).
+                </span>
 
+                @endif
+            </p>
+           </div>
             <div class="row gy-40">
                 @foreach ($product as $item)
                     <div class="col-xl-3 col-lg-4 col-sm-6">

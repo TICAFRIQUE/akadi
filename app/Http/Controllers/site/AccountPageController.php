@@ -32,4 +32,10 @@ class AccountPageController extends Controller
 
         return back()->withSuccess('Votre à été annulée');
     }
+
+
+    //Profil 
+    public function profil(){
+        return view('site.pages.auth.account.profil');
+    }
 }

@@ -274,6 +274,21 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                             }).then((result) => {
                                 /* Read more about handling dismissals below */
                                 if (result.dismiss === Swal.DismissReason.timer) {
+                                    Swal.fire({
+                                        toast: true,
+                                        icon: 'success',
+                                        title: 'Commande enregistré avec success',
+                                        width: '100%',
+                                        animation: false,
+                                        position: 'top',
+                                        background: '#3da108e0',
+                                        iconColor: '#fff',
+                                        color: '#fff',
+                                        showConfirmButton: false,
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                    });
+
                                     window.location.href = "{{ route('user-order') }}";
                                 }
                             })

@@ -79,8 +79,9 @@ Product Lightbox
 
     <div class="popup-search-box d-none d-lg-block">
         <button class="searchClose"><i class="fal fa-times"></i></button>
-        <form action="#">
-            <input type="text" placeholder="What are you looking for?">
+        <form action="{{route('recherche')}}" method="GET">
+            @csrf
+            <input type="text" name="q" placeholder="Rechercher un produit">
             <button type="submit"><i class="fal fa-search"></i></button>
         </form>
     </div>

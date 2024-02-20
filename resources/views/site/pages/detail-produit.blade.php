@@ -4,8 +4,8 @@
 
 @section('content')
     <!--==============================
-                    Breadcumb
-                ============================== -->
+                        Breadcumb
+                    ============================== -->
     <div class="breadcumb-wrapper " data-bg-src="">
         <div class="container z-index-common">
             <div class="breadcumb-content">
@@ -20,8 +20,8 @@
             </div>
         </div>
     </div><!--==============================
-                    Product Details
-                    ==============================-->
+                        Product Details
+                        ==============================-->
     <section class="th-product-wrapper product-details space-top space-extra-bottom">
         <div class="container">
             <div class="row">
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-5 align-self-center">
+                <div class="col-lg-5">
                     <div class="product-about">
                         {{-- <div class="product-rating">
                             <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5"><span
@@ -66,7 +66,7 @@
                                 <button class="quantity-plus qty-btn"><i class="far fa-chevron-up"></i></button>
                                 <button class="quantity-minus qty-btn"><i class="far fa-chevron-down"></i></button>
                             </div> --}}
-                            <button class="th-btn addCart" data-id="{{$product['id']}}" >Ajouter au panier</button>
+                            <button class="th-btn addCart" data-id="{{ $product['id'] }}">Ajouter au panier</button>
                             {{-- <a class="icon-btn" href="wishlist.html"><i class="fal fa-heart"></i></a> --}}
                         </div>
                         <div class="product_meta">
@@ -91,22 +91,10 @@
             </ul>
             <div class="tab-content" id="productTabContent">
                 <div class="tab-pane fade" id="description" role="tabpanel" aria-labelledby="description-tab">
-                    <p>Conveniently build adaptive users with front-end human capital. Appropriately unleash team building
-                        technology for goal-oriented paradigms. Dynamically generate interoperable e-business
-                        vis-a-visgoal-oriented value. Completely pursue fully tested content whereas multifunctional core
-                        competencies. Progressively scale team driven process improvements before premier functionalities.
-                        Holisticly cultivate intermandated methodologies rather than virtual technology. Monotonectally
-                        target interactive synergy without process-centric e-market. Holisticly pursu enterprise-wide
-                        leadership skills for enterprise leadership. Collaboratively underwhelm standardized expertise after
-                        effective bandwidth. Conveniently productivate holistic collaboration and idea-sharing rather than
-                        granular strategic theme areas. </p>
-                    <p>Enthusiastically aggregate ethical systems for standardized mindshare. Energistically target resource
-                        maximizing leadership skills without backward-compatible action items. Credibly impact alternative
-                        expertise vis-a-vis economically sound results. Dynamically synergize empowered benefits through
-                        functional partnerships. Authoritatively empower prospective infomediaries for interactive content.
-                        Synergistically embrace 2.0 paradigms through professional intellectual capital. Interactively
-                        strategize parallel growth strategies without out-of-the-box web services. Assertively reinvent
-                        installed base.</p>
+                  <p>
+                  {!!  ($product["description"]) !!}
+                  </p>
+                    
                 </div>
 
                 <!-- ========== Start commentaire  ========== -->

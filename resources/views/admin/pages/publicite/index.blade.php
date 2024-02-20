@@ -1,5 +1,8 @@
 @extends('admin.layouts.app')
 
+@section('title', 'publicite')
+@section('sub-title', 'Liste des sliders')
+
 
 @section('content')
     <section class="section">
@@ -26,7 +29,7 @@
                                             <th class="text-center">
                                                 #
                                             </th>
-                                            {{-- <th>Type</th> --}}
+                                            <th>Type</th>
                                             <th>image</th>
                                             <th>Url</th>
                                             <th>Action</th>
@@ -38,7 +41,7 @@
                                                 <td>
                                                     {{ ++$key }}
                                                 </td>
-                                                {{-- <td> {{ $item['type'] }} </td> --}}
+                                                <td> {{ $item['type'] }} </td>
                                                 <td>
                                                     <img alt="{{ $item->getFirstMediaUrl('publicite_image') }}"
                                                         src="{{ $item->getFirstMediaUrl('publicite_image') }}" width="35">
@@ -99,6 +102,7 @@
                                 _token: '{{ csrf_token() }}',
 
                             },
+
                             success: function(response) {
                                 if (response.status === 200) {
                                     Swal.fire({

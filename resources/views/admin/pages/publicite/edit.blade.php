@@ -29,12 +29,12 @@
                             @csrf
                             <div class="card-body">
                                 <div class="form-group row">
-                                    {{-- <label class="col-sm-3 col-form-label">Type</label>
+                                    <label class="col-sm-3 col-form-label">Type</label>
                                     <div class="col-sm-9">
                                         <select name="type" class="form-control selectric " required>
                                             <option disabled selected value>Choisir un type</option>
                                             @php
-                                                $type = ['slider', 'banniere', 'top-header', 'popup', 'small-card', 'background'];
+                                                $type = ['slider', 'popup', 'arriere-plan'];
                                             @endphp
                                             @foreach ($type as $item)
                                                 <option class="text-capitalize" value="{{ $item }}"
@@ -47,7 +47,7 @@
                                             Champ obligatoire
                                         </div>
 
-                                    </div> --}}
+                                    </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Lien</label>
@@ -59,6 +59,16 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                   <div class="form-group row">
+                              <label class="col-sm-3 col-form-label">Texte</label>
+                              <div class="col-sm-9">
+                                  <input type="text" name="texte" value="{{$publicite['texte']}}" class="form-control">
+                                  <div class="invalid-feedback">
+                                      entrer un texte
+                                  </div>
+                              </div>
+                          </div>
 
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Image

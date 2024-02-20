@@ -96,8 +96,10 @@
             </div>
         </div>
     @else
-        <p>Vous n'avez pas de produits dans votre panier</p>
+      <div class="py-4 text-center">
+          <p>Vous n'avez pas de produits dans votre panier</p>
         <a href="{{ route('liste-produit') }}" class="th-btn rounded-2">Commandez maintenant</a>
+      </div>
     @endif
 
 

@@ -15,6 +15,7 @@ class Publicite extends Model implements HasMedia
     protected $fillable = [
         'type',
         'url',
+        'texte',
         'created_at',
         'updated_at',
         'deleted_at'

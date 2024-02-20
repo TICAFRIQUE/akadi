@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('publicites', function (Blueprint $table) {
             $table->id();
-            $table->string('type'); //banniere, publicité
+            $table->longText('texte');
+            $table->string('type')->nullable(); //banniere, publicité
             $table->string('url')->nullable();
             $table->softDeletes();
             $table->timestamps();

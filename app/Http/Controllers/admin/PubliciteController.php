@@ -35,21 +35,25 @@ class PubliciteController extends Controller
         //
         // dd($request->toArray());
         $data =  $request->validate([
-            'type' => '',
+            'type' => 'required',
         ]);
 
+        // dd($request->toArray());
 
         $publicite = Publicite::create([
             'type' => $request['type'],
             'url' => $request['url'],
+            'texte' => $request['texte'],
+
 
         ]);
 
-             //upload category_image
-             if ($request->has('image')) {
-                $publicite->addMediaFromRequest('image')->toMediaCollection('publicite_image');
-            }
-    
+
+        //upload category_image
+        if ($request->has('image')) {
+            $publicite->addMediaFromRequest('image')->toMediaCollection('publicite_image');
+        }
+
 
         return back()->with('success', 'Nouvelle Publicite ajoutée avec success');
     }
@@ -79,23 +83,25 @@ class PubliciteController extends Controller
     public function update(Request $request, string $id)
     {
         //
-         //
-         $data =  $request->validate([
-            'type' => '',
+        //
+        $data =  $request->validate([
+            'type' => 'required',
         ]);
 
 
         $publicite = tap(Publicite::find($id))->update([
             'type' => $request['type'],
             'url' => $request['url'],
+            'texte' => $request['texte'],
+
         ]);
 
         //upload category_image 
         if ($request->has('image')) {
             $publicite->clearMediaCollection('publicite_image');
             $publicite->addMediaFromRequest('image')->toMediaCollection('publicite_image');
-            }
-            
+        }
+
         return back()->withSuccess('Publicite modifiée avec success');
     }
 
@@ -107,7 +113,7 @@ class PubliciteController extends Controller
         //
         Publicite::whereId($id)->delete();
         return response()->json([
-            'status'=>200
+            'status' => 200
         ]);
     }
 }

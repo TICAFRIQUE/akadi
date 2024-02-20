@@ -8,6 +8,7 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -89,6 +90,11 @@ class Product extends Model implements HasMedia
     {
         return $this->belongsToMany(Order::class)->withPivot(['quantity', 'unit_price', 'total','options','available'])
             ->withTimestamps();
+    }
+
+    public function commentaires(): HasMany
+    {
+        return $this->hasMany(Commentaire::class);
     }
 
     /*******resize image */

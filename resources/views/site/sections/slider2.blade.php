@@ -1,281 +1,238 @@
 <!--==============================
 Hero Area
 ==============================-->
-    <div class="d-none d-md-block">
+<div class="d-none d-md-block">
 
-        <div id="slider" class="ls-wp-container fitvidsignore hero-6 th-hero-carousel" style="width:1920px;height:794px;margin:0 auto;">
-            <!-- Slide 1-->
-            <div class="ls-slide" data-ls="duration:5000; kenburnsscale:1.2;">
-                <ls-layer style="font-size:30px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:207px; left:340px; color:#ff0600; line-height:26px; font-family:'Lobster Two';" class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    Special Fast food
-                </ls-layer>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:90px; top:250px; left:340px; font-size:80px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    KINGS OF
-                </h1>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:90px; top:336px; left:340px; font-size:80px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    FAST FOOD
-                </h1>
-                <ls-layer style="font-size:18px; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:500; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; line-height:28px; color:#787878; font-family:Roboto; top:440px; left:345px; -webkit-background-clip:border-box;" class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent;">
-                    Offering an unrivaled selection of mouthwatering favorites
-                    <br>
-                    served With speed and quality
-                </ls-layer>
-                <a style="" class="ls-l ls-hide-tablet ls-hide-phone" href="shop.html" target="_self" data-ls="offsetxin:500; delayin:180; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#ffffff; hovercolor:#ff0600;">
-                    <ls-layer style="font-size:14px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:180px; left:344px; top:530px; text-transform:uppercase; line-height:14px; padding-bottom:20px; padding-top:22px; font-weight:600; border-radius:4px 4px 4px 4px; background-color:#ff0600;" class="ls-ib-icon ls-button-layer">
-                        Explore menu<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
-                    </ls-layer>
-                </a>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:110px; top:217px; left:72px; font-size:100px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-hide-desktop ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    KINGS OF
-                </h1>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:110px; top:324px; left:72px; font-size:100px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-hide-desktop ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    FAST FOOD
-                </h1>
-                <ls-layer style="font-size:45px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:151px; left:74px; color:#ff0600; line-height:55px; font-family:'Lobster Two';" class="ls-l ls-hide-desktop ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    Welcome to Pizzan
-                </ls-layer>
-                <ls-layer style="font-size:28px; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:500; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; line-height:38px; color:#787878; font-family:Roboto; top:453px; left:76px; -webkit-background-clip:border-box;" class="ls-l ls-hide-desktop ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent;">
-                    Offering an unrivaled selection of mouthwatering favorites
-                    <br>
-                    served With speed and quality
-                </ls-layer>
-                <a style="" class="ls-l ls-hide-desktop" href="shop.html" target="_self" data-ls="offsetxin:500; delayin:200; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#ffffff; hovercolor:#eb0029;">
-                    <ls-layer style="font-size:32px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; left:78px; top:586px; text-transform:uppercase; padding-bottom:30px; padding-top:30px; font-weight:600; line-height:32px; background-color:#eb0029; border-radius:10px 10px 10px 10px; width:370px;" class="ls-ib-icon ls-button-layer">
-                        Explore menu<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
-                    </ls-layer>
-                </a>
-                <a style="" class="ls-l ls-hide-tablet ls-hide-phone" href="#3" target="_self" data-ls="scalexin:0; scaleyin:0; static:forever;">
-                    <img width="61" height="60" src="assets/img/update_2/hero/hero_thumb_6_3.png" class="ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; left:200px; top:436px;">
-                </a>
-                <a style="" class="ls-l ls-hide-tablet ls-hide-phone" href="#2" target="_self" data-ls="scalexin:0; scaleyin:0; static:forever;">
-                    <img width="61" height="60" src="assets/img/update_2/hero/hero_thumb_6_2.png" class="ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; left:200px; top:367px;">
-                </a>
-                <a style="" class="ls-l ls-hide-tablet ls-hide-phone" href="#1" target="_self" data-ls="scalexin:0; scaleyin:0; static:forever;">
-                    <img width="61" height="60" src="assets/img/update_2/hero/hero_thumb_6_1.png" class="ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; left:200px; top:297px;">
-                </a>
-                <ls-layer style="font-size:36px; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; width:61px; height:60px; top:297px; left:200px; -webkit-background-clip:border-box;" class="ls-l ls-hide-tablet ls-hide-phone ls-svg-layer" data-ls="scalexin:0; scaleyin:0;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 61 60" fill="none">
-                        <circle cx="30.3096" cy="30" r="28" stroke="#FF0600" fill="transparent" stroke-width="4"></circle>
-                    </svg>
-                </ls-layer>
-                <img width="321" height="282" src="assets/img/update_2/hero/hero_img_6_4.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:1022px; top:36px; -webkit-background-clip:border-box;" data-ls="offsetxin:100; offsetyin:100; durationin:1500; delayin:100; easingin:easeOutQuint; scalexin:0.5; scaleyin:0.5; parallax:true; parallaxlevel:12;">
-                <img width="481" height="564" src="assets/img/update_2/hero/hero_img_6_6.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:214px; left:1220px; -webkit-background-clip:border-box;" data-ls="offsetxin:-100; offsetyin:-100; durationin:1500; delayin:100; easingin:easeOutQuint; scalexin:0.5; scaleyin:0.5; parallax:true; parallaxlevel:8;">
-                <img width="290" height="352" src="assets/img/update_2/hero/hero_img_6_5.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:50px; left:1413px; -webkit-background-clip:border-box;" data-ls="offsetxin:-100; offsetyin:100; durationin:1500; delayin:100; easingin:easeOutQuint; scalexin:0.5; scaleyin:0.5; parallax:true; parallaxlevel:10;">
-                <img width="581" height="580" src="assets/img/update_2/hero/hero_img_6_1.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:1060px; top:107px; -webkit-background-clip:border-box;" data-ls="offsetxin:500; durationin:600; delayin:100; easingin:easeOutBack; rotatein:80; bgcolorin:transparent; colorin:transparent;">
-                <img width="26" height="60" src="assets/img/update_2/hero/hero_shape_2_1.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:765px; top:121px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:12;">
-                <img width="105" height="50" src="assets/img/update_2/hero/hero_shape_2_2.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:596px; left:752px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:10;">
-                <img width="121" height="100" src="assets/img/update_2/hero/hero_shape_2_3.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:60px; left:529px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:8;">
-                <img width="78" height="80" src="assets/img/update_2/hero/hero_shape_2_4.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:546px; left:128px; -webkit-background-clip:border-box;" data-ls="offsetxin:-200; offsetyin: 300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:12;">
-                <img width="129" height="93" src="assets/img/update_2/hero/hero_shape_2_5.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:80px; top:78px; width:108px; height:78px; -webkit-background-clip:border-box;" data-ls="offsetxin:-200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:10;">
-                <img width="1920" height="54" src="assets/img/update_2/hero/hero_fire.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:740px; left:0px; width:1920px; -webkit-background-clip:border-box;" data-ls="transitionout:false; loop:true; loopscaley:0.5; looptransformorigin:center bottom; loopcount:-1; loopyoyo:true; static:forever;">
-                <img width="190" height="805" src="assets/img/update_2/hero/hero_shape_2_6.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:1730px; top:0px; -webkit-background-clip:border-box;" data-ls="offsetxin:180; durationin:1500; delayin:100; easingin:easeOutQuint;">
-            </div>
+    <div id="slider" class="ls-wp-container fitvidsignore hero-2 th-hero-carousel"
+        data-bg-src="{{$background->getFirstMediaUrl('publicite_image')}}"
+        style="width:1920px;height:900px;margin:0 auto;margin-bottom: 0px;">
 
-            <!-- Slide 2-->
-            <div class="ls-slide" data-ls="duration:5000; kenburnsscale:1.2;">
-                <ls-layer style="font-size:30px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:207px; left:340px; color:#ff0600; line-height:26px; font-family:'Lobster Two';" class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    Special Fast food
-                </ls-layer>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:90px; top:250px; left:340px; font-size:80px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    KINGS OF
-                </h1>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:90px; top:336px; left:340px; font-size:80px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    QUALITY FOOD
-                </h1>
-                <ls-layer style="font-size:18px; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:500; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; line-height:28px; color:#787878; font-family:Roboto; top:440px; left:345px; -webkit-background-clip:border-box;" class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent;">
-                    Offering an unrivaled selection of mouthwatering favorites
-                    <br>
-                    served With speed and quality
-                </ls-layer>
-                <a style="" class="ls-l ls-hide-tablet ls-hide-phone" href="shop.html" target="_self" data-ls="offsetxin:500; delayin:180; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#ffffff; hovercolor:#ff0600;">
-                    <ls-layer style="font-size:14px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:180px; left:344px; top:530px; text-transform:uppercase; line-height:14px; padding-bottom:20px; padding-top:22px; font-weight:600; border-radius:4px 4px 4px 4px; background-color:#ff0600;" class="ls-ib-icon ls-button-layer">
-                        Explore menu<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
-                    </ls-layer>
-                </a>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:110px; top:217px; left:72px; font-size:100px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-hide-desktop ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    KINGS OF
-                </h1>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:110px; top:324px; left:72px; font-size:100px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-hide-desktop ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    QUALITY FOOD
-                </h1>
-                <ls-layer style="font-size:45px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:151px; left:74px; color:#ff0600; line-height:55px; font-family:'Lobster Two';" class="ls-l ls-hide-desktop ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    Welcome to Pizzan
-                </ls-layer>
-                <ls-layer style="font-size:28px; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:500; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; line-height:38px; color:#787878; font-family:Roboto; top:453px; left:76px; -webkit-background-clip:border-box;" class="ls-l ls-hide-desktop ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent;">
-                    Offering an unrivaled selection of mouthwatering favorites
-                    <br>
-                    served With speed and quality
-                </ls-layer>
-                <a style="" class="ls-l ls-hide-desktop" href="shop.html" target="_self" data-ls="offsetxin:500; delayin:200; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#ffffff; hovercolor:#eb0029;">
-                    <ls-layer style="font-size:32px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; left:78px; top:586px; text-transform:uppercase; padding-bottom:30px; padding-top:30px; font-weight:600; line-height:32px; background-color:#eb0029; border-radius:10px 10px 10px 10px; width:370px;" class="ls-ib-icon ls-button-layer">
-                        Explore menu<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
-                    </ls-layer>
-                </a>
-                <img width="321" height="282" src="assets/img/update_2/hero/hero_img_6_4.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:1022px; top:36px; -webkit-background-clip:border-box;" data-ls="offsetxin:100; offsetyin:100; durationin:1500; delayin:100; easingin:easeOutQuint; scalexin:0.5; scaleyin:0.5; parallax:true; parallaxlevel:12;">
-                <img width="481" height="564" src="assets/img/update_2/hero/hero_img_6_6.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:214px; left:1220px; -webkit-background-clip:border-box;" data-ls="offsetxin:-100; offsetyin:-100; durationin:1500; delayin:100; easingin:easeOutQuint; scalexin:0.5; scaleyin:0.5; parallax:true; parallaxlevel:8;">
-                <img width="290" height="352" src="assets/img/update_2/hero/hero_img_6_5.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:50px; left:1413px; -webkit-background-clip:border-box;" data-ls="offsetxin:-100; offsetyin:100; durationin:1500; delayin:100; easingin:easeOutQuint; scalexin:0.5; scaleyin:0.5; parallax:true; parallaxlevel:10;">
-                <img width="581" height="580" src="assets/img/update_2/hero/hero_img_6_2.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:1060px; top:107px; -webkit-background-clip:border-box;" data-ls="offsetxin:500; durationin:600; delayin:100; easingin:easeOutBack; rotatein:80; bgcolorin:transparent; colorin:transparent;">
-                <img width="26" height="60" src="assets/img/update_2/hero/hero_shape_2_1.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:765px; top:121px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:12;">
-                <img width="105" height="50" src="assets/img/update_2/hero/hero_shape_2_2.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:596px; left:752px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:10;">
-                <img width="121" height="100" src="assets/img/update_2/hero/hero_shape_2_3.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:60px; left:529px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:8;">
-                <img width="78" height="80" src="assets/img/update_2/hero/hero_shape_2_4.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:546px; left:128px; -webkit-background-clip:border-box;" data-ls="offsetxin:-200; offsetyin: 300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:12;">
-                <ls-layer style="font-size:36px; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; width:61px; height:60px; top:367px; left:200px; -webkit-background-clip:border-box;" class="ls-l ls-hide-tablet ls-hide-phone ls-svg-layer" data-ls="scalexin:0; scaleyin:0;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 61 60" fill="none">
-                        <circle cx="30.3096" cy="30" r="28" stroke="#FF0600" fill="transparent" stroke-width="4"></circle>
-                    </svg>
-                </ls-layer>
-                <img width="129" height="93" src="assets/img/update_2/hero/hero_shape_2_5.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:80px; top:78px; width:108px; height:78px; -webkit-background-clip:border-box;" data-ls="offsetxin:-200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:10;">
-                <img width="190" height="805" src="assets/img/update_2/hero/hero_shape_2_6.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:1730px; top:0px; -webkit-background-clip:border-box;" data-ls="offsetxin:180; durationin:1500; delayin:100; easingin:easeOutQuint;">
-            </div>
 
-            <!-- Slide 3-->
-            <div class="ls-slide" data-ls="duration:5000; kenburnsscale:1.2;">
-                <ls-layer style="font-size:30px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:207px; left:340px; color:#ff0600; line-height:26px; font-family:'Lobster Two';" class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    Special Fast food
+        <!-- Slide 1-->
+        @foreach ($sliders as $key=>$item)
+            
+        <div class="ls-slide" data-ls="duration:5000; transition2d:5; kenburnsscale:1.2;">
+            <img width="837" height="813" src="{{ $item->getFirstMediaUrl('publicite_image')}}"
+                class="ls-l ls-hide-tablet ls-hide-phone ls-img-layer" alt="" decoding="async"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:187px; left:914px;"
+                data-ls="offsetxin:500; durationin:600; delayin:100; easingin:easeOutBack; rotatein:80; bgcolorin:transparent; colorin:transparent; offsetxout:-80; durationout:400; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; position:fixed;">
+
+            <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:800; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; font-family:'Lobster Two'; line-height:80px; top:552px; left:340px; font-size:70px; color:#eb0029; white-space:normal;"
+                class="ls-l hero-title ls-hide-tablet ls-hide-phone ls-text-layer"
+                data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-80; durationout:400; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; position:fixed;">
+               {{$item['texte']}}
+            </h1>
+            <img width="2" height="100" src="{{ asset('site/assets/img/hero/dot_line_1.png') }}"
+                class="ls-l ls-hide-tablet ls-hide-phone ls-img-layer" alt="" decoding="async"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; left:135px; top:349px;"
+                data-ls="static:forever; position:fixed;">
+            <img width="2" height="100" src="{{ asset('site/assets/img/hero/dot_line_2.png') }}"
+                class="ls-l ls-hide-tablet ls-hide-phone ls-img-layer" alt="" decoding="async"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; left:135px; top:718px;"
+                data-ls="static:forever; position:fixed;">
+           
+            <a style="" class="ls-l ls-hide-tablet ls-hide-phone" href="{{$item['url']}}" target="_self"
+                data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-80; durationout:400; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#010f1c; hovercolor:#ffffff; position:fixed;">
+                <ls-layer
+                    style="font-size:14px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:162px; left:530px; top:681px; text-transform:uppercase; line-height:14px; padding-bottom:20px; padding-top:22px; font-weight:600; border-radius:999px 999px 999px 999px; background-color:#ff9d2d;"
+                    class="ls-button-layer">
+                    Achetez maintenant
                 </ls-layer>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:90px; top:250px; left:340px; font-size:80px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    QUALITY IS
-                </h1>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:90px; top:336px; left:340px; font-size:80px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    OUR PRIORITY
-                </h1>
-                <ls-layer style="font-size:18px; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:500; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; line-height:28px; color:#787878; font-family:Roboto; top:440px; left:345px; -webkit-background-clip:border-box;" class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent;">
-                    Offering an unrivaled selection of mouthwatering favorites
-                    <br>
-                    served With speed and quality
+            </a>
+
+
+            <a style="" class="ls-l ls-hide-tablet ls-hide-phone" href="#{{$key}}" target="_self"
+                data-ls="static:forever; position:fixed;">
+                <img width="70" height="70" src="{{ $item->getFirstMediaUrl('publicite_image')}}"
+                    class="ls-img-layer" alt="" decoding="async"
+                    style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; left:100px; top:468px;">
+            </a>
+
+             <a style="" class="ls-l ls-hide-tablet ls-hide-phone" href="#{{$key}}" target="_self"
+                data-ls="static:forever; position:fixed;">
+                <img width="70" height="70" src="{{ $item->getFirstMediaUrl('publicite_image')}}"
+                    class="ls-img-layer" alt="" decoding="async"
+                    style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; left:100px; top:468px;">
+            </a>
+           
+            {{-- <img width="70" height="70" src="{{ asset('site/assets/img/hero/hero_thumb_2_1_active.png') }}"
+                class="ls-l ls-hide-tablet ls-hide-phone ls-img-layer" alt="" decoding="async"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; left:100px; top:468px;"
+                data-ls="position:fixed;"> --}}
+        </div>
+        @endforeach
+
+        
+    </div>
+
+
+</div>
+<!-- Layer Slider Mobile version start here -->
+{{-- <div class="d-block d-md-none">
+
+    <div class="ls-wp-container fitvidsignore hero-2 th-hero-carousel phone"
+        style="width:500px;height:660px;margin:0 auto;margin-bottom: 0px;">
+        <!-- Slide 1-->
+        <div class="ls-slide" data-ls="duration:5000; transition2d:5; kenburnsscale:1.2;">
+            <img width="500" height="660" src="assets/img/hero/hero_bg_2_1_phone.jpg" class="ls-bg"
+                alt="hero img">
+            <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; font-family:Rubik; line-height:54px; top:259px; left:15px; color:#010f1c; font-weight:800; font-size:44px; white-space:normal;"
+                class="ls-l ls-text-layer"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:-150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; position:fixed;">
+                Welcome To Our
+            </h1>
+            <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:800; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; font-family:Rubik; line-height:54px; top:313px; left:15px; font-size:44px; color:#010f1c; white-space:normal;"
+                class="ls-l hero-title ls-text-layer"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:-150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; position:fixed;">
+                Pizzan <span class="text-theme font-style">Fast Food</span> &amp;
+            </h1>
+            <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:800; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; font-family:'Lobster Two'; line-height:55px; top:367px; left:15px; font-size:44px; color:#eb0029; white-space:normal;"
+                class="ls-l hero-title ls-text-layer"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; position:fixed;">
+                Restaurants
+            </h1>
+            <a style="" class="ls-l" href="reservation.html" target="_self"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#010f1c; hovercolor:#ffffff; position:fixed;">
+                <ls-layer
+                    style="font-size:20px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:198px; left:18px; top:465px; text-transform:uppercase; line-height:20px; font-weight:600; border-radius:999px 999px 999px 999px; background-color:#eb0029; padding-bottom:22px; padding-top:22px;"
+                    class="ls-button-layer">
+                    Book a table
                 </ls-layer>
-                <a style="" class="ls-l ls-hide-tablet ls-hide-phone" href="shop.html" target="_self" data-ls="offsetxin:500; delayin:180; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#ffffff; hovercolor:#ff0600;">
-                    <ls-layer style="font-size:14px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:180px; left:344px; top:530px; text-transform:uppercase; line-height:14px; padding-bottom:20px; padding-top:22px; font-weight:600; border-radius:4px 4px 4px 4px; background-color:#ff0600;" class="ls-ib-icon ls-button-layer">
-                        Explore menu<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
-                    </ls-layer>
-                </a>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:110px; top:217px; left:72px; font-size:100px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-hide-desktop ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    QUALITY IS
-                </h1>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:110px; top:324px; left:72px; font-size:100px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-hide-desktop ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    OUR PRIORITY
-                </h1>
-                <ls-layer style="font-size:45px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:151px; left:74px; color:#ff0600; line-height:55px; font-family:'Lobster Two';" class="ls-l ls-hide-desktop ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    Welcome to Pizzan
+            </a>
+            <a style="" class="ls-l" href="shop.html" target="_self"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#010f1c; hovercolor:#ffffff; position:fixed;">
+                <ls-layer
+                    style="font-size:19px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:178px; left:234px; top:465px; text-transform:uppercase; line-height:19px; padding-bottom:22px; padding-top:22px; font-weight:600; border-radius:999px 999px 999px 999px; background-color:#ff9d2d;"
+                    class="ls-button-layer">
+                    ORDER NOW
                 </ls-layer>
-                <ls-layer style="font-size:28px; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:500; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; line-height:38px; color:#787878; font-family:Roboto; top:453px; left:76px; -webkit-background-clip:border-box;" class="ls-l ls-hide-desktop ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent;">
-                    Offering an unrivaled selection of mouthwatering favorites
-                    <br>
-                    served With speed and quality
-                </ls-layer>
-                <a style="" class="ls-l ls-hide-desktop" href="shop.html" target="_self" data-ls="offsetxin:500; delayin:200; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#ffffff; hovercolor:#eb0029;">
-                    <ls-layer style="font-size:32px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; left:78px; top:586px; text-transform:uppercase; padding-bottom:30px; padding-top:30px; font-weight:600; line-height:32px; background-color:#eb0029; border-radius:10px 10px 10px 10px; width:370px;" class="ls-ib-icon ls-button-layer">
-                        Explore menu<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
-                    </ls-layer>
-                </a>
-                <img width="321" height="282" src="assets/img/update_2/hero/hero_img_6_4.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:1022px; top:36px; -webkit-background-clip:border-box;" data-ls="offsetxin:100; offsetyin:100; durationin:1500; delayin:100; easingin:easeOutQuint; scalexin:0.5; scaleyin:0.5; parallax:true; parallaxlevel:12;">
-                <img width="481" height="564" src="assets/img/update_2/hero/hero_img_6_6.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:214px; left:1220px; -webkit-background-clip:border-box;" data-ls="offsetxin:-100; offsetyin:-100; durationin:1500; delayin:100; easingin:easeOutQuint; scalexin:0.5; scaleyin:0.5; parallax:true; parallaxlevel:8;">
-                <img width="290" height="352" src="assets/img/update_2/hero/hero_img_6_5.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:50px; left:1413px; -webkit-background-clip:border-box;" data-ls="offsetxin:-100; offsetyin:100; durationin:1500; delayin:100; easingin:easeOutQuint; scalexin:0.5; scaleyin:0.5; parallax:true; parallaxlevel:10;">
-                <img width="581" height="580" src="assets/img/update_2/hero/hero_img_6_3.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:1060px; top:107px; -webkit-background-clip:border-box;" data-ls="offsetxin:500; durationin:600; delayin:100; easingin:easeOutBack; rotatein:80; bgcolorin:transparent; colorin:transparent;">
-                <img width="26" height="60" src="assets/img/update_2/hero/hero_shape_2_1.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:765px; top:121px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:12;">
-                <img width="105" height="50" src="assets/img/update_2/hero/hero_shape_2_2.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:596px; left:752px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:10;">
-                <img width="121" height="100" src="assets/img/update_2/hero/hero_shape_2_3.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:60px; left:529px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:8;">
-                <img width="78" height="80" src="assets/img/update_2/hero/hero_shape_2_4.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:546px; left:128px; -webkit-background-clip:border-box;" data-ls="offsetxin:-200; offsetyin: 300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:12;">
-                <img width="129" height="93" src="assets/img/update_2/hero/hero_shape_2_5.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:80px; top:78px; width:108px; height:78px; -webkit-background-clip:border-box;" data-ls="offsetxin:-200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:10;">
-                <ls-layer style="font-size:36px; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; width:61px; height:60px; top:436px; left:200px; -webkit-background-clip:border-box;" class="ls-l ls-hide-tablet ls-hide-phone ls-svg-layer" data-ls="scalexin:0; scaleyin:0;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 61 60" fill="none">
-                        <circle cx="30.3096" cy="30" r="28" stroke="#FF0600" fill="transparent" stroke-width="4"></circle>
-                    </svg>
-                </ls-layer>
-                <img width="190" height="805" src="assets/img/update_2/hero/hero_shape_2_6.png" class="ls-l ls-img-layer" alt="image" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:1730px; top:0px; -webkit-background-clip:border-box;" data-ls="offsetxin:180; durationin:1500; delayin:100; easingin:easeOutQuint;">
-            </div>
+            </a>
+            <img width="190" height="118" src="assets/img/hero/hero_shape_7.png" class="ls-l ls-img-layer"
+                alt="hero img"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:593px; left:11px; width:92px; height:57px;"
+                data-ls="offsetyin:200; durationin:1400; rotatein:60deg; bgcolorin:transparent; colorin:transparent; parallax:true; parallaxlevel:12; parallaxdurationmove:400; rotation:00deg; position:fixed;">
+            <img width="200" height="173" src="assets/img/hero/hero_shape_8.png" class="ls-l ls-img-layer"
+                alt="hero img"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:554px; left:279px; width:65px; height:56px;"
+                data-ls="offsetyin:200; durationin:1400; rotatein:-90deg; bgcolorin:transparent; colorin:transparent; parallax:true; parallaxlevel:12; parallaxdurationmove:400; position:fixed;">
+            <img width="153" height="149" src="assets/img/hero/hero_shape_2_2.png" class="ls-l ls-img-layer"
+                alt="hero img"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:194px; left:19px; width:56px; height:54px;"
+                data-ls="offsetxin:-300; durationin:1400; rotatein:80deg; durationout:1500; parallax:true; parallaxlevel:10; parallaxdurationmove:800; position:fixed;">
+            <img width="178" height="76" src="assets/img/hero/hero_shape_2_1.png" class="ls-l ls-img-layer"
+                alt="hero img"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:563px; left:145px; width:97px; height:42px;"
+                data-ls="offsetyin:200; durationin:1400; rotatein:50deg; bgcolorin:transparent; colorin:transparent; parallax:true; parallaxlevel:12; parallaxdurationmove:400; position:fixed;">
         </div>
 
-    </div>
-    <!-- Layer Slider Mobile version start here -->
-    <div class="d-block d-md-none">
 
-        <div id="slider-phone" class="ls-wp-container fitvidsignore hero-6 th-hero-carousel" style="width:500px;height:520px;margin:0 auto;">
-            <!-- Slide 1-->
-            <div class="ls-slide" data-ls="duration:5000; kenburnsscale:1.2;">
-                <ls-layer style="font-size:22px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:89px; left:50%; color:#ff0600; line-height:26px; font-family:'Lobster Two';" class="ls-l ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    Special Fast food
+        <!-- Slide 2-->
+        <div class="ls-slide" data-ls="duration:5000; transition2d:5; kenburnsscale:1.2;">
+            <img width="500" height="660" src="assets/img/hero/hero_bg_2_1_phone.jpg" class="ls-bg"
+                alt="hero img">
+            <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; font-family:Rubik; line-height:54px; top:259px; left:15px; color:#010f1c; font-weight:800; font-size:44px; white-space:normal;"
+                class="ls-l ls-text-layer"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:-150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; position:fixed;">
+                Get Started With
+            </h1>
+            <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:800; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; font-family:Rubik; line-height:54px; top:313px; left:15px; font-size:44px; color:#010f1c; white-space:normal;"
+                class="ls-l hero-title ls-text-layer"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:-150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; position:fixed;">
+                Pizzan <span class="text-theme font-style">Fast Food</span> &amp;
+            </h1>
+            <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:800; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; font-family:'Lobster Two'; line-height:55px; top:367px; left:15px; font-size:44px; color:#eb0029; white-space:normal;"
+                class="ls-l hero-title ls-text-layer"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; position:fixed;">
+                Restaurants
+            </h1>
+            <a style="" class="ls-l" href="reservation.html" target="_self"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#010f1c; hovercolor:#ffffff; position:fixed;">
+                <ls-layer
+                    style="font-size:20px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:198px; left:18px; top:465px; text-transform:uppercase; line-height:20px; font-weight:600; border-radius:999px 999px 999px 999px; background-color:#eb0029; padding-bottom:22px; padding-top:22px;"
+                    class="ls-button-layer">
+                    Book a table
                 </ls-layer>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:70px; top:132px; left:50%; font-size:60px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    KINGS OF
-                </h1>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:70px; top:202px; left:50%; font-size:60px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    FAST FOOD
-                </h1>
-                <ls-layer style="font-size:14px; stroke:#000; stroke-width:0px; text-align:center; font-style:normal; text-decoration:none; text-transform:none; font-weight:500; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; line-height:24px; color:#787878; font-family:Roboto; top:292px; left:50%; -webkit-background-clip:border-box;" class="ls-l ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent;">
-                    Offering an unrivaled selection of mouthwatering favorites
-                    <br>
-                    served With speed and quality
+            </a>
+            <a style="" class="ls-l" href="shop.html" target="_self"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#010f1c; hovercolor:#ffffff; position:fixed;">
+                <ls-layer
+                    style="font-size:19px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:178px; left:234px; top:465px; text-transform:uppercase; line-height:19px; padding-bottom:22px; padding-top:22px; font-weight:600; border-radius:999px 999px 999px 999px; background-color:#ff9d2d;"
+                    class="ls-button-layer">
+                    ORDER NOW
                 </ls-layer>
-                <a style="" class="ls-l" href="shop.html" target="_self" data-ls="offsetxin:500; delayin:180; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#ffffff; hovercolor:#ff0600;">
-                    <ls-layer style="font-size:14px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:180px; left:50%; top:371px; text-transform:uppercase; line-height:14px; padding-bottom:20px; padding-top:22px; font-weight:600; border-radius:4px 4px 4px 4px; background-color:#ff0600;" class="ls-ib-icon ls-button-layer">
-                        Explore menu<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
-                    </ls-layer>
-                </a>
-                <img width="129" height="93" src="assets/img/update_2/hero/hero_shape_2_5.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:21px; top:20px; width:65px; height:47px; -webkit-background-clip:border-box;" data-ls="offsetxin:-200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:10;">
-                <img width="78" height="80" src="assets/img/update_2/hero/hero_shape_2_4.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:434px; left:51px; width:40px; height:41px; -webkit-background-clip:border-box;" data-ls="offsetxin:-200; offsetyin: 300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:12;">
-                <img width="121" height="100" src="assets/img/update_2/hero/hero_shape_2_3.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:154px; left:20px; width:50px; height:41px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:8;">
-                <img width="105" height="50" src="assets/img/update_2/hero/hero_shape_2_2.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:457px; left:405px; width:57px; height:27px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:10;">
-                <img width="26" height="60" src="assets/img/update_2/hero/hero_shape_2_1.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:408px; top:37px; width:17px; height:39px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:12;">
-                <img width="500" height="52" src="assets/img/update_2/hero/hero_fire_3.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:468px; left:-1px; -webkit-background-clip:border-box;" data-ls="loop:true; loopscaley:0.5; looptransformorigin:center bottom; loopcount:-1; loopyoyo:true; static:forever;">
-            </div>
-
-            <!-- Slide 2-->
-            <div class="ls-slide" data-ls="duration:5000; kenburnsscale:1.2;">
-                <ls-layer style="font-size:22px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:89px; left:50%; color:#ff0600; line-height:26px; font-family:'Lobster Two';" class="ls-l ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    Special Fast food
-                </ls-layer>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:70px; top:132px; left:50%; font-size:60px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    KINGS OF
-                </h1>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:70px; top:202px; left:50%; font-size:60px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    QUALITY FOOD
-                </h1>
-                <ls-layer style="font-size:14px; stroke:#000; stroke-width:0px; text-align:center; font-style:normal; text-decoration:none; text-transform:none; font-weight:500; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; line-height:24px; color:#787878; font-family:Roboto; top:292px; left:50%; -webkit-background-clip:border-box;" class="ls-l ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent;">
-                    Offering an unrivaled selection of mouthwatering favorites
-                    <br>
-                    served With speed and quality
-                </ls-layer>
-                <a style="" class="ls-l" href="shop.html" target="_self" data-ls="offsetxin:500; delayin:180; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#ffffff; hovercolor:#ff0600;">
-                    <ls-layer style="font-size:14px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:180px; left:50%; top:371px; text-transform:uppercase; line-height:14px; padding-bottom:20px; padding-top:22px; font-weight:600; border-radius:4px 4px 4px 4px; background-color:#ff0600;" class="ls-ib-icon ls-button-layer">
-                        Explore menu<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
-                    </ls-layer>
-                </a>
-                <img width="129" height="93" src="assets/img/update_2/hero/hero_shape_2_5.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:21px; top:20px; width:65px; height:47px; -webkit-background-clip:border-box;" data-ls="offsetxin:-200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:10;">
-                <img width="78" height="80" src="assets/img/update_2/hero/hero_shape_2_4.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:434px; left:51px; width:40px; height:41px; -webkit-background-clip:border-box;" data-ls="offsetxin:-200; offsetyin: 300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:12;">
-                <img width="121" height="100" src="assets/img/update_2/hero/hero_shape_2_3.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:154px; left:20px; width:50px; height:41px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:8;">
-                <img width="105" height="50" src="assets/img/update_2/hero/hero_shape_2_2.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:457px; left:405px; width:57px; height:27px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:10;">
-                <img width="26" height="60" src="assets/img/update_2/hero/hero_shape_2_1.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:408px; top:37px; width:17px; height:39px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:12;">
-            </div>
-
-            <!-- Slide 3-->
-            <div class="ls-slide" data-ls="duration:5000; kenburnsscale:1.2;">
-                <ls-layer style="font-size:22px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:89px; left:50%; color:#ff0600; line-height:26px; font-family:'Lobster Two';" class="ls-l ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    Special Fast food
-                </ls-layer>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:70px; top:132px; left:50%; font-size:60px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-text-layer" data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    QUALITY IS
-                </h1>
-                <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:70px; top:202px; left:50%; font-size:60px; background-size:auto; color:#0e1317; white-space:normal;" class="ls-l ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    OUR PRIORITY
-                </h1>
-                <ls-layer style="font-size:14px; stroke:#000; stroke-width:0px; text-align:center; font-style:normal; text-decoration:none; text-transform:none; font-weight:500; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; line-height:24px; color:#787878; font-family:Roboto; top:292px; left:50%; -webkit-background-clip:border-box;" class="ls-l ls-text-layer" data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent;">
-                    Offering an unrivaled selection of mouthwatering favorites
-                    <br>
-                    served With speed and quality
-                </ls-layer>
-                <a style="" class="ls-l" href="shop.html" target="_self" data-ls="offsetxin:500; delayin:180; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#ffffff; hovercolor:#ff0600;">
-                    <ls-layer style="font-size:14px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:180px; left:50%; top:371px; text-transform:uppercase; line-height:14px; padding-bottom:20px; padding-top:22px; font-weight:600; border-radius:4px 4px 4px 4px; background-color:#ff0600;" class="ls-ib-icon ls-button-layer">
-                        Explore menu<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
-                    </ls-layer>
-                </a>
-                <img width="129" height="93" src="assets/img/update_2/hero/hero_shape_2_5.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:21px; top:20px; width:65px; height:47px; -webkit-background-clip:border-box;" data-ls="offsetxin:-200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:10;">
-                <img width="78" height="80" src="assets/img/update_2/hero/hero_shape_2_4.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:434px; left:51px; width:40px; height:41px; -webkit-background-clip:border-box;" data-ls="offsetxin:-200; offsetyin: 300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:12;">
-                <img width="121" height="100" src="assets/img/update_2/hero/hero_shape_2_3.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:154px; left:20px; width:50px; height:41px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:8;">
-                <img width="105" height="50" src="assets/img/update_2/hero/hero_shape_2_2.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; top:457px; left:405px; width:57px; height:27px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:10;">
-                <img width="26" height="60" src="assets/img/update_2/hero/hero_shape_2_1.png" class="ls-l ls-img-layer" alt="" decoding="async" style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; left:408px; top:37px; width:17px; height:39px; -webkit-background-clip:border-box;" data-ls="offsetxin:200; offsetyin:-300; durationin:1500; delayin:100; easingin:easeOutQuint; parallax:true; parallaxlevel:12;">
-            </div>
+            </a>
+            <img width="190" height="118" src="assets/img/hero/hero_shape_7.png" class="ls-l ls-img-layer"
+                alt="hero img"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:593px; left:11px; width:92px; height:57px;"
+                data-ls="offsetyin:200; durationin:1400; rotatein:60deg; bgcolorin:transparent; colorin:transparent; parallax:true; parallaxlevel:12; parallaxdurationmove:400; rotation:00deg; position:fixed;">
+            <img width="200" height="173" src="assets/img/hero/hero_shape_8.png" class="ls-l ls-img-layer"
+                alt="hero img"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:554px; left:279px; width:65px; height:56px;"
+                data-ls="offsetyin:200; durationin:1400; rotatein:-90deg; bgcolorin:transparent; colorin:transparent; parallax:true; parallaxlevel:12; parallaxdurationmove:400; position:fixed;">
+            <img width="153" height="149" src="assets/img/hero/hero_shape_2_2.png" class="ls-l ls-img-layer"
+                alt="hero img"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:194px; left:19px; width:56px; height:54px;"
+                data-ls="offsetxin:-300; durationin:1400; rotatein:80deg; durationout:1500; parallax:true; parallaxlevel:10; parallaxdurationmove:800; position:fixed;">
+            <img width="146" height="63" src="assets/img/hero/hero_shape_2_5.png" class="ls-l ls-img-layer"
+                alt="hero img"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:563px; left:145px; width:97px; height:42px;"
+                data-ls="offsetyin:200; durationin:1400; rotatein:50deg; bgcolorin:transparent; colorin:transparent; parallax:true; parallaxlevel:12; parallaxdurationmove:400; position:fixed;">
         </div>
 
+
+        <!-- Slide 3-->
+        <div class="ls-slide" data-ls="duration:5000; transition2d:5; kenburnsscale:1.2;">
+            <img width="500" height="660" src="assets/img/hero/hero_bg_2_1_phone.jpg" class="ls-bg"
+                alt="hero img">
+            <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; font-family:Rubik; line-height:54px; top:259px; left:15px; color:#010f1c; font-weight:800; font-size:44px; white-space:normal;"
+                class="ls-l ls-text-layer"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:-150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; position:fixed;">
+                Claim Best Offer On
+            </h1>
+            <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:800; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; font-family:Rubik; line-height:54px; top:313px; left:15px; font-size:44px; color:#010f1c; white-space:normal;"
+                class="ls-l hero-title ls-text-layer"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:-150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; position:fixed;">
+                Pizzan <span class="text-theme font-style">Fast Food</span> &amp;
+            </h1>
+            <h1 style="text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:800; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; font-family:'Lobster Two'; line-height:55px; top:367px; left:15px; font-size:44px; color:#eb0029; white-space:normal;"
+                class="ls-l hero-title ls-text-layer"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; position:fixed;">
+                Restaurants
+            </h1>
+            <a style="" class="ls-l" href="reservation.html" target="_self"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#010f1c; hovercolor:#ffffff; position:fixed;">
+                <ls-layer
+                    style="font-size:20px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:198px; left:18px; top:465px; text-transform:uppercase; line-height:20px; font-weight:600; border-radius:999px 999px 999px 999px; background-color:#eb0029; padding-bottom:22px; padding-top:22px;"
+                    class="ls-button-layer">
+                    Book a table
+                </ls-layer>
+            </a>
+            <a style="" class="ls-l" href="shop.html" target="_self"
+                data-ls="offsetyin:-100lh; durationin:1500; easingin:easeOutQuint; bgcolorin:transparent; colorin:transparent; offsetyout:150; durationout:1500; easingout:easeInQuint; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#010f1c; hovercolor:#ffffff; position:fixed;">
+                <ls-layer
+                    style="font-size:19px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:178px; left:234px; top:465px; text-transform:uppercase; line-height:19px; padding-bottom:22px; padding-top:22px; font-weight:600; border-radius:999px 999px 999px 999px; background-color:#ff9d2d;"
+                    class="ls-button-layer">
+                    ORDER NOW
+                </ls-layer>
+            </a>
+            <img width="190" height="118" src="assets/img/hero/hero_shape_7.png" class="ls-l ls-img-layer"
+                alt="hero img"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:593px; left:11px; width:92px; height:57px;"
+                data-ls="offsetyin:200; durationin:1400; rotatein:60deg; bgcolorin:transparent; colorin:transparent; parallax:true; parallaxlevel:12; parallaxdurationmove:400; rotation:00deg; position:fixed;">
+            <img width="200" height="173" src="assets/img/hero/hero_shape_8.png" class="ls-l ls-img-layer"
+                alt="hero img"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:554px; left:279px; width:65px; height:56px;"
+                data-ls="offsetyin:200; durationin:1400; rotatein:-90deg; bgcolorin:transparent; colorin:transparent; parallax:true; parallaxlevel:12; parallaxdurationmove:400; position:fixed;">
+            <img width="153" height="149" src="assets/img/hero/hero_shape_2_2.png" class="ls-l ls-img-layer"
+                alt="hero img"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:194px; left:19px; width:56px; height:54px;"
+                data-ls="offsetxin:-300; durationin:1400; rotatein:80deg; durationout:1500; parallax:true; parallaxlevel:10; parallaxdurationmove:800; position:fixed;">
+            <img width="135" height="96" src="assets/img/hero/hero_shape_2_6.png" class="ls-l ls-img-layer"
+                alt="hero img"
+                style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:563px; left:145px; width:97px; height:42px;"
+                data-ls="offsetyin:200; durationin:1400; rotatein:50deg; bgcolorin:transparent; colorin:transparent; parallax:true; parallaxlevel:12; parallaxdurationmove:400; position:fixed;">
+        </div>
     </div>
-    <!--======== / Hero Section ========-->
+
+</div> --}}
+<!--======== / Hero Section ========--><!--==============================
