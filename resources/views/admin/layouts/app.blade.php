@@ -251,12 +251,11 @@
                 {{-- Vertical nav --}}
                 <div class="main-sidebar sidebar-style-2">
                     <aside id="sidebar-wrapper">
-                        <div class="sidebar-brand">
+                        <div class="sidebar-brand mb-2">
                             <a href="{{ route('dashboard.index') }}">
                                 <span class="logo-name">
-                                    <h4 class="p-3">AKADI</h4>
-                                    {{-- <img src="{{ asset('admin/assets/img/logo.jpg') }}"
-                                        width="80" class="m-auto" alt=""> --}}
+                                    <img src="{{ asset('site/assets/img/custom/logo.png') }}"
+                                        width="80" class="m-auto" alt="">
                                 </span>
                             </a>
                         </div>

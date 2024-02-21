@@ -38,9 +38,13 @@ class AuthAdminController extends Controller
     public function register(Request $request)
     {
 
-        $user_verify = User::whereEmail($request['email'])->get();
-        // dd($user_verify->count());
-        if ($user_verify->count() > 0) {
+        //on verifie si le nouvel utilisateur est déja dans la BD à partir du phone
+        $user_verify_phone = User::wherePhone($request['phone'])->first();
+        $user_verify_email = User::whereEmail($request['email'])->first();
+
+        if ($user_verify_phone != null) {
+            return back()->withError('Ce numero de telephone est dejà associé un compte, veuillez utiliser un autre');
+        } elseif ($user_verify_email != null) {
             return back()->withError('Ce email est dejà associé un compte, veuillez utiliser un autre');
         } else {
             // dd($request);
@@ -113,7 +117,7 @@ class AuthAdminController extends Controller
 
         //delete order of this user
         Order::where("user_id", $id)->delete();
-        
+
         User::whereId($id)->delete();
 
         return response()->json([

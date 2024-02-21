@@ -32,7 +32,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($orders as $key => $item)
-                                            <tr>
+                                            <tr id="row_{{$item['id']}}">
                                                 <td>{{ ++$key }} </td>
                                                 <td><span style="font-weight:bold">{{ $item['code'] }}</span>
                                                     <br> <span
