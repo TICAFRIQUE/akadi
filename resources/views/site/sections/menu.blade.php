@@ -10,15 +10,17 @@
                   <li class="menu-item-has-children">
                       <a href="{{ route('page-acceuil') }}">Accueil</a>
                   </li>
-                  {{-- <li class="menu-item-has-children">
-                      <a href="#">Menu</a>
-                      <ul class="sub-menu">
-                          <li><a href="menu-fast.html">Fast Food Menu</a></li>
-                          <li><a href="menu-fast-v2.html">Fast Food Menu v2</a></li>
-                          <li><a href="menu-rest.html">Restaurant Food Menu</a></li>
-                          <li><a href="menu-rest-v2.html">Restaurant Food Menu v2</a></li>
-                      </ul>
-                  </li> --}}
+                  @foreach ($categories as $item)
+                      <li class="menu-item-has-children">
+                          <a href="/produit?categorie={{ $item['id'] }}"> {{ $item['name'] }} </a>
+                          @foreach ($item['subcategories'] as $item)
+                              <ul class="sub-menu">
+                                  <li><a href="/produit?sous-categorie={{ $item['id'] }}">
+                                          {{ $item['name'] }} </a></li>
+                              </ul>
+                          @endforeach
+                      </li>
+                  @endforeach
 
 
 
@@ -66,7 +68,7 @@
                   <div class="row align-items-center justify-content-between">
                       <div class="col-auto">
                           <div class="header-logo">
-                              <a href="{{route('page-acceuil')}}">
+                              <a href="{{ route('page-acceuil') }}">
                                   <img src="{{ asset('site/assets/img/custom/logo.png') }}" width=65px alt="logo akadi">
                               </a>
                           </div>
@@ -103,6 +105,8 @@
                               </ul>
                           </nav>
                       </div>
+
+
                       <div class="col-auto">
                           <div class="header-button">
                               <button type="button" class="simple-icon searchBoxToggler"><i
@@ -113,7 +117,7 @@
                               </a>
 
                               @guest
-                                  <a href="{{route('login')}}"  class="simple-icon">
+                                  <a href="{{ route('login') }}" class="simple-icon">
                                       <i class="far fa-user"></i>
                                   </a>
 
@@ -128,9 +132,11 @@
 
                                       </button>
                                       <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="dropdownMenuButton2">
-                                          <li><a class="dropdown-item" href="{{route('user-profil')}}"> <i class="far fa-user-check"></i> Mon
+                                          <li><a class="dropdown-item" href="{{ route('user-profil') }}"> <i
+                                                      class="far fa-user-check"></i> Mon
                                                   compte</a></li>
-                                          <li><a class="dropdown-item" href="{{route('user-order')}}"> <i class="far fa-cart-shopping"></i>
+                                          <li><a class="dropdown-item" href="{{ route('user-order') }}"> <i
+                                                      class="far fa-cart-shopping"></i>
                                                   Mes commandes</a></li>
                                           <li>
                                               <hr class="dropdown-divider">
@@ -148,6 +154,8 @@
                                       class="far fa-bars"></i></button>
                           </div>
                       </div>
+
+
                   </div>
               </div>
           </div>

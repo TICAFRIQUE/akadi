@@ -14576,7 +14576,7 @@ Updated on 05-06-2023
 /* Medium devices */
 @media (max-width: 991px) {
   .header-button .simple-icon {
-    display: none;
+    display:flex;
   }
 }
 

@@ -6,7 +6,7 @@
                      <li class="review th-comment-item">
                          <div class="th-post-comment">
                              <div class="comment-content">
-                                 <h4 class="name"> {{ $item['user']['name'] }} </h4>
+                                 <h4 class="name"> {{ $item['user']['name'] ?? '' }} </h4>
                                  <span class="commented-on"><i class="fal fa-calendar-alt"></i>
                                      {{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }} </span>
                                  <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5">
@@ -27,28 +27,28 @@
          </div>
 
          <!-- ========== Start commentaire formulaire ========== -->
-        @auth
+         @auth
              <div class="th-comment-form ">
-             <div class="form-title">
-                 <h3 class="blog-inner-title ">Donnez votre avis sur le plat</h3>
-             </div>
-             <div class="row">
+                 <div class="form-title">
+                     <h3 class="blog-inner-title ">Donnez votre avis sur le plat</h3>
+                 </div>
+                 <div class="row">
 
-                 <form action="{{ route('commentaire') }}">
-                     <div class="form-group rating-select d-flex align-items-center">
-                         <label>Notez le plat</label>
-                         <p class="stars">
-                             <span>
-                                 <a class="star" href="#">1</a>
-                                 <a class="star" href="#">2</a>
-                                 <a class="star" href="#">3</a>
-                                 <a class="star" href="#">4</a>
-                                 <a class="star" href="#">5</a>
-                             </span>
-                         </p>
-                     </div>
+                     <form action="{{ route('commentaire') }}">
+                         <div class="form-group rating-select d-flex align-items-center">
+                             <label>Notez le plat</label>
+                             <p class="stars">
+                                 <span>
+                                     <a class="star" href="#">1</a>
+                                     <a class="star" href="#">2</a>
+                                     <a class="star" href="#">3</a>
+                                     <a class="star" href="#">4</a>
+                                     <a class="star" href="#">5</a>
+                                 </span>
+                             </p>
+                         </div>
 
-                     {{-- <div class="col-md-6 form-group">
+                         {{-- <div class="col-md-6 form-group">
                                     <input type="text" placeholder="Your Name" class="form-control">
                                     <i class="text-title far fa-user"></i>
                                 </div>
@@ -56,26 +56,27 @@
                                     <input type="text" placeholder="Your Email" class="form-control">
                                     <i class="text-title far fa-envelope"></i>
                                 </div> --}}
-                     <div class="col-12 form-group">
-                         <input type="text" id="productId" value="{{ $product['id'] }}" hidden>
-                         <textarea placeholder="" class="form-control" id="comment"></textarea>
-                         <i class="text-title far fa-pencil-alt"></i>
+                         <div class="col-12 form-group">
+                             <input type="text" id="productId" value="{{ $product['id'] }}" hidden>
+                             <textarea placeholder="" class="form-control" id="comment"></textarea>
+                             <i class="text-title far fa-pencil-alt"></i>
+                         </div>
+                     </form>
+
+
+                     <div class="col-12 form-group mb-0">
+                         <button class="th-btn rounded-2 btn-save">Enregistrer</button>
                      </div>
-                 </form>
-
-
-                 <div class="col-12 form-group mb-0">
-                     <button class="th-btn rounded-2 btn-save">Enregistrer</button>
                  </div>
              </div>
-         </div>
-        @endauth
+         @endauth
 
-        @guest
+         @guest
              <div class="col-12 form-group mb-0">
-                     <a href="{{route('login')}}" class="th-btn rounded-2">Connectez vous pour laisser un commentaire <i class="fa fa-pen-alt"></i> </a>
-                 </div>
-        @endguest
+                 <a href="{{ route('login') }}" class="th-btn rounded-2">Connectez vous pour laisser un commentaire <i
+                         class="fa fa-pen-alt"></i> </a>
+             </div>
+         @endguest
          <!-- ========== End commentaire formulaire ========== -->
 
 
