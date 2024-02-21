@@ -22,6 +22,7 @@ class AuthAdminController extends Controller
         $role = request('user');
 
         $users = User::with('roles')
+            ->whereHas('roles', fn ($q) => $q->where('name', '!=', 'developpeur'))
             ->when($role, fn ($q, $role) => $q->whereHas('roles', fn ($q) => $q->where('name', $role)))
             ->orderBy('created_at', 'DESC')->get();
         // dd($user->toArray());
