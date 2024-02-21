@@ -10,6 +10,7 @@ use App\Http\Controllers\site\VendorController;
 use App\Http\Controllers\site\AccountController;
 use App\Http\Controllers\site\SupportController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\site\AuthPageController;
 use App\Http\Controllers\site\CartPageController;
 use App\Http\Controllers\site\HomePageController;
 use App\Http\Controllers\admin\CategoryController;
@@ -242,8 +243,8 @@ Route::get('save-order', [CartPageController::class, 'storeOrder'])->name('store
 
 
 //Authentification user
-Route::controller(AuthController::class)->group(function () {
-    route::get('/se connecter', 'login')->name('login-form');
+Route::controller(AuthPageController::class)->group(function () {
+    route::get('/se-connecter', 'login')->name('login-form');
     route::post('/se-connecter', 'login')->name('login');
     route::get('/inscription', 'register')->name('register-form');
     route::post('/inscription', 'register')->name('register');
