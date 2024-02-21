@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Models\Product;
 use App\Models\Category;
+use App\Models\SubCategory;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -131,7 +133,23 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         //
+        //delete subcategorie of this category
+        SubCategory::where('category_id', $id)->delete();
+
+
+
+        //delete product of this catgeory
+        Product::whereHas(
+            'categories',
+            fn ($q) => $q->where('category_product.category_id', $id),
+
+        )->with(['collection', 'media', 'categories', 'subcategorie'])
+            ->delete();
+
+        //delete category
         Category::whereId($id)->delete();
+
+
         return response()->json([
             'status' => 200
         ]);

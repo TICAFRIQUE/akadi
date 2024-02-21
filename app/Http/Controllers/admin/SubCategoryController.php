@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class SubCategoryController extends Controller
 {
@@ -115,9 +116,12 @@ class SubCategoryController extends Controller
     public function destroy(string $id)
     {
         //
+        //delete product  of this sub-category
+        Product::where("sub_category_id", $id)->delete();
+
         SubCategory::whereId($id)->delete();
         return response()->json([
-            'status'=>200
+            'status' => 200
         ]);
     }
 }

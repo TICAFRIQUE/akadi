@@ -42,8 +42,8 @@
     https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
     " rel="stylesheet">
     <script src="
-                    https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
-                    "></script>
+                                    https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
+                                    "></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
 
@@ -238,7 +238,7 @@
                                 <div class="dropdown-divider"></div>
                                 <a href="{{ route('user.logout') }}" class="dropdown-item has-icon text-danger"> <i
                                         class="fas fa-sign-out-alt"></i>
-                                    Logout
+                                    Se deconnecter
                                 </a>
                             </div>
                         </li>
@@ -303,16 +303,17 @@
                                 <a href="#" class="menu-toggle nav-link has-dropdown"><i
                                         data-feather="users"></i><span>Utilisateurs</span></a>
                                 <ul class="dropdown-menu">
+                                    @foreach ($roles as $item)
+                                        <li><a class="nav-link" href="/admin/auth?user={{ $item['name'] }}">
+                                                {{ $item['name'] }} </a></li>
+                                    @endforeach
+
                                     <li><a class="nav-link" href="{{ route('user.list') }}">Liste des
                                             utilisateurs</a></li>
                                 </ul>
-                                {{-- <ul class="dropdown-menu">
-                                <li><a class="nav-link" href="/admin/auth/register?u=fournisseur">Fournisseur</a></li>
-                            </ul>
-                            <ul class="dropdown-menu">
-                                <li><a class="nav-link" href="{{route('user.list')}}">Vendeur</a></li>
-                            </ul> --}}
+
                             </li>
+
                             <li class="dropdown">
                                 <a href="{{ route('delivery.index') }}" class="nav-link"><i
                                         data-feather="truck"></i><span>Livraisons</span></a>

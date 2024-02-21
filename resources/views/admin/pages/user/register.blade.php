@@ -1,6 +1,7 @@
 @extends('admin.layouts.app')
 
-
+@section('title', 'auth')
+@section('sub-title', 'Creer un utilisateur')
 
 @section('css')
     {{-- <link rel="stylesheet" href="{{ asset('admin/assets/bundles/jquery-selectric/selectric.css') }}"> --}}

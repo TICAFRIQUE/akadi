@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Models\User;
+use App\Models\Order;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,11 @@ class AuthAdminController extends Controller
 
     public function listUser()
     {
-        $users = User::with('roles')->orderBy('created_at', 'DESC')->get();
+        $role = request('user');
+
+        $users = User::with('roles')
+            ->when($role, fn ($q, $role) => $q->whereHas('roles', fn ($q) => $q->where('name', $role)))
+            ->orderBy('created_at', 'DESC')->get();
         // dd($user->toArray());
         return view('admin.pages.user.userList', compact('users'));
     }
@@ -105,7 +110,12 @@ class AuthAdminController extends Controller
     public function destroy($id)
     {
 
+
+        //delete order of this user
+        Order::where("user_id", $id)->delete();
+        
         User::whereId($id)->delete();
+
         return response()->json([
             'status' => 200
         ]);

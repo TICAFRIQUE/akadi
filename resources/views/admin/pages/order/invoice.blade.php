@@ -1,6 +1,7 @@
 @extends('admin.layouts.app')
 
-
+@section('title', 'order')
+@section('sub-title', 'Facture')
 
 
 @section('content')
@@ -33,9 +34,9 @@
 
             <div class="col-md-8">
                 <div class="py-3 d-flex justify-content-between">
-                    <a class="btn btn-dark text-white py-3" onclick="history.go(-1)" href="#"><i
+                    <a class="btn btn-link  py-3" onclick="history.go(-1)" href="#"><i
                             data-feather="arrow-left"></i>Retour</a>
-                    <a class="btn btn-dark text-white" style="margin-bottom: 10px" href="" id="print"> <i
+                    <a class="btn btn-secondary text-dark" style="margin-bottom: 10px" href="" id="print"> <i
                             data-feather="printer"></i>Imprimer</a>
 
                 </div>
@@ -46,7 +47,7 @@
                 <div class="card" id="div_print">
 
                     <div class="text-center logo p-2 px-5">
-                        <img src="{{ asset('admin/assets/img/logo.jpg') }}" width="25%">
+                        <img src="{{ asset('site/assets/img/custom/logo.png') }}" width="25%">
                     </div>
                     <div class="invoice p-5" style="box-shadow: none">
 
@@ -83,7 +84,7 @@
                                             <div class="py-2">
 
                                                 <span class="d-block text-muted">Payment</span>
-                                                <span>{{ $orders['payement_method'] }} </span>
+                                                <span>{{ $orders['payment method'] }} </span>
 
                                             </div>
                                         </td>

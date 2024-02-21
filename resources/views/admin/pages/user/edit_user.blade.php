@@ -1,5 +1,6 @@
 @extends('admin.layouts.app')
-
+@section('title', 'auth')
+@section('sub-title', 'Modifier un utilisateur')
 
 
 @section('css')

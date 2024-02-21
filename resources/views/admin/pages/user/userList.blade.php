@@ -1,4 +1,7 @@
 @extends('admin.layouts.app')
+@section('title', 'auth')
+@section('sub-title', 'Liste des utilisateurs')
+
 
 @section('content')
     <section class="section">
@@ -7,23 +10,15 @@
                 <div class="col-12">
                     <div class="card">
                         @include('admin.components.validationMessage')
-                        <div class="card-header">
-                            <h4>Utilisateurs</h4>
-                            <div class="dropdown">
-                                <a href="{{route('user.register')}}" class="btn btn-primary">Ajouter un
-                                    utilsateur</a>
-                                {{-- <div class="dropdown-menu">
-                                    <a href="{{ route('user.register') }}" class="dropdown-item has-icon"><i
-                                            class="fas fa-users"></i>
-                                        Gestionnaires</a>
-                                    <a href="/admin/auth/register?u=fournisseur" class="dropdown-item has-icon"><i
-                                            class="fas fa-users"></i>
-                                        Fournisseurs</a>
+                        <div class="card-header d-flex justify-content-between">
+                            @if (request('user'))
+                                <h4>Liste des {{ request('user') }} ({{ count($users) }}) </h4>
+                            @else
+                                <h4>Liste de tous les utilisateurs</h4>
+                            @endif
 
-
-
-                                </div> --}}
-                            </div>
+                            <a href="{{ route('user.register') }}" class="btn btn-primary">Ajouter un
+                                utilsateur</a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -42,7 +37,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($users as $key => $item)
-                                            <tr>
+                                            <tr id="row_{{ $item['id'] }}">
                                                 <td>{{ ++$key }} </td>
                                                 <td>{{ $item['name'] }}</td>
                                                 <td>{{ $item['phone'] }}</td>
@@ -60,13 +55,6 @@
                                                         <a href="#" data-toggle="dropdown"
                                                             class="btn btn-warning dropdown-toggle">Options</a>
                                                         <div class="dropdown-menu">
-                                                            <a href="/admin/product/add?user={{ $item['id'] }}"
-                                                                class="dropdown-item has-icon"><i class="fas fa-plus"></i>
-                                                                Ajouter un produit</a>
-
-                                                            {{-- <a href="#" class="dropdown-item has-icon"><i
-                                                                    class="fas fa-eye"></i> View</a> --}}
-
 
                                                             <a href="{{ route('user.edit', $item['id']) }}"
                                                                 class="dropdown-item has-icon"><i class="far fa-edit"></i>
@@ -131,10 +119,8 @@
                                         timer: 500,
                                         timerProgressBar: true,
                                     });
-                                    setTimeout(function() {
-                                        window.location.href =
-                                            "{{ route('user.list') }}";
-                                    }, 500);
+                                    $('#row_' + Id).remove();
+
                                 }
                             }
                         });
