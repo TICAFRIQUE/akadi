@@ -9422,7 +9422,7 @@ span.select2-selection.select2-selection--single:focus {
 }
 
 .img-box2 .shape1 {
-  position: absolute;
+  position: relative;
   top: 0;
   left: -55px;
   z-index: -1;

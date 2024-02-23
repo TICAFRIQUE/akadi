@@ -3,7 +3,7 @@ Hero Area
 ==============================-->
 <div id="slider" class="ls-wp-container fitvidsignore hero-5 th-hero-carousel"
     data-bg-src="{{ $background->getFirstMediaUrl('publicite_image') }}"
-    style="width:1920px;height:810px;margin:0 auto;margin-bottom: 0px;">
+    style="width:1920px;height:810px;margin-top:90px;margin-bottom: 0px;">
 
     <!-- Slide 1-->
     @foreach ($sliders as $item)

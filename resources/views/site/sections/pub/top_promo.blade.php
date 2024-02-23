@@ -3,7 +3,7 @@
 <div class="space-bottom">
     <div class="container">
         <div class="row">
-            <div class="col-xl-7 pe-xxl-5">
+            <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 m-auto">
                 <div class="img-box2">
                     {{-- <div class="img1">
                         <img src="{{asset('site/assets/img/normal/about_2_1.png')}}" alt="About">
@@ -20,7 +20,7 @@
                     {{-- <a href="shop.html" class="order-btn"><span class="font-style text-theme">Order</span>Now</a> --}}
                 </div>
             </div>
-            <div class="col-xl-5 space-top space-xl">
+            <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 m-auto ">
                 <div class="title-area mb-30">
                     <span class="sub-title">
                         <img class="icon" src="{{asset('site/assets/img/icon/title_icon.svg')}}" alt="icon">
@@ -32,7 +32,7 @@
                     improvements. Phosfluorescently communicate premium mindshare and extensive imperatives. Dynamically
                     fashion.</p>
                 <div class="btn-wrap style1">
-                    <a href="about.html" class="th-btn">Commandez</a>
+                    <a href="{{route('liste-produit')}}" class="th-btn m-auto">Commandez</a>
                     {{-- <div class="about-counter1">
                         <h3 class="counter-title"><span class="counter-number">24</span></h3>
                         <div class="media-body">
