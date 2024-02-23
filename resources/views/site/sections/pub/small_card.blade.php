@@ -10,7 +10,7 @@ Counter Area
                     <div class="offer-card" data-bg-src="{{$item->getFirstMediaUrl('publicite_image')}}">
                         <h3 class="offer-title box-title"></h3>
                         <p class="offer-text"></p>
-                        <a href="{{$item['url']}}" class="line-btn btn btn-danger text-white">Acheter</a>
+                        <a href="{{$item['url']}}" class="line-btn btn btn-danger text-white">Commandez</a>
                     </div>
                 </div>
                 @endforeach
