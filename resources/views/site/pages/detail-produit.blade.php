@@ -4,13 +4,13 @@
 
 @section('content')
     <!--==============================
-                        Breadcumb
-                    ============================== -->
+                                Breadcumb
+                            ============================== -->
     <div class="breadcumb-wrapper " data-bg-src="">
         <div class="container z-index-common">
-            <div class="breadcumb-content">
-                <h1 class="breadcumb-title">Detail</h1>
-                <ul class="breadcumb-menu">
+            <div class="breadcumb-content mt-4">
+                <h1 class="breadcumb-title mt-5">Detail</h1>
+                <ul  class="breadcumb-menu">
                     <li><a href="javascript:history.go(-1)">Retour</a></li>
                     <li><a href="i{{ route('page-acceuil') }}">Accueil</a></li>
                     <li>Detail</li>
@@ -20,8 +20,8 @@
             </div>
         </div>
     </div><!--==============================
-                        Product Details
-                        ==============================-->
+                                Product Details
+                                ==============================-->
     <section class="th-product-wrapper product-details space-top space-extra-bottom">
         <div class="container">
             <div class="row">
@@ -33,8 +33,6 @@
                                     <img src="{{ $item->getUrl() }}" alt="Product Thumb">
                                 </div>
                             @endforeach
-
-
                         </div>
                         <div class="product-big-img th-carousel" data-slide-show="1" data-md-slide-show="1"
                             data-fade="true">
@@ -91,10 +89,10 @@
             </ul>
             <div class="tab-content" id="productTabContent">
                 <div class="tab-pane fade" id="description" role="tabpanel" aria-labelledby="description-tab">
-                  <p>
-                  {!!  ($product["description"]) !!}
-                  </p>
-                    
+                    <p>
+                        {!! $product['description'] !!}
+                    </p>
+
                 </div>
 
                 <!-- ========== Start commentaire  ========== -->

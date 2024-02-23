@@ -79,7 +79,7 @@ Product Lightbox
 
     <div class="popup-search-box d-lg-block">
         <button class="searchClose"><i class="fal fa-times"></i></button>
-        <form action="{{route('recherche')}}" method="GET">
+        <form action="{{ route('recherche') }}" method="GET">
             @csrf
             <input type="text" name="q" placeholder="Rechercher un produit">
             <button type="submit"><i class="fal fa-search"></i></button>
@@ -88,7 +88,7 @@ Product Lightbox
 
 
     <!-- ========== Start menu main and mobile ========== -->
-    @include('site.sections.menu')
+    @include('site.sections.menu2')
     <!-- ========== End menu main and mobile ========== -->
 
 
@@ -116,8 +116,10 @@ Product Lightbox
                         <div class="widget footer-widget">
                             <h3 class="widget_title">A propos de AKADI</h3>
                             <div class="th-widget-about">
-                                <p class="about-text">Quickly supply alternative strategic theme areas vis-a-vis B2C
-                                    mindshare. Objectively repurpose stand-alone synergy via user-centric architectures.
+                                <p class="about-text">
+                                    Akadi, est un restaurant en ligne spécialisé en poulet fumé crée par une jeune dame
+                                    dynamique qui
+                                    évolue dans le domaine de la relation clientèle.
                                 </p>
                                 <div class="th-social">
                                     <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
@@ -134,7 +136,8 @@ Product Lightbox
                             <div class="menu-all-pages-container">
                                 <ul class="menu">
                                     @foreach ($categories as $item)
-                                    <li><a href="/produit?categorie={{ $item['id'] }}">{{$item['name']}}</a></li>
+                                        <li><a href="/produit?categorie={{ $item['id'] }}">{{ $item['name'] }}</a>
+                                        </li>
                                     @endforeach
                                 </ul>
                             </div>
@@ -180,22 +183,21 @@ Product Lightbox
                     </div> --}}
                     <div class="col-md-6 col-xl-auto">
                         <div class="widget footer-widget">
-                            <h3 class="widget_title">Nous suivre</h3>
+                            <h3 class="widget_title">Nous contacter</h3>
                             <div class="th-widget-contact">
                                 <div class="info-box">
                                     <div class="info-box_icon">
                                         <i class="fal fa-location-dot"></i>
                                     </div>
-                                    <p class="info-box_text">1403 Washington Ave, New Orlea ns, LA 70130, United
-                                        States</p>
+                                    <p class="info-box_text">Abidjan , Koumassi</p>
                                 </div>
                                 <div class="info-box">
                                     <div class="info-box_icon">
                                         <i class="fal fa-mobile-button"></i>
                                     </div>
                                     <p class="info-box_text">
-                                        <a href="tel:+11234567890" class="info-box_link">+(1) 123 456 7890</a>
-                                        <a href="tel:+10987654321" class="info-box_link">+(1) 098 765 4321</a>
+                                        <a href="tel:+11234567890" class="info-box_link">+(225) 07 58 83 83 38</a>
+                                        {{-- <a href="tel:+10987654321" class="info-box_link">+(1) 098 765 4321</a> --}}
                                     </p>
                                 </div>
                                 <div class="info-box">
@@ -203,9 +205,7 @@ Product Lightbox
                                         <i class="fal fa-envelope"></i>
                                     </div>
                                     <p class="info-box_text">
-                                        <a href="mailto:info@pizzan.com" class="info-box_link">info@pizzan.com</a>
-                                        <a href="mailto:info.example@pizzan.com"
-                                            class="info-box_link">info.example@pizzan.com</a>
+                                        <a href="mailto:info@pizzan.com" class="info-box_link">info@akadi.com</a>
                                     </p>
                                 </div>
                             </div>
@@ -220,10 +220,10 @@ Product Lightbox
                     <div class="col-lg-6">
                         <p class="copyright-text">Copyright <i class="fal fa-copyright"></i> @php
                         echo date('Y'); @endphp Akadi
-                             All Rights
+                            All Rights
                             Reserved.</p>
                     </div>
-                   
+
                 </div>
             </div>
         </div>

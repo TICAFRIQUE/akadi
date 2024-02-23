@@ -4266,11 +4266,11 @@ a.text-theme:hover,
   border: none;
   background-color: transparent;
   padding: 0;
-  color: var(--white-color);
+  color: red;
 }
 
 .simple-icon:hover {
-  color: var(--theme-color);
+  color: black;
 }
 
 .header-button {
@@ -5194,15 +5194,15 @@ a.text-theme:hover,
 .breadcumb-title {
   font-size: 28px;
   font-weight: 700;
-  line-height: 1.18;
+  /* line-height: 1.18; */
   text-transform: uppercase;
   color: var(--white-color);
-  margin: -0.2em 0 -0.22em 0;
+  /* margin: -0.2em 0 -0.22em 0; */
 }
 
 .breadcumb-wrapper {
   background-color: var(--title-color);
-  padding: 70px 0;
+  padding: 150px 0;
   overflow: hidden;
 }
 
@@ -5235,7 +5235,7 @@ a.text-theme:hover,
 /* Medium devices */
 @media (max-width: 991px) {
   .breadcumb-wrapper {
-    padding: 70px 0;
+    padding: 100px 0;
   }
   .breadcumb-shape {
     width: 25%;
@@ -11004,7 +11004,7 @@ span.select2-selection.select2-selection--single:focus {
       -ms-flex: 1;
           flex: 1;
   border: none;
-  background-color: transparent;
+  background-color:white;
   -webkit-transition: 0.4s ease-in-out;
   transition: 0.4s ease-in-out;
   position: relative;
@@ -11050,8 +11050,9 @@ span.select2-selection.select2-selection--single:focus {
 }
 
 .tab-menu2 button.active img {
-  -webkit-filter: brightness(0) invert(1);
-          filter: brightness(0) invert(1);
+  /* -webkit-filter: brightness(0) invert(1);
+          filter: brightness(0) invert(1); */
+          background-color: white;
 }
 
 /* Small devices */

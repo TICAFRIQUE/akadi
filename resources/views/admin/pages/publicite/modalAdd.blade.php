@@ -53,7 +53,7 @@
                                   <select name="type" class="form-control selectric " required>
                                       <option disabled selected value>Choisir un type</option>
                                       @php
-                                        $type = ['slider','popup','arriere-plan']
+                                        $type = ['slider','popup','arriere-plan','banniere', 'small-card']
                                       @endphp
                                       @foreach ($type as $item)
                                       <option class="text-capitalize" value="{{$item}}"> {{$item}} </option>
@@ -79,10 +79,9 @@
                             <div class="form-group row">
                               <label class="col-sm-3 col-form-label">Texte</label>
                               <div class="col-sm-9">
+                                <textarea name="" id="" cols="30" rows="10"></textarea>
                                   <input type="text" name="texte" class="form-control">
-                                  <div class="invalid-feedback">
-                                      entrer un texte
-                                  </div>
+                                  
                               </div>
                           </div>
 

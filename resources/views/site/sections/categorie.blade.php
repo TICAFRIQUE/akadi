@@ -4,7 +4,7 @@
         <div class="container">
             <div class="title-area text-center">
                 <span class="sub-title">Menu</span>
-                <h2 class="sec-title">Parcourir nos categories <span class="font-style text-theme">Akadi</span></h2>
+                <h2 class="sec-title">Parcourir nos catégories <span class="font-style text-theme">Akadi</span></h2>
             </div>
             <div class="row th-carousel" data-slide-show="4" data-ml-slide-show="4" data-lg-slide-show="4"
                 data-md-slide-show="4" data-sm-slide-show="2" data-xs-slide-show="2">

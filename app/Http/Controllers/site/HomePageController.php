@@ -17,10 +17,14 @@ class HomePageController extends Controller
         // recuperer les publicite type arriere-plan
         $background = Publicite::whereType('arriere-plan')->first();
 
+        // recuperer les publicités small card
+        $small_card = Publicite::whereType('small-card')->get();
+
+
 
         
 
-        return view('site.pages.accueil' ,  compact('sliders','background'));
+        return view('site.pages.accueil' ,  compact('sliders','background', 'small_card'));
     }
     
 }
