@@ -6,9 +6,9 @@ Product Area
         <div class="title-area text-center">
             <span class="sub-title">
                 <img class="icon" src="{{ asset('site/assets/img/icon/title_icon.svg') }}" alt="icon">
-               Decouvrir nos menu
+               Decouvrir nos menus
             </span>
-            <h2 class="sec-title">Nos plats délicieux <span class="font-style text-theme">délicieux</span></h2>
+            <h2 class="sec-title">Nos plats<span class="font-style text-theme">délicieux</span></h2>
            
         </div>
 
