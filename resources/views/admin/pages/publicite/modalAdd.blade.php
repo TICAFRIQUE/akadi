@@ -79,7 +79,6 @@
                             <div class="form-group row">
                               <label class="col-sm-3 col-form-label">Texte</label>
                               <div class="col-sm-9">
-                                <textarea name="" id="" cols="30" rows="10"></textarea>
                                   <input type="text" name="texte" class="form-control">
                                   
                               </div>
