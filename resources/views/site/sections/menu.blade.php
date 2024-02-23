@@ -46,7 +46,7 @@
                   <div class="col-auto">
                       <div class="header-links">
                           <ul>
-                              <li><i class="fal fa-location-dot"></i>Abidjan , Koumassi</li>
+                              <li><i class="fal fa-location-dot"></i>Abidjan , Plateau Dokui</li>
                               <li>
                                   <div class="header-social">
                                       <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>

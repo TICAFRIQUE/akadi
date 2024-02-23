@@ -15,7 +15,7 @@ Hero Area
             Welcome to Pizzan
         </ls-layer> --}}
 
-            <h1 style='-webkit-background-clip: text; background-clip: text; color: transparent;text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:90px; top:342px; left:340px; font-size:80px; background-size:auto; white-space:normal; background-image:url("assets/img/update_2/hero/text_pattern.jpg");'
+            <h1 style='-webkit-background-clip: text; background-clip: text; color: transparent;text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:90px; top:342px; left:340px; font-size:50px; background-size:auto; white-space:normal; background-image:url("assets/img/update_2/hero/text_pattern.jpg");'
                 class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer text-danger"
                 data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
                 {{ $item['texte'] }}

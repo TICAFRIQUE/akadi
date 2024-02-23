@@ -4,12 +4,12 @@
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 m-auto">
-                <div class="img-box2">
+                <div class="img-box2 ">
                     {{-- <div class="img1">
                         <img src="{{asset('site/assets/img/normal/about_2_1.png')}}" alt="About">
                     </div> --}}
-                    <div class="shape1">
-                        <img src="{{asset('site/assets/img/custom/chicken.png')}}" alt="About">
+                    <div class="shape1" style="left: 0" >
+                        <img src="{{asset('site/assets/img/custom/chicken.png')}}" alt="About" class="ml-4" width="80%">
                     </div>
                     <div class="discount_style1" data-bg-src="{{asset('site/assets/img/shape/discount_bg_1.svg')}}">
                         <h4 class="percentage">
@@ -21,8 +21,8 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 m-auto ">
-                <div class="title-area mb-30">
-                    <span class="sub-title">
+                <div class="title-area mb-30 m-auto text-center">
+                    <span class="sub-title m-auto mb-3" style="text-align: center">
                         <img class="icon" src="{{asset('site/assets/img/icon/title_icon.svg')}}" alt="icon">
                        Top promo AKADI 
                     </span>

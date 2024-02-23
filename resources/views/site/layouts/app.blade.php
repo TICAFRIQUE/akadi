@@ -189,7 +189,7 @@ Product Lightbox
                                     <div class="info-box_icon">
                                         <i class="fal fa-location-dot"></i>
                                     </div>
-                                    <p class="info-box_text">Abidjan , Koumassi</p>
+                                    <p class="info-box_text">Abidjan , Plateau Dokui</p>
                                 </div>
                                 <div class="info-box">
                                     <div class="info-box_icon">
