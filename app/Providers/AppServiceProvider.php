@@ -25,9 +25,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
-        $category = Category::with(['products', 'media', 'subcategories'])
+        $category = Category::with(['products' =>fn($q)=>$q->orderBy('created_at', 'ASC')->get()
+        ,'media', 'subcategories'])
             // ->whereIn('type', ['principale','pack'])
-            ->orderBy('name')->get();
+            ->orderBy('created_at', 'DESC')->get();
         // dd($category->toArray());
 
         $subcategory = SubCategory::with(['products', 'media', 'category'])->orderBy('name', 'ASC')->get();

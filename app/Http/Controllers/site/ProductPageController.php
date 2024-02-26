@@ -29,13 +29,13 @@ class ProductPageController extends Controller
                     fn ($q) => $q->where('category_product.category_id', $category),
 
                 )->with(['media', 'categories'])
-                    ->inRandomOrder()->paginate(36);
+                    ->orderBy('created_at', 'DESC')->get();
             } else if ($subcategory) {
 
                 $product = Product::with(['media', 'categories'])
-                    ->where('sub_category_id', $subcategory)->inRandomOrder()->paginate(36);
+                    ->where('sub_category_id', $subcategory)->orderBy('created_at', 'DESC')->get();
             } else {
-                $product = Product::with(['media', 'categories'])->paginate(36);
+                $product = Product::with(['media', 'categories'])->orderBy('created_at', 'DESC')->get();
             }
 
             return view(
@@ -44,7 +44,7 @@ class ProductPageController extends Controller
             );
         } catch (Exception $e) {
             $e->getMessage();
-            $product = Product::with(['media', 'categories'])->inRandomOrder()->paginate(36);
+            $product = Product::with(['media', 'categories'])->orderBy('created_at', 'DESC')->get();;
             return view(
                 'site.pages.produit',
                 compact('product',)

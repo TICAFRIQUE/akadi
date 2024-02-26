@@ -10,7 +10,7 @@ About Area
                         <img src="{{ asset('site/assets/img/custom/about-img.jpg') }}" width="70%" alt="About">
                     </div>
                     <div class="img2">
-                        <img src="{{ asset('site/assets/img/custom/chicken.png') }}" alt="About">
+                        <img src="{{ asset('site/assets/img/custom/logo.png') }}" alt="About" width="90%">
                     </div>
                 </div>
             </div>
