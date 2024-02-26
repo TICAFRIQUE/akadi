@@ -58,8 +58,8 @@ class ProductController extends Controller
         ]);
 
         if (request('user')) {
-           $userId  = request('user');
-        }else{
+            $userId  = request('user');
+        } else {
             $userId = Auth::user()->id;
         }
 
@@ -69,7 +69,7 @@ class ProductController extends Controller
             'price' => $request['price'],
             'collection_id' => $request['collection'],
             'sub_category_id' => $request['subcategories'],
-            'user_id' =>$userId
+            'user_id' => $userId
         ]);
 
         //insert category in pivot table
@@ -133,22 +133,27 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
+
         //
-        $collection = Collection::orderBy('name', 'DESC')->get();
+        // $collection = Collection::orderBy('name', 'DESC')->get();
 
         $product = Product::with([
             'categories', 'subcategorie', 'collection', 'tailles', 'pointures', 'media'
         ])
             ->whereId($id)
             ->first();
+        $catId = $product['categories'][0]['id'];
+
+
+        // dd($catId);
+
 
         //sub cat of category selected
-        $cat  = Product::with([
-            'categories' => fn ($q) => $q->whereType('principale'), 'subcategorie', 'collection', 'tailles', 'pointures', 'media'
-        ])
-            ->whereId($id)
-            ->first();
-        $catId = $cat['categories'][0]['id'];
+        // $cat  = Product::with([
+        //     'categories' => fn ($q) => $q->whereType('principale'), 'subcategorie', 'collection', 'tailles', 'pointures', 'media'
+        // ])
+        //     ->whereId($id)
+        //     ->first();
         $subcategory_exist = SubCategory::where('category_id', $catId)
             ->orderBy('name', 'ASC')
             ->get();
@@ -164,7 +169,7 @@ class ProductController extends Controller
         return view('admin.pages.product.edit', compact(
             'product',
             'subcategory_exist',
-            'collection',
+            // 'collection',
             'images'
         ));
     }
