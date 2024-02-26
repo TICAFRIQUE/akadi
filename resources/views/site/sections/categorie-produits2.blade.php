@@ -1,5 +1,5 @@
 <!--==============================
-Product Area
+Categorie and products
 ==============================-->
 <section class="space bg-smoke2" data-bg-src="">
     <div class="container">
@@ -8,7 +8,7 @@ Product Area
                 <img class="icon" src="{{ asset('site/assets/img/icon/title_icon.svg') }}" alt="icon">
                Decouvrir nos menus
             </span>
-            <h2 class="sec-title">Nos plats<span class="font-style text-theme">délicieux</span></h2>
+            <h2 class="sec-title">Tu testes, tu restes <span class="font-style text-theme"> toujours</span></h2>
            
         </div>
 
@@ -18,12 +18,12 @@ Product Area
                 <div class="tab-menu2 filter-menu-active">
                     <button data-filter="*" class="active" type="button">
                         <img src="{{ asset('site/assets/img/icon/menu_1_1.svg') }}" alt="Icon">
-                        Tous le menu
+                        Tous les menus
                     </button>
 
                     @foreach ($categories as $item)
                         <button data-filter=".cat{{ $item['id'] }}" type="button">
-                            <img src="{{ $item->getFirstMediaUrl('category_image') }}" width="30%"  alt="Icon">
+                            <img src="{{ $item->getFirstMediaUrl('category_image') }}" width="60%"  alt="Icon">
                             {{ $item['name'] }}
                         </button>
                     @endforeach
@@ -64,7 +64,7 @@ Product Area
 
                 </div>
                 <div class="text-center mt-5">
-                    <a href="{{route('liste-produit')}}" class="th-btn">Voir tous les plats</a>
+                    <a href="{{route('liste-produit')}}" class="th-btn">Voir tous nos produits</a>
                 </div>
             </div>
 
@@ -74,5 +74,5 @@ Product Area
 
 </section>
 <!--==============================
-Offer Area
+Categorie and products
 ==============================-->

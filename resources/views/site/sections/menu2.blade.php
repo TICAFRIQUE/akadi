@@ -43,7 +43,7 @@
                 <div class="col-auto d-none d-lg-block">
                     <p class="header-info">
                         <i class="fa-solid fa-location-dot"></i>
-                        Abidjan , Koumassi
+                        Abidjan, Plateau Dokui
                     </p>
                     <p class="header-info">
                         <i class="fa-solid fa-phone"></i>
@@ -69,10 +69,10 @@
     <div class="sticky-wrapper">
         <div class="sticky-active">
             <!-- Main Menu Area -->
-            <div class="container-fluid">
+            <div class="container">
                 <div class="menu-area">
                     <div class="container th-container">
-                        <div class="row align-items-center justify-content-between">
+                        <div class="row align-items-center justify-content-around">
                             <div class="col-auto">
                                 <div class="header-logo">
                                     <a href="{{ route('page-acceuil') }}">
@@ -135,9 +135,10 @@
 
 
                                         <div class="dropdown">
-                                            <button class="btn btn-light dropdown-toggle" type="button"
+                                            <button class="dropdown-toggle simple-icon" type="button"
                                                 id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                                                Salut, {{ Auth::user()->name }}
+                                                {{-- Salut, {{ Auth::user()->name }} --}}
+                                                <i class="far fa-user-check"></i>
 
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-light"

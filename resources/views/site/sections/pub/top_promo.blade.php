@@ -26,11 +26,9 @@
                         <img class="icon" src="{{asset('site/assets/img/icon/title_icon.svg')}}" alt="icon">
                        Top promo AKADI 
                     </span>
-                    <h2 class="sec-title">Reduction pour les <span class="font-style text-theme">10 premieres personnes</span></h2>
+                    <h2 class="sec-title">Réduction pour les <span class="font-style text-theme">10 premieres commandes</span></h2>
                 </div>
-                <p class="mt-n2 mb-10">Compellingly supply professional material rather than out-of-the-box process
-                    improvements. Phosfluorescently communicate premium mindshare and extensive imperatives. Dynamically
-                    fashion.</p>
+                <p class="mt-n2 mb-10">Bientôt disponible.</p>
                 <div class="btn-wrap style1">
                     <a href="{{route('liste-produit')}}" class="th-btn m-auto">Commandez</a>
                     {{-- <div class="about-counter1">

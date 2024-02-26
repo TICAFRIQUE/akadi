@@ -24,7 +24,7 @@ About Area
                 </p>
 
                 <div class="text-center text-xl-start">
-                    <a href="{{ route('liste-produit') }}" class="th-btn rounded-2">Decouvrir nos plats<i
+                    <a href="{{ route('liste-produit') }}" class="th-btn rounded-2">Decouvrir nos produits <i
                             class="fa-solid fa-arrow-right ms-2"></i></a>
                 </div>
             </div>
