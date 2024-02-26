@@ -4273,7 +4273,10 @@ a.text-theme:hover,
   color: black;
 }
 
-.header-button {
+/** small device***/
+
+ @media(max-width:399px) {
+  .header-button {
   height: 100%;
   display: -webkit-box;
   display: -webkit-flex;
@@ -4283,8 +4286,41 @@ a.text-theme:hover,
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  gap: 12px;
+  gap: 3px;
 }
+ }
+
+
+  @media(min-width:399px) {
+  .header-button {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 15px;
+}
+ }
+
+
+ /* .header-button {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 17px;
+} */
+
+
 
 .header-button .icon-btn {
   position: relative;
