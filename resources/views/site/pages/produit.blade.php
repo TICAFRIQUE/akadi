@@ -14,8 +14,8 @@
                     <li class="active">
                         @if (request('categorie') && count($product) > 0)
                             {{ $product[0]['categories'][0]['name'] }}
-                        @elseif (request('sous-categorie') && count($product) > 0)
-                            {{ $product[0]['subcategorie']['name'] }}
+                        {{-- @elseif (request('sous-categorie') && count($product) > 0)
+                            {{ $product[0]['subcategorie']['name'] }} --}}
                         @else
                             Liste de tous les plats
                         @endif
