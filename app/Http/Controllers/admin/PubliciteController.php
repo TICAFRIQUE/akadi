@@ -14,8 +14,10 @@ class PubliciteController extends Controller
     public function index()
     {
         //
-        $publicite = Publicite::orderBy('created_at', 'DESC')->get();
-
+        $type = request('type');
+        $publicite = Publicite::orderBy('created_at', 'DESC')
+            ->when($type, fn ($q) => $q->whereType($type))
+            ->get();
         return view('admin.pages.publicite.index', compact('publicite'));
     }
 
@@ -44,6 +46,8 @@ class PubliciteController extends Controller
             'type' => $request['type'],
             'url' => $request['url'],
             'texte' => $request['texte'],
+            'discount' => $request['discount'],
+
 
 
         ]);
@@ -93,7 +97,7 @@ class PubliciteController extends Controller
             'type' => $request['type'],
             'url' => $request['url'],
             'texte' => $request['texte'],
-
+            'discount' => $request['discount'],
         ]);
 
         //upload category_image 
@@ -102,7 +106,28 @@ class PubliciteController extends Controller
             $publicite->addMediaFromRequest('image')->toMediaCollection('publicite_image');
         }
 
+
         return back()->withSuccess('Publicite modifiée avec success');
+    }
+
+
+    //enable or desable  a publicite
+    public function changeState(Request $request)
+    {
+        $id = $request['id'];
+        $state = '';
+        if ($request['state'] == 'active') {
+            $state = 'desactive';
+        } else {
+            $state = 'active';
+        }
+
+        Publicite::where('id', $id)->update(['status' => $state]);
+
+        return response()->json([
+            'success' => 200,
+            'state' => $state,
+        ]);
     }
 
     /**

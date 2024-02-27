@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('publicites', function (Blueprint $table) {
+        Schema::create('temoignages', function (Blueprint $table) {
             $table->id();
-            $table->longText('texte');
-            $table->string('type')->nullable(); //banniere, publicité
-            $table->string('url')->nullable();
-            $table->integer('discount')->nullable();
-            $table->string('statut')->nullable()->default('active'); // ,
+            $table->string('nom')->nullable();
+            $table->longText('description')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('publicites');
+        Schema::dropIfExists('temoignages');
     }
 };

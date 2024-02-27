@@ -320,7 +320,12 @@
 
                             <li class="dropdown">
                                 <a href="{{ route('publicite.index') }}" class="nav-link"><i
-                                        data-feather="image"></i><span>Slider</span></a>
+                                        data-feather="image"></i><span>Publicité</span></a>
+                            </li>
+
+                            <li class="dropdown">
+                                <a href="{{ route('temoignage.index') }}" class="nav-link"><i
+                                        data-feather="message-square"></i><span>Témoignages</span></a>
                             </li>
 
                             {{-- <li class="dropdown">

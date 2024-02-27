@@ -2,11 +2,12 @@
 Hero Area
 ==============================-->
 <div id="slider" class="ls-wp-container fitvidsignore hero-5 th-hero-carousel"
-    data-bg-src="{{ $background->getFirstMediaUrl('publicite_image') }}"
+    data-bg-src="{{$background ? $background->getFirstMediaUrl('publicite_image') : '' }}"
     style="width:1920px;height:810px;margin-top:90px;margin-bottom: 0px;">
 
-    <!-- Slide 1-->
-    @foreach ($sliders as $item)
+    <!-- Slide-->
+    @if ($sliders)
+        @foreach ($sliders as $item)
         <div class="ls-slide" data-ls="duration:5000; kenburnsscale:1.2;">
             {{-- <ls-layer
             style="font-size:30px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:203px; left:340px; color:#ff0600; line-height:26px; font-family:'Lobster Two';"
@@ -61,6 +62,7 @@ Hero Area
 
         </div>
     @endforeach
+    @endif
 
 </div><!--==============================
 Product Area

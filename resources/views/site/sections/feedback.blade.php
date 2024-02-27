@@ -14,35 +14,36 @@ Testimonial Area
         <div class="row slider-shadow th-carousel number-dots" data-slide-show="3" data-lg-slide-show="2"
             data-md-slide-show="1" data-dots="true" data-xl-dots="true" data-ml-dots="true" data-lg-dots="true">
 
-            @for ($i = 0; $i <= 4; $i++)
-                <div class="col-xl-4 col-lg-6">
-                    <div class="testi-box">
-                        <div class="testi-box_icon">
-                            <img src="{{ asset('site/assets/img/icon/quote_left.svg') }}" alt="quote">
-                        </div>
-                        <p class="testi-box_text">Tellement je suis fan de votre fumé-braisé que mon mari m'a surnommé
-                            "AKADI"
-                            .”</p>
-                        <div class="testi-box_review">
-                            <i class="fa-sharp fa-solid fa-star"></i><i class="fa-sharp fa-solid fa-star"></i><i
-                                class="fa-sharp fa-solid fa-star"></i><i class="fa-sharp fa-solid fa-star"></i><i
-                                class="fa-sharp fa-solid fa-star"></i>
-                        </div>
-                        <div class="testi-box_profile">
-                            <div class="testi-box_avater">
-                                <img src="{{ asset('site/assets/img/custom/avatar.png') }}" alt="Avater">
-                            </div>
-                            <div class="media-body">
-                                <h3 class="testi-box_name">Prunelle TUO</h3>
-                                {{-- <span class="testi-box_desig">NYC, USA</span> --}}
-                            </div>
-                        </div>
-                        {{-- <div class="testi-box_img">
-                            <img src="{{asset('site/assets/img/custom/chicken.png')}}" alt="Reveiw Image" width="30%">
-                        </div> --}}
-                    </div>
-                </div>
-            @endfor
+          @foreach ($feedback as $item)
+              
+          <div class="col-xl-4 col-lg-6">
+              <div class="testi-box">
+                  <div class="testi-box_icon">
+                      <img src="{{ asset('site/assets/img/icon/quote_left.svg') }}" alt="quote">
+                  </div>
+                  <p class="testi-box_text">
+                    {!!$item['description']!!}  </p>
+                  <div class="testi-box_review">
+                      <i class="fa-sharp fa-solid fa-star"></i><i class="fa-sharp fa-solid fa-star"></i><i
+                          class="fa-sharp fa-solid fa-star"></i><i class="fa-sharp fa-solid fa-star"></i><i
+                          class="fa-sharp fa-solid fa-star"></i>
+                  </div>
+                  <div class="testi-box_profile">
+                      <div class="testi-box_avater">
+                          <img src="{{ asset('site/assets/img/custom/avatar.png') }}" alt="Avater">
+                      </div>
+                      <div class="media-body">
+                          <h3 class="testi-box_name"> {{$item['nom'] ?? ':::::::'}} </h3>
+                          {{-- <span class="testi-box_desig">NYC, USA</span> --}}
+                      </div>
+                  </div>
+                  {{-- <div class="testi-box_img">
+                      <img src="{{asset('site/assets/img/custom/chicken.png')}}" alt="Reveiw Image" width="30%">
+                  </div> --}}
+              </div>
+          </div>
+          @endforeach
+           
 
 
 

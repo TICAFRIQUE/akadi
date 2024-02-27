@@ -19,6 +19,7 @@ use App\Http\Controllers\admin\AuthAdminController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\PubliciteController;
 use App\Http\Controllers\admin\CollectionController;
+use App\Http\Controllers\admin\TemoignageController;
 use App\Http\Controllers\site\AccountPageController;
 use App\Http\Controllers\site\ProductPageController;
 use App\Http\Controllers\admin\SubCategoryController;
@@ -209,10 +210,20 @@ Route::middleware(['admin'])->group(function () {
         route::post('', 'store')->name('publicite.store');
         route::get('edit/{id}', 'edit')->name('publicite.edit');
         route::post('update/{id}', 'update')->name('publicite.update');
+        route::get('changeState', 'changeState')->name('publicite.changeState'); // activer , desactiver une publicite
         route::post('destroy/{id}', 'destroy')->name('publicite.destroy');
     });
 });
 
+
+/** Feedback **/
+Route::prefix('admin/temoignage')->controller(TemoignageController::class)->group(function () {
+    route::get('', 'index')->name('temoignage.index');
+    route::post('', 'store')->name('temoignage.store');
+    route::get('edit/{id}', 'edit')->name('temoignage.edit');
+    route::post('update/{id}', 'update')->name('temoignage.update');
+    route::post('destroy/{id}', 'destroy')->name('temoignage.destroy');
+});
 
 
 
@@ -257,5 +268,4 @@ Route::controller(AccountPageController::class)->group(function () {
     route::get('/mes-commandes', 'userOrder')->name('user-order')->middleware(['auth']);
     route::get('/annuler-commande/{id}', 'cancelOrder')->name('cancel-order')->middleware(['auth']);
     route::get('/mon-profil', 'profil')->name('user-profil')->middleware(['auth']);
-
 });

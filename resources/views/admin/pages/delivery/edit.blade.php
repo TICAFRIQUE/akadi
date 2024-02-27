@@ -1,4 +1,6 @@
 @extends('admin.layouts.app')
+@section('title', 'Livraison')
+@section('sub-title', 'Modifier une livraison')
 
 @section('content')
     <section class="section">

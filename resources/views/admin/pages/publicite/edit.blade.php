@@ -1,5 +1,8 @@
 @extends('admin.layouts.app')
 
+@section('title', 'publicite')
+@section('sub-title', 'Modifier une publicite')
+
 @section('content')
     <style>
         img {
@@ -18,7 +21,7 @@
         @endphp
         <div class="section-body">
             <div class="row">
-                <div class="col-12 col-md-6 col-lg-8 m-auto">
+                <div class="col-12 col-md-12 col-lg-12 m-auto">
                     <a class="btn btn-primary fas fa-arrow-left mb-2" href="{{ route('publicite.index') }}"> Retour à la liste
                     </a>
 
@@ -29,12 +32,12 @@
                             @csrf
                             <div class="card-body">
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label">Type</label>
                                     <div class="col-sm-9">
+                                        <label class="col-sm-3 col-form-label">Type de publicite</label>
                                         <select name="type" class="form-control selectric " required>
                                             <option disabled selected value>Choisir un type</option>
                                             @php
-                                                $type = ['slider', 'popup', 'arriere-plan', 'banniere', 'small-card'];
+                                                $type = ['slider', 'popup', 'arriere-plan', 'banniere', 'small-card', 'top-promo'];
                                             @endphp
                                             @foreach ($type as $item)
                                                 <option class="text-capitalize" value="{{ $item }}"
@@ -47,6 +50,10 @@
                                             Champ obligatoire
                                         </div>
 
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="col-sm-12 col-form-label">Reduction %</label>
+                                        <input type="number" name="discount" value="{{ $publicite['discount'] }}" class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -63,11 +70,9 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Texte</label>
                                     <div class="col-sm-9">
-                                        <input type="text" name="texte" value="{{ $publicite['texte'] }}"
-                                            class="form-control">
-                                        <div class="invalid-feedback">
-                                            entrer un texte
-                                        </div>
+                                        <textarea name="texte" class="summernote">
+                                           {{$publicite['texte']}}
+                                        </textarea>
                                     </div>
                                 </div>
 

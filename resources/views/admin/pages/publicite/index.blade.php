@@ -13,11 +13,28 @@
                         @include('admin.components.validationMessage');
                     </div>
                     <div class="card">
-                        <div class="card-header">
-                            <h4>publicites</h4>
+                        <div class="card-header d-flex justify-content-around">
+                            <h4>publicité {{ request('type') ?? '' }} </h4>
                             <button type="button" data-toggle="modal" data-target="#modalAddpublicite"
                                 class="btn btn-primary">Ajouter
                                 une publicite</button>
+
+                            <div class="dropdown">
+                                @php
+                                    $type = ['slider', 'popup', 'arriere-plan', 'banniere', 'small-card', 'top-promo'];
+                                @endphp
+                                <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
+                                    <i class="fa fa-filter"></i>
+                                    Filtre par type</a>
+                                <div class="dropdown-menu">
+                                    @foreach ($type as $item)
+                                        <a href="/admin/publicite?type={{ $item }}"
+                                            class="dropdown-item has-icon text-capitalize"><i class="far fa-file-image"></i>
+                                            {{ $item }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
 
 
@@ -32,22 +49,29 @@
                                             <th>Type</th>
                                             <th>image</th>
                                             <th>Url</th>
+                                            <th>status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($publicite as $key => $item)
-                                            <tr>
+                                            <tr id="row_{{ $item['id'] }}">
                                                 <td>
                                                     {{ ++$key }}
                                                 </td>
                                                 <td> {{ $item['type'] }} </td>
                                                 <td>
                                                     <img alt="{{ $item->getFirstMediaUrl('publicite_image') }}"
-                                                        src="{{ $item->getFirstMediaUrl('publicite_image') }}" width="35">
+                                                        src="{{ $item->getFirstMediaUrl('publicite_image') }}"
+                                                        width="35">
                                                 </td>
                                                 <td class="align-middle">
                                                     {{ $item->url }}
+                                                </td>
+
+                                                <td class="align-middle ">
+                                                    <span
+                                                        class="status badge badge-{{ $item['status'] == 'active' ? 'success' : 'danger' }}">{{ $item->status }}</span>
                                                 </td>
 
                                                 <td>
@@ -59,6 +83,14 @@
                                                             <a href="{{ route('publicite.edit', $item['id']) }}"
                                                                 class="dropdown-item has-icon"><i class="far fa-edit"></i>
                                                                 Edit</a>
+
+                                                            <a href="#" role="button"
+                                                                data-state={{ $item['status'] }}
+                                                                data-id="{{ $item['id'] }}"
+                                                                class="dropdown-item has-icon changeState"><i
+                                                                    class="fas fa-toggle-{{ $item['status'] == 'active' ? 'off' : 'on' }}"></i>
+                                                                {{ $item['status'] == 'active' ? 'Desactiver' : 'Activer' }}
+                                                            </a>
 
                                                             <a href="#" role="button" data-id="{{ $item['id'] }}"
                                                                 class="dropdown-item has-icon text-danger delete"><i
@@ -82,6 +114,8 @@
 
     <script>
         $(document).ready(function() {
+
+            //delete pubs
             $('.delete').on("click", function(e) {
                 e.preventDefault();
                 var Id = $(this).attr('data-id');
@@ -118,15 +152,37 @@
                                         timer: 500,
                                         timerProgressBar: true,
                                     });
-                                    setTimeout(function() {
-                                        window.location.href =
-                                            "{{ route('publicite.index') }}";
-                                    }, 500);
+                                    // delete row on table
+                                    $('#row_' + Id).remove();
                                 }
                             }
                         });
                     }
                 });
+            });
+
+            //change state
+            $('.changeState').click(function(e) {
+                e.preventDefault();
+                var Id = $(this).attr('data-id');
+                var status = $(this).attr("data-state");
+
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('publicite.changeState') }}",
+                    data: {
+                        id: Id,
+                        state: status
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success == 200) {
+                            location.reload();
+                            // $('.status').html(response.state);
+                        }
+                    }
+                });
+
             });
         });
     </script>

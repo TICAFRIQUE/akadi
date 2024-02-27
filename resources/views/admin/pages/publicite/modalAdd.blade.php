@@ -34,10 +34,10 @@
 
   <!-- Modal with form -->
   <div class="modal fade" id="modalAddpublicite" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog modal-xl" role="document">
           <div class="modal-content">
               <div class="modal-header">
-                  <h5 class="modal-title" id="formModal">Nouveau slide</h5>
+                  <h5 class="modal-title" id="formModal">Créer une publicité</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                   </button>
@@ -48,26 +48,34 @@
                       @csrf
                       <div class="card-body">
                           <div class="form-group row">
-                              <label class="col-sm-3 col-form-label">Type</label>
                               <div class="col-sm-9">
+                                  <label class="col-sm-3 col-form-label">Type de la publicite</label>
                                   <select name="type" class="form-control selectric " required>
                                       <option disabled selected value>Choisir un type</option>
                                       @php
-                                        $type = ['slider','popup','arriere-plan','banniere', 'small-card']
+                                          $type = ['slider', 'popup', 'arriere-plan', 'banniere', 'small-card', 'top-promo'];
                                       @endphp
                                       @foreach ($type as $item)
-                                      <option class="text-capitalize" value="{{$item}}"> {{$item}} </option>
+                                          <option class="text-capitalize" value="{{ $item }}">
+                                              {{ $item }} </option>
                                       @endforeach
-                                     
+
                                   </select>
                                   <div class="invalid-feedback">
                                       Champ obligatoire
                                   </div>
 
                               </div>
+
+                              <div class="col-sm-3">
+                                  <label class="col-sm-12 col-form-label">Reduction %</label>
+
+                                  <input type="number" name="discount" class="form-control">
+                              </div>
+
                           </div>
                           <div class="form-group row">
-                              <label class="col-sm-3 col-form-label">Lien</label>
+                              <label class="col-sm-3 col-form-label">Lien de redirection</label>
                               <div class="col-sm-9">
                                   <input type="url" name="url" class="form-control">
                                   <div class="invalid-feedback">
@@ -76,11 +84,10 @@
                               </div>
                           </div>
 
-                            <div class="form-group row">
+                          <div class="form-group row">
                               <label class="col-sm-3 col-form-label">Texte</label>
                               <div class="col-sm-9">
-                                  <input type="text" name="texte" class="form-control">
-                                  
+                                  <textarea name="texte" class="summernote"></textarea>
                               </div>
                           </div>
 
