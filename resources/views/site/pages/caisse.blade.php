@@ -108,10 +108,10 @@
 
                                 <div class="mb-3">
                                     <h6>Informations du client</h6>
-                                    <span>Nom : {{ Auth::user()->name }} </span>
-                                    <br> <span>Telephone : {{ Auth::user()->phone }} </span>
+                                    <span>Nom : <b>{{ Auth::user()->name }}</b> </span>
+                                    <br> <span>Telephone : <b>{{ Auth::user()->phone }}</b> </span>
                                     <br><span class="{{ Auth::user()->email ?? 'd-none ' }}">Email :
-                                        {{ Auth::user()->email }} </span>
+                                       <b> {{ Auth::user()->email }} </b></span>
                                 </div>
                                 <table class="cart_totals" cellspacing="0">
                                     <tbody>
