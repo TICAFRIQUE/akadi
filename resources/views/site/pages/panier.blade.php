@@ -102,7 +102,7 @@
                                             <a href="{{ route('liste-produit') }}" class="th-btn rounded-2">Continuer
                                                 les achats</a>
 
-                                            <a href="{{ route('checkout') }}" class="th-btn rounded-2 ">Finaliser
+                                            <a href="{{ route('checkout') }}" class="th-btn rounded-2 ">Poursuivre
                                                 La commande <span class="sousTotal"> <b> ({{ number_format($sousTotal) }})
                                                         FCFA</b></span> </a>
 

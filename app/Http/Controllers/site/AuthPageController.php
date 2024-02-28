@@ -16,6 +16,7 @@ class AuthPageController extends Controller
         if (request()->method() == 'GET') {
             return view('site.pages.auth.register');
         } elseif (request()->method() == 'POST') {
+
             //on verifie si le nouvel utilisateur est déja dans la BD à partir du phone
             $user_verify_phone = User::wherePhone($request['phone'])->first();
             $user_verify_email = User::whereEmail($request['email'])->first();
@@ -43,11 +44,19 @@ class AuthPageController extends Controller
                 if ($user) {
                     $user->assignRole('client');
                 }
-                $url_previous = $request['url_previous'];
+
+                //redirection apres connexion
+                if (session('cart')) {
+                    $url = 'panier';  // si le panier n'est pas vide on redirige vers la page du panier
+                } else {
+                    $url = '/';   // sinon on redirige vers l'accueil
+                }
+
+                // $url_previous = $request['url_previous'];
 
                 Auth::login($user);
 
-                return redirect()->away($url_previous)->with([
+                return redirect()->away($url)->with([
                     'success' => "Connexion réussie",
                 ]);
             }
@@ -57,6 +66,7 @@ class AuthPageController extends Controller
     public function login(Request $request)
     {
         if (request()->method() == 'GET') {
+
             return view('site.pages.auth.login');
         } elseif (request()->method() == 'POST') {
             $credentials = $request->validate([
@@ -64,10 +74,17 @@ class AuthPageController extends Controller
                 'password' => ['required'],
             ]);
 
-            $url_previous = $request['url_previous'];
+            //redirection apres connexion
+            if (session('cart')) {
+                $url = 'panier';  // si le panier n'est pas vide on redirige vers la page du panier
+            } else {
+                $url = '/';   // sinon on redirige vers l'accueil
+            }
+
+            // $url_previous = $request['url_previous'];
 
             if (Auth::attempt($credentials)) {
-                return redirect()->away($url_previous)->withSuccess('connexion reussi');
+                return redirect()->away($url)->withSuccess('Connexion reussi');
             } else {
                 return redirect()->route('login-form')->withError('Contact ou mot de passe incorrect');
             }

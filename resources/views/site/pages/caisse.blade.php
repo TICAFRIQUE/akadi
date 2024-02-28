@@ -140,7 +140,7 @@
                                                 <form action="#" method="post">
                                                     <a href="#" class="shipping-calculator-button">Choisir un lieu de
                                                         livraison</a>
-                                                    <div class="shipping-calculator-form">
+                                                    <div class="">
                                                         <select class="form-control delivery">
                                                             <option disabled selected value> Choisir un lieu de
                                                                 livraison</option>

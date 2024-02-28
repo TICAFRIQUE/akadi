@@ -18,6 +18,7 @@
             </div>
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-auto my-3">
+            <p class="text-center">Si vous avez un compte connectez vous avec votre <strong>numero de telephone</strong> et <strong>mot de passe</strong></p>
             @include('admin.components.validationMessage')
             <form action="{{ route('login') }}" method="post" class="woocommerce-form-login mb-30">
                 @csrf
@@ -28,13 +29,13 @@
 
                 <div class="form-group">
                     <label>Mot de passe</label>
-                    <input type="password" name="password" class="form-control" name="password" placeholder="de********">
+                    <input type="password" name="password" class="form-control" name="password" placeholder="********" required>
                 </div>
                 <input type="text" name="url_previous" value="{{ url()->previous() }}" hidden>
 
                 <div class="form-group">
                     <button type="submit" class="th-btn rounded-2">Valider</button>
-                    <p class="fs-xs mt-2 mb-0"><a class="text-reset" href="{{ route('register-form') }}">Vous n'avez pas de
+                    <p class="fs-xs mt-2 mb-0"><a class="text-reset" href="{{ route('register-form') }}">Si vous n'avez pas de
                             compte?
                             <b class="text-danger">Créer un compte </b>
                         </a></p>
