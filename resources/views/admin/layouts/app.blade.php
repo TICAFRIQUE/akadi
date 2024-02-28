@@ -42,8 +42,8 @@
     https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
     " rel="stylesheet">
     <script src="
-                                    https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
-                                    "></script>
+                                            https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
+                                            "></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
 
@@ -254,8 +254,8 @@
                         <div class="sidebar-brand mb-2">
                             <a href="{{ route('dashboard.index') }}">
                                 <span class="logo-name">
-                                    <img src="{{ asset('site/assets/img/custom/logo.png') }}"
-                                        width="80" class="m-auto" alt="">
+                                    <img src="{{ asset('site/assets/img/custom/logo.png') }}" width="80"
+                                        class="m-auto" alt="">
                                 </span>
                             </a>
                         </div>
@@ -265,15 +265,19 @@
                                         bord</span></a>
                             </li>
 
-                            <li class="dropdown">
-                                <a href="{{ route('category.index') }}" class="nav-link"><i
-                                        data-feather="grid"></i><span>Categories</span></a>
-                            </li>
+                            @role(['developpeur', 'administrateur'])
+                                <li class="dropdown">
+                                    <a href="{{ route('category.index') }}" class="nav-link"><i
+                                            data-feather="grid"></i><span>Categories</span></a>
+                                </li>
 
-                            <li class="dropdown">
-                                <a href="{{ route('sub-category.index') }}" class="nav-link"><i
-                                        data-feather="grid"></i><span>Sous Categories</span></a>
-                            </li>
+                                <li class="dropdown">
+                                    <a href="{{ route('sub-category.index') }}" class="nav-link"><i
+                                            data-feather="grid"></i><span>Sous Categories</span></a>
+                                </li>
+                            @endrole
+
+
                             {{-- <li class="dropdown">
                                 <a href="{{ route('collection.index') }}" class="nav-link"><i
                                         data-feather="grid"></i><span>Collections</span></a>
@@ -283,7 +287,6 @@
                                 <a href="{{ route('product.index') }}" class="nav-link"><i
                                         data-feather="shopping-bag"></i><span>Produits</span></a>
                             </li>
-
                             <li class="dropdown">
                                 <a href="#" class="menu-toggle nav-link has-dropdown"><i
                                         data-feather="shopping-cart"></i><span>Commandes</span></a>
@@ -298,20 +301,24 @@
 
                                 </ul>
                             </li>
-                            <li class="dropdown">
-                                <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                                        data-feather="users"></i><span>Utilisateurs</span></a>
-                                <ul class="dropdown-menu">
-                                    @foreach ($roles as $item)
-                                        <li><a class="nav-link" href="/admin/auth?user={{ $item['name'] }}">
-                                                {{ $item['name'] }} </a></li>
-                                    @endforeach
 
-                                    <li><a class="nav-link" href="{{ route('user.list') }}">Liste des
-                                            utilisateurs</a></li>
-                                </ul>
+                            @role(['developpeur', 'administrateur'])
+                                <li class="dropdown">
+                                    <a href="#" class="menu-toggle nav-link has-dropdown"><i
+                                            data-feather="users"></i><span>Utilisateurs</span></a>
+                                    <ul class="dropdown-menu">
+                                        @foreach ($roles as $item)
+                                            <li><a class="nav-link" href="/admin/auth?user={{ $item['name'] }}">
+                                                    {{ $item['name'] }} </a></li>
+                                        @endforeach
 
-                            </li>
+                                        <li><a class="nav-link" href="{{ route('user.list') }}">Liste des
+                                                utilisateurs</a></li>
+                                    </ul>
+
+                                </li>
+                            @endrole
+
 
                             <li class="dropdown">
                                 <a href="{{ route('delivery.index') }}" class="nav-link"><i
