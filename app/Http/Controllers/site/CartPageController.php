@@ -163,6 +163,7 @@ class CartPageController extends Controller
                 //informations depuis ajax
                 $subTotal = $_GET['data']['subTotal'];
                 $deliveryId = $_GET['data']['deliveryId'];
+                $address = $_GET['data']['address'];
 
                 //recuperer les information de livraison
                 $delivery = Delivery::whereId($deliveryId)->first();
@@ -171,7 +172,7 @@ class CartPageController extends Controller
                 $totalOrder = $subTotal + $delivery->tarif;
 
                
-
+        
                 //quantité des produit au panier
                 $quantity_product = count((array) session('cart'));
                 
@@ -184,6 +185,8 @@ class CartPageController extends Controller
                     'total' => $totalOrder,
                     'delivery_name' =>   $delivery['zone'],
                     'delivery_price' => $delivery['tarif'],
+                    'address' => $address,
+
                     // 'discount' => '',
                     // 'delivery_planned' => Carbon::now()->addDay(3), //date de livraison prevue
                     // 'delivery_date' => '', //date de livraison

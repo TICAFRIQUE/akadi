@@ -6,10 +6,10 @@ Categorie and products
         <div class="title-area text-center">
             <span class="sub-title">
                 <img class="icon" src="{{ asset('site/assets/img/icon/title_icon.svg') }}" alt="icon">
-               Decouvrir nos menus
+                Decouvrir nos menus
             </span>
             <h2 class="sec-title">Tu testes, tu restes <span class="font-style text-theme"> toujours</span></h2>
-           
+
         </div>
 
         <div class="tab-content">
@@ -23,7 +23,7 @@ Categorie and products
 
                     @foreach ($categories as $item)
                         <button data-filter=".cat{{ $item['id'] }}" type="button">
-                            <img src="{{ $item->getFirstMediaUrl('category_image') }}" width="60%"  alt="Icon">
+                            <img src="{{ $item->getFirstMediaUrl('category_image') }}" width="60%" alt="Icon">
                             {{ $item['name'] }}
                         </button>
                     @endforeach
@@ -45,15 +45,22 @@ Categorie and products
                                         <h3 class="product-title"><a
                                                 href="{{ route('detail-produit', $plats['slug']) }}">{{ $plats['title'] }}</a>
                                         </h3>
-                                        <p class="product-text"> {!! substr(strip_tags($plats->description), 0, 50) !!}.... </p>
+                                        @if ($plats['subcategorie'])
+                                            <a href="/produit?sous-categorie={{ $plats['subcategorie']['id'] }}"
+                                                class="category text-danger">{{ $plats['subcategorie'] ? $plats['subcategorie']['name'] : $plats['categories'][0]['name'] }}</a>
+                                        @else
+                                            <a href="/produit?categorie={{ $plats['categories'][0]['id'] }}"
+                                                class="category text-danger">{{ $plats['subcategorie'] ? $plats['subcategorie']['name'] : $plats['categories'][0]['name'] }}</a>
+                                        @endif
+                                        <p class="product-text"> {!! substr(strip_tags($plats->description), 0, 100) !!}.... </p>
                                         <span class="price"> {{ number_format($plats['price'], 0) }} FCFA
                                             <del></del></span>
 
                                         <div class="actions">
                                             <a href="{{ route('detail-produit', $plats['slug']) }}" class="icon-btn"><i
                                                     class="far fa-eye"></i></a>
-                                            <button class="icon-btn"><i
-                                                    class="far fa-cart-plus addCart" data-id="{{ $plats['id'] }}"></i></button>
+                                            <button class="icon-btn"><i class="far fa-cart-plus addCart"
+                                                    data-id="{{ $plats['id'] }}"></i></button>
                                             {{-- <a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> --}}
                                         </div>
                                     </div>
@@ -64,7 +71,7 @@ Categorie and products
 
                 </div>
                 <div class="text-center mt-5">
-                    <a href="{{route('liste-produit')}}" class="th-btn">Voir tous nos produits</a>
+                    <a href="{{ route('liste-produit') }}" class="th-btn">Voir tous nos produits</a>
                 </div>
             </div>
 

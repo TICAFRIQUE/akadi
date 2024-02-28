@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-auto my-3">
-            <p class="text-center">Si vous avez un compte connectez vous avec votre <strong>numero de telephone</strong> et <strong>mot de passe</strong></p>
+            <p class="text-center">Si vous avez un compte connectez-vous avec votre <strong>numéro de téléphone</strong> et <strong>mot de passe</strong></p>
             @include('admin.components.validationMessage')
             <form action="{{ route('login') }}" method="post" class="woocommerce-form-login mb-30">
                 @csrf

@@ -4,13 +4,13 @@
 
 @section('content')
     <!--==============================
-                                Breadcumb
-                            ============================== -->
+                                        Breadcumb
+                                    ============================== -->
     <div class="breadcumb-wrapper " data-bg-src="">
         <div class="container z-index-common">
             <div class="breadcumb-content mt-4">
                 <h1 class="breadcumb-title mt-5">Detail</h1>
-                <ul  class="breadcumb-menu">
+                <ul class="breadcumb-menu">
                     <li><a href="javascript:history.go(-1)">Retour</a></li>
                     <li><a href="i{{ route('page-acceuil') }}">Accueil</a></li>
                     <li>Detail</li>
@@ -20,8 +20,8 @@
             </div>
         </div>
     </div><!--==============================
-                                Product Details
-                                ==============================-->
+                                        Product Details
+                                        ==============================-->
     <section class="th-product-wrapper product-details space-top space-extra-bottom">
         <div class="container">
             <div class="row">
@@ -57,6 +57,16 @@
                         </div> --}}
                         <h2 class="product-title"> {{ $product['title'] }} </h2>
                         <span class="price"> {{ number_format($product['price'], 0) }} FCFA <del></del></span>
+
+                        <div class="product_meta">
+                            <span class="sku_wrapper">Description: <span class="sku"> {!! $product['description'] !!}
+                                </span></span>
+                            <span class="sku_wrapper">SKU: <span class="sku"> {{ $product['id'] }} </span></span>
+                            <span class="posted_in">Categorie: <a
+                                    href="/produit?categorie={{ $product['categories'][0]['id'] }}" rel="tag">
+                                    {{ $product['categories'][0]['name'] }} </a></span>
+                        </div>
+
                         <div class="actions">
                             {{-- <div class="quantity">
                                 <input type="number" class="qty-input" step="1" min="1" max="100"
@@ -67,17 +77,11 @@
                             <button class="th-btn addCart" data-id="{{ $product['id'] }}">Ajouter au panier</button>
                             {{-- <a class="icon-btn" href="wishlist.html"><i class="fal fa-heart"></i></a> --}}
                         </div>
-                        <div class="product_meta">
-                            <span class="sku_wrapper">SKU: <span class="sku"> {{ $product['id'] }} </span></span>
-                            <span class="posted_in">Categorie: <a
-                                    href="/produit?categorie={{ $product['categories'][0]['id'] }}" rel="tag">
-                                    {{ $product['categories'][0]['name'] }} </a></span>
-                        </div>
 
                     </div>
                 </div>
             </div>
-            <ul class="nav product-tab-style1" id="productTab" role="tablist">
+            {{-- <ul class="nav product-tab-style1" id="productTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link th-btn rounded-2" id="description-tab" data-bs-toggle="tab" href="#description"
                         role="tab" aria-controls="description" aria-selected="false">Description</a>
@@ -86,14 +90,14 @@
                     <a class="nav-link th-btn rounded-2 active" id="reviews-tab" data-bs-toggle="tab" href="#reviews"
                         role="tab" aria-controls="reviews" aria-selected="true">Commentaires</a>
                 </li>
-            </ul>
+            </ul> --}}
             <div class="tab-content" id="productTabContent">
-                <div class="tab-pane fade" id="description" role="tabpanel" aria-labelledby="description-tab">
+                {{-- <div class="tab-pane fade" id="description" role="tabpanel" aria-labelledby="description-tab">
                     <p>
                         {!! $product['description'] !!}
                     </p>
 
-                </div>
+                </div> --}}
 
                 <!-- ========== Start commentaire  ========== -->
                 @include('site.sections.commentaire-produit')

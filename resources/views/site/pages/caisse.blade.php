@@ -111,7 +111,7 @@
                                     <span>Nom : <b>{{ Auth::user()->name }}</b> </span>
                                     <br> <span>Telephone : <b>{{ Auth::user()->phone }}</b> </span>
                                     <br><span class="{{ Auth::user()->email ?? 'd-none ' }}">Email :
-                                       <b> {{ Auth::user()->email }} </b></span>
+                                        <b> {{ Auth::user()->email }} </b></span>
                                 </div>
                                 <table class="cart_totals" cellspacing="0">
                                     <tbody>
@@ -150,6 +150,12 @@
                                                                 </option>
                                                             @endforeach
                                                         </select>
+                                                    </div>
+
+                                                    <div class="my-3">
+                                                        <input type="text" name="address" id="address"
+                                                            class="form-control border border-danger"
+                                                            placeholder="preciser le lieu" required>
                                                     </div>
                                                 </form>
                                             </td>
@@ -198,10 +204,15 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
 
     <script>
         //Recuperer les information du lieu de livraison
+            //cacher le champs address par defaut
+            $('#address').hide()
         $('.delivery').change(function(e) {
             e.preventDefault();
             var deliveryId = $('.delivery option:selected').val();
             var subTotal = $('.sousTotal').attr('data-subTotal');
+
+            //Afficher le champs address si le lieu de livraison est choisi"
+            $('#address').show(300)
 
             $.ajax({
                 type: "GET",
@@ -221,20 +232,51 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
         });
 
 
-        //Enregistrer les informations de la commande
+        //Enregistrer les informations de la commande 
         $('.confirmOrder').click(function(e) {
             e.preventDefault()
             var deliveryId = $('.delivery').val();
+            var address = $('#address').val()
+
             //si le lieu de livraison n'est pas choisi , on affiche un message d'alerte
             if (!deliveryId) {
+                // Swal.fire({
+                //     title: 'Choisir son Lieu de livraison',
+                //     text: "Veuillez choisir un lieu de livraison pour recevoir votre commande",
+                //     icon: 'warning',
+                //     width: '500px',
+                //     confirmButtonColor: '#212529',
+                //     confirmButtonText: 'D\'accord'
+                // })
                 Swal.fire({
-                    title: 'Choisir son Lieu de livraison',
-                    text: "Veuillez choisir un lieu de livraison pour recevoir votre commande",
-                    icon: 'warning',
-                    width: '500px',
-                    confirmButtonColor: '#212529',
-                    confirmButtonText: 'D\'accord'
-                })
+                    toast: true,
+                    icon: 'error',
+                    width: '100%',
+                    title: 'Veuillez choisir un lieu de livraison pour recevoir votre commande',
+                    animation: true,
+                    position: 'top',
+                    background: '#eb0029',
+                    iconColor: '#fff',
+                    color: '#fff',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                });
+            } else if (!address) {
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    width: '100%',
+                    title: 'Veuillez preciser le lieu exact de la livraison',
+                    animation: true,
+                    position: 'top-right',
+                    background: '#eb0029',
+                    iconColor: '#fff',
+                    color: '#fff',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                });
             } else {
                 //send data to back
                 var subTotal = $('.sousTotal').attr('data-subTotal');
@@ -242,7 +284,8 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
 
                 var data = {
                     subTotal,
-                    deliveryId
+                    deliveryId,
+                    address
                 }
 
                 $.ajax({

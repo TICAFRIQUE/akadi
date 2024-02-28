@@ -18,8 +18,9 @@ class Order extends Model
         'code',
         'quantity_product',
         'subtotal',
-        'delivery_price',
-        'delivery_name',
+        'delivery_price', // prix de la livraison
+        'delivery_name', // Lieu de livraison
+        'address',  //preciser le lieu de livraison (adresse, ville, code postal)
         'discount',
         'total',
         'delivery_planned', //date de livraison prevue

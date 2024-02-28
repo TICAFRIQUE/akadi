@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('subtotal')->nullable();
             $table->string('delivery_price')->nullable(); // prix de la livraison
             $table->string('delivery_name')->nullable(); // Lieu de livraison
+            $table->longText('address')->nullable(); // adresse de livraison *** preciser le lieu de livraison
+
             $table->double('discount')->nullable();
             $table->string('total')->nullable();
             $table->dateTime('delivery_planned')->nullable(); //date de livraison prevue

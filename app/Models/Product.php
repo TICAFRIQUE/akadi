@@ -62,7 +62,7 @@ class Product extends Model implements HasMedia
 
     public function subcategorie()
     {
-        return $this->belongsTo(SubCategory::class, 'sub_categorie_id' , 'product_id');
+        return $this->belongsTo(SubCategory::class, 'sub_category_id');
     }
     
 

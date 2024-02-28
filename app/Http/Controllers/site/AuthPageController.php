@@ -76,7 +76,7 @@ class AuthPageController extends Controller
 
             //redirection apres connexion
             if (session('cart')) {
-                $url = 'panier';  // si le panier n'est pas vide on redirige vers la page du panier
+                $url = 'finaliser-ma-commande';  // si le panier n'est pas vide on redirige vers la page checkout
             } else {
                 $url = '/';   // sinon on redirige vers l'accueil
             }

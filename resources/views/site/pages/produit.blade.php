@@ -14,7 +14,7 @@
                     <li class="active">
                         @if (request('categorie') && count($product) > 0)
                             {{ $product[0]['categories'][0]['name'] }}
-                        {{-- @elseif (request('sous-categorie') && count($product) > 0)
+                            {{-- @elseif (request('sous-categorie') && count($product) > 0)
                             {{ $product[0]['subcategorie']['name'] }} --}}
                         @else
                             Liste de tous les plats
@@ -29,17 +29,16 @@
 
     <section class="th-product-wrapper space-extra-bottom">
         <div class="container">
-           <div class="mt-2">
-             <p class="d-flex justify-content-between">
-                @if (request('q'))
-              <span style="color: #ff7419;"> Recherche pour : <i class="text-dark">{{ request('q') }}</i> </span>
-                <span>
-                    {{count($product)}} produits trouvé(s).
-                </span>
-
-                @endif
-            </p>
-           </div>
+            <div class="mt-2">
+                <p class="d-flex justify-content-between">
+                    @if (request('q'))
+                        <span style="color: #ff7419;"> Recherche pour : <i class="text-dark">{{ request('q') }}</i> </span>
+                        <span>
+                            {{ count($product) }} produits trouvé(s).
+                        </span>
+                    @endif
+                </p>
+            </div>
             <div class="row gy-40">
                 @foreach ($product as $item)
                     <div class="col-xl-3 col-lg-4 col-sm-6">
@@ -48,14 +47,14 @@
                                 <img src="{{ asset($item->getFirstMediaUrl('product_image')) }}" alt="Product Image">
                             </div>
                             <div class="product-content">
-                                <a href="/produit?categorie={{ $item['categories'][0]['id'] }}"
-                                    class="category">{{ $item['categories'][0]['name'] }}</a>
-                                {{-- <div class="product-rating">
-                                <div class="star-rating" role="img" aria-label="Rated 4.00 out of 5">
-                                    <span style="width:75%">Rated <strong class="rating">4.00</strong> out of 5</span>
-                                </div>
-                                (4.00)
-                            </div> --}}
+                                @if ($item['subcategorie'])
+                                    <a href="/produit?sous-categorie={{ $item['subcategorie']['id'] }}"
+                                        class="category">{{ $item['subcategorie'] ? $item['subcategorie']['name'] : $item['categories'][0]['name'] }}</a>
+                                @else
+                                    <a href="/produit?categorie={{ $item['categories'][0]['id'] }}"
+                                        class="category">{{ $item['subcategorie'] ? $item['subcategorie']['name'] : $item['categories'][0]['name'] }}</a>
+                                @endif
+
                                 <h3 class="product-title"><a href="{{ route('detail-produit', $item['slug']) }}">
                                         {{ $item['title'] }} </a></h3>
                                 <span class="price"> {{ number_format($item['price'], 0) }} FCFA <del></del></span>

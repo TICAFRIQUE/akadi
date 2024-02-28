@@ -28,14 +28,15 @@ class ProductPageController extends Controller
                     'categories',
                     fn ($q) => $q->where('category_product.category_id', $category),
 
-                )->with(['media', 'categories'])
+                )->with(['media', 'categories', 'subcategorie'])
                     ->orderBy('created_at', 'DESC')->get();
             } else if ($subcategory) {
 
-                $product = Product::with(['media', 'categories'])
+                $product = Product::with(['media', 'categories', 'subcategorie'])
                     ->where('sub_category_id', $subcategory)->orderBy('created_at', 'DESC')->get();
+
             } else {
-                $product = Product::with(['media', 'categories'])->orderBy('created_at', 'DESC')->get();
+                $product = Product::with(['media', 'categories', 'subcategorie'])->orderBy('created_at', 'DESC')->get();
             }
 
             return view(
@@ -44,7 +45,7 @@ class ProductPageController extends Controller
             );
         } catch (Exception $e) {
             $e->getMessage();
-            $product = Product::with(['media', 'categories'])->orderBy('created_at', 'DESC')->get();;
+            $product = Product::with(['media', 'categories', 'subcategorie'])->orderBy('created_at', 'DESC')->get();;
             return view(
                 'site.pages.produit',
                 compact('product',)
@@ -60,7 +61,7 @@ class ProductPageController extends Controller
     {
         try {
             $product = Product::whereSlug($slug)
-                ->with(['categories', 'media'])
+                ->with(['categories', 'subcategorie', 'media'])
                 ->firstOrFail();
 
 

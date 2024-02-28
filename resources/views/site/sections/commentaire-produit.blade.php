@@ -1,4 +1,4 @@
- <div class="tab-pane fade show active" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+ <div class="tab-pane fade show active mt-5" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
      <div class="woocommerce-Reviews">
          <div class="th-comments-wrap ">
              <ul class="comment-list">
