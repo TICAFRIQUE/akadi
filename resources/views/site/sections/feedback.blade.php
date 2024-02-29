@@ -1,7 +1,8 @@
 <!--==============================
 Testimonial Area
 ==============================-->
-<section class="space bg-smoke2">
+@if ($feedback)
+   <section class="space bg-smoke2">
     <div class="container">
         <div class="title-area text-center">
             <span class="sub-title">
@@ -54,3 +55,5 @@ Testimonial Area
     <div class="shape-mockup leaf jump" data-bottom="0%" data-right="0"><img
             src="{{ asset('site/assets/img/custom/chicken.png') }}" alt="shape"></div>
 </section>
+ 
+@endif
