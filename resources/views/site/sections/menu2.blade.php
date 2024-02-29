@@ -101,12 +101,12 @@
                                             <li class="menu-item-has-children">
                                                 <a href="/produit?categorie={{ $item['id'] }}"> {{ $item['name'] }}
                                                 </a>
-                                                @foreach ($item['subcategories'] as $item)
-                                                    <ul class="sub-menu">
+                                                <ul class="sub-menu">
+                                                        @foreach ($item['subcategories'] as $item)
                                                         <li><a href="/produit?sous-categorie={{ $item['id'] }}">
                                                                 {{ $item['name'] }} </a></li>
+                                                                @endforeach
                                                     </ul>
-                                                @endforeach
                                             </li>
                                         @endforeach
 

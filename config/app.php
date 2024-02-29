@@ -173,6 +173,7 @@ return [
         RealRashid\SweetAlert\SweetAlertServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Orangehill\Iseed\IseedServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
     ])->toArray(),
 
@@ -192,6 +193,7 @@ return [
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
+        'Debugbar' => Barryvdh\Debugbar\Facades\Debugbar::class,
 
     ])->toArray(),
 
