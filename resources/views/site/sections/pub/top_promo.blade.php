@@ -28,12 +28,12 @@
                         <img class="icon" src="{{ asset('site/assets/img/icon/title_icon.svg') }}" alt="icon">
                         Top promo AKADI
                     </span>
-                    {{-- <h2 class="sec-title"> --}}
+                    <h2 class="sec-title">
 
                     {!! $top_promo['texte'] !!}
                     {{-- <span class="font-style text-theme">10 premieres commandes</span> --}}
 
-                    {{-- </h2> --}}
+                    </h2>
                 </div>
                 {{-- <p class="mt-n2 mb-10">Bientôt disponible.</p> --}}
                 <div class="btn-wrap style1">

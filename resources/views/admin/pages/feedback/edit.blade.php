@@ -27,7 +27,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Description</label>
                                     <div class="col-sm-9">
-                                        <textarea name="description" class="summernote" required>
+                                        <textarea name="description" class="form-control" required>
                                             {{$feedback['description']}}
                                         </textarea>
                                     </div>

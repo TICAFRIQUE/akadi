@@ -3,7 +3,7 @@
 @endphp
 <!-- Modal with form -->
 <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="formModal">Nouveau temoignage</h5>
@@ -25,7 +25,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Description</label>
                             <div class="col-sm-9">
-                                <textarea name="description" class="summernote" required></textarea>
+                                <textarea name="description" class="form-control" required></textarea>
                             </div>
                             <div class="invalid-feedback">
                                 {{ $msg_validation }}

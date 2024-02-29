@@ -1,7 +1,7 @@
 <!--==============================
 Testimonial Area
 ==============================-->
-@if ($feedback)
+@if (count($feedback)  > 0)
    <section class="space bg-smoke2">
     <div class="container">
         <div class="title-area text-center">

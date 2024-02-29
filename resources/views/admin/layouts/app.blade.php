@@ -46,7 +46,11 @@
                                             "></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
-
+<style>
+    body{
+        color: black
+    }
+</style>
 
 </head>
 
