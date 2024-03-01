@@ -174,6 +174,7 @@ return [
         Jenssegers\Agent\AgentServiceProvider::class,
         Orangehill\Iseed\IseedServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class
 
     ])->toArray(),
 
@@ -194,7 +195,7 @@ return [
         'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
         'Debugbar' => Barryvdh\Debugbar\Facades\Debugbar::class,
-
+       'PDF' => Barryvdh\DomPDF\Facade\Pdf::class
     ])->toArray(),
 
 ];

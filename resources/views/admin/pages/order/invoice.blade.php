@@ -288,6 +288,7 @@
             globalStyles: true,
             mediaPrint: true,
             stylesheet: null,
+            format: "a6",
             noPrintSelector: ".no-print",
             iframe: true,
             append: null,

@@ -14,7 +14,8 @@
 
             @if ($orders['status'] != 'livrée' && $orders['status'] != 'annulée')
                 <div class="dropdown">
-                    <a href="#" data-toggle="dropdown" class="btn btn-dark dropdown-toggle">Changer le statut de la commande</a>
+                    <a href="#" data-toggle="dropdown" class="btn btn-dark dropdown-toggle">Changer le statut de la
+                        commande</a>
                     <div class="dropdown-menu">
                         <a href="/admin/order/changeState?cs=confirmée && id={{ $orders['id'] }}"
                             class="dropdown-item has-icon"><i class="fas fa-check-double"></i>
@@ -35,7 +36,7 @@
                 </div>
             @endif
 
-            <a class="btn btn-link py-3" href="{{ route('order.invoice', $orders['id']) }}"><i
+            <a class="btn btn-link py-3" href="{{ route('order.invoice', $orders['id']) }}" target="_blank"><i
                     data-feather="file-text"></i>Aperçu de la facture</a>
 
         </div>
@@ -43,94 +44,59 @@
 
             <div class="fst-italic p-2 d-flex  justify-content-between">
                 <div>
-                    <span class="text-dark fw-bold">Commande: #{{ $orders['code'] }} <span
+                    <span class="text-dark fw-bold">Commande: <b>#{{ $orders['code'] }}</b> <span
                             class="badge {{ $orders['status'] == 'attente' ? 'badge-primary' : ($orders['status'] == 'livrée' ? 'badge-success' : ($orders['status'] == 'confirmée' ? 'badge-info' : ($orders['status'] == 'annulée' ? 'badge-danger' : ''))) }} text-white p-1 px-3">{{ $orders['status'] }}
-                           </span> </span><br>
-                    <span>Commandé le: {{ $orders['created_at']->format('d-m-Y') }} </span><br>
-                    <span>Nbre articles: {{ $orders['quantity_product'] }} </span><br>
-                    <span class="text-dark fw-bold">Total: {{ $orders['total'] }} </span><br>
-                    <span>Méthode de paiement: {{ $orders['payement_method'] }} </span><br>
+                        </span> </span><br>
+                    <span>Commandé le: <b>{{ $orders['created_at']->format('d-m-Y') }}</b> </span><br>
+                    <span>Nombre d'articles: <b>{{ $orders['quantity_product'] }}</b> </span><br>
+                    <span class="text-dark fw-bold">Total: <b>{{ number_format($orders['total']) }} FCFA</b> </span><br>
+                    {{-- <span>Méthode de paiement: {{ $orders['payment_method'] }} </span><br> --}}
 
                 </div>
 
                 <div class="fst-italic p-2">
                     <h6 class="p-2" style="background-color: #e1e6ea">Client</h6>
 
-                    <span>Client: {{ $orders['user']['name'] }} </span><br>
-                    <span>Email: {{ $orders['user']['email'] }} </span><br>
-                    <span>Téléphone: {{ $orders['user']['phone'] }} </span><br>
+                    <span>Client: <b>{{ $orders['user']['name'] }}</b> </span><br>
+                    <span>Email: <b>{{ $orders['user']['email'] }}</b> </span><br>
+                    <span>Téléphone: <b>{{ $orders['user']['phone'] }}</b> </span><br>
 
                 </div>
 
             </div>
             <h6 class="p-2" style="background-color: #e1e6ea">Articles commandés</h6>
-            @foreach ($orders['products'] as $item)
-                <li class="list-group-item py-3">
-                    <div class="d-flex flex-row align-items-start align-items-stretch gap-3">
+            <div class="row mb-3">
+                @foreach ($orders['products'] as $item)
+                    <div class="col-md-3 col-lg-3 col-sm-6 col-xs-6">
                         <div class="product-img">
                             <a href="#">
-                                <img src="{{ $item->getFirstMediaUrl('product_image') }}" class="rounded-3" width="100"
+                                <img src="{{ $item->getFirstMediaUrl('product_image') }}" class="rounded-3" width="70px"
                                     alt=""></a>
                         </div>
-                        <div class="product-info ml-3 ">
+                        <div class="">
                             <h6 class="mb-1 text-dark">{{ $item['title'] }}</h6>
                             <div class="mt-1">
-                                {{-- <span
-                                        class="fst-italic">{{ $item['pivot']['options'] && is_numeric($item['pivot']['options'][0]) ? 'Pointure: ' : ($item['pivot']['options'] && ctype_alpha($item['pivot']['options'][0]) ? 'Taille:' : '') }}
-                                        {{ $item['pivot']['options'] }}</span><br> --}}
                                 <span class="fst-italic">Qté :{{ $item['pivot']['quantity'] }} </span><br>
                                 <span class="fst-italic">Pu :{{ number_format($item['pivot']['unit_price']) }} FCFA
                                 </span>
-
-                                {{-- <br><h5 class="text-dark fw-bold">{{$item['pivot']['available']==null ? 'En attente de verification' : $item['pivot']['available'] }} </h5> --}}
-
                             </div>
                         </div>
                     </div>
-                    {{-- start change state of available --}}
+                @endforeach
+            </div>
 
-                    {{-- @if ($orders['status'] == 'attente' || $orders['status'] == 'annulée')
-                            
-                        <form class=""action="{{route('vendor-available', $orders['id'])}}" method="post">
-                            @csrf
-                           <div class="row form-group">
-                            <div class="col-8">
-                                <select class="form-control" name="state" id="" required>
-                                    <option disabled value selected>Choisir une option</option>
-                                    <option value="disponible">Disponible</option>
-                                    <option value="pas disponible">Pas disponible</option>
-                                    <option value="reserve">Reservation</option>
-                                </select>
-                                <input value="{{$item['id']}}" name="product_id" type="text" hidden>
-                               
-                            </div>
-                            <div class="col-4">
-                                <button class="btn btn-dark" type="submit">Valider</button>
-                            </div>
-                            
-                            </div> 
-                        </form>
-                        @endif --}}
-
-                    {{-- end change state of available --}}
-
-                </li>
-            @endforeach
-
-            <h6 class="p-2" style="background-color: #e1e6ea">Adresse de Livraison</h6>
+            <h6 class="p-2" style="background-color: #e1e6ea">Livraison</h6>
 
             <div class="fst-italic p-2">
                 <span class="text-dark">#Livraison à domicile</span><br>
-                <span class="">Lieu de livraison: <b>{{ $orders['delivery_name'] }}</b> </span><br>
+                <span class="">Lieu de livraison: <b>{{ $orders['delivery_name'] }}</b> , <b>{{ $orders['address'] }}</b></span><br>
                 <span>Tarif livraison: <b>{{ $orders['delivery_price'] }}</b> </span><br>
-                <span>Client: <b>{{ $orders['user']['name'] }}</b> </span><br>
-
             </div>
 
 
-            <h6 class="p-2" style="background-color: #e1e6ea">Expédition</h6>
+            {{-- <h6 class="p-2" style="background-color: #e1e6ea">Expédition</h6> --}}
 
-            <div class="fst-italic p-2">
+            {{-- <div class="fst-italic p-2">
                 <span class="">Livraison prevue le :
                     <b>{{ \Carbon\Carbon::parse($orders['delivery_planned'])->isoFormat('dddd D MMMM YYYY') }}</b>
                 </span><br>
@@ -138,7 +104,7 @@
                     <b>{{ $orders['delivery_date'] !== null ? \Carbon\Carbon::parse($orders['delivery_date'])->isoFormat('dddd D MMMM YYYY') : 'En attende livraison' }}</b>
                 </span><br>
 
-            </div>
+            </div> --}}
 
 
 
