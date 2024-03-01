@@ -57,17 +57,17 @@ class OrderController extends Controller
             ->orderBy('created_at', 'DESC')->first();
 
 
-        // return PDF::loadView('admin.pages.order.invoicePdf', compact('orders'))
-        //     ->setPaper('a5', 'portrait')
-        //     ->setWarnings(true)
-        //     // ->save(public_path("storage/fichier.pdf"))
-        //     ->stream(Str::slug($orders->code) . ".pdf");
+        return PDF::loadView('admin.pages.order.invoicePdf', compact('orders'))
+            ->setPaper('a5', 'portrait')
+            ->setWarnings(true)
+            // ->save(public_path("storage/fichier.pdf"))
+            ->stream(Str::slug($orders->code) . ".pdf");
 
         // return $pdf->download(Str::slug($orders->code) . ".pdf");
 
 
         // dd($orders->toArray());
-        return view('admin.pages.order.invoicePdf',compact('orders'));
+        // return view('admin.pages.order.invoicePdf',compact('orders'));
     }
 
 
