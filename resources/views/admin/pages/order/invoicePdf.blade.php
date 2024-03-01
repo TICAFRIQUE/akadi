@@ -9,8 +9,8 @@
         .invoice-box {
             max-width: 800px;
             margin: auto;
-            padding: 20px;
-            border: 1px solid #252525;
+            padding: 10px;
+            border: 1px solid #ececec;
             /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); */
             font-size: 12px;
             line-height: 24px;
@@ -25,7 +25,7 @@
         }
 
         .invoice-box table td {
-            padding: 3px;
+            padding: 1px;
             vertical-align: top;
         }
 
@@ -44,7 +44,7 @@
         }
 
         .invoice-box table tr.information table td {
-            padding-bottom: 40px;
+            padding-bottom: 10px;
         }
 
         .invoice-box table tr.heading td {
@@ -114,7 +114,7 @@
                         <tr>
                             <td class="title">
                                 {{-- https://akadi.ci/wp-content/uploads/2023/10/cropped-logo-site-ak.png --}}
-                                <img src="{{asset('site/assets/img/custom/logo.png')}}" width="50" />
+                                <img src="https://akadi.ci/wp-content/uploads/2023/10/cropped-logo-site-ak.png" width="50" />
                             </td>
 
                             <td>
