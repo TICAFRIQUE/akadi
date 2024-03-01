@@ -113,7 +113,8 @@
                     <table>
                         <tr>
                             <td class="title">
-                                <img src="https://akadi.ci/wp-content/uploads/2023/10/cropped-logo-site-ak.png" width="50" />
+                                {{-- https://akadi.ci/wp-content/uploads/2023/10/cropped-logo-site-ak.png --}}
+                                <img src="{{asset('site/assets/img/custom/logo.png')}}" width="50" />
                             </td>
 
                             <td>
