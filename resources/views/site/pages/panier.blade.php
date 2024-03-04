@@ -113,7 +113,7 @@
                         </form>
                     @else
                         <p>Vous n'avez pas de produits dans votre panier</p>
-                        <a href="{{ route('liste-produit') }}" class="th-btn rounded-2">Commandez maintenant</a>
+                        <a href="{{ route('liste-produit') }}" class="th-btn rounded-2 mb-4">Commandez maintenant</a>
 
                     @endif
                 </div>

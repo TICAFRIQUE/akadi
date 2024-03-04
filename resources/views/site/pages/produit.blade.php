@@ -5,8 +5,8 @@
 @section('content')
 
     <div class="breadcumb-wrapper " data-bg-src="">
-        <div class="container z-index-common">
-            <div class="breadcumb-content">
+        <div class="container">
+            <div class="breadcumb-content p-4">
                 <h3 class="breadcumb-title">Menu </h3>
                 <ul class="breadcumb-menu">
                     <li><a class="" href="{{ route('page-acceuil') }}">Accueil</a></li>

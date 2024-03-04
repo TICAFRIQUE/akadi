@@ -5370,11 +5370,14 @@ a.text-theme:hover,
     text-transform: uppercase;
     color: var(--white-color);
     /* margin: -0.2em 0 -0.22em 0; */
+    margin-top:170px
 }
 
 .breadcumb-wrapper {
     background-color: var(--title-color);
-    padding: 150px 0;
+    /* padding: 10; */
+    padding-bottom:40px;
+   
     overflow: hidden;
 }
 
@@ -5397,17 +5400,23 @@ a.text-theme:hover,
 /* Large devices */
 @media (max-width: 1199px) {
     .breadcumb-title {
-        font-size: 42px;
+        font-size: 32px;
+    margin-top:130px
+
     }
     .breadcumb-wrapper {
-        padding: 130px 0;
+        /* padding: 90px 0; */
+    padding-bottom:40px;
+
     }
 }
 
 /* Medium devices */
 @media (max-width: 991px) {
     .breadcumb-wrapper {
-        padding: 100px 0;
+        padding: 50px ;
+    /* padding-bottom:100px; */
+
     }
     .breadcumb-shape {
         width: 25%;
@@ -5421,17 +5430,19 @@ a.text-theme:hover,
         font-size: 16px;
     }
     .breadcumb-title {
-        font-size: 38px;
+        font-size: 30px;
+    margin-top:50px
+
     }
 }
 
 /* Small devices */
 @media (max-width: 767px) {
     .breadcumb-wrapper {
-        padding: 100px 0;
+        padding: 40px 0;
     }
     .breadcumb-title {
-        font-size: 34px;
+        font-size: 30px;
     }
 }
 
