@@ -12,10 +12,8 @@
                     <li><a class="" href="{{ route('page-acceuil') }}">Accueil</a></li>
                     <li><a class="" href="#">Categorie</a></li>
                     <li class="active">
-                        @if (request('categorie') && count($product) > 0)
-                            {{ $product[0]['categories'][0]['name'] }}
-                            {{-- @elseif (request('sous-categorie') && count($product) > 0)
-                            {{ $product[0]['subcategorie']['name'] }} --}}
+                        @if (request('categorie') || request('sous-categorie'))
+                         {{$name_category['name']}}
                         @else
                             Liste de tous les plats
                         @endif

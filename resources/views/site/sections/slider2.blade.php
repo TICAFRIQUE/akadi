@@ -4,7 +4,8 @@ Hero Area
 <div class="d-none d-md-block">
 
     <div id="slider" class="ls-wp-container fitvidsignore hero-2 th-hero-carousel"
-        data-bg-src="{{ $background->getFirstMediaUrl('publicite_image') ?? '' }}"
+    
+        data-bg-src="{{ $background !=null ? $background->getFirstMediaUrl('publicite_image') :  '' }}"
         style="width:1920px;height:900px;margin:0 auto;margin-bottom: 0px;">
 
 
@@ -54,10 +55,10 @@ Hero Area
                         style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; left:100px; top:468px;">
                 </a>
 
-                {{-- <img width="70" height="70" src="{{ asset('site/assets/img/hero/hero_thumb_2_1_active.png') }}"
+                <img width="70" height="70" src="{{ asset('site/assets/img/hero/hero_thumb_2_1_active.png') }}"
                 class="ls-l ls-hide-tablet ls-hide-phone ls-img-layer" alt="" decoding="async"
                 style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; left:100px; top:468px;"
-                data-ls="position:fixed;"> --}}
+                data-ls="position:fixed;">
             </div>
         @endforeach
 
@@ -73,7 +74,7 @@ Hero Area
         style="width:500px;height:660px;margin:0 auto;margin-bottom: 0px;">
         <!-- Slide 1-->
         <div class="ls-slide" data-ls="duration:5000; transition2d:5; kenburnsscale:1.2;">
-            <img width="500" height="660" src="{{ $background->getFirstMediaUrl('publicite_image') ?? '' }}"
+            <img width="500" height="660" src="{{ $background ?  $background->getFirstMediaUrl('publicite_image') :  '' }}"
                 class="ls-bg" alt="hero img">
 
 

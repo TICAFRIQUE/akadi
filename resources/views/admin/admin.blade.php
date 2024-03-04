@@ -4,17 +4,37 @@
     <section class="section">
         @include('admin.components.validationMessage')
 
+<style>
+  .card-content{
+    color: #fff;
+  }
+.card-order{
+  background: linear-gradient(135deg, #f48665 0%, #fda23f 100%) !important;
+}
+
+.card-product{
+    background: linear-gradient(135deg, #289cf5, #84c0ec) !important;
+}
+.card-user{
+  background: linear-gradient(135deg, #06a278 0%, #12d298 100%) !important;
+}
+
+.card-visit{
+  background: linear-gradient(135deg, #f48665 0%, #d75ce2 100%) !important;
+}
+</style>
+
         <div class="row ">
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <div class="card">
+                <div class="card card-order">
                     <div class="card-statistic-4">
                         <div class="align-items-center justify-content-between">
                             <div class="row ">
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                                     <div class="card-content">
                                         <h5 class="font-15">Commandes</h5>
-                                        <h2 class="mb-3 font-18">258</h2>
-                                        <p class="mb-0"><span class="col-green">10%</span> Increase</p>
+                                        <h2 class="mb-3 font-18">{{$orders}}</h2>
+                                        {{-- <p class="mb-0"><span class="col-green">10%</span> Increase</p> --}}
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -28,15 +48,15 @@
                 </div>
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <div class="card">
+                <div class="card card-product">
                     <div class="card-statistic-4">
                         <div class="align-items-center justify-content-between">
                             <div class="row ">
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                                     <div class="card-content">
                                         <h5 class="font-15"> Produits</h5>
-                                        <h2 class="mb-3 font-18">1,287</h2>
-                                        <p class="mb-0"><span class="col-orange">09%</span> Decrease</p>
+                                        <h2 class="mb-3 font-18">{{$products}}</h2>
+                                        {{-- <p class="mb-0"><span class="col-orange">09%</span> Decrease</p> --}}
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -50,16 +70,16 @@
                 </div>
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <div class="card">
+                <div class="card card-user">
                     <div class="card-statistic-4">
                         <div class="align-items-center justify-content-between">
                             <div class="row ">
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                                     <div class="card-content">
                                         <h5 class="font-15">Clients</h5>
-                                        <h2 class="mb-3 font-18">128</h2>
-                                        <p class="mb-0"><span class="col-green">18%</span>
-                                            Increase</p>
+                                        <h2 class="mb-3 font-18">{{$users}} </h2>
+                                        {{-- <p class="mb-0"><span class="col-green">18%</span>
+                                            Increase</p> --}}
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -73,20 +93,20 @@
                 </div>
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <div class="card">
+                <div class="card card-visit">
                     <div class="card-statistic-4">
                         <div class="align-items-center justify-content-between">
                             <div class="row ">
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                                     <div class="card-content">
                                         <h5 class="font-15">Visites</h5>
-                                        <h2 class="mb-3 font-18">$48,697</h2>
-                                        <p class="mb-0"><span class="col-green">42%</span> Increase</p>
+                                        <h2 class="mb-3 font-18">500</h2>
+                                        {{-- <p class="mb-0"><span class="col-green">42%</span> Increase</p> --}}
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
                                     <div class="banner-img">
-                                        {{-- <img src="assets/img/banner/4.png" alt=""> --}}
+                                        {{-- <img src="{{asset('admin/assets/img/banner/2.png')}}" alt=""> --}}
                                     </div>
                                 </div>
                             </div>

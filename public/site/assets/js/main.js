@@ -142,7 +142,7 @@
     /*---------- 04. Sticky fix ----------*/
     $(window).on("scroll", function () {
         var topPos = $(this).scrollTop();
-        if (topPos > 500) {
+        if (topPos > 250) {
             $('.sticky-wrapper').addClass('sticky');
         } else {
             $('.sticky-wrapper').removeClass('sticky')

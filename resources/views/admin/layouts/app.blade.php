@@ -297,6 +297,7 @@
                                 <ul class="dropdown-menu">
                                     <li><a class="nav-link" href="/admin/order?d=jour">Jour</a></li>
                                     <li><a class="nav-link" href="/admin/order?s=attente">Attentes</a></li>
+                                    <li><a class="nav-link" href="/admin/order?s=confirmée">Confirmée</a></li>
                                     <li><a class="nav-link" href="/admin/order?s=livrée">Livrées</a></li>
                                     <li><a class="nav-link" href="/admin/order?s=annulée">Annulées</a></li>
 

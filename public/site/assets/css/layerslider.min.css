@@ -130,7 +130,7 @@
     -ms-transform: translateZ(100px);
     -webkit-transform: translateZ(100px);
     transform: translateZ(100px);
-    background: url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7) !important;
+    /* background: url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7) !important; */
 }
 .ls-gui-element {
     z-index: 40;

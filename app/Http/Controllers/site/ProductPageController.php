@@ -21,9 +21,12 @@ class ProductPageController extends Controller
         try {
             $category = request('categorie');
             $subcategory = request('sous-categorie');
+            //get category et subcategory name
+            $name_category = '';
 
             if ($category) {
-
+                $name_category = Category::whereId($category)->select('name')->first();
+               
                 $product = Product::whereHas(
                     'categories',
                     fn ($q) => $q->where('category_product.category_id', $category),
@@ -31,17 +34,21 @@ class ProductPageController extends Controller
                 )->with(['media', 'categories', 'subcategorie'])
                     ->orderBy('created_at', 'DESC')->get();
             } else if ($subcategory) {
+                $name_category = SubCategory::whereId($subcategory)->select('name')->first();
 
                 $product = Product::with(['media', 'categories', 'subcategorie'])
                     ->where('sub_category_id', $subcategory)->orderBy('created_at', 'DESC')->get();
 
+
             } else {
                 $product = Product::with(['media', 'categories', 'subcategorie'])->orderBy('created_at', 'DESC')->get();
             }
+            // dd([$name_category]); 
 
             return view(
                 'site.pages.produit',
-                compact('product',)
+               
+                compact('product','name_category')
             );
         } catch (Exception $e) {
             $e->getMessage();

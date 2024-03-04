@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Models\User;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +16,22 @@ class DashboardController extends Controller
         $orders_attente = Order::orderBy('created_at','DESC')
         ->whereStatus('attente')
         ->get();
-        return view('admin.admin',compact('orders_attente'));
+
+
+        //statistic
+        //count all orders
+        $orders=Order::count();
+        //count all products
+        $products= Product::count();
+        //count all user  
+        $users= User::count();
+        return view('admin.admin',compact(
+            'orders_attente',
+            'orders',  
+            'products',  
+            'users'
+
+        ));
       
     }
 
