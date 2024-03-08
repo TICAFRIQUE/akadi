@@ -110,7 +110,7 @@
             <!-- ========== Start produit similaire ========== -->
             <div class="space-extra-top mb-30">
                 <div class="title-area text-center">
-                    <h2 class="sec-title"> {{ count($product_related) > 0 ? 'Plats similaires' : '' }} </h2>
+                    <h2 class="sec-title"> {{ count($product_related) > 0 ? 'Dans la même catégorie' : '' }} </h2>
                 </div>
                 <div class="row th-carousel" data-slide-show="4" data-lg-slide-show="3" data-md-slide-show="2"
                     data-sm-slide-show="2" data-xs-slide-show="1" data-arrows="true">
