@@ -10,7 +10,7 @@ Hero Area
         @foreach ($sliders as $item)
             <div class="ls-slide" data-ls="duration:5000; kenburnsscale:1.2;">
                 {{-- <ls-layer
-            style="font-size:30px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:203px; left:340px; color:#ff0600; line-height:26px; font-family:'Lobster Two';"
+            style="font-size:30px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; top:203px; left:340px; color:#f85d05; line-height:26px; font-family:'Lobster Two';"
             class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer"
             data-ls="offsetxin:500; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
             Welcome to Pizzan
@@ -31,9 +31,9 @@ Hero Area
                 </h1>
 
                 <a style="" class="ls-l ls-hide-tablet ls-hide-phone" href="{{ $item['url'] }}" target="_self"
-                    data-ls="offsetxin:500; delayin:180; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#ffffff; hovercolor:#ff0600;">
+                    data-ls="offsetxin:500; delayin:180; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#ffffff; hovercolor:#f85d05;">
                     <ls-layer
-                        style="font-size:14px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:180px; left:344px; top:552px; text-transform:uppercase; line-height:14px; padding-bottom:20px; padding-top:22px; font-weight:600; border-radius:4px 4px 4px 4px; background-color:#ff0600;"
+                        style="font-size:14px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:180px; left:344px; top:552px; text-transform:uppercase; line-height:14px; padding-bottom:20px; padding-top:22px; font-weight:600; border-radius:4px 4px 4px 4px; background-color:#f85d05;"
                         class="ls-ib-icon ls-button-layer px-4">
                         Decouvez nos menus<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
                     </ls-layer>
@@ -83,7 +83,7 @@ Hero Area
                     style="font-size:36px; color:#000; stroke:#000; stroke-width:0px; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; background-clip:border-box; overflow:visible; width:50px; height:51px; top:440px; left:140px; -webkit-background-clip:border-box;"
                     class="ls-l ls-hide-tablet ls-hide-phone ls-svg-layer">
                     <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 50 51" fill="none">
-                        <circle cx="24.9995" cy="25.0557" r="24" stroke="#FF0600" fill="transparent"
+                        <circle cx="24.9995" cy="25.0557" r="24" stroke="#f85d05" fill="transparent"
                             stroke-width="2"></circle>
                     </svg>
                 </ls-layer> --}}
