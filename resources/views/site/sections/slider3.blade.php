@@ -31,7 +31,7 @@ Hero Area
                 </h1>
 
                 <a style="" class="ls-l ls-hide-tablet ls-hide-phone" href="{{ $item['url'] }}" target="_self"
-                    data-ls="offsetxin:500; delayin:180; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#f85d05; hovercolor:#f85d05;">
+                    data-ls="offsetxin:500; delayin:180; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; hoverbgcolor:#fff; hovercolor:#f85d05;">
                     <ls-layer
                         style="font-size:14px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:180px; left:344px; top:552px; text-transform:uppercase; line-height:14px; padding-bottom:20px; padding-top:22px; font-weight:600; border-radius:4px 4px 4px 4px; background-color:#f85d05;"
                         class="ls-ib-icon ls-button-layer px-4">
