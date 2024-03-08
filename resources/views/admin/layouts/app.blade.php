@@ -332,7 +332,7 @@
 
                             <li class="dropdown">
                                 <a href="{{ route('publicite.index') }}" class="nav-link"><i
-                                        data-feather="image"></i><span>Publicité</span></a>
+                                        data-feather="image"></i><span>Publicité / Slider</span></a>
                             </li>
 
                             <li class="dropdown">
