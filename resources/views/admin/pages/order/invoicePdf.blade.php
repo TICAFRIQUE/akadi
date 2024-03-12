@@ -114,7 +114,7 @@
                         <tr>
                             <td class="title">
                                 {{-- https://akadi.ci/wp-content/uploads/2023/10/cropped-logo-site-ak.png --}}
-                                <img src="https://akadi.ci/wp-content/uploads/2023/10/cropped-logo-site-ak.png" width="50" />
+                                <img src="https://akadi.ci/site/assets/img/custom/logo.png" width="50" />
                             </td>
 
                             <td>
