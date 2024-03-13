@@ -1,6 +1,8 @@
 @extends('site.layouts.app')
 
 @section('title', 'Detail-' . $product['title'])
+@section('description', $product['description'])
+
 
 @section('content')
     <!--==============================

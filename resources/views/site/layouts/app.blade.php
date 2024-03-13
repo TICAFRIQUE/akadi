@@ -1,23 +1,23 @@
 <!doctype html>
-<html class="no-js" lang="zxx">
+<html class="no-js" lang="fr">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Akadi - @yield('title')</title>
     <meta name="author" content="Themeholy">
-    <meta name="description" content="Pizzan - Fast Food & Restaurant HTML Template">
-    <meta name="keywords" content="Pizzan - Fast Food & Restaurant HTML Template">
+    <meta name="description" content="Akadi-@yield('description')">
+    <meta name="keywords" content="Akadi-@yield('title')">
     <meta name="robots" content="INDEX,FOLLOW">
 
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Favicons - Place favicon.ico in the root directory -->
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="apple-touch-icon" sizes="180x180" href="{{asset('admin/assets/img/favicon/apple-touch-icon.png')}}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{asset('admin/assets/img/favicon/favicon-32x32.png')}}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('admin/assets/img/favicon/favicon-16x16.png')}}">{}
+    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('admin/assets/img/favicon/favicon-16x16.png')}}">
     <link rel="manifest" href="{{asset('admin/assets/img/favicon/site.webmanifest')}}">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
