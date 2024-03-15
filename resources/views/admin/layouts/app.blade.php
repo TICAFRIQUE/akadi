@@ -10,10 +10,12 @@
 
     <!-- Favicons -->
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-   <link rel="apple-touch-icon" sizes="180x180" href="{{asset('admin/assets/img/favicon/apple-touch-icon.png')}}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{asset('admin/assets/img/favicon/favicon-32x32.png')}}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('admin/assets/img/favicon/favicon-16x16.png')}}">
-    <link rel="manifest" href="{{asset('admin/assets/img/favicon/site.webmanifest')}}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('admin/assets/img/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="{{ asset('admin/assets/img/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="{{ asset('admin/assets/img/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('admin/assets/img/favicon/site.webmanifest') }}">
     <!-- General CSS Files -->
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"></script> --}}
 
@@ -41,16 +43,14 @@
     <link href="
     https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
     " rel="stylesheet">
-    <script src="
-                                            https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js
-                                            "></script>
-
+    <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+                                                
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
-<style>
-    body{
-        color: black
-    }
-</style>
+    <style>
+        body {
+            color: black
+        }
+    </style>
 
 </head>
 
@@ -232,12 +232,9 @@
                                     <i class="far
                                       fa-user"></i> Profile
                                 </a>
-                                {{-- <a href="timeline.html" class="dropdown-item has-icon"> <i
-                                        class="fas fa-bolt"></i>
-                                    Activities
-                                </a>  --}}
-                                {{-- <a href="#" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
-                                    Settings
+                              
+                                {{-- <a href="{{route('setting.index')}}" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
+                                    Parametres
                                 </a> --}}
                                 <div class="dropdown-divider"></div>
                                 <a href="{{ route('user.logout') }}" class="dropdown-item has-icon text-danger"> <i

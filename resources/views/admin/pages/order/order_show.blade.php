@@ -89,23 +89,20 @@
 
             <div class="fst-italic p-2">
                 <span class="text-dark">#Livraison à domicile</span><br>
-                <span class="">Lieu de livraison: <b>{{ $orders['delivery_name'] }}</b> , <b>{{ $orders['address'] }}</b></span><br>
+                <span class="">Lieu de livraison: <b>{{ $orders['delivery_name'] }}</b> ,
+                    <b>{{ $orders['address'] }}</b></span><br>
                 <span>Tarif livraison: <b>{{ $orders['delivery_price'] }}</b> </span><br>
             </div>
 
 
-            {{-- <h6 class="p-2" style="background-color: #e1e6ea">Expédition</h6> --}}
+            @if ($orders['raison_annulation_cmd'])
+                <h6 class="p-2" style="background-color: #e1e6ea">Motif d'annulation </h6>
 
-            {{-- <div class="fst-italic p-2">
-                <span class="">Livraison prevue le :
-                    <b>{{ \Carbon\Carbon::parse($orders['delivery_planned'])->isoFormat('dddd D MMMM YYYY') }}</b>
-                </span><br>
-                <span class="">Date de livraison :
-                    <b>{{ $orders['delivery_date'] !== null ? \Carbon\Carbon::parse($orders['delivery_date'])->isoFormat('dddd D MMMM YYYY') : 'En attende livraison' }}</b>
-                </span><br>
+                <div class="fst-italic p-2">
+                    <p> {{$orders['raison_annulation_cmd']}} </p>
 
-            </div> --}}
-
+                </div>
+            @endif
 
 
     </div>

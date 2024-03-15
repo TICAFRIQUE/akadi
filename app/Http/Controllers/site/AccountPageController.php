@@ -23,14 +23,19 @@ class AccountPageController extends Controller
     }
 
 //Annuler une commande
-    public function CancelOrder($id)
+    public function CancelOrder(Request $request , $id)
     {
+        $request->validate([
+            'motif'=>'required'
+        ]);
        
         $cancelOrder = Order::whereId($id)->update([
-            'status' => 'annulée'
+            'status' => 'annulée',
+            'raison_annulation_cmd' => $request['motif']
+
         ]);
 
-        return back()->withSuccess('Votre à été annulée');
+        return back()->withSuccess('Votre commande à été annulée');
     }
 
 

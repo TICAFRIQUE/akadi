@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\admin\SettingController;
 use App\Http\Controllers\site\AuthController;
 use App\Http\Controllers\site\CartController;
 use App\Http\Controllers\site\SiteController;
@@ -129,6 +130,13 @@ Route::middleware(['admin'])->group(function () {
     //Dashboard
     Route::prefix('dashboard')->controller(DashboardController::class)->group(function () {
         route::get('', 'index')->name('dashboard.index');
+    });
+
+    //Setting
+    Route::prefix('admin/setting')->controller(SettingController::class)->group(function () {
+        route::get('', 'index')->name('setting.index');
+        route::post('setting/store', 'store')->name('setting.store');
+
     });
 
     //Auth admin
@@ -261,11 +269,20 @@ Route::controller(AuthPageController::class)->group(function () {
     route::post('/inscription', 'register')->name('register');
     route::get('/mes-commandes', 'userOrder')->name('user-order');
     route::get('/se-deconnecter', 'logout')->name('logout');
+
+    //forget password
+    Route::get('forget-password', 'showForgetPasswordForm')->name('forget.password.get');
+    Route::post('forget-password',  'submitForgetPasswordForm')->name('forget.password.post');
+    Route::get('reset-password', 'showResetPasswordForm')->name('reset.password.get');
+    Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
 });
+
+
+
 
 //Authentification user
 Route::controller(AccountPageController::class)->group(function () {
     route::get('/mes-commandes', 'userOrder')->name('user-order')->middleware(['auth']);
-    route::get('/annuler-commande/{id}', 'cancelOrder')->name('cancel-order')->middleware(['auth']);
+    route::post('/annuler-commande/{id}', 'cancelOrder')->name('cancel-order')->middleware(['auth']);
     route::get('/mon-profil', 'profil')->name('user-profil')->middleware(['auth']);
 });

@@ -26,6 +26,7 @@ class Order extends Model
         'delivery_planned', //date de livraison prevue
         'delivery_date', //date de livraison
         'status', //livre , en attente
+        'raison_annulation_cmd',
         'payment method',
         'available_product', //disponibilite
         'user_id',

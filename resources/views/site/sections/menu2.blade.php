@@ -43,7 +43,7 @@
                 <div class="col-auto d-none d-lg-block">
                     <p class="header-info">
                         <i class="fa-solid fa-location-dot"></i>
-                        Abidjan, Plateau Dokui
+                        Angré derrière la pharmacie Arcade
                     </p>
                     <p class="header-info">
                         <i class="fa-solid fa-phone"></i>
@@ -51,16 +51,16 @@
                     </p>
                     <p class="header-info">
                         <i class="fa-solid fa-envelope"></i>
-                        <a href="mailto:info@pizzan.com">info@akadi.ci</a>
+                        <a href="mailto:info@akadi.ci">info@akadi.ci</a>
                     </p>
                 </div>
                 <div class="col-auto">
                     <div class="th-social">
-                        <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.twitter.com/"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.linkedin.com/"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
             </div>

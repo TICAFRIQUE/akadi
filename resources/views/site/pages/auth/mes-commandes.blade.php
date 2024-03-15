@@ -82,13 +82,16 @@
                                         <span> <b>Total : {{ number_format($item['total']) }} FCFA </b> </span>
                                     </td>
 
-                                    <td class="{{ $item['status'] == 'annulée' ? 'd-none' : ($item['status'] =='livrée' ? 'd-none' : '')}} ">
-                                        <a href="{{ route('cancel-order', $item['id']) }}" class="button rounded-2"
-                                            value="58" title="">
+                                    <td
+                                        class="{{ $item['status'] == 'annulée' ? 'd-none' : ($item['status'] == 'livrée' ? 'd-none' : '') }} ">
+                                        <a href="#" role="button" class="button rounded-2"
+                                          data-bs-toggle="modal" data-bs-target="#modalId{{$item['id']}}"  value="58" title="">
                                             <i class="far fa-cancel"></i><span class="tinvwl-txt">Annuler</span>
                                         </a>
                                     </td>
                                 </tr>
+
+                                @include('site.sections.raison_annulation_cmd')
                             @endforeach
                         </tbody>
                     </table>
@@ -96,10 +99,10 @@
             </div>
         </div>
     @else
-      <div class="py-4 text-center">
-          <p>Vous n'avez pas de produits dans votre panier</p>
-        <a href="{{ route('liste-produit') }}" class="th-btn rounded-2">Commandez maintenant</a>
-      </div>
+        <div class="py-4 text-center">
+            <p>Vous n'avez pas de produits dans votre panier</p>
+            <a href="{{ route('liste-produit') }}" class="th-btn rounded-2">Commandez maintenant</a>
+        </div>
     @endif
 
 

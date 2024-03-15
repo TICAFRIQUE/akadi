@@ -182,14 +182,14 @@ Product Lightbox
                                     <div class="info-box_icon">
                                         <i class="fal fa-location-dot"></i>
                                     </div>
-                                    <p class="info-box_text">Abidjan , Plateau Dokui</p>
+                                    <p class="info-box_text">Angré derrière la pharmacie Arcade</p>
                                 </div>
                                 <div class="info-box">
                                     <div class="info-box_icon">
                                         <i class="fal fa-mobile-button"></i>
                                     </div>
                                     <p class="info-box_text">
-                                        <a href="tel:+11234567890" class="info-box_link">+(225) 07 58 83 83 38</a>
+                                        <a href="tel:+(225) 07 58 83 83 38" class="info-box_link">+(225) 07 58 83 83 38</a>
                                         {{-- <a href="tel:+10987654321" class="info-box_link">+(1) 098 765 4321</a> --}}
                                     </p>
                                 </div>
@@ -198,7 +198,7 @@ Product Lightbox
                                         <i class="fal fa-envelope"></i>
                                     </div>
                                     <p class="info-box_text">
-                                        <a href="mailto:info@pizzan.com" class="info-box_link">info@akadi.com</a>
+                                        <a href="mailto:info@akadi.ci" class="info-box_link">info@akadi.ci</a>
                                     </p>
                                 </div>
                             </div>

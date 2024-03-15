@@ -33,9 +33,9 @@
                 </div>
                 <input type="text" name="url_previous" value="{{ url()->previous() }}" hidden>
 
-                <div class="form-group">
-                    <button type="submit" class="th-btn rounded-2">Valider</button>
-                    <p class="fs-xs mt-2 mb-0"><a class="text-reset" href="{{ route('register-form') }}">Si vous n'avez pas de
+                <div class="form-group text-center">
+                    <button type="submit" class="th-btn rounded-2">Valider  </button> <a href="{{route('forget.password.get')}}">J'ai oublié mon mot de passe</a>
+                    <p class="fs-xs mt-4 mb-0"><a class="text-reset" href="{{ route('register-form') }}">Si vous n'avez pas de
                             compte?
                             <b class="text-danger">Créer un compte </b>
                         </a></p>
