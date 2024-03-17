@@ -4414,7 +4414,7 @@ a.text-theme:hover,
         -webkit-align-items: center;
         -ms-flex-align: center;
         align-items: center;
-        gap: 3px;
+        gap: 17px;
     }
 }
 
@@ -4433,7 +4433,7 @@ a.text-theme:hover,
     }
 }
 
-/* .header-button {
+.header-button {
   height: 100%;
   display: -webkit-box;
   display: -webkit-flex;
@@ -4444,7 +4444,7 @@ a.text-theme:hover,
       -ms-flex-align: center;
           align-items: center;
   gap: 17px;
-} */
+}
 
 .header-button .icon-btn {
     position: relative;
@@ -4844,7 +4844,7 @@ a.text-theme:hover,
     .header-layout2 .menu-area {
         border-radius: 8px;
         width: 100%;
-        padding: 0 20px;
+        padding: 0 0px;
     }
     .header-logo img {
         height: 62px;

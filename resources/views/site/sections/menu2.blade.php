@@ -133,9 +133,9 @@
                                         </a>
 
                                     @endguest
+
+
                                     @auth
-
-
                                         <div class="dropdown">
                                             <button class="dropdown-toggle simple-icon" type="button"
                                                 id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
@@ -163,10 +163,10 @@
                                     @endauth
                                     {{-- <a href="contact.html" class="th-btn rounded-2 style3">Book a Table<i
                                         class="fa-solid fa-arrow-right ms-2"></i></a> --}}
-                                    <button type="button" class="th-menu-toggle d-inline-block d-lg-none"><i
-                                            class="far fa-bars"></i></button>
+                                    </div>
                                 </div>
-                            </div>
+                                <button type="button" class="th-menu-toggle d-inline-block d-lg-none"><i
+                                        class="far fa-bars"></i></button>
 
 
                         </div>
