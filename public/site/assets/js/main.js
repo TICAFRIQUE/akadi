@@ -35,20 +35,22 @@
     /*
 
   /*---------- 01. On Load Function ----------*/
-    $(window).on("load", function () {
-        $(".preloader").fadeOut();
-        $(".slick-slider").slick("refresh");
-    });
+    // $(window).on("load", function () {
+    //     $(".preloader").fadeOut();
+    //     $(".slick-slider").slick("refresh");
+    // });
 
     /*---------- 02. Preloader ----------*/
-    if ($(".preloader").length > 0) {
-        $(".preloaderCls").each(function () {
-            $(this).on("click", function (e) {
-                e.preventDefault();
-                $(".preloader").css("display", "none");
-            });
-        });
-    }
+//     if ($(".preloader").length > 0) {
+//  var ld = $(".preloader").length
+//         console.log(ld)
+//         $(".preloaderCls").each(function () {
+//             $(this).on("click", function (e) {
+//                 e.preventDefault();
+//                 $(".preloader").css("display", "none");
+//             });
+//         });
+//     }
 
     /*---------- 03. Mobile Menu Active ----------*/
     $.fn.thmobilemenu = function (options) {
