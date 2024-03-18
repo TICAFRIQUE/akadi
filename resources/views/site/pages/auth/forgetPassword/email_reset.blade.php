@@ -24,19 +24,39 @@
 
                 </ol>
             </div>
-            @include('admin.components.validationMessage')
+            @include('admin.components.validationMessage') 
             <form action="{{ route('forget.password.post') }}" method="post" class="woocommerce-form-login mb-30">
                 @csrf
                 <div class="form-group">
                     <label>Email </label>
-                    <input type="email" name="email" class="form-control" required>
+                    <input type="email" name="email" id="email" class="form-control" required>
                 </div>
-                <button type="submit" class="th-btn rounded-2">Envoyer </button>
-
+                <button type="submit" class="th-btn rounded-2">Envoyer 
+                
+                <div class="spinner-grow text-dark" role="status">
+                <span class="visually-hidden">Loading...</span>
+                </div>
+                </button>
 
             </form>
         </div>
 
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $('.spinner-grow').hide();
+        
+            $('form').submit(function (e) { 
+
+                  var email = $('#email').val()
+                if (email) {
+                    $('.th-btn').prop("disabled", true);
+                    $(".spinner-grow").show();
+                }
+            });
+
+        });
+    </script>
 
 @endsection
