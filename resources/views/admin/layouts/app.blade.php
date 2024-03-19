@@ -71,8 +71,8 @@
                                     class="nav-link nav-link-lg
                                   collapse-btn"> <i
                                         data-feather="align-justify"></i></a></li>
-                            <li><a href="#" class="nav-link nav-link-lg fullscreen-btn">
-                                    <i data-feather="maximize"></i>
+                            <li><a href="https://akadi.ci" target="blank" class="nav-link nav-link-lg">
+                                    <i data-feather="eye"></i>
                                 </a></li>
                             {{-- <li>
                                 <form class="form-inline mr-auto">
