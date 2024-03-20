@@ -31,7 +31,7 @@
                                             <th>Email</th>
                                             {{-- <th>Boutique</th>
                                             <th>Localisation</th> --}}
-                                            <th>Role</th>
+                                            <th>Type utilisateur</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -50,7 +50,9 @@
                                                             class="text-capitalize fw-bold">{{ $role['name'] }}</span>
                                                     @endforeach
                                                 </td>
-                                                <td>
+                                               
+                                               @if ($item['role']!='gestionnaire')
+                                                    <td>
                                                     <div class="dropdown">
                                                         <a href="#" data-toggle="dropdown"
                                                             class="btn btn-warning dropdown-toggle">Options</a>
@@ -66,6 +68,7 @@
                                                         </div>
                                                     </div>
                                                 </td>
+                                               @endif
                                             </tr>
                                         @endforeach
 
