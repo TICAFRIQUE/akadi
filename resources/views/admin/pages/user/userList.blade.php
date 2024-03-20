@@ -51,8 +51,8 @@
                                                     @endforeach
                                                 </td>
                                                
-                                               @if ($item['role']!='gestionnaire')
-                                                    <td>
+                                              
+                                                    <td >
                                                     <div class="dropdown">
                                                         <a href="#" data-toggle="dropdown"
                                                             class="btn btn-warning dropdown-toggle">Options</a>
@@ -68,7 +68,6 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                               @endif
                                             </tr>
                                         @endforeach
 
