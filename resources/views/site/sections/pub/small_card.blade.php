@@ -1,7 +1,7 @@
 <!--==============================
 Petite section de publicité
 ==============================-->
-@if ($pack)
+@if (count($pack) > 0)
     <div class="title-area text-center">
         <span class="sub-title">
             <img class="icon" src="{{ asset('site/assets/img/icon/title_icon.svg') }}" alt="icon">
