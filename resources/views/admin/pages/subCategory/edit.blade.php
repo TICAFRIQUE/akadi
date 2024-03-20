@@ -47,7 +47,7 @@
                     <div class="col-sm-9">
                         <select name="category" class="form-control selectric " required>
                             <option disabled selected value>Choisir une categorie</option>
-                          @foreach($categories as $category)
+                          @foreach($category_backend as $category)
                           <option value="{{$category->id}}" {{$category['id']==$subCategory['category_id'] ? 'selected' : ''}}>{{$category->name}}</option>
                           @endforeach
                         </select>

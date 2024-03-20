@@ -45,6 +45,24 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/bundles/jquery-selectric/selectric.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/bundles/select2/dist/css/select2.min.css') }}">
 @endsection
+
+
+<script>
+    //upload principal image
+ function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $('#img-preview')
+                        .attr('src', e.target.result);
+                };
+
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+</script>
 <section class="section">
     <div class="section-body">
         <div class="row">
@@ -85,10 +103,10 @@
                                 </label>
 
                                 <div class="col-sm-12 col-md-7">
-                                    <select name="categories" class="form-control select2" required>
-                                        @foreach ($categories as $item)
+                                    <select name="categories" id="category" class="form-control select2" required>
+                                        @foreach ($category_backend as $item)
                                             {{-- @if ($product->categories->containsStrict('id', $item['id'])) @selected(true) @endif --}}
-                                            <option value="{{ $item['id'] }}"
+                                            <option value="{{ $item['id'] }}" tag={{ $item['name']}}
                                                 @if ($product->categories->containsStrict('id', $item['id'])) @selected(true) @endif>
                                                 {{ $item['name'] }}</option>
                                         @endforeach
@@ -129,6 +147,29 @@
                                 </div>
                             </div>
 
+                            <!-- ========== Start principal image ========== -->
+                            @if ($product->getFirstMediaUrl('principal_img'))
+                                <div class="form-group row mb-4" id="principal_image">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Image
+                                        principale</label>
+                                    <div class="col-sm-12 col-md-7">
+                                        <p class="card-text">
+                                            <img id="img-preview"
+                                                src="{{ $product->getFirstMediaUrl('principal_img') }}"
+                                                width="250px" />
+                                            <input type="file" name="principal_img" id="file_single"
+                                                class="form-control" onchange="readURL(this);" hidden>
+
+                                            <br> <label for="file_single" class="btn btn-primary btn-lg border mt-3">
+                                                <i data-feather="image"></i>
+                                                Ajoutez une image principale </label>
+                                        </p>
+
+                                    </div>
+                                </div>
+                            @endif
+                            <!-- ========== End principal image ========== -->
+
                             <div class="form-group row mb-4">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images</label>
                                 <div class="col-sm-12 col-md-7">
@@ -166,6 +207,17 @@
 @endsection
 <script type="text/javascript">
     $(document).ready(function() {
+        //display principal image if category is pack
+        // $('#principal_image').hide()
+
+        $('select[name="categories"]').change(function(e) {
+            var selectVal = $("#category option:selected").attr('tag');
+            if (selectVal == "Pack") {
+                $('#principal_image').show()
+            } else {
+                $('#principal_image').hide(100)
+            }
+        });
 
 
         //edit file 

@@ -15,8 +15,8 @@ About Area
                 </div>
             </div>
             <div class="col-xl-5">
-                <div class="title-area mb-30 text-center text-xl-start">
-                    <span class="sub-title">A propos de AKADI</span>
+                <div class="title-area fs-3 mb-0 text-center text-xl-start">
+                    <span class="sub-title fs-2">A propos de Akadi</span>
                 </div>
                 <p class="mt-n2 mb-25 text-center text-xl-start">
                     Akadi, est un restaurant en ligne spécialisé en poulet fumé crée par une jeune dame dynamique qui

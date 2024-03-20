@@ -21,7 +21,7 @@ class ProductController extends Controller
     public function index()
     {
         //
-        $product = Product::with(['categories', 'collection', 'tailles', 'pointures', 'media'])
+        $product = Product::with(['categories',  'media'])
             ->orderBy('created_at', 'DESC')
             ->get();
         // dd($product->toArray());
@@ -67,7 +67,6 @@ class ProductController extends Controller
             'title' => $request['title'],
             'description' => $request['description'],
             'price' => $request['price'],
-            'collection_id' => $request['collection'],
             'sub_category_id' => $request['subcategories'],
             'user_id' => $userId
         ]);
@@ -83,28 +82,12 @@ class ProductController extends Controller
 
         }
 
-        // if ($request->has('category_section')) {
 
-        //     // DB::table('category_product')->insert([
-        //     //     'category_id' => $request['category_section'],
-        //     //     'product_id' => $product->id
-        //     // ]);
-        //     $product->categories()->attach($request['category_section']);
-        // }
 
-        //insert taille in table
-        // if ($request->has('tailles')) {
-        //     foreach ($request->input('tailles') as $key => $value) {
-        //         Taille::create(['taille' => $value, 'product_id' => $product->id]);
-        //     }
-        // }
-
-        //insert pointure in table
-        // if ($request->has('pointures')) {
-        //     foreach ($request->input('pointures') as $key => $value) {
-        //         Pointure::create(['pointure' => $value, 'product_id' => $product->id]);
-        //     }
-        // }
+        //upload principal image
+        if ($request->has('principal_img')) {
+            $product->addMediaFromRequest('principal_img')->toMediaCollection('principal_img');
+        }
 
         //upload images with spatie
         if ($request->has('files')) {
@@ -138,7 +121,7 @@ class ProductController extends Controller
         // $collection = Collection::orderBy('name', 'DESC')->get();
 
         $product = Product::with([
-            'categories', 'subcategorie', 'collection', 'tailles', 'pointures', 'media'
+            'categories', 'subcategorie',  'media'
         ])
             ->whereId($id)
             ->first();
@@ -205,7 +188,6 @@ class ProductController extends Controller
             'title' => $request['title'],
             'description' => $request['description'],
             'price' => $request['price'],
-            'collection_id' => $request['collection'],
             'sub_category_id' => $request['subcategories']
 
         ]);
@@ -218,9 +200,10 @@ class ProductController extends Controller
             $product->categories()->attach($request['categories']);
         }
 
-        // if ($request->has('category_section')) {
-        //     $product->categories()->attach($request['category_section']);
-        // }
+        if ($request->has('principal_img')) {
+            $product->clearMediaCollection('principal_img');
+            $product->addMediaFromRequest('principal_img')->toMediaCollection('principal_img');
+        }
 
         //upload images with spatie
         if ($request->has('files')) {
@@ -230,27 +213,6 @@ class ProductController extends Controller
             }
         }
 
-        //insert taille in table
-        // if ($request->has('tailles')) {
-        //     Taille::where('product_id', $id)->delete();
-
-        //     foreach ($request->input('tailles') as $key => $value) {
-        //         Taille::create(['taille' => $value, 'product_id' => $product->id]);
-        //     }
-        // } else {
-        //     Taille::where('product_id', $id)->delete();
-        // }
-
-        //insert pointure in table
-        // if ($request->has('pointures')) {
-        //     Pointure::where('product_id', $id)->delete();
-
-        //     foreach ($request->input('pointures') as $key => $value) {
-        //         Pointure::create(['pointure' => $value, 'product_id' => $product->id]);
-        //     }
-        // } else {
-        //     Pointure::where('product_id', $id)->delete();
-        // }
 
 
         return back()->withSuccess('Produit modifié avec success ');

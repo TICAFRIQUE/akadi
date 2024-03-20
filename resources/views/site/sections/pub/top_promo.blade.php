@@ -25,16 +25,16 @@
                 </div>
                 <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 m-auto ">
                     <div class="title-area mb-30 m-auto text-center">
-                        <span class="sub-title m-auto mb-3" style="text-align: center">
+                        <span class="sub-title fs-3 m-auto mb-3" style="text-align: center">
                             <img class="icon" src="{{ asset('site/assets/img/icon/title_icon.svg') }}" alt="icon">
-                            Top promo AKADI
+                            Top promo Akadi
                         </span>
 
 
 
-                        <h6 class=""> Promo de la femme capable: 10 premières commandes sont à 6000 Frs au lieu de 8000 Frs. Et
+                        <p class="fs-4"> Promo de la femme capable: 10 premières commandes sont à 6000 Frs au lieu de 8000 Frs. Et
                             si, une même personne commande 4 plats, +1 plat en bonus. de 08h00 à 10h30. Top c'est lacé !
-                        </h6>
+                        </p>
 
 
                     </div>

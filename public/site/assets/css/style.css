@@ -4108,7 +4108,7 @@ a.text-theme:hover,
     display: block;
     position: relative;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 14px;
     color: var(--title-color);
     text-transform: uppercase;
 }
@@ -12111,9 +12111,10 @@ span.select2-selection.select2-selection--single:focus {
 
 /* Offer 2 ---------------------------------- */
 .offer-card {
-    padding: 40px;
+    padding: 80px;
     border-radius: 10px;
-    background-position: left center;
+    border: 2px dashed rgb(255, 132, 17);
+    /* background-position: left center; */
 }
 
 .offer-card .offer-title {

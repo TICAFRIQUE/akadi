@@ -7,6 +7,27 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/css/custom.css') }}">
 @endpush
 
+<script>
+    //upload principal image
+    function readURL(input) {
+        let noimage =
+            "https://ami-sni.com/wp-content/themes/consultix/images/no-image-found-360x250.png";
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $('#img-preview')
+                    .attr('src', e.target.result);
+            };
+
+
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            $("#img-preview").attr("src", noimage);
+        }
+    }
+</script>
+
 @section('content')
     <style>
         input[type="file"] {
@@ -88,10 +109,10 @@
                                     class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Categorie</label>
 
                                 <div class="col-sm-12 col-md-7">
-                                    <select name="categories" class="form-control select2" required>
+                                    <select name="categories" id="category" class="form-control select2" required>
                                         <option value="">Selectionner une catégorie</option>
-                                        @foreach ($categories as $item)
-                                            <option value="{{ $item['id'] }}"> {{ $item['name'] }} </option>
+                                        @foreach ($category_backend as $item)
+                                            <option value="{{ $item['id'] }}" tag={{$item['name']}}> {{ $item['name'] }} </option>
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback">
@@ -210,23 +231,45 @@
                                 </div>
                             </div>
 
-                            <!-- ========== Start add image ========== -->
+                            <!-- ========== Start principal image ========== -->
+                            <div class="form-group row mb-4" id="principal_image">
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Image
+                                    principale</label>
+                                <div class="col-sm-12 col-md-7">
+                                    <p class="card-text">
+                                        <img id="img-preview"
+                                            src="https://ami-sni.com/wp-content/themes/consultix/images/no-image-found-360x250.png"
+                                            width="250px" />
+                                        <input type="file" name="principal_img" id="file_single" class="form-control"
+                                            onchange="readURL(this);" hidden>
+
+                                        <br> <label for="file_single" class="btn btn-primary btn-lg border mt-3">
+                                            <i data-feather="image"></i>
+                                            Ajoutez une image principale </label>
+                                    </p>
+
+                                </div>
+                            </div>
+                            <!-- ========== End principal image ========== -->
+
+
+                            <!-- ========== Start add multiple image ========== -->
                             <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images</label>
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images du
+                                    produits</label>
                                 <div class="col-sm-12 col-md-7">
                                     <p class="card-text">
                                         <input type="file" id="files" class="form-control media" name="files[]"
                                             accept="image/*" multiple hidden required />
                                         <label for="files" class="btn btn-light btn-lg border">
                                             <i data-feather="image"></i>
-                                            Ajoutez des images</label>
+                                            Ajoutez des images du produits</label>
                                     <div class="invalid-feedback">Champs obligatoire</div>
                                     </p>
 
                                 </div>
                             </div>
-                            <!-- ========== End add image ========== -->
-
+                            <!-- ========== End add multiple image ========== -->
 
                             <div class="form-group row mb-4">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
@@ -243,9 +286,6 @@
     </div>
 </section>
 
-{{-- @include('admin.pages.collection.modalAdd')
-@include('admin.pages.category.modalAdd')
-@include('admin.pages.subCategory.modalAdd') --}}
 
 @section('script')
     <script src="{{ asset('admin/assets/bundles/select2/dist/js/select2.full.min.js') }}"></script>
@@ -253,57 +293,19 @@
 @endsection
 <script type="text/javascript">
     $(document).ready(function() {
-        let imgArray = [];
 
-        // Gestion upload image
-        // if (window.File && window.FileList && window.FileReader) {
-        //     $("#files").on("change", function(e) {
-        //         var files = e.target.files,
-        //             filesLength = files.length;
-        //         for (var i = 0; i < filesLength; i++) {
-        //             var f = files[i]
-        //             imgArray.push(f);
+        //display principal image if category is pack
+        $('#principal_image').hide()
 
-        //             for (let i = 0; i < imgArray.length; i++) {
-        //                 var fileReader = new FileReader();
-        //                 fileReader.onload = (function(e) {
-        //                     var file = e.target;
-        //                     $("<span class=\"pip\">" +
-        //                         "<img class=\"imageThumb\" src=\"" + e.target.result +
-        //                         "\" title=\"" + imgArray[i]
-        //                         .name + "\"/>" +
-        //                         "<br/><span class=\"remove\"data-id=\"" +
-        //                         i + "\">x</span>" +
-        //                         "</span>").insertAfter("#files");
-        //                     $(".remove").click(function(e) {
-        //                         let filename = $(this).parent().find("img")
-        //                             .attr("title");
-        //                         var removeId = $(this).attr(
-        //                             'data-id');
+        $('select[name="categories"]').change(function(e) {
+            var selectVal = $("#category option:selected").attr('tag');
+            if (selectVal == "Pack") {
+                $('#principal_image').show()
+            } else {
+                $('#principal_image').hide(100)
+            }
+        });
 
-        //                         if (imgArray[i].name === filename) {
-        //                             var remove = imgArray.splice(removeId, 1);
-        //                         }
-
-        //                         console.log('media', imgArray);
-
-        //                         $(this).parent(".pip").remove();
-        //                     });
-
-        //                 });
-
-        //             }
-
-        //             fileReader.readAsDataURL(f);
-        //         }
-
-        //     });
-
-        //     // console.log(imgArray);
-
-        // } else {
-        //     alert("Your browser doesn't support to File API")
-        // }
 
 
 
@@ -344,6 +346,7 @@
         }
 
 
+
         //load sub cat
         $('.subcat').hide();
 
@@ -373,7 +376,7 @@
 
                         } else {
                             $('.subcat').hide(200);
-                            $('.subCat_required').prop('required', false);  
+                            $('.subCat_required').prop('required', false);
 
                         }
                     }
@@ -385,37 +388,6 @@
 
             }
         });
-
-
-
-        //hide elements
-        // $('#sectionDiv').hide();
-        // $('#collectionDiv').hide();
-        // $('#pointureDiv').hide();
-        // $('#tailleDiv').hide();
-
-        //show if checked
-
-
-        // $('#collection').change(function() {
-        //     $('#collectionDiv').toggle(200);
-        // });
-
-        // $('#pointure').change(function() {
-        //     $('#pointureDiv').toggle(200);
-        // });
-
-        // $('#taille').change(function() {
-        //     $('#tailleDiv').toggle(200);
-        // });
-
-        // $('#section').change(function() {
-        //     $('#sectionDiv').toggle(200);
-        // });
-
-     
-
-
 
 
 

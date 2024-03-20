@@ -24,33 +24,35 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
-        $category = Category::with(['products' =>fn($q)=>$q->orderBy('created_at', 'ASC')->get()
+        //category frontend
+        $category = Category::with(['products' =>fn($q)=>$q->orderBy('created_at', 'DESC')->get()
         ,'media', 'subcategories'])
-            // ->whereIn('type', ['principale','pack'])
+            ->whereNotIn('name', ['Pack'])
+            ->orderBy('created_at', 'DESC')->get();
+        // dd($category->toArray());
+
+        //category backend
+        $category_backend = Category::with([
+            'products' => fn ($q) => $q->orderBy('created_at', 'DESC')->get(), 'media', 'subcategories'
+        ])
             ->orderBy('created_at', 'DESC')->get();
         // dd($category->toArray());
 
         $subcategory = SubCategory::with(['products', 'media', 'category'])->orderBy('name', 'ASC')->get();
 
-        $section_categories = Category::with(['products', 'media', 'subcategories'])->orderBy('created_at', 'DESC')
-            ->whereType('section')
-            ->get();
-
-        $collection = Collection::with('media')->orderBy('name')->get();
-
+      
 
         $roles = Role::where('name', '!=', 'developpeur')->get();
 
 
 
-        View::composer('*', function ($view) use ($category, $collection, $subcategory, $section_categories, $roles) {
+        View::composer('*', function ($view) use ($category, $subcategory, $roles,$category_backend) {
             $view->with([
                 'categories' => $category,
                 'subcategories' => $subcategory,
-                'section_categories' => $section_categories,
                 'roles' => $roles,
-                'collection' => $collection,
+                'category_backend' => $category_backend,
+
             ]);
         });
     }

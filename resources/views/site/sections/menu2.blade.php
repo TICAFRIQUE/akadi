@@ -3,7 +3,7 @@
     <div class="th-menu-area text-center">
         <button class="th-menu-toggle"><i class="fal fa-times"></i></button>
         <div class="mobile-logo">
-            <img src="{{ asset('site/assets/img/custom/logo.png') }}" width="65px" alt="logo akadi"> </a>
+            <img src="{{ asset('site/assets/img/custom/logo_2.jpeg') }}" width="auto" height="auto" alt="logo akadi"> </a>
         </div>
         <div class="th-mobile-menu">
             <ul>
@@ -12,13 +12,16 @@
                 </li>
                 @foreach ($categories as $item)
                     <li class="menu-item-has-children">
-                        <a href="/produit?categorie={{ $item['id'] }}"> {{ $item['name'] }} </a>
-                        @foreach ($item['subcategories'] as $item)
+                        <a href="/produit?categorie={{ $item['id'] }}"> {{ $item['name'] }}
+                        </a>
+                        @if (count($item['subcategories']) > 0)
                             <ul class="sub-menu">
-                                <li><a href="/produit?sous-categorie={{ $item['id'] }}">
-                                        {{ $item['name'] }} </a></li>
+                                @foreach ($item['subcategories'] as $item)
+                                    <li><a href="/produit?sous-categorie={{ $item['id'] }}">
+                                            {{ $item['name'] }} </a></li>
+                                @endforeach
                             </ul>
-                        @endforeach
+                        @endif
                     </li>
                 @endforeach
 
@@ -76,7 +79,7 @@
                             <div class="col-auto">
                                 <div class="header-logo">
                                     <a href="{{ route('page-acceuil') }}">
-                                        <img src="{{ asset('site/assets/img/custom/logo.png') }}" width=65px
+                                        <img src="{{ asset('site/assets/img/custom/logo_2.jpeg') }}" width=80px
                                             alt="logo akadi">
                                     </a>
                                 </div>
@@ -87,28 +90,19 @@
                                         <li class="menu-item">
                                             <a href="{{ route('page-acceuil') }}">Accueil</a>
                                         </li>
-                                        {{-- <li class="menu-item-has-children">
-                                      <a href="#">Menu</a>
-                                      <ul class="sub-menu">
-                                          <li><a href="menu-fast.html">Fast Food Menu</a></li>
-                                          <li><a href="menu-fast-v2.html">Fast Food Menu v2</a></li>
-                                          <li><a href="menu-rest.html">Restaurant Food Menu</a></li>
-                                          <li><a href="menu-rest-v2.html">Restaurant Food Menu v2</a></li>
-                                      </ul>
-                                  </li> --}}
 
                                         @foreach ($categories as $item)
                                             <li class="menu-item-has-children">
                                                 <a href="/produit?categorie={{ $item['id'] }}"> {{ $item['name'] }}
                                                 </a>
-                                               @if (count($item['subcategories']) >0)
-                                                    <ul class="sub-menu" >
-                                                    @foreach ($item['subcategories'] as $item)
-                                                        <li><a href="/produit?sous-categorie={{ $item['id'] }}">
-                                                                {{ $item['name'] }} </a></li>
-                                                    @endforeach
-                                                </ul>
-                                               @endif
+                                                @if (count($item['subcategories']) > 0)
+                                                    <ul class="sub-menu">
+                                                        @foreach ($item['subcategories'] as $item)
+                                                            <li><a href="/produit?sous-categorie={{ $item['id'] }}">
+                                                                    {{ $item['name'] }} </a></li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
                                             </li>
                                         @endforeach
 
@@ -163,10 +157,10 @@
                                     @endauth
                                     {{-- <a href="contact.html" class="th-btn rounded-2 style3">Book a Table<i
                                         class="fa-solid fa-arrow-right ms-2"></i></a> --}}
-                                    </div>
                                 </div>
-                                <button type="button" class="th-menu-toggle d-inline-block d-lg-none"><i
-                                        class="far fa-bars"></i></button>
+                            </div>
+                            <button type="button" class="th-menu-toggle d-inline-block d-lg-none"><i
+                                    class="far fa-bars"></i></button>
 
 
                         </div>

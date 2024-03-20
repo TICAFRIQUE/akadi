@@ -6,7 +6,7 @@
     @include('admin.components.validationMessage')
 
     <!-- ========== Start slider ========== -->
-    @include('site.sections.slider3')
+    @include('site.sections.slider')
     <!-- ========== End slider ========== -->
 
 
@@ -21,7 +21,7 @@
 
 
     <!-- ========== Start categorie-with-plats-recent ========== -->
-    @include('site.sections.categorie-produits2')
+    @include('site.sections.categorie-produits')
     <!-- ========== End categorie-with-plats-recent ========== -->
 
     <!-- ========== Start publicite small card ========== -->

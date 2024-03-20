@@ -1,7 +1,7 @@
 <!--==============================
 Petite section de publicité
 ==============================-->
-@if ($small_card)
+@if ($pack)
     <div class="title-area text-center">
         <span class="sub-title">
             <img class="icon" src="{{ asset('site/assets/img/icon/title_icon.svg') }}" alt="icon">
@@ -14,13 +14,24 @@ Petite section de publicité
     <div class="space-bottom">
         <div class="container">
             <div class="row gy-4">
-                @foreach ($small_card as $item)
+                @foreach ($pack as $item)
                     <div class="col-xl-4 col-md-6">
-                        <div class="offer-card" data-bg-src="{{ $item->getFirstMediaUrl('publicite_image') }}">
-                            <h3 class="offer-title box-title"> {!!$item['texte']!!} </h3>
-                            <p class="offer-text"></p>
-                            <a href="{{ $item['url'] }}" class="line-btn btn btn-danger text-white">Commandez</a>
-                        </div>
+                        <a href="{{ route('detail-produit', $item['slug']) }}">
+                            <div class="offer-card" data-bg-src="{{ $item->getFirstMediaUrl('principal_img') }}">
+                                {{-- <h3 class="offer-title box-title">{{$item['title']}} </h3> --}}
+                                {{-- <p class="offer-text">
+                                {{$item['description']}}
+                            </p> --}}
+                                <a href="{{ route('detail-produit', $item['slug']) }}"
+                                    class="line-btn btn btn-danger text-white">Commandez</a>
+                            </div>
+                        </a>
+                        <p class="text-dark fw-500  text-center text-capitalize">
+                             <a class="fs-4" href="{{ route('detail-produit', $item['slug']) }}">{{ $item['title'] }} </a>
+                            <br><span class="fs-5">{{number_format($item['price'] , 0 , ',', ' ')}} <small>FCFA</small> </span>
+                            </p>
+                            
+
                     </div>
                 @endforeach
 

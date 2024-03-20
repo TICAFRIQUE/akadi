@@ -12,8 +12,10 @@
                      <div class="col-xl-3 col-lg-3 col-md-3 col-sm2">
                     <div class="category-border">
                         <div class="category-border_img">
-                            <img src="{{ $item->getFirstMediaUrl('category_image') }}"
+                            <a href="/produit?categorie={{$item['id']}}">
+                                <img src="{{ $item->getFirstMediaUrl('category_image') }}"
                                 alt="{{ $item->getFirstMediaUrl('category_image') }}">
+                            </a>
                         </div>
                         
                         <h3 class="category-border_title"><a href="/produit?categorie={{$item['id']}}"> {{$item['name']}} </a></h3>
