@@ -57,8 +57,8 @@
                             <a href="shop-details.html" class="woocommerce-review-link">(<span class="count">3</span>
                                 customer reviews)</a>
                         </div> --}}
-                        <h2 class="product-title"> {{ $product['title'] }} </h2>
-                        <span class="price"> {{ number_format($product['price'], 0) }} FCFA <del></del></span>
+                        <h4 class="product-title"> {{ $product['title'] }} </h4>
+                        <span class="price fs-2"> {{ number_format($product['price'], 0 ,  ',', ' ') }} FCFA <del></del></span>
 
                         <div class="product_meta">
                             <span class="sku_wrapper">Description: <span class="sku"> {!! $product['description'] !!}
@@ -140,7 +140,7 @@
                                             href="{{ route('detail-produit', $item['slug']) }}">{{ $item['title'] }}</a>
                                     </h3>
                                     {{-- <p class="th-menu_desc">Barbecue Italian cuisine pizza</p> --}}
-                                    <span class="th-menu_price"> {{ number_format($item['price'], 0) }} FCFA </span>
+                                    <span class="th-menu_price"> {{ number_format($item['price'], 0 ,  ',', ' ') }} FCFA </span>
                                 </div>
                                 <div class="fire"><img src="{{ asset('site/assets/img/update_2/shape/fire.png') }}"
                                         alt="shape"></div>

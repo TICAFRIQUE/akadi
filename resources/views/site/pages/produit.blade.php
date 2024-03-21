@@ -1,4 +1,4 @@
-a@extends('site.layouts.app')
+@extends('site.layouts.app')
 
 @section('title', 'Liste des plats')
 

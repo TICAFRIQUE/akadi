@@ -27,8 +27,8 @@ Petite section de publicité
                             </div>
                         </a>
                         <p class="text-dark fw-500  text-center text-capitalize">
-                             <a class="fs-4" href="{{ route('detail-produit', $item['slug']) }}">{{ $item['title'] }} </a>
-                            <br><span class="fs-5">{{number_format($item['price'] , 0 , ',', ' ')}} <small>FCFA</small> </span>
+                             <a class="fs-4 text-dark" href="{{ route('detail-produit', $item['slug']) }}">{{ $item['title'] }} </a>
+                            <br><span class="fs-5 fw-medium " style="color:rgb(249, 135, 5)">{{number_format($item['price'] , 0 , ',', ' ')}} <small>FCFA</small> </span>
                             </p>
                             
 

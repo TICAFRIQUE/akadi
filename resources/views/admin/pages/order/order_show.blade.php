@@ -88,10 +88,18 @@
             <h6 class="p-2" style="background-color: #e1e6ea">Livraison</h6>
 
             <div class="fst-italic p-2">
-                <span class="text-dark">#Livraison à domicile</span><br>
-                <span class="">Lieu de livraison: <b>{{ $orders['delivery_name'] }}</b> ,
-                    <b>{{ $orders['address'] }}</b></span><br>
-                <span>Tarif livraison: <b>{{ $orders['delivery_price'] }}</b> </span><br>
+                <span class="text-dark">Mode de livraison : <b>{{ $orders['mode_livraison'] }}</b></span><br>
+
+                @if ($orders['address'])
+                    <span class="">Lieu de livraison: <b>{{ $orders['delivery_name'] }}</b> ,
+                        <b>{{ $orders['address'] }}</b></span><br>
+                    <span>Tarif livraison: <b>{{ $orders['delivery_price'] }}</b> </span><br>
+                @elseif ($orders['address_yango'])
+                    <span class="">Adresse de destination: <b>{{ $orders['address_yango'] }}</b> ,
+                        <br>
+                        <span>Tarif livraison: <b>Les frais sont à la charge du client</b> </span><br>
+                @endif
+
             </div>
 
 
@@ -99,7 +107,7 @@
                 <h6 class="p-2" style="background-color: #e1e6ea">Motif d'annulation </h6>
 
                 <div class="fst-italic p-2">
-                    <p> {{$orders['raison_annulation_cmd']}} </p>
+                    <p> {{ $orders['raison_annulation_cmd'] }} </p>
 
                 </div>
             @endif

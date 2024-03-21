@@ -24,7 +24,7 @@
                                             </th>
                                             <th>code</th>
                                             <th>client</th>
-                                            <th>Livraison</th>
+                                            {{-- <th>Livraison</th> --}}
                                             <th>Total</th>
                                             <th>date</th>
                                             <th>Action</th>
@@ -40,8 +40,8 @@
                                                     </span>
                                                 </td>
                                                 <td>{{ $item['user']['name'] }} </td>
-                                                <td>{{ $item['delivery_name'] }} - {{ $item['delivery_price'] }} </td>
-                                                <td>{{ $item['total'] }} </td>
+                                                {{-- <td>{{ $item['delivery_name'] }} - {{ $item['delivery_price'] }} </td> --}}
+                                                <td>{{ number_format($item['total'], 0 , '', ' ' )}} </td>
                                                 <td>
                                                     {{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}
                                                     <br>

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('delivery_price')->nullable(); // prix de la livraison
             $table->string('delivery_name')->nullable(); // Lieu de livraison
             $table->longText('address')->nullable(); // adresse de livraison *** preciser le lieu de livraison
+            $table->string('address_yango')->nullable(); //adresse de recuperation
+            $table->string('mode_livraison')->nullable(); //domicile, sur_place, yango
 
             $table->double('discount')->nullable();
             $table->string('total')->nullable();
@@ -28,7 +30,7 @@ return new class extends Migration
             $table->string('payment method')->nullable(); 
             $table->string('available_product')->default('yes')->nullable(); // disponibilite du produit
             $table->date('date_order')->nullable();
-            
+            $table->longText('raison_annulation_cmd')->nullable();
             $table->foreignId('user_id')
             ->nullable()
             ->constrained('users')
