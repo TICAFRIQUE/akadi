@@ -40,7 +40,7 @@
                     </div>
                     {{-- <p class="mt-n2 mb-10">Bientôt disponible.</p> --}}
                     <div class="btn-wrap style1">
-                        <a href="{{ route('liste-produit') }}" class="th-btn m-auto">Commandez</a>
+                        <a href="{{ $top_promo['url']}}" class="th-btn m-auto">Commandez</a>
                         {{-- <div class="about-counter1">
                         <h3 class="counter-title"><span class="counter-number">24</span></h3>
                         <div class="media-body">

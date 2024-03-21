@@ -28,6 +28,7 @@ class Order extends Model
         'status', //livre , en attente
         'raison_annulation_cmd',
         'payment method',
+        'mode_livraison', // domicile, sur place, yango
         'available_product', //disponibilite
         'user_id',
         'date_order',
