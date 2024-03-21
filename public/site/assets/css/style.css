@@ -4849,6 +4849,10 @@ a.text-theme:hover,
     .header-logo img {
         height: 62px;
     }
+    
+    .cat_desktop{
+        display:none;
+    }
 }
 
 /* Header 3 ---------------------------------- */

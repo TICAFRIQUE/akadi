@@ -3,7 +3,8 @@
     <div class="th-menu-area text-center">
         <button class="th-menu-toggle"><i class="fal fa-times"></i></button>
         <div class="mobile-logo">
-            <img src="{{ asset('site/assets/img/custom/logo_2.jpeg') }}" width="auto" height="auto" alt="logo akadi"> </a>
+            <img src="{{ asset('site/assets/img/custom/logo_2.jpeg') }}" width="auto" height="auto" alt="logo akadi">
+            </a>
         </div>
         <div class="th-mobile-menu">
             <ul>
@@ -84,7 +85,8 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="col-auto">
+
+                            <div class="col-auto cat_desktop">
                                 <nav class="main-menu d-none d-lg-inline-block">
                                     <ul>
                                         <li class="menu-item">
@@ -110,7 +112,6 @@
                                     </ul>
                                 </nav>
                             </div>
-
 
                             <div class="col-auto">
                                 <div class="header-button">
@@ -159,9 +160,10 @@
                                         class="fa-solid fa-arrow-right ms-2"></i></a> --}}
                                 </div>
                             </div>
-                            <button type="button" class="th-menu-toggle d-inline-block d-lg-none"><i
-                                    class="far fa-bars"></i></button>
 
+                            <button type="button" class="th-menu-toggle d-inline-block d-lg-none"><i
+                                    class="far fa-bars"></i>
+                            </button>
 
                         </div>
                     </div>

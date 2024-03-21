@@ -120,7 +120,7 @@ class CartPageController extends Controller
             'cart' => session()->get('cart'),
             'totalQte' => $totalQuantity,
             'countCart' => $countCart,
-            "sousTotal" => number_format($sousTotal),
+            "sousTotal" => number_format($sousTotal)
         ]);
     }
 
@@ -137,8 +137,8 @@ class CartPageController extends Controller
         $total_price =  $sub_total +  $delivery_price;
 
         return response()->json([
-            'delivery_price' => number_format($delivery_price, 0),
-            'total_price' => number_format($total_price, 0),
+            'delivery_price' => $delivery_price,
+            'total_price' => number_format($total_price, 0, ',' , ' '),
             'delivery_name' => $delivery_name,
 
         ]);
@@ -162,20 +162,21 @@ class CartPageController extends Controller
 
                 //informations depuis ajax
                 $subTotal = $_GET['data']['subTotal'];
-                $deliveryId = $_GET['data']['deliveryId'];
+                $delivery_name = $_GET['data']['lieu_livraison'];
+                $delivery_price = $_GET['data']['prix_livraison'];
+                $delivery_mode = $_GET['data']['delivery_mode'];
                 $address = $_GET['data']['address'];
+                $address_yango = $_GET['data']['address_yango'];
 
-                //recuperer les information de livraison
-                $delivery = Delivery::whereId($deliveryId)->first();
 
-                //calculer le montant total de la commande avec le tarif de la livraison
-                $totalOrder = $subTotal + $delivery->tarif;
-
+                //calculer le total TTC
                
-        
+                $totalOrder =
+                $subTotal + $delivery_price;
+
                 //quantité des produit au panier
                 $quantity_product = count((array) session('cart'));
-                
+
                 //enregistrer la commande
 
                 $order = Order::firstOrCreate([
@@ -183,9 +184,13 @@ class CartPageController extends Controller
                     'quantity_product' => $quantity_product,
                     'subtotal' => $subTotal,
                     'total' => $totalOrder,
-                    'delivery_name' =>   $delivery['zone'],
-                    'delivery_price' => $delivery['tarif'],
+                    'delivery_name' =>   $delivery_name,
+                    'delivery_price' => $delivery_price,
                     'address' => $address,
+                    'address_yango' => $address_yango,
+                    'mode_livraison' => $delivery_mode,
+
+
 
                     // 'discount' => '',
                     // 'delivery_planned' => Carbon::now()->addDay(3), //date de livraison prevue

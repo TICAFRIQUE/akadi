@@ -21,6 +21,7 @@ class Order extends Model
         'delivery_price', // prix de la livraison
         'delivery_name', // Lieu de livraison
         'address',  //preciser le lieu de livraison (adresse, ville, code postal)
+        'address_yango',  //preciser le lieu de livraison (adresse, ville, code postal)
         'discount',
         'total',
         'delivery_planned', //date de livraison prevue

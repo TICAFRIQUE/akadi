@@ -58,7 +58,7 @@
                                             </td>
                                             <td data-title="Price">
                                                 <span class="amount text-dark"><bdi>
-                                                        {{ number_format($details['price'], 0) }}
+                                                        {{ number_format($details['price'], 0, ',', ' ') }}
                                                         <span></span>
                                                     </bdi></span>
                                             </td>
@@ -70,7 +70,7 @@
                                                     $total = $details['price'] * $details['quantity'];
                                                 @endphp
                                                 <span class="amount"><bdi><span id="totalPriceQty{{ $id }}">
-                                                            {{ number_format($total) }}
+                                                            {{ number_format($total, 0 , ',', ' ') }}
                                                         </span>FCFA</bdi></span>
                                             </td>
 
@@ -120,11 +120,11 @@
                                             <td>Sous total</td>
                                             <td data-title="Total">
                                                 <span data-subTotal="{{ $sousTotal }}" class="amount sousTotal">
-                                                    <h6 class="text-danger">{{ number_format($sousTotal) }} FCFA</h6>
+                                                    <h6 class="text-danger">{{ number_format($sousTotal, 0 , ',', ' ') }} FCFA</h6>
                                                 </span>
                                             </td>
                                         </tr>
-                                        <tr>
+                                        <tr class="_delivery_price">
                                             <td>Livraison
                                                 <span class=" text-danger delivery_name"></span>
                                             </td>
@@ -138,9 +138,32 @@
                                             {{-- <th>Lieu de livraison</th> --}}
                                             <td colspan="2" data-title="Shipping and Handling">
                                                 <form action="#" method="post">
-                                                    <a href="#" class="shipping-calculator-button">Choisir un lieu de
-                                                        livraison</a>
+                                                    <!-- ========== Start mode de livraison ========== -->
+                                                    {{-- <a href="#" class="shipping-calculator-button">Choisir un mode de
+                                                        livraison</a> --}}
                                                     <div class="">
+                                                        <select class="form-control delivery_mode">
+                                                            <option disabled selected value> Choisir un mode de
+                                                                livraison</option>
+                                                            <option value="Livraison à domicile" tag='domicile'>Livraison à
+                                                                domicile
+                                                            </option>
+                                                            <option value="Livraison Yango Moto" tag='yango'>Livraison
+                                                                Yango Moto
+                                                            </option>
+                                                            <option value="Je passe récupérer" tag='recuperer'>Je passe
+                                                                récupérer
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <!-- ========== End mode de livraison ========== -->
+
+
+
+                                                    <!-- ========== Start lieu et prix de livraison ========== -->
+                                                    {{-- <a href="#" class="shipping-calculator-button">Choisir un lieu de
+                                                        livraison</a> --}}
+                                                    <div class="mt-3">
                                                         <select class="form-control delivery">
                                                             <option disabled selected value> Choisir un lieu de
                                                                 livraison</option>
@@ -152,11 +175,25 @@
                                                         </select>
                                                     </div>
 
+                                                    <!-- ========== End lieu et prix de livraison ========== -->
+
+
+                                                    <!-- ========== Start preciser address ========== -->
                                                     <div class="my-3">
                                                         <input type="text" name="address" id="address"
                                                             class="form-control border border-danger"
                                                             placeholder="preciser le lieu" required>
                                                     </div>
+
+                                                    <div class="my-3">
+                                                        <input type="text" name="address_yango" id="address_yango"
+                                                            class="form-control border border-danger"
+                                                            placeholder="preciser la rue destination" required>
+                                                    </div>
+                                                    <!-- ========== End preciser address  ========== -->
+
+
+
                                                 </form>
                                             </td>
                                         </tr>
@@ -203,9 +240,12 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <script>
-        //Recuperer les information du lieu de livraison
-            //cacher le champs address par defaut
-            $('#address').hide()
+        //variable global
+        var prix_livraison = 0
+        var lieu_livraison = ''
+
+
+        // mettre à jour la livraison
         $('.delivery').change(function(e) {
             e.preventDefault();
             var deliveryId = $('.delivery option:selected').val();
@@ -225,6 +265,10 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                     $('.delivery_price').html(response.delivery_price + 'FCFA');
                     $('.delivery_name').html('(' + response.delivery_name + ')');
                     $('.total_order').html(response.total_price + 'FCFA');
+
+                    prix_livraison = response.delivery_price
+                    lieu_livraison = response.delivery_name
+
                 }
             });
 
@@ -232,27 +276,89 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
         });
 
 
+
+
+        //Recuperer les information  de livraison
+        //cacher le champs address par defaut
+        $('#address').hide()
+        $('#address_yango').hide()
+        $('.delivery').hide()
+
+
+        //afficher le champs lieu de livraison si mode est domicile
+        $('.delivery_mode').change(function(e) {
+            e.preventDefault();
+            var mode_livraison = $('.delivery_mode option:selected').attr('tag');
+            //si mode_livraison == domicile
+            if (mode_livraison == 'domicile') {
+                $('.delivery').show(200)
+                $('.delivery').val('')
+                $('._delivery_price').show()
+
+            } else {
+                $('.delivery').hide(100)
+            }
+
+            //si mode_livraison == yango
+            if (mode_livraison == 'yango') {
+                $('#address_yango').show(200)
+                $('.delivery_price').html('les frais sont votre charge')
+                $('.total_order').html($('.sousTotal').attr('data-subTotal') + ' FCFA');
+                $('.delivery_name').html('')
+                $('._delivery_price').show()
+
+                $('#address').hide()
+
+                //initialisation 
+                
+                prix_livraison = 0
+                lieu_livraison = ''
+
+
+            } else {
+                $('#address_yango').hide(100)
+                $('.delivery_price').html('')
+            }
+
+            //si mode_livraison == recuperer
+
+            if (mode_livraison == 'recuperer') {
+                $('._delivery_price').hide()
+                $('#address').hide()
+                $('#address_yango').hide()
+                $('.delivery').hide()
+                $('.total_order').html($('.sousTotal').attr('data-subTotal') + ' FCFA');
+
+                //initialisation 
+                
+                prix_livraison = 0
+                lieu_livraison = ''
+
+            }
+
+        });
+
+        //on met les champs non requis par defaut
+        $('#address_yango').prop('required', false)
+        $('#address').prop('required', false)
+
+
         //Enregistrer les informations de la commande 
         $('.confirmOrder').click(function(e) {
             e.preventDefault()
-            var deliveryId = $('.delivery').val();
-            var address = $('#address').val()
+            var deliveryId = $('.delivery').val(); // ID du lieu de livraison choisi
+            var address_yango = $('#address_yango').val() // adresse de destinantion pour mode yango
+            var address = $('#address').val() // precision du lieu exact de livraison 
+            var delivery_mode = $('.delivery_mode').val() // mode de la livraison
+
 
             //si le lieu de livraison n'est pas choisi , on affiche un message d'alerte
-            if (!deliveryId) {
-                // Swal.fire({
-                //     title: 'Choisir son Lieu de livraison',
-                //     text: "Veuillez choisir un lieu de livraison pour recevoir votre commande",
-                //     icon: 'warning',
-                //     width: '500px',
-                //     confirmButtonColor: '#212529',
-                //     confirmButtonText: 'D\'accord'
-                // })
+            if (!delivery_mode) {
                 Swal.fire({
                     toast: true,
                     icon: 'error',
                     width: '100%',
-                    title: 'Veuillez choisir un lieu de livraison pour recevoir votre commande',
+                    title: 'Veuillez choisir un mode de livraison',
                     animation: true,
                     position: 'top',
                     background: '#eb0029',
@@ -262,7 +368,24 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                     timer: 5000,
                     timerProgressBar: true,
                 });
-            } else if (!address) {
+            } else if ($('.delivery').is(':visible') && !deliveryId) {
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    width: '100%',
+                    title: 'Veuillez choisir un lieu de livraison',
+                    animation: true,
+                    position: 'top-right',
+                    background: '#eb0029',
+                    iconColor: '#fff',
+                    color: '#fff',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                });
+            } else if ($('#address').is(':visible') && !address) {
+                $('#address').prop('required', true)
+
                 Swal.fire({
                     toast: true,
                     icon: 'error',
@@ -277,15 +400,36 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                     timer: 5000,
                     timerProgressBar: true,
                 });
+            } else if ($('#address_yango').is(':visible') && !address_yango) {
+                $('#address_yango').prop('required', true)
+
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    width: '100%',
+                    title: 'Veuillez preciser le lieu de destination',
+                    animation: true,
+                    position: 'top-right',
+                    background: '#eb0029',
+                    iconColor: '#fff',
+                    color: '#fff',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                });
             } else {
                 //send data to back
                 var subTotal = $('.sousTotal').attr('data-subTotal');
-                // var total_order = $('.total_order').html();
+                    var total_order = parseFloat(subTotal) + parseFloat( prix_livraison)
 
                 var data = {
                     subTotal,
-                    deliveryId,
-                    address
+                    address,
+                    address_yango,
+                    prix_livraison ,
+                    lieu_livraison,
+                    delivery_mode,
+                    total_order
                 }
 
                 $.ajax({

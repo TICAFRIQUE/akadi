@@ -1,4 +1,4 @@
-@extends('site.layouts.app')
+a@extends('site.layouts.app')
 
 @section('title', 'Liste des plats')
 
@@ -15,7 +15,7 @@
                         @if (request('categorie') || request('sous-categorie'))
                          {{$name_category['name']}}
                         @else
-                            Liste de tous les plats
+                            Liste de tous les prooduits
                         @endif
                     </li>
                 </ul>
@@ -42,7 +42,9 @@
                     <div class="col-xl-3 col-lg-4 col-sm-6">
                         <div class="th-product">
                             <div class="product-img">
-                                <img src="{{ asset($item->getFirstMediaUrl('product_image')) }}" alt="Product Image">
+                                <a href="{{ route('detail-produit', $item['slug']) }}">
+                                    <img src="{{ asset($item->getFirstMediaUrl('product_image')) }}" alt="Product Image">
+                                </a>
                             </div>
                             <div class="product-content">
                                 @if ($item['subcategorie'])

@@ -78,8 +78,8 @@
 
 
                                     <td class="">
-                                        <span>Livraison : {{ number_format($item['delivery_price']) }} FCFA </span><br>
-                                        <span> <b>Total : {{ number_format($item['total']) }} FCFA </b> </span>
+                                        <span>Livraison : {{ $item['delivery_price'] }} FCFA </span><br>
+                                        <span> <b>Total : {{ $item['total'] }} FCFA </b> </span>
                                     </td>
 
                                     <td
