@@ -32,8 +32,8 @@
 
 
 
-                        <p class="fs-4"> Promo de la femme capable: 10 premières commandes sont à 6000 Frs au lieu de 8000 Frs. Et
-                            si, une même personne commande 4 plats, +1 plat en bonus. de 08h00 à 10h30. Top c'est lacé !
+                        <p class="fs-4"> 
+                            {{$top_promo['texte']}}
                         </p>
 
 
