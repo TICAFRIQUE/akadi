@@ -35,7 +35,7 @@ Hero Area
                     <ls-layer
                         style="font-size:14px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; width:180px; left:344px; top:552px; text-transform:uppercase; line-height:14px; padding-bottom:20px; padding-top:22px; font-weight:600; border-radius:4px 4px 4px 4px; background-color:#f85d05;"
                         class="ls-ib-icon ls-button-layer px-4">
-                        Decouvez nos menus<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
+                        Decouvrez nos menus<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
                     </ls-layer>
                 </a>
                 <!-- ========== End desktop ========== -->
@@ -53,7 +53,7 @@ Hero Area
                     <ls-layer
                         style="font-size:32px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; left:308px; top:400px; text-transform:uppercase; padding-bottom:30px; padding-top:30px; font-weight:600; line-height:32px; background-color:#f85d05; border-radius:10px 10px 10px 10px; width:370px;"
                         class="ls-ib-icon ls-button-layer p-3">
-                        Decouvez nos menu<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
+                        Decouvrez nos menu<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
                     </ls-layer>
                 </a>
 
