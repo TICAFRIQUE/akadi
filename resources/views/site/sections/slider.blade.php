@@ -42,7 +42,7 @@ Hero Area
 
 
                 <!-- ========== Start mobile ========== -->
-                <h1 style='-webkit-background-clip: text;  word-wrap:normal; background-clip: text; color: transparent;text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:110px; top:229px; left:72px; font-size:100px; background-size:auto; white-space:normal;'
+                <h1 style='-webkit-background-clip: text;  word-wrap:normal; background-clip: text; color: transparent;text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:110px; top:120px; left:72px; font-size:90px; background-size:auto; white-space:normal;'
                     class="ls-l hero-title ls-hide-desktop ls-text-layer text-white wrap"
                     data-ls="offsetxin:500; delayin:160; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
                     {{ $item['texte'] }}
