@@ -19,7 +19,7 @@
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-auto my-3">
             @include('admin.components.validationMessage')
-            <form action="{{route('register')}}" method="post" class="woocommerce-form-login mb-30">
+            <form action="{{ route('register') }}" method="post" class="woocommerce-form-login mb-30">
                 @csrf
                 <div class="form-group">
                     <label>Nom et prenoms</label>
@@ -41,7 +41,12 @@
                 <input type="text" name="url_previous" value="{{ url()->previous() }}" hidden>
 
                 <div class="form-group">
-                    <button type="submit" class="th-btn rounded-2">Valider</button>
+                    <button type="submit" class="th-btn rounded-2">Valider
+
+                        <div class="spinner-grow text-white" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </button>
                     <p class="fs-xs mt-2 mb-0"><a class="text-reset" href="{{ route('login-form') }}">Vous avez un compte?
                             <b class="text-danger">Connectez vous </b>
                         </a></p>
@@ -50,4 +55,25 @@
         </div>
 
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $('.spinner-grow').hide();
+
+            $('form').submit(function(e) {
+
+                var email = $('#email').val();
+                var name = $('#name').val();
+                var phone = $('#phone').val();
+                var password = $('#password').val()
+
+
+                if (email && name && phone && password) {
+                    $('.th-btn').prop("disabled", true);
+                    $(".spinner-grow").show();
+                }
+            });
+
+        });
+    </script>
 @endsection

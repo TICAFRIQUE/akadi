@@ -49,6 +49,14 @@ class AuthPageController extends Controller
                     $user->assignRole('client');
                 }
 
+
+                //send mail for our register
+                Mail::send('site.pages.auth.email.email_register', ['user' => $request['name']], function ($message) use ($request) {
+                    $message->to($request->email);
+                    $message->subject('Création de compte');
+                });
+                
+
                 //redirection apres connexion
                 if (session('cart')) {
                     $url = 'finaliser-ma-commande';  // si le panier n'est pas vide on redirige vers la page checkout
