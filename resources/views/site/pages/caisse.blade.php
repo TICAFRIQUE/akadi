@@ -70,7 +70,7 @@
                                                     $total = $details['price'] * $details['quantity'];
                                                 @endphp
                                                 <span class="amount"><bdi><span id="totalPriceQty{{ $id }}">
-                                                            {{ number_format($total, 0 , ',', ' ') }}
+                                                            {{ number_format($total, 0, ',', ' ') }}
                                                         </span>FCFA</bdi></span>
                                             </td>
 
@@ -120,7 +120,8 @@
                                             <td>Sous total</td>
                                             <td data-title="Total">
                                                 <span data-subTotal="{{ $sousTotal }}" class="amount sousTotal">
-                                                    <h6 class="text-danger">{{ number_format($sousTotal, 0 , ',', ' ') }} FCFA</h6>
+                                                    <h6 class="text-danger">{{ number_format($sousTotal, 0, ',', ' ') }}
+                                                        FCFA</h6>
                                                 </span>
                                             </td>
                                         </tr>
@@ -145,9 +146,9 @@
                                                         <select class="form-control delivery_mode">
                                                             <option disabled selected value> Choisir un mode de
                                                                 livraison</option>
-                                                            <option value="Livraison à domicile" tag='domicile'>Livraison à
+                                                            {{-- <option value="Livraison à domicile" tag='domicile'>Livraison à
                                                                 domicile
-                                                            </option>
+                                                            </option> --}}
                                                             <option value="Livraison Yango Moto" tag='yango'>Livraison
                                                                 Yango Moto
                                                             </option>
@@ -289,6 +290,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
         $('.delivery_mode').change(function(e) {
             e.preventDefault();
             var mode_livraison = $('.delivery_mode option:selected').attr('tag');
+            
             //si mode_livraison == domicile
             if (mode_livraison == 'domicile') {
                 $('.delivery').show(200)
@@ -310,7 +312,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                 $('#address').hide()
 
                 //initialisation 
-                
+
                 prix_livraison = 0
                 lieu_livraison = ''
 
@@ -330,7 +332,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                 $('.total_order').html($('.sousTotal').attr('data-subTotal') + ' FCFA');
 
                 //initialisation 
-                
+
                 prix_livraison = 0
                 lieu_livraison = ''
 
@@ -420,13 +422,13 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
             } else {
                 //send data to back
                 var subTotal = $('.sousTotal').attr('data-subTotal');
-                    var total_order = parseFloat(subTotal) + parseFloat( prix_livraison)
+                var total_order = parseFloat(subTotal) + parseFloat(prix_livraison)
 
                 var data = {
                     subTotal,
                     address,
                     address_yango,
-                    prix_livraison ,
+                    prix_livraison,
                     lieu_livraison,
                     delivery_mode,
                     total_order

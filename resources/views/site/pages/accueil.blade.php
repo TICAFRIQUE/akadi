@@ -3,12 +3,14 @@
 @section('title', 'Accueil')
 
 @section('content')
-    @include('admin.components.validationMessage')
+
+@includeWhen(!Auth::check(), 'site.sections.popup-register' )
 
     <!-- ========== Start slider ========== -->
     @include('site.sections.slider')
     <!-- ========== End slider ========== -->
 
+    @include('admin.components.validationMessage')
 
     <!-- ========== Start categorie ========== -->
     @include('site.sections.categorie')
@@ -35,12 +37,10 @@
     <!-- ========== Start video and facebook ========== -->
     @include('site.sections.pub.video_and_facebook')
     <!-- ========== End video and facebook ========== -->
-    
+
 
     <!-- ========== Start feedback ========== -->
     @include('site.sections.feedback')
     <!-- ========== End feedback ========== -->
-
-
 
 @endsection

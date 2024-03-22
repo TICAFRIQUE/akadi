@@ -15,10 +15,12 @@
 
     <!-- Favicons - Place favicon.ico in the root directory -->
     <link rel="shortcut icon" href="{ asset('favicon.ico') }}" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{asset('admin/assets/img/favicon/apple-touch-icon.png')}}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{asset('admin/assets/img/favicon/favicon-32x32.png')}}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{asset('admin/assets/img/favicon/favicon-16x16.png')}}">
-    <link rel="manifest" href="{{asset('admin/assets/img/favicon/site.webmanifest')}}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('admin/assets/img/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="{{ asset('admin/assets/img/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="{{ asset('admin/assets/img/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('admin/assets/img/favicon/site.webmanifest') }}">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
 
@@ -79,9 +81,8 @@ Product Lightbox
 
 
     <!-- ========== Start menu main and mobile ========== -->
-    @include('site.sections.menu2')
+    @include('site.sections.menu')
     <!-- ========== End menu main and mobile ========== -->
-
 
 
 
@@ -102,11 +103,12 @@ Product Lightbox
 
 
 
+
     <footer class="footer-wrapper footer-layout5" data-bg-src="">
         <div class="widget-area">
             <div class="container">
                 <div class="row justify-content-between">
-                    <div class="col-md-6 col-xl-3">
+                    <div class="col-md-3 col-xl-3">
                         <div class="widget footer-widget">
                             <h3 class="widget_title">A propos de AKADI</h3>
                             <div class="th-widget-about">
@@ -124,7 +126,7 @@ Product Lightbox
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-xl-auto">
+                    <div class="col-md-3 col-xl-auto">
                         <div class="widget widget_nav_menu footer-widget">
                             <h3 class="widget_title">MENU</h3>
                             <div class="menu-all-pages-container">
@@ -137,45 +139,8 @@ Product Lightbox
                             </div>
                         </div>
                     </div>
-                    {{-- <div class="col-md-6 col-xl-auto">
-                        <div class="widget footer-widget">
-                            <h3 class="widget_title">Recent Posts</h3>
-                            <div class="recent-post-wrap">
-                                <div class="recent-post">
-                                    <div class="media-img">
-                                        <a href="blog-details.html"><img
-                                                src="assets/img/update_2/blog/recent-post-2-1.jpg"
-                                                alt="Blog Image"></a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="post-title"><a class="text-inherit" href="blog-details.html">10
-                                                Reasons To Do A Digital Detox Challenge</a></h4>
-                                        <div class="recent-post-meta">
-                                            <a href="blog.html"><i class="fal fa-calendar-days"></i>21 June,
-                                                2023</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="recent-post">
-                                    <div class="media-img">
-                                        <a href="blog-details.html"><img
-                                                src="assets/img/update_2/blog/recent-post-2-2.jpg"
-                                                alt="Blog Image"></a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="post-title"><a class="text-inherit" href="blog-details.html">New
-                                                Restaurant Town Our Ple Award
-                                                Contract</a></h4>
-                                        <div class="recent-post-meta">
-                                            <a href="blog.html"><i class="fal fa-calendar-days"></i>22 June,
-                                                2023</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
-                    <div class="col-md-6 col-xl-auto">
+
+                    <div class="col-md-3 col-xl-auto">
                         <div class="widget footer-widget">
                             <h3 class="widget_title">Nous contacter</h3>
                             <div class="th-widget-contact">
@@ -190,7 +155,8 @@ Product Lightbox
                                         <i class="fal fa-mobile-button"></i>
                                     </div>
                                     <p class="info-box_text">
-                                        <a href="tel:+(225) 07 58 83 83 38" class="info-box_link">+(225) 07 58 83 83 38</a>
+                                        <a href="tel:+(225) 07 58 83 83 38" class="info-box_link">+(225) 07 58 83 83
+                                            38</a>
                                         {{-- <a href="tel:+10987654321" class="info-box_link">+(1) 098 765 4321</a> --}}
                                     </p>
                                 </div>
@@ -202,6 +168,40 @@ Product Lightbox
                                         <a href="mailto:info@akadi.ci" class="info-box_link">info@akadi.ci</a>
                                     </p>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-xl-3">
+                        <div class="widget footer-widget">
+                            <h3 class="widget_title">Où nous retrouver</h3>
+                            <div class="th-widget-about">
+
+                                <div class="mapouter">
+                                    <div class="gmap_canvas"><iframe class="gmap_iframe" width="100%"
+                                            frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
+                                            src="https://maps.google.com/maps?width=657&amp;height=255&amp;hl=en&amp;q=AKADI RESTAURANT, Akadi Restaurant, Abidjan&amp;t=p&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe><a
+                                            href="https://strandsgame.net/">Strands NYT</a></div>
+                                    <style>
+                                        .mapouter {
+                                            position: relative;
+                                            text-align: right;
+                                            width: 100%;
+                                            height: 255px;
+                                        }
+
+                                        .gmap_canvas {
+                                            overflow: hidden;
+                                            background: none !important;
+                                            width: 100%;
+                                            height: 255px;
+                                        }
+
+                                        .gmap_iframe {
+                                            height: 255px !important;
+                                        }
+                                    </style>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -258,6 +258,9 @@ Product Lightbox
     <script src="{{ asset('site/assets/js/isotope.pkgd.min.js') }}"></script>
     <!-- Main Js File -->
     <script src="{{ asset('site/assets/js/main.js') }}"></script>
+
+
+    @stack('js')
 
 </body>
 

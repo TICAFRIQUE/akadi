@@ -121,8 +121,10 @@
                         <div class="col-xl-3 col-lg-4 col-sm-6">
                             <div class="th-menu">
                                 <div class="th-menu_img">
-                                    <img class="spin" src="{{ $item->getFirstMediaUrl('product_image') }}"
-                                        alt="menu Image">
+                                     <a href="{{ route('detail-produit', $item['slug']) }}">
+                                    <img src="{{ asset($item->getFirstMediaUrl('product_image')) }}" alt="Product Image">
+                                </a>
+                                   
                                     <div class="product-action">
                                         <a href=""><span class="action-text">Ajouter</span><span class="icon"><i
                                                     class="far fa-cart-shopping"></i></span></a>

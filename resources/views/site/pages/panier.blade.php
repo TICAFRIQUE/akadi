@@ -68,14 +68,14 @@
                                             </td>
                                             <td data-title="Quantity">
                                                 <div class="quantity">
-                                                    <button class="quantity-minus qty-btn qte-decrease_{{ $id }}"
+                                                    <button class="quantity-minus qty-btn qte-decrease_{{ $id }} text-dark"
                                                         onclick="decreaseValue({{ $id }})"><i
                                                             class="far fa-minus"></i></button>
                                                     <input type="number" id="{{ $id }}" id="qty-input"
                                                         class="qty-input{{ $id }}  qte-input"
                                                         value="{{ $details['quantity'] ?? 1 }}" min="1"
                                                         max="99" readonly>
-                                                    <button class="quantity-plus qty-btn qte-increase_{{ $id }}"
+                                                    <button class="quantity-plus qty-btn qte-increase_{{ $id }} text-dark"
                                                         onclick="increaseValue({{ $id }})"><i
                                                             class="far fa-plus"></i></button>
                                                 </div>
