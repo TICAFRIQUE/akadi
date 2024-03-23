@@ -3,11 +3,12 @@
 @section('title', 'Accueil')
 
 @section('content')
+@includeWhen(!Auth::check(), 'site.sections.popup-register' )
     <!-- ========== Start slider ========== -->
     @include('site.sections.slider')
     <!-- ========== End slider ========== -->
 
-    @include('admin.components.validationMessage')
+    {{-- @include('admin.components.validationMessage') --}}
 
     <!-- ========== Start categorie ========== -->
     @include('site.sections.categorie')

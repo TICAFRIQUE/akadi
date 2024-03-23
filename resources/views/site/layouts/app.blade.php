@@ -86,13 +86,6 @@ Product Lightbox
 
 
 
-
-
-
-
-
-
-
     <!-- ========== Start content ========== -->
     @yield('content')
     <!-- ========== End content ========== -->
