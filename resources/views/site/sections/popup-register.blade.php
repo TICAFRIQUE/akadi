@@ -129,10 +129,10 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-8 col-sm-12 col-xs-12">
+        <div class="col-md-8 col-sm-6 col-xs-6 m-auto">
             <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+                <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header border-0">
                             <h5 class="modal-title" id="staticBackdropLabel">
