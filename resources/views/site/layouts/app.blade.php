@@ -92,11 +92,6 @@ Product Lightbox
 
 
 
-
-
-
-
-
     <footer class="footer-wrapper footer-layout5" data-bg-src="">
         <div class="widget-area">
             <div class="container">

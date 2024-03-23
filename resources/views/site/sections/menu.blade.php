@@ -25,10 +25,6 @@
                         @endif
                     </li>
                 @endforeach
-
-
-
-
             </ul>
         </div>
     </div>
@@ -77,7 +73,11 @@
                 <div class="menu-area">
                     <div class="container th-container">
                         <div class="row align-items-center justify-content-around">
-                            <div class="col-auto">
+                            <div class="col-auto d-flex">
+                                <button type="button" class="th-menu-toggle d-inline-block d-lg-none m-auto"><i
+                                        class="far fa-bars"></i>
+                                </button>
+
                                 <div class="header-logo">
                                     <a href="{{ route('page-acceuil') }}">
                                         <img src="{{ asset('site/assets/img/custom/logo_2.jpeg') }}" width=80px
@@ -161,9 +161,6 @@
                                 </div>
                             </div>
 
-                            <button type="button" class="th-menu-toggle d-inline-block d-lg-none"><i
-                                    class="far fa-bars"></i>
-                            </button>
 
                         </div>
                     </div>
