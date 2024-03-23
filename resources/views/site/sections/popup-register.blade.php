@@ -1,15 +1,33 @@
 <style>
-    /* .card {
+    .card {
         overflow: hidden;
         position: relative;
         text-align: left;
         border-radius: 0.5rem;
-        max-width: 400px;
+        max-width: 500px;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         background-color: #fff;
-    } */
+    }
 
-  
+    .dismiss {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        background-color: #fff;
+        color: black;
+        border: 2px solid #D1D5DB;
+        font-size: 1rem;
+        font-weight: 300;
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        transition: .3s ease;
+    }
+
     .dismiss:hover {
         background-color: #f85d05;
         border: 2px solid #f85d05;
@@ -48,10 +66,9 @@
 
     .title {
         color: #f85d05;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         font-weight: 600;
         line-height: 1.5rem;
-        text-align: center
     }
 
     .message {
@@ -111,37 +128,31 @@
 
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered m-3">
         <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title" id="staticBackdropLabel">
-
-                </h5>
-                <button type="button" class="btn-close dismiss p-2" data-bs-dismiss="modal" aria-label="Close">
-                    x</button>
-            </div>
-            <div class="modal-body border-top-0">
-                {{-- <div class="image mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
-                        <g stroke-linejoin="round" stroke-linecap="round" id="SVGRepo_tracerCarrier">
-                        </g>
-                        <g id="SVGRepo_iconCarrier">
-                            <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5" stroke="#000000"
-                                d="M20 7L9.00004 18L3.99994 13"></path>
-                        </g>
-                    </svg>
-                </div> --}}
-                <span class="title text-justify"> Crée ton compte et bénéficie de la livraison gratuite sur tes
-                    prochaines
-                    commandes
-                </span>
-            </div>
-            <div class="modal-footer border-0">
-                <a href="{{ route('register-form') }}" style="background-color:#f85d05; border-color:#f85d05"
-                    role="button" class="btn btn-secondary">Je m'inscris</a>
-                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">J'ai déjà un
-                    compte</button>
+            <div class="card">
+                <button type="button" class="dismiss" data-bs-dismiss="modal">×</button>
+                <div class="header">
+                    <div class="image">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
+                            <g stroke-linejoin="round" stroke-linecap="round" id="SVGRepo_tracerCarrier"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5" stroke="#000000"
+                                    d="M20 7L9.00004 18L3.99994 13"></path>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="content">
+                        <span class="title">Crée ton compte et bénéficie de la livraison gratuite sur tes prochaines commandes</span>
+                        {{-- <p class="message">Thank you for your purchase. you package will be delivered within 2
+                            days of your purchase</p> --}}
+                    </div>
+                    <div class="actions">
+                        <a href="{{route('register-form')}}"  role="button" class="history">Je m'inscris</a>
+                        <button type="button" class="track" data-bs-dismiss="modal">J'ai déjà un compte</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -151,6 +162,7 @@
 
 <script>
     $(document).ready(function() {
+
         setTimeout(function() {
             $('#staticBackdrop').modal('show');
             $("#staticBackdrop").css("z-index", "1500");
