@@ -128,7 +128,7 @@
 
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered m-3">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="card">
                 <button type="button" class="dismiss" data-bs-dismiss="modal">×</button>

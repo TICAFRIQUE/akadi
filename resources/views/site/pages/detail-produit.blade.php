@@ -5,9 +5,11 @@
 
 
 @section('content')
+@includeWhen(!Auth::check(), 'site.sections.popup-register' )
+
     <!--==============================
-                                            Breadcumb
-                                        ============================== -->
+                                                Breadcumb
+                                            ============================== -->
     <div class="breadcumb-wrapper " data-bg-src="">
         <div class="container z-index-common">
             <div class="breadcumb-content">
@@ -22,8 +24,8 @@
             </div>
         </div>
     </div><!--==============================
-                                            Product Details
-                                            ==============================-->
+                                                Product Details
+                                                ==============================-->
     <section class="th-product-wrapper product-details space-top space-extra-bottom">
         <div class="container">
             <div class="row">
@@ -58,7 +60,8 @@
                                 customer reviews)</a>
                         </div> --}}
                         <h4 class="product-title"> {{ $product['title'] }} </h4>
-                        <span class="price fs-2"> {{ number_format($product['price'], 0 ,  ',', ' ') }} FCFA <del></del></span>
+                        <span class="price fs-2"> {{ number_format($product['price'], 0, ',', ' ') }} FCFA
+                            <del></del></span>
 
                         <div class="product_meta">
                             <span class="sku_wrapper">Description: <span class="sku"> {!! $product['description'] !!}
@@ -121,10 +124,11 @@
                         <div class="col-xl-3 col-lg-4 col-sm-6">
                             <div class="th-menu">
                                 <div class="th-menu_img">
-                                     <a href="{{ route('detail-produit', $item['slug']) }}">
-                                    <img src="{{ asset($item->getFirstMediaUrl('product_image')) }}" alt="Product Image">
-                                </a>
-                                   
+                                    <a href="{{ route('detail-produit', $item['slug']) }}">
+                                        <img src="{{ asset($item->getFirstMediaUrl('product_image')) }}"
+                                            alt="Product Image">
+                                    </a>
+
                                     <div class="product-action">
                                         <a href=""><span class="action-text">Ajouter</span><span class="icon"><i
                                                     class="far fa-cart-shopping"></i></span></a>
@@ -142,7 +146,8 @@
                                             href="{{ route('detail-produit', $item['slug']) }}">{{ $item['title'] }}</a>
                                     </h3>
                                     {{-- <p class="th-menu_desc">Barbecue Italian cuisine pizza</p> --}}
-                                    <span class="th-menu_price"> {{ number_format($item['price'], 0 ,  ',', ' ') }} FCFA </span>
+                                    <span class="th-menu_price"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA
+                                    </span>
                                 </div>
                                 <div class="fire"><img src="{{ asset('site/assets/img/update_2/shape/fire.png') }}"
                                         alt="shape"></div>

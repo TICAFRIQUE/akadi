@@ -3,7 +3,6 @@
 @section('title', 'Accueil')
 
 @section('content')
-@includeWhen(!Auth::check(), 'site.sections.popup-register' )
     <!-- ========== Start slider ========== -->
     @include('site.sections.slider')
     <!-- ========== End slider ========== -->
