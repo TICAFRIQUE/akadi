@@ -3,6 +3,7 @@
 @section('title', 'Liste des plats')
 
 @section('content')
+    @includeWhen(!Auth::check(), 'site.sections.popup-register')
 
     <div class="breadcumb-wrapper " data-bg-src="">
         <div class="container">
@@ -13,7 +14,7 @@
                     <li><a class="" href="#">Categorie</a></li>
                     <li class="active">
                         @if (request('categorie') || request('sous-categorie'))
-                         {{$name_category['name']}}
+                            {{ $name_category['name'] }}
                         @else
                             Liste de tous les prooduits
                         @endif
@@ -57,7 +58,8 @@
 
                                 <h3 class="product-title"><a href="{{ route('detail-produit', $item['slug']) }}">
                                         {{ $item['title'] }} </a></h3>
-                                <span class="price"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA <del></del></span>
+                                <span class="price"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA
+                                    <del></del></span>
                                 <div class="actions">
                                     {{-- <a href="" class=""><i class="fal fa-eye"></i>Ajouter</a> --}}
                                     <button class="btn btn-outline-danger addCart" data-id="{{ $item['id'] }}"><i
