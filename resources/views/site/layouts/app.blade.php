@@ -164,32 +164,22 @@ Product Lightbox
                             <h3 class="widget_title">Où nous retrouver</h3>
                             <div class="th-widget-about">
 
-                                <div class="mapouter">
-                                    <div class="gmap_canvas"><iframe class="gmap_iframe" width="100%"
-                                            frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
-                                            src="https://maps.google.com/maps?width=657&amp;height=255&amp;hl=en&amp;q=AKADI RESTAURANT, Akadi Restaurant, Abidjan&amp;t=p&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe><a
-                                            href="https://strandsgame.net/">Strands NYT</a></div>
+                                <div
+                                    style="text-decoration:none; overflow:hidden;max-width:100%;width:500px;height:200px;">
+                                    <div id="embed-map-display" style="height:100%; width:100%;max-width:100%;">
+                                        <iframe style="height:100%;width:100%;border:0;" frameborder="0"
+                                            src="https://www.google.com/maps/embed/v1/place?q=AKADI+RESTAURANT,+Akadi+Restaurant,+Abidjan,+Côte+d'Ivoire&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"></iframe>
+                                    </div><a class="googlecoder" href="https://www.bootstrapskins.com/themes"
+                                        id="authorize-maps-data"></a>
                                     <style>
-                                        .mapouter {
-                                            position: relative;
-                                            text-align: right;
-                                            width: 100%;
-                                            height: 255px;
-                                        }
-
-                                        .gmap_canvas {
-                                            overflow: hidden;
+                                        #embed-map-display img {
+                                            max-width: none !important;
                                             background: none !important;
-                                            width: 100%;
-                                            height: 255px;
-                                        }
-
-                                        .gmap_iframe {
-                                            height: 255px !important;
+                                            font-size: inherit;
+                                            font-weight: inherit;
                                         }
                                     </style>
                                 </div>
-
                             </div>
                         </div>
                     </div>

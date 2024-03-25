@@ -37,7 +37,14 @@
                                         <select name="type" class="form-control selectric " required>
                                             <option disabled selected value>Choisir un type</option>
                                             @php
-                                                $type = ['slider', 'popup', 'arriere-plan', 'banniere', 'small-card', 'top-promo'];
+                                                $type = [
+                                                    'slider',
+                                                    'popup',
+                                                    'arriere-plan',
+                                                    'banniere',
+                                                    'small-card',
+                                                    'top-promo',
+                                                ];
                                             @endphp
                                             @foreach ($type as $item)
                                                 <option class="text-capitalize" value="{{ $item }}"
@@ -53,17 +60,23 @@
                                     </div>
                                     <div class="col-sm-3">
                                         <label class="col-sm-12 col-form-label">Reduction %</label>
-                                        <input type="number" name="discount" value="{{ $publicite['discount'] }}" class="form-control">
+                                        <input type="number" name="discount" value="{{ $publicite['discount'] }}"
+                                            class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label">Lien</label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-8">
+                                        <label class="col-sm-3 col-form-label">Lien</label>
                                         <input type="url" value="{{ $publicite['url'] }}" name="url"
                                             class="form-control">
                                         <div class="invalid-feedback">
                                             entrer le lien de redirection
                                         </div>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="col-sm-12 col-form-label">Nom du bouton</label>
+                                        <input type="text" name="button_name" class="form-control">
                                     </div>
                                 </div>
 
@@ -71,7 +84,7 @@
                                     <label class="col-sm-3 col-form-label">Texte</label>
                                     <div class="col-sm-9">
                                         <textarea name="texte" class="form-control">
-                                           {{$publicite['texte']}}
+                                           {{ $publicite['texte'] }}
                                         </textarea>
                                     </div>
                                 </div>

@@ -82,12 +82,17 @@
 
                           </div>
                           <div class="form-group row">
-                              <label class="col-sm-3 col-form-label">Lien de redirection</label>
-                              <div class="col-sm-9">
+                              <div class="col-sm-8">
+                                  <label class="col-sm-3 col-form-label">Lien de redirection</label>
                                   <input type="url" name="url" class="form-control">
                                   <div class="invalid-feedback">
                                       entrer le lien de redirection
                                   </div>
+                              </div>
+
+                              <div class="col-sm-4">
+                                  <label class="col-sm-12 col-form-label">Nom du bouton</label>
+                                  <input type="text" name="button_name" class="form-control">
                               </div>
                           </div>
 
@@ -106,10 +111,10 @@
                                       width="250px" />
                                   <div>
                                       <input type="file" name="image" class="form-control"
-                                          onchange="readURL(this);" required="">
-                                      <div class="invalid-feedback">
+                                          onchange="readURL(this);" >
+                                      {{-- <div class="invalid-feedback">
                                           Champs obligatoire
-                                      </div>
+                                      </div> --}}
                                   </div>
                               </div>
                           </div>
