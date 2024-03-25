@@ -16,6 +16,7 @@ return new class extends Migration
             $table->longText('texte');
             $table->string('type')->nullable(); //banniere, publicité
             $table->string('url')->nullable();
+            $table->string('button_name')->nullable();
             $table->integer('discount')->nullable();
             $table->string('statut')->nullable()->default('active'); // ,
             $table->softDeletes();
