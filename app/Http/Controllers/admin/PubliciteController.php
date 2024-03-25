@@ -48,9 +48,7 @@ class PubliciteController extends Controller
             'button_name' => $request['button_name'],
             'texte' => $request['texte'],
             'discount' => $request['discount'],
-
-
-
+            'button_name' => $request['button_name'],
         ]);
 
 
@@ -100,6 +98,8 @@ class PubliciteController extends Controller
             'button_name' => $request['button_name'],
             'texte' => $request['texte'],
             'discount' => $request['discount'],
+            'button_name' => $request['button_name'],
+
         ]);
 
         //upload category_image 
