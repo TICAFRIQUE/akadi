@@ -56,8 +56,8 @@
                                         class="category">{{ $item['subcategorie'] ? $item['subcategorie']['name'] : $item['categories'][0]['name'] }}</a>
                                 @endif
 
-                                <span class="text-dark"><a href="{{ route('detail-produit', $item['slug']) }}" class="text-dark fw-bold">
-                                      {{Str::limit($item['title'], 20, '...') }}</a></span>
+                                <span class="text-dark" ><a href="{{ route('detail-produit', $item['slug']) }}" class="text-dark fw-bold" style="font-size: 14px">
+                                      {{Str::limit($item['title'], 30, '...') }}</a></span>
 
                                 <span class="price"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA
                                     <del></del></span>

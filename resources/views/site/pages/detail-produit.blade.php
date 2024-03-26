@@ -136,7 +136,7 @@
                                 </div>
                                 <div class="th-menu-content">
                                     <span class=" text-dark fw-bold"><a
-                                            href="{{ route('detail-produit', $item['slug']) }}" class="text-dark">{{Str::limit($item['title'], 20, '...') }}</a>
+                                            href="{{ route('detail-produit', $item['slug']) }}" class="text-dark" style="font-size: 14px">{{Str::limit($item['title'], 30, '...') }}</a>
                                     </span>
                                     {{-- <p class="th-menu_desc">Barbecue Italian cuisine pizza</p> --}}
                                     <span class="th-menu_price"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA
