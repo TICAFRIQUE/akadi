@@ -200,6 +200,9 @@ Route::middleware(['admin'])->group(function () {
         route::get('deleteImage/{id}', 'deleteImage');
         route::post('update/{id}', 'update')->name('product.update');
         route::post('destroy/{id}', 'destroy')->name('product.destroy');
+        route::post('availableProduct/{id}', 'availableProduct')->name('product.available');
+
+
     });
 
     //orders

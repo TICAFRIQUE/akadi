@@ -24,7 +24,9 @@ class HomePageController extends Controller
         // $small_card = Publicite::with('media')->whereType('small-card')->whereStatus('active')->get();
         $pack = Product::with(['media', 'categories', 'subcategorie'])
             ->whereHas('categories', fn ($q) => $q->whereName('Pack'))
-            ->orderBy('created_at', 'DESC')->get();
+            ->whereDisponibilite(1)
+            ->orderBy('created_at', 'DESC')
+            ->get();
 
         // recuperer la publicité Top promo
         $top_promo = Publicite::with('media')->whereType('top-promo')->whereStatus('active')->first();

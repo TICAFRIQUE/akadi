@@ -244,4 +244,20 @@ class ProductController extends Controller
 
         return response()->json($data);
     }
+
+
+    public function availableProduct(Request $request, $id)
+    {
+        //
+        $valueChecked = $request['value'];
+        $data = Product::whereId($id)->update([
+            'disponibilite' => $valueChecked
+        ]);
+
+        return response()->json([
+            'valueChecked' => $valueChecked,
+            'status' => 200,
+
+        ]);
+    }
 }

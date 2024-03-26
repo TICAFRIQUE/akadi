@@ -99,13 +99,15 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($product as $key => $item)
-                                            <tr>
+                                            <tr id="row_{{ $item['id'] }}">
                                                 <td>
                                                     {{ ++$key }}
                                                 </td>
                                                 <td>
                                                     <label class="switch">
-                                                        <input id="availableBtn" data-id="{{$item['id']}}" name="available" type="checkbox">
+                                                        <input class="availableBtn" id="checkedBtn_{{ $item['id'] }}"
+                                                            data-id="{{ $item['id'] }}" name="available" type="checkbox"
+                                                            {{ $item['disponibilite'] == 1 ? 'checked' : '' }}>
                                                         <span class="slider round"></span>
                                                     </label>
                                                 </td>
@@ -139,8 +141,8 @@
                                                         <a href="#" data-toggle="dropdown"
                                                             class="btn btn-warning dropdown-toggle">Actions</a>
                                                         <div class="dropdown-menu">
-                                                            <a href="#" class="dropdown-item has-icon"><i
-                                                                    class="fas fa-eye"></i>
+                                                            <a href="{{ route('detail-produit', $item['slug']) }}"
+                                                                class="dropdown-item has-icon"><i class="fas fa-eye"></i>
                                                                 Voir</a>
                                                             <a href="{{ route('product.edit', $item['id']) }}"
                                                                 class="dropdown-item has-icon"><i class="far fa-edit"></i>
@@ -166,6 +168,8 @@
             </div>
         </div>
     </section>
+
+
 
     <script>
         $(document).ready(function() {
@@ -195,7 +199,7 @@
                                     Swal.fire({
                                         toast: true,
                                         icon: 'success',
-                                        title: 'Le produit a été retiré du panier',
+                                        title: 'Produit supprimé avec success',
                                         animation: false,
                                         position: 'top',
                                         background: '#3da108e0',
@@ -205,10 +209,8 @@
                                         timer: 500,
                                         timerProgressBar: true,
                                     });
-                                    setTimeout(function() {
-                                        window.location.href =
-                                            "{{ route('product.index') }}";
-                                    }, 500);
+
+                                    $('#row_' + Id).remove();
                                 }
                             }
                         });
@@ -217,17 +219,55 @@
             });
 
 
-//script for to available product
-            $('#availableBtn').change(function (e) { 
+            //script for to available product
+            $('.availableBtn').change(function(e) {
                 e.preventDefault();
-             if($('#availableBtn').is(':checked')){
-                   $('#availableBtn').prop('checked')
-                   console.log('eeeeee');
-                }else{
-                    console.log(false);
 
+                var checkedId = $(this).attr('data-id');
+
+                var checked;
+
+                if ($("#checkedBtn_" + checkedId).is(':checked')) {
+                    checked = 1
+
+                } else {
+                    checked = 0
                 }
-                
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/produit/availableProduct/" + checkedId,
+                    dataType: "json",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        value: checked
+                    },
+                    success: function(response) {
+                        if (response.status == 200) {
+                            Swal.fire({
+                                toast: true,
+                                icon: 'success',
+                                title: response.valueChecked ==1 ? "Produit mis en stock avec success" : "Produit mis en rupture avec success",
+                                animation: false,
+                                width: '100%',
+                                position: 'top',
+                                background: '#3da108e0',
+                                iconColor: '#fff',
+                                color: '#fff',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                            });
+                            // setTimeout(function() {
+                            //     window.location.href =
+                            //         "{{ route('product.index') }}";
+                            // }, 500);
+                        }
+                    }
+                });
+
+
             });
         });
     </script>
