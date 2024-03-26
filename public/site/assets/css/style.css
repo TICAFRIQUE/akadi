@@ -7216,7 +7216,11 @@ table.woocommerce-product-attributes {
     display: block;
     color: #f85d05;
     font-weight: 500;
-    margin-bottom: -0.45em;
+    font-size: 20px;
+    margin-top: 10px;
+
+    margin-bottom: -0.70em;
+
     font-family: var(--title-font);
 }
 

@@ -5,11 +5,11 @@
 
 
 @section('content')
-@includeWhen(!Auth::check(), 'site.sections.popup-register' )
+    @includeWhen(!Auth::check(), 'site.sections.popup-register')
 
     <!--==============================
-                                                Breadcumb
-                                            ============================== -->
+                                                        Breadcumb
+                                                    ============================== -->
     <div class="breadcumb-wrapper " data-bg-src="">
         <div class="container z-index-common">
             <div class="breadcumb-content">
@@ -24,8 +24,8 @@
             </div>
         </div>
     </div><!--==============================
-                                                Product Details
-                                                ==============================-->
+                                                        Product Details
+                                                        ==============================-->
     <section class="th-product-wrapper product-details space-top space-extra-bottom">
         <div class="container">
             <div class="row">
@@ -123,31 +123,31 @@
                     @foreach ($product_related as $item)
                         <div class="col-xl-3 col-lg-4 col-sm-6">
                             <div class="th-menu">
-                                <div class="th-menu_img">
+                                <div class="">
                                     <a href="{{ route('detail-produit', $item['slug']) }}">
                                         <img src="{{ asset($item->getFirstMediaUrl('product_image')) }}"
                                             alt="Product Image">
                                     </a>
 
-                                    <div class="product-action">
-                                        <a href=""><span class="action-text">Ajouter</span><span class="icon"><i
-                                                    class="far fa-cart-shopping"></i></span></a>
 
-                                        <a class="action-text" href="{{ route('detail-produit', $item['slug']) }}"><span
-                                                class="action-text">Detail
-                                            </span><span class="icon"><i class="far fa-eye"></i></span></a>
-                                    </div>
                                     {{-- <div class="th-menu_discount">
                                         <span class="sale">24% OFF</span>
                                     </div> --}}
                                 </div>
                                 <div class="th-menu-content">
-                                    <h3 class="th-menu_title"><a
-                                            href="{{ route('detail-produit', $item['slug']) }}">{{ $item['title'] }}</a>
-                                    </h3>
+                                    <span class=" text-dark fw-bold"><a
+                                            href="{{ route('detail-produit', $item['slug']) }}" class="text-dark">{{Str::limit($item['title'], 20, '...') }}</a>
+                                    </span>
                                     {{-- <p class="th-menu_desc">Barbecue Italian cuisine pizza</p> --}}
                                     <span class="th-menu_price"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA
                                     </span>
+                                </div>
+
+                                <div class="product-action mt-4">
+                                    <a href="" class="btn btn-danger addCart"  data-id="{{ $item['id'] }}><span class="action-text">Ajouter au
+                                            panier</span> <span class="icon"><i
+                                                class="far fa-cart-shopping"></i></span></a>
+
                                 </div>
                                 <div class="fire"><img src="{{ asset('site/assets/img/update_2/shape/fire.png') }}"
                                         alt="shape"></div>

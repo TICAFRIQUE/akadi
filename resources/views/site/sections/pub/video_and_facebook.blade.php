@@ -20,7 +20,7 @@
                                 class="fas fa-play"></i></a>
                     </div> --}}
                     <div class="text-center text-xl-center">
-                        <a href="{{ route('liste-produit') }}" class="th-btn rounded-2">Voir plus de videos<i
+                        <a href="#" class="th-btn rounded-2">Voir plus de videos<i
                                 class="fa-solid fa-arrow-right ms-2"></i></a>
                     </div>
                 </div>

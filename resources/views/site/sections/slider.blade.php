@@ -24,11 +24,15 @@ Hero Area
 
 
                 <!-- ========== Start desktop ========== -->
-                <h1 style='-webkit-background-clip: text; background-clip: text; color: transparent;text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:90px; top:342px; left:340px; font-size:50px; background-size:auto; white-space:normal;'
-                    class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer text-white"
-                    data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    {{ $item['texte'] }}
-                </h1>
+                <div class="row">
+                    <div class="col-5">
+                        <h1 style='-webkit-background-clip: text; background-clip: text; color: transparent;text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:90px; top:342px; left:340px; font-size:50px; background-size:auto; white-space:normal;'
+                            class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer text-white"
+                            data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
+                            {{ $item['texte'] }}
+                        </h1>
+                    </div>
+                </div>
 
                 <a style="" class="ls-l ls-hide-tablet ls-hide-phone" href="{{ $item['url'] }}" target="_self"
                     data-ls="offsetxin:500; delayin:180; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1;">
@@ -42,17 +46,21 @@ Hero Area
 
 
                 <!-- ========== Start mobile ========== -->
-                <h1 style='-webkit-background-clip: text;  word-wrap:normal; background-clip: text; color: transparent;text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:110px; top:120px; left:72px; font-size:90px; background-size:auto; white-space:normal;'
-                    class="ls-l hero-title ls-hide-desktop ls-text-layer text-white wrap"
-                    data-ls="offsetxin:500; delayin:160; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
-                    {{ $item['texte'] }}
-                </h1>
+                <div class="row">
+                    <div class="col-6">
+                        <h1 style='-webkit-background-clip: text;  word-wrap:normal; background-clip: text; color: transparent;text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:110px; top:120px; left:72px; font-size:90px; background-size:auto; white-space:normal;'
+                            class="ls-l hero-title ls-hide-desktop ls-text-layer text-white wrap"
+                            data-ls="offsetxin:500; delayin:160; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
+                            {{ $item['texte'] }}
+                        </h1>
+                    </div>
+                </div>
 
                 <a style="" class="ls-l ls-hide-desktop" href="{{ $item['url'] }}" target="_self"
                     data-ls="offsetxin:500; delayin:200; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent; hover:true; hoveropacity:1; ">
                     <ls-layer
-                        style="font-size:32px; color:#fff; text-align:center; font-family:Rubik; cursor:pointer; left:308px; top:400px; text-transform:uppercase; padding-bottom:30px; padding-top:30px; font-weight:600; line-height:32px; background-color:#f85d05; border-radius:10px 10px 10px 10px; width:370px;"
-                        class="ls-ib-icon ls-button-layer p-3">
+                        style="font-size:32px;  color:#fff; text-align:center; font-family:Rubik; cursor:pointer; left:308px; top:600px; text-transform:uppercase; padding-bottom:30px; padding-top:30px; font-weight:600; line-height:50px; margin:20px; background-color:#f85d05; border-radius:10px 10px 10px 10px; width:370px;"
+                        class="ls-ib-icon ls-button-layer p-3 mt-3">
                         Decouvrez nos menu<i class="fa fa-arrow-right" style="margin-left:.5em; font-size:1em;"></i>
                     </ls-layer>
                 </a>

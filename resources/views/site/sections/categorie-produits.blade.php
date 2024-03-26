@@ -54,7 +54,7 @@ Categorie and products
                                             <a href="/produit?categorie={{ $plats['categories'][0]['id'] }}"
                                                 class="category text-danger">{{ $plats['subcategorie'] ? $plats['subcategorie']['name'] : $plats['categories'][0]['name'] }}</a>
                                         @endif
-                                        <p class="product-text"> {!! substr(strip_tags($plats->description), 0, 100) !!}.... </p>
+                                        <p class="product-text"> {!! substr(strip_tags($plats->description), 0, 50) !!}.... </p>
                                         <span class="price"> {{ number_format($plats['price'], 0 , ',', ' ') }} FCFA
                                             <del></del></span>
 

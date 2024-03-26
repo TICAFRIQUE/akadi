@@ -106,10 +106,13 @@ Product Lightbox
                                     évolue dans le domaine de la relation clientèle.
                                 </p>
                                 <div class="th-social">
-                                    <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="https://www.twitter.com/"><i class="fab fa-twitter"></i></a>
-                                    <a href="https://www.linkedin.com/"><i class="fab fa-linkedin-in"></i></a>
-                                    <a href="https://www.whatsapp.com/"><i class="fab fa-whatsapp"></i></a>
+                                    <a href="https://www.facebook.com/CvraimentDoux" target="blank"><i
+                                            class="fab fa-facebook-f"></i></a>
+                                    {{-- <a href="https://www.twitter.com/"><i class="fab fa-twitter"></i></a>
+                                    <a href="https://www.linkedin.com/"><i class="fab fa-linkedin-in"></i></a> --}}
+
+                                    <a href="https://wa.me/+2250758838338?text=Bonjour Akadi, je peux passer ma commande ?"
+                                        target="blank"><i class="fab fa-whatsapp"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -136,7 +139,13 @@ Product Lightbox
                                     <div class="info-box_icon">
                                         <i class="fal fa-location-dot"></i>
                                     </div>
-                                    <p class="info-box_text">Angré derrière la pharmacie Arcade</p>
+                                    <a
+                                        href="https://maps.app.goo.gl/sDP5zuFWbu4CLivk8" target="blank">
+                                    <p class="info-box_text">
+                                         Angré derrière la pharmacie Arcade
+                                         
+                                        </p>
+                                    </a>
                                 </div>
                                 <div class="info-box">
                                     <div class="info-box_icon">

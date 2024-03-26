@@ -41,10 +41,12 @@
         <div class="container">
             <div class="row justify-content-center justify-content-lg-between align-items-center gy-2">
                 <div class="col-auto d-none d-lg-block">
+                    <a  href="https://maps.app.goo.gl/sDP5zuFWbu4CLivk8" target="blank">
                     <p class="header-info">
                         <i class="fa-solid fa-location-dot"></i>
                         Angré derrière la pharmacie Arcade
                     </p>
+                    </a>
                     <p class="header-info">
                         <i class="fa-solid fa-phone"></i>
                         <a href="tel:+225 07 58 83 83 38">+225 07 58 83 83 38</a>
@@ -56,11 +58,14 @@
                 </div>
                 <div class="col-auto">
                     <div class="th-social">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.facebook.com/CvraimentDoux" target="blank"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="https://wa.me/+2250758838338?text=Bonjour Akadi, je peux passer ma commande ?"
+                            target="blank"><i class="fab fa-whatsapp"></i></a>
+                        {{-- <a href="#"><i class="fab fa-twitter"></i></a>
                         <a href="#"><i class="fab fa-linkedin-in"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a> --}}
                     </div>
                 </div>
             </div>

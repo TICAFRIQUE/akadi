@@ -56,13 +56,14 @@
                                         class="category">{{ $item['subcategorie'] ? $item['subcategorie']['name'] : $item['categories'][0]['name'] }}</a>
                                 @endif
 
-                                <h3 class="product-title"><a href="{{ route('detail-produit', $item['slug']) }}">
-                                        {{ $item['title'] }} </a></h3>
+                                <span class="text-dark"><a href="{{ route('detail-produit', $item['slug']) }}" class="text-dark fw-bold">
+                                      {{Str::limit($item['title'], 20, '...') }}</a></span>
+
                                 <span class="price"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA
                                     <del></del></span>
                                 <div class="actions">
                                     {{-- <a href="" class=""><i class="fal fa-eye"></i>Ajouter</a> --}}
-                                    <button class="btn btn-outline-danger addCart" data-id="{{ $item['id'] }}"><i
+                                    <button class="btn btn-danger addCart" data-id="{{ $item['id'] }}"><i
                                             class="fal fa-cart-plus "></i> Ajouter au panier</button>
 
                                     {{-- <a href="wishlist.html" class="icon-btn"><i class="fal fa-heart"></i></a> --}}
