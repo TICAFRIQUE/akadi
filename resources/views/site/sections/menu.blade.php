@@ -3,7 +3,7 @@
     <div class="th-menu-area text-center">
         <button class="th-menu-toggle"><i class="fal fa-times"></i></button>
         <div class="mobile-logo">
-            <img src="{{ asset('site/assets/img/custom/logo_2.jpeg') }}" width="auto" height="auto" alt="logo akadi">
+            <img src="{{ asset('site/assets/img/custom/AKADI.png') }}" width="60px" alt="logo akadi">
             </a>
         </div>
         <div class="th-mobile-menu">
@@ -83,9 +83,9 @@
                                         class="far fa-bars"></i>
                                 </button>
 
-                                <div class="header-logo">
+                                <div class="header-logo m-2">
                                     <a href="{{ route('page-acceuil') }}">
-                                        <img src="{{ asset('site/assets/img/custom/logo_2.jpeg') }}" width=80px
+                                        <img src="{{ asset('site/assets/img/custom/AKADI.png') }}" width=60px
                                             alt="logo akadi">
                                     </a>
                                 </div>

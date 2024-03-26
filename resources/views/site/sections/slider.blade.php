@@ -25,8 +25,8 @@ Hero Area
 
                 <!-- ========== Start desktop ========== -->
                 <div class="row">
-                    <div class="col-5">
-                        <h1 style='-webkit-background-clip: text; background-clip: text; color: transparent;text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:90px; top:342px; left:340px; font-size:50px; background-size:auto; white-space:normal;'
+                    <div class="col-4">
+                        <h1 style='-webkit-background-clip: text; background-clip: text; color: transparent;text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:700; letter-spacing:0px; background-position:50% 50%; background-repeat:repeat; font-family:Rubik; line-height:70px; top:242px; left:340px; font-size:50px; background-size:auto; white-space:normal;'
                             class="ls-l ls-hide-tablet ls-hide-phone ls-text-layer text-white"
                             data-ls="offsetxin:500; delayin:80; easingin:easeOutBack; bgcolorin:transparent; colorin:transparent; offsetxout:-120; durationout:800; startatout:slidechangeonly + ; bgcolorout:transparent; colorout:transparent;">
                             {{ $item['texte'] }}
