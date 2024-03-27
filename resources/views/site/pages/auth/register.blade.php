@@ -38,6 +38,11 @@
                     <label>Mot de passe</label>
                     <input type="password" class="form-control" name="password" placeholder="de********">
                 </div>
+
+                {{-- <div class="form-group">
+                    <label>Votre date d'anniversaire (Peut-être qu'une surprise vous atteindra le Jour-J)</label>
+                    <input type="password" class="form-control" name="password" placeholder="de********">
+                </div> --}}
                 <input type="text" name="url_previous" value="{{ url()->previous() }}" hidden>
 
                 <div class="form-group">

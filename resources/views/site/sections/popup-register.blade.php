@@ -144,7 +144,7 @@
                         </svg>
                     </div>
                     <div class="content">
-                        <span class="title">Crée ton compte et bénéficie de la livraison gratuite sur tes prochaines commandes</span>
+                        <span class="title">Inscris-toi et bénéficie de nos bons plans à venir.</span>
                         {{-- <p class="message">Thank you for your purchase. you package will be delivered within 2
                             days of your purchase</p> --}}
                     </div>

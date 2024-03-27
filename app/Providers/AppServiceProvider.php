@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //category frontend
-        $category = Category::with(['products' =>fn($q)=>$q->orderBy('created_at', 'DESC')->get()
+        $category = Category::with(['products' =>fn($q)=>$q->whereDisponibilite(1)->orderBy('created_at', 'DESC')->get()
         ,'media', 'subcategories'])
             ->whereNotIn('name', ['Pack'])
             ->orderBy('created_at', 'DESC')->get();
