@@ -4847,7 +4847,8 @@ a.text-theme:hover,
         padding: 0 0px;
     }
     .header-logo img {
-        height: 62px;
+        height: 52px;
+        width: 50px;
     }
     
     .cat_desktop{
