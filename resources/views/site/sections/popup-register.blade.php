@@ -150,7 +150,7 @@
                     </div>
                     <div class="actions">
                         <a href="{{route('register-form')}}"  role="button" class="history">Je m'inscris</a>
-                        <button type="button" class="track" data-bs-dismiss="modal">J'ai déjà un compte</button>
+                        <a href="{{route('login-form')}}" role="button" class="track">J'ai déjà un compte</a>
                     </div>
                 </div>
             </div>
