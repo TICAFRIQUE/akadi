@@ -174,101 +174,118 @@
     <script>
         $(document).ready(function() {
 
-            $('.delete').on("click", function(e) {
-                e.preventDefault();
-                var Id = $(this).attr('data-id');
-                swal({
-                    title: "Suppression",
-                    text: "Veuillez confirmer la suppression",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Confirmer",
-                    cancelButtonText: "Annuler",
-                }).then((result) => {
-                    if (result) {
+            var table = $('#tableExport').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+
+                drawCallback: function(settings) {
+                    $('.delete').on("click", function(e) {
+                        e.preventDefault();
+                        var Id = $(this).attr('data-id');
+                        swal({
+                            title: "Suppression",
+                            text: "Veuillez confirmer la suppression",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Confirmer",
+                            cancelButtonText: "Annuler",
+                        }).then((result) => {
+                            if (result) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/admin/produit/destroy/" + Id,
+                                    dataType: "json",
+                                    data: {
+                                        _token: '{{ csrf_token() }}',
+
+                                    },
+                                    success: function(response) {
+                                        if (response.status === 200) {
+                                            Swal.fire({
+                                                toast: true,
+                                                icon: 'success',
+                                                title: 'Produit supprimé avec success',
+                                                animation: false,
+                                                position: 'top',
+                                                background: '#3da108e0',
+                                                iconColor: '#fff',
+                                                color: '#fff',
+                                                showConfirmButton: false,
+                                                timer: 500,
+                                                timerProgressBar: true,
+                                            });
+
+                                            $('#row_' + Id).remove();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    });
+
+
+                    //script for to available product
+                    $('.availableBtn').change(function(e) {
+                        e.preventDefault();
+                        var checkedId = $(this).attr('data-id');
+
+                        var checked;
+
+                        if ($("#checkedBtn_" + checkedId).is(':checked')) {
+                            checked = 1
+
+                        } else {
+                            checked = 0
+                        }
+
+
                         $.ajax({
                             type: "POST",
-                            url: "/admin/produit/destroy/" + Id,
+                            url: "/admin/produit/availableProduct/" + checkedId,
                             dataType: "json",
                             data: {
                                 _token: '{{ csrf_token() }}',
-
+                                value: checked
                             },
                             success: function(response) {
-                                if (response.status === 200) {
+                                if (response.status == 200) {
                                     Swal.fire({
                                         toast: true,
                                         icon: 'success',
-                                        title: 'Produit supprimé avec success',
+                                        title: response.valueChecked == 1 ?
+                                            "Produit mis en stock avec success" :
+                                            "Produit mis en rupture avec success",
                                         animation: false,
+                                        width: '100%',
                                         position: 'top',
                                         background: '#3da108e0',
                                         iconColor: '#fff',
                                         color: '#fff',
                                         showConfirmButton: false,
-                                        timer: 500,
+                                        timer: 3000,
                                         timerProgressBar: true,
                                     });
-
-                                    $('#row_' + Id).remove();
+                                    // setTimeout(function() {
+                                    //     window.location.href =
+                                    //         "{{ route('product.index') }}";
+                                    // }, 500);
                                 }
                             }
                         });
-                    }
-                });
-            });
 
 
-            //script for to available product
-            $('.availableBtn').change(function(e) {
-                e.preventDefault();
-
-                var checkedId = $(this).attr('data-id');
-
-                var checked;
-
-                if ($("#checkedBtn_" + checkedId).is(':checked')) {
-                    checked = 1
-
-                } else {
-                    checked = 0
+                    });
                 }
-
-
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/produit/availableProduct/" + checkedId,
-                    dataType: "json",
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        value: checked
-                    },
-                    success: function(response) {
-                        if (response.status == 200) {
-                            Swal.fire({
-                                toast: true,
-                                icon: 'success',
-                                title: response.valueChecked ==1 ? "Produit mis en stock avec success" : "Produit mis en rupture avec success",
-                                animation: false,
-                                width: '100%',
-                                position: 'top',
-                                background: '#3da108e0',
-                                iconColor: '#fff',
-                                color: '#fff',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                            });
-                            // setTimeout(function() {
-                            //     window.location.href =
-                            //         "{{ route('product.index') }}";
-                            // }, 500);
-                        }
-                    }
-                });
-
-
             });
+
+
+
+                // table.page('next').draw('page');
+
+
+
         });
     </script>
 @endsection

@@ -39,10 +39,48 @@
                     <input type="password" class="form-control" name="password" placeholder="de********">
                 </div>
 
-                {{-- <div class="form-group">
-                    <label>Votre date d'anniversaire (Peut-être qu'une surprise vous atteindra le Jour-J)</label>
-                    <input type="password" class="form-control" name="password" placeholder="de********">
-                </div> --}}
+
+                <div class="form-group">
+                    <label>Votre date d'anniversaire <strong>(Peut-être qu'une surprise vous atteindra le Jour-J)</strong></label>
+                    <div class="row">
+
+                        <div class="col-6">
+                            <select name="jour" class="form-control">
+                                @for ($i = 1; $i < 32; $i++)
+                                    <option value="{{ str_pad($i,2,"0",STR_PAD_LEFT) }}"> {{str_pad($i,2,"0",STR_PAD_LEFT) }} </option>
+                                @endfor
+                            </select>
+
+                        </div>
+                        <div class="col-6">
+
+                            <select name="mois" id="" class="form-control">
+                                @php
+                                    $month = [
+                                        'janvier',
+                                        'février',
+                                        'mars',
+                                        'avril',
+                                        'mai',
+                                        'juin',
+                                        'juillet',
+                                        'août',
+                                        'septembre',
+                                        'octobre',
+                                        'novembre',
+                                        'décembre',
+                                    ];
+
+                                @endphp
+                                @foreach ($month as $key => $item)
+                                    <option value="{{ str_pad($key,2,"0",STR_PAD_LEFT) }}">{{ $item }} </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
                 <input type="text" name="url_previous" value="{{ url()->previous() }}" hidden>
 
                 <div class="form-group">

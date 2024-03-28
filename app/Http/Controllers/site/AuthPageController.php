@@ -20,7 +20,7 @@ class AuthPageController extends Controller
         if (request()->method() == 'GET') {
             return view('site.pages.auth.register');
         } elseif (request()->method() == 'POST') {
-
+          
             //on verifie si le nouvel utilisateur est déja dans la BD à partir du phone
             $user_verify_phone = User::wherePhone($request['phone'])->first();
             $user_verify_email = User::whereEmail($request['email'])->first();
@@ -36,11 +36,13 @@ class AuthPageController extends Controller
                     'email' => '',
                     'password' => 'required',
                 ]);
-
+                $date_anniv = $request->jour . '-' . $request->mois; //date anniversaire
                 $user = User::firstOrCreate([
                     'name' => $request['name'],
                     'phone' => $request['phone'],
                     'email' => $request->email,
+                    'email' => $request->email,
+                    'date_anniversaire' => $date_anniv,
                     'role' => 'client',
                     'password' => Hash::make($request['password']),
                 ]);

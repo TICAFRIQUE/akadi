@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="fr">
+<html class="no-js" lang="{{Config::get('app.locale')}}">
 
 <head>
     <meta charset="utf-8">

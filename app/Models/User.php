@@ -33,7 +33,8 @@ class User extends Authenticatable
         'avatar',
         'role',
         'shop_name',
-        'localisation'
+        'localisation',
+        'date_anniversaire'
     ];
 
     public static function boot()
