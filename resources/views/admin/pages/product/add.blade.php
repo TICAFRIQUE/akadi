@@ -98,7 +98,8 @@
                             <div class="form-group row mb-4">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Prix</label>
                                 <div class="col-sm-12 col-md-7">
-                                    <input name="price" type="number" class="form-control currency" required>
+                                    <input name="price" id="product_price" type="number"
+                                        class="form-control currency" required>
                                     <div class="invalid-feedback">
                                         Champs obligatoire
                                     </div>
@@ -112,7 +113,8 @@
                                     <select name="categories" id="category" class="form-control select2" required>
                                         <option value="">Selectionner une catégorie</option>
                                         @foreach ($category_backend as $item)
-                                            <option value="{{ $item['id'] }}" tag={{$item['name']}}> {{ $item['name'] }} </option>
+                                            <option value="{{ $item['id'] }}" tag={{ $item['name'] }}>
+                                                {{ $item['name'] }} </option>
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback">
@@ -140,89 +142,9 @@
                                         Champs obligatoire
                                     </div>
                                 </div>
-                                {{-- <button type="button" data-toggle="modal" data-target="#modalAddsousCategorie"
-                                    class="btn btn-primary"><i data-feather="plus"></i></button> --}}
+
                             </div>
 
-                            {{-- <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Options</label>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="section" value="option1">
-                                    <label class="form-check-label" for="section">Sections</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="collection" value="option2">
-                                    <label class="form-check-label" for="collection">Collections</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="pointure" value="option2">
-                                    <label class="form-check-label" for="pointure">Pointures</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="taille" value="option2">
-                                    <label class="form-check-label" for="taille">Tailles</label>
-                                </div>
-                            </div> --}}
-
-                            {{-- <div class="form-group row mb-4" id="sectionDiv">
-                                <label for=""
-                                    class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Section
-                                    Category</label>
-
-                                <div class="col-sm-12 col-md-7">
-                                    <select  style="width: 520px" name="category_section[]" class="form-control select2" multiple>
-                                        @foreach ($section_categories as $item)
-                                            <option value="{{ $item['id'] }}"> {{ $item['name'] }} </option>
-                                        @endforeach
-                                    </select>
-
-                                </div>
-                                <button type="button" data-toggle="modal" data-target="#modalAddCategory"
-                                    class="btn btn-primary"><i data-feather="plus"></i> Add New</button>
-                            </div>
-
-                            <div class="form-group row mb-4" id="collectionDiv">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Collection</label>
-                                <div class="col-sm-12 col-md-7">
-                                    <select style="width:520px" name="collection" class="form-control select2 ">
-                                        @foreach ($collection as $item)
-                                            <option value="{{ $item['id'] }}"> {{ $item['name'] }} </option>
-                                        @endforeach
-                                    </select>
-
-                                </div>
-                                <button type="button" data-toggle="modal" data-target="#modalAddCollection"
-                                    class="btn btn-primary"><i data-feather="plus"></i> Add New</button>
-                            </div> --}}
-
-                            {{-- <div class="form-group row mb-4" id="pointureDiv">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Pointure</label>
-                                <div class="col-sm-12 col-md-7">
-                                    <select name="pointures[]" class="form-control selectric " multiple>
-                                        <option disabled selected value></option>
-                                        @for ($i = 35; $i < 50; $i++)
-                                            <option value="{{ $i }}"> {{ $i }} </option>
-                                        @endfor
-                                    </select>
-
-                                </div>
-                            </div> --}}
-                            {{-- <div class="form-group row mb-4" id="tailleDiv">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Taille</label>
-                                <div class="col-sm-12 col-md-7">
-                                    <select name="tailles[]" class="form-control selectric " multiple>
-                                        <option disabled selected value></option>
-                                        @php
-                                            $taille = ['s', 'm', 'l', 'xl', '2xl'];
-                                        @endphp
-                                        @foreach ($taille as $item)
-                                            <option value="{{ $item }}">
-                                                {{ ucFirst($item) }} </option>
-                                        @endforeach
-
-                                    </select>
-                                </div>
-                            </div> --}}
 
                             <div class="form-group row mb-4">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Description</label>
@@ -271,6 +193,44 @@
                             </div>
                             <!-- ========== End add multiple image ========== -->
 
+
+                            <hr>
+                            <!-- ========== Start Remise ========== -->
+                            <h4 class="fw-bold ">REMISE</h4>
+                            <div class="form-group row">
+                                <p class="fw-bold fs-2" id="MsgError"></p>
+
+                                <div class="col-sm-3">
+                                    <label class="col-sm-12 col-form-label">Montant de la remise</label>
+
+                                    <input type="number" id="discount_price" name="price_discount"
+                                        class="form-control">
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <label class="col-sm-12 col-form-label">Pourcentage(%) </label>
+
+                                    <input type="number" id="discount" name="discount" class="form-control">
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <label class="col-sm-12 col-form-label">Date Debut</label>
+
+                                    <input type="date" id="date_start" name="date_start"
+                                        class="form-control datetimepicker">
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <label class="col-sm-12 col-form-label">Date Fin</label>
+
+                                    <input type="date" id="date_end" name="date_end"
+                                        class="form-control datetimepicker">
+                                </div>
+
+                            </div>
+                            <!-- ========== End Remise ========== -->
+
+                            <hr>
                             <div class="form-group row mb-4">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
                                 <div class="col-sm-12 col-md-7 text-lg-right">
@@ -288,8 +248,11 @@
 
 
 @section('script')
+    {{-- <script src="{{ asset('site/assets/js/jquery.min.js') }}"></script> --}}
+
     <script src="{{ asset('admin/assets/bundles/select2/dist/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('admin/assets/bundles/jquery-selectric/jquery.selectric.min.js') }}"></script>
+
 @endsection
 <script type="text/javascript">
     $(document).ready(function() {
@@ -387,6 +350,52 @@
                 $('.subcat').hide(200);
 
             }
+        });
+
+
+        // SCRIPT FOR DISCOUNT
+
+        //amount 
+        $('#discount_price').keyup(function(e) {
+            var discount_price = $('#discount_price').val()
+            var product_price = $('#product_price').val()
+
+            if (parseFloat(discount_price) > parseFloat(product_price)) {
+                $('#MsgError').html('Le prix de la remise doit etre inferieur au prix normal').css(
+                    'color', 'red');
+                $('.btn-submit').prop('disabled', true)
+            } else {
+                // calcul de pourcentage
+                var discount = parseFloat(discount_price * 100) / parseFloat(product_price)
+
+                $('#discount').val(discount)
+
+
+                $('#MsgError').html(' ')
+                $('.btn-submit').prop('disabled', false)
+
+            }
+
+        });
+
+
+        //percent
+        $('#discount').keyup(function(e) {
+            var discount = $('#discount').val()
+            var product_price = $('#product_price').val()
+
+            if (discount > 100) {
+                $('#MsgError').html('Le pourcentage ne doit pas exceder 100%').css(
+                    'color', 'red');
+                $('.btn-submit').prop('disabled', true)
+            } else {
+                var amount_discount = parseFloat(product_price) * (discount / 100)
+               $('#discount_price').val(amount_discount)
+
+                $('#MsgError').html(' ')
+                $('.btn-submit').prop('disabled', false)
+            }
+
         });
 
 

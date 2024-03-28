@@ -16,7 +16,7 @@
                         @if (request('categorie') || request('sous-categorie'))
                             {{ $name_category['name'] }}
                         @else
-                            Liste de tous les prooduits
+                            Liste de tous les produits
                         @endif
                     </li>
                 </ul>

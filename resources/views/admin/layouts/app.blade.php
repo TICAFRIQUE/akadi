@@ -48,7 +48,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
     <style>
         body {
-            color: black
+            color: black;
+
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            /* Firefox */
+            input[type=number] {
+                -moz-appearance: textfield;
+            }
         }
     </style>
 

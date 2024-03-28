@@ -158,7 +158,6 @@
                                             </tr>
                                         @endforeach
 
-
                                     </tbody>
                                 </table>
                             </div>
@@ -282,7 +281,7 @@
 
 
 
-                // table.page('next').draw('page');
+            // table.page('next').draw('page');
 
 
 

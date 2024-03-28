@@ -267,7 +267,7 @@
                                         </th>
                                         <th>code</th>
                                         <th>client</th>
-                                        <th>Livraison</th>
+                                        {{-- <th>Livraison</th> --}}
                                         <th>Total</th>
                                         <th>date</th>
                                         <th>Action</th>
@@ -284,7 +284,7 @@
 
                                             </td>
                                             <td>{{ $item['user']['name'] }} </td>
-                                            <td>{{ $item['delivery_name'] }} - {{ $item['delivery_price'] }} </td>
+                                            {{-- <td>{{ $item['delivery_name'] }} - {{ $item['delivery_price'] }} </td> --}}
                                             <td>{{ $item['total'] }} </td>
                                             <td>
                                                 {{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}
