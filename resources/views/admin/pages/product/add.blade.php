@@ -5,7 +5,6 @@
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('admin/assets/css/custom.css') }}">
-
 @endpush
 
 <script>
@@ -409,7 +408,15 @@
         //date discount
 
         $(".datetimepicker").each(function() {
-            $(this).datetimepicker();
+            $(this).datetimepicker({
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                dateFormat: 'yy-mm-dd',
+                minDate: 0
+            });
         });
 
 

@@ -174,6 +174,7 @@
         $(document).ready(function() {
 
             var table = $('#tableExport').DataTable({
+                    // destroy: true,
                 dom: 'Bfrtip',
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'

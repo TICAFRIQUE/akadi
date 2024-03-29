@@ -64,15 +64,15 @@
                                     <div class="col-sm-3">
                                         <label class="col-sm-12 col-form-label">Date Debut de la publicité</label>
 
-                                        <input type="text" id="date_start" name="date_debut_pub" value="{{$publicite['date_debut_pub']}}"
-                                            class="form-control datetimepicker">
+                                        <input type="text" id="date_start" name="date_debut_pub"
+                                            value="{{ $publicite['date_debut_pub'] }}" class="form-control datetimepicker">
                                     </div>
 
                                     <div class="col-sm-3">
                                         <label class="col-sm-12 col-form-label">Date Fin de la publicité</label>
 
-                                        <input type="text" id="date_end" value="{{$publicite['date_fin_pub']}}" name="date_fin_pub"
-                                            class="form-control datetimepicker">
+                                        <input type="text" id="date_end" value="{{ $publicite['date_fin_pub'] }}"
+                                            name="date_fin_pub" class="form-control datetimepicker">
                                     </div>
                                     <div class="col-sm-3">
                                         <label class="col-sm-12 col-form-label">Reduction %</label>
@@ -92,7 +92,8 @@
 
                                     <div class="col-sm-4">
                                         <label class="col-sm-12 col-form-label">Nom du bouton</label>
-                                        <input type="text" value="{{$publicite['button_name']}}" name="button_name" class="form-control">
+                                        <input type="text" value="{{ $publicite['button_name'] }}" name="button_name"
+                                            class="form-control">
                                     </div>
                                 </div>
 
@@ -158,7 +159,15 @@
             //date discount
 
             $(".datetimepicker").each(function() {
-                $(this).datetimepicker();
+                $(this).datetimepicker({
+                    showOtherMonths: true,
+                    selectOtherMonths: true,
+                    changeMonth: true,
+                    changeYear: true,
+                    showButtonPanel: true,
+                    dateFormat: 'yy-mm-dd',
+                    minDate: 0
+                });
             });
 
 
