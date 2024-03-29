@@ -76,8 +76,8 @@ class AuthPageController extends Controller
                 $mail->SMTPAuth = true;
                 $mail->Username = 'info@akadi.ci';
                 $mail->Password = 'S$UBfu.8s(#z';
-                $mail->SMTPSecure = 'tls';
-                $mail->Port = 587;
+                $mail->SMTPSecure = 'ssl';
+                $mail->Port = 465;
 
                 $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
                 $mail->addAddress($request->email);
