@@ -40,22 +40,21 @@ class AuthPageController extends Controller
                 ]);
 
 
-                //   $date_anniv = '';
-                // if ($request->jour && $request->mois) {
-                //     $date_anniv = $request->jour . '-' . $request->mois; //date anniversaire
+                  $date_anniv = '';
+                if ($request->jour && $request->mois) {
+                    $date_anniv = $request->jour . '-' . $request->mois; //date anniversaire
 
-                // }else{
-                //     $date_anniv = '';
-                // }
+                }else{
+                    $date_anniv = '';
+                }
 
-
-                // dd($date_anniv);
+                
                 $user = User::firstOrCreate([
                     'name' => $request['name'],
                     'phone' => $request['phone'],
                     'email' => $request->email,
                     'email' => $request->email,
-                    // 'date_anniversaire' => $date_anniv,
+                    'date_anniversaire' => $date_anniv,
                     'role' => 'client',
                     'password' => Hash::make($request['password']),
                 ]);
@@ -76,8 +75,8 @@ class AuthPageController extends Controller
                 // $mail->SMTPAuth = true;
                 // $mail->Username = 'info@akadi.ci';
                 // $mail->Password = 'S$UBfu.8s(#z';
-                // $mail->SMTPSecure = 'ssl';
-                // $mail->Port = 465;
+                // $mail->SMTPSecure = 'tls';
+                // $mail->Port = 587;
 
                 // $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
                 // $mail->addAddress($request->email);
