@@ -42,8 +42,8 @@ return new class extends Migration
             //remise
             $table->double('montant_remise')->nullable();
             $table->integer('pourcentage_remise')->nullable();
-            $table->date('date_debut_remise')->nullable();
-            $table->date('date_fin_remise')->nullable();
+            $table->dateTime('date_debut_remise')->nullable();
+            $table->dateTime('date_fin_remise')->nullable();
             $table->string('status_remise')->nullable(); // en cour , terminer, bientot
 
             $table->softDeletes();

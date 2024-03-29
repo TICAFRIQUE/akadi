@@ -1,24 +1,8 @@
 <!-- ========== Start top promo ========== -->
 <style>
-    #Head-Banner {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        background: #F0F0F0;
-        font-family: Poppins;
-        font-size: 20px;
-        font-weight: 700;
-    }
-
-    a {
-        color: #0F0F0F;
-        text-decoration: none;
-    }
-
-    #Head-Banner-Text {
-        background: #FFFF00;
-    }
+   .promo-banner{
+    background-color: rgb(237, 70, 70)
+   }
 </style>
 
 
@@ -27,19 +11,17 @@
     <div class="space-bottom">
         <div class="container">
             <div class="row">
-                <div class="col-12">
-                    <div id="Head-Banner">
-                        <a href="https://webrocket.fr/">
-                            <span id="Head-Banner-Text">You Only Have <span id="Promo-Timer"></span> To Take 50% Off Your
-                                Next Purchase !</span>
-                        </a>
-                    </div>
-                </div>
+
+              
                 <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 m-auto">
+
+                    <div class=" promo-banner py-3 mb-3 fs-5">
+                        <span id="" class=" text-white p-2 text-center">Se termine dans <span class="fw-bold" id="Promo-Timer"></span>
+                            Profitez de {{$top_promo['discount']}}%
+                            de reduction !</span>
+                    </div>
                     <div class="img-box2 ">
-                        {{-- <div class="img1">
-                        <img src="{{asset('site/assets/img/normal/about_2_1.png')}}" alt="About">
-                    </div> --}}
+
                         <div class="shape1" style="left: 0">
                             <img src="{{ $top_promo->getFirstmediaUrl('publicite_image') }}" alt="About"
                                 class="ml-4" width="80%">
@@ -86,5 +68,24 @@
 
     </div>
 @endif
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        setInterval(function time() {
+            var d = new Date();
+            var hours = 24 - d.getHours();
+            var min = 60 - d.getMinutes();
+            if ((min + '').length == 1) {
+                min = '0' + min;
+            }
+            var sec = 60 - d.getSeconds();
+            if ((sec + '').length == 1) {
+                sec = '0' + sec;
+            }
+            jQuery('#Promo-Timer').html(hours + ':' + min + ':' + sec)
+        }, 1000);
+    });
+</script>
 
 <!-- ========== End top promo ========== -->
