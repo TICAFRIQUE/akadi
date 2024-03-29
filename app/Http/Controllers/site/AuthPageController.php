@@ -66,26 +66,26 @@ class AuthPageController extends Controller
 
 
                 //new send mail with phpMailer
-                $mail = new PHPMailer(true);
-                require base_path("vendor/autoload.php");
+                // $mail = new PHPMailer(true);
+                // require base_path("vendor/autoload.php");
 
                 /* Email SMTP Settings */
-                $mail->SMTPDebug = 0;
-                $mail->isSMTP();
-                $mail->Host = 'mail.akadi.ci';
-                $mail->SMTPAuth = true;
-                $mail->Username = 'info@akadi.ci';
-                $mail->Password = 'S$UBfu.8s(#z';
-                $mail->SMTPSecure = 'ssl';
-                $mail->Port = 465;
+                // $mail->SMTPDebug = 0;
+                // $mail->isSMTP();
+                // $mail->Host = 'mail.akadi.ci';
+                // $mail->SMTPAuth = true;
+                // $mail->Username = 'info@akadi.ci';
+                // $mail->Password = 'S$UBfu.8s(#z';
+                // $mail->SMTPSecure = 'ssl';
+                // $mail->Port = 465;
 
-                $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-                $mail->addAddress($request->email);
+                // $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+                // $mail->addAddress($request->email);
 
-                $mail->isHTML(true);
+                // $mail->isHTML(true);
 
-                $mail->Subject = 'creation de compte';
-                $mail->Body    = 'bravo';
+                // $mail->Subject = 'creation de compte';
+                // $mail->Body    = 'bravo';
 
 
 
