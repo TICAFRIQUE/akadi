@@ -58,8 +58,8 @@
                                           $type = [
                                               'slider',
                                               //   'popup',
-                                              //   'arriere-plan',
-                                              //   'banniere',
+                                                'arriere-plan',
+                                                'banniere',
                                               'small-card',
                                               'top-promo',
                                           ];

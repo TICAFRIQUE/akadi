@@ -32,14 +32,16 @@
                             @csrf
                             <div class="card-body">
                                 <div class="form-group row">
-                                    <div class="col-sm-9">
-                                        <label class="col-sm-3 col-form-label">Type de publicite</label>
+                                    <p class="fw-bold fs-2 col-12" id="MsgError"></p>
+
+                                    <div class="col-sm-3">
+                                        <label class="col-sm-12 col-form-label">Type de publicite</label>
                                         <select name="type" class="form-control selectric " required>
                                             <option disabled selected value>Choisir un type</option>
                                             @php
                                                 $type = [
                                                     'slider',
-                                                    'popup',
+                                                    // 'popup',
                                                     'arriere-plan',
                                                     'banniere',
                                                     'small-card',
@@ -57,6 +59,20 @@
                                             Champ obligatoire
                                         </div>
 
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label class="col-sm-12 col-form-label">Date Debut de la publicité</label>
+
+                                        <input type="text" id="date_start" name="date_debut_pub" value="{{$publicite['date_debut_pub']}}"
+                                            class="form-control datetimepicker">
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label class="col-sm-12 col-form-label">Date Fin de la publicité</label>
+
+                                        <input type="text" id="date_end" value="{{$publicite['date_fin_pub']}}" name="date_fin_pub"
+                                            class="form-control datetimepicker">
                                     </div>
                                     <div class="col-sm-3">
                                         <label class="col-sm-12 col-form-label">Reduction %</label>
@@ -76,7 +92,7 @@
 
                                     <div class="col-sm-4">
                                         <label class="col-sm-12 col-form-label">Nom du bouton</label>
-                                        <input type="text" name="button_name" class="form-control">
+                                        <input type="text" value="{{$publicite['button_name']}}" name="button_name" class="form-control">
                                     </div>
                                 </div>
 
@@ -101,7 +117,7 @@
 
                             </div>
                             <div class="card-footer text-right">
-                                <button type="submit" class="btn btn-primary">Modifier</button>
+                                <button type="submit" class="btn btn-primary w-100">Modifier</button>
                             </div>
                         </form>
                     </div>
@@ -132,6 +148,57 @@
             } else {
                 $("#_img-preview").attr("src", _noimage);
             }
+
+
+
+
         }
+
+        $(document).ready(function() {
+            //date discount
+
+            $(".datetimepicker").each(function() {
+                $(this).datetimepicker();
+            });
+
+
+
+            $('#date_start').change(function(e) {
+                var date_start = $(this).val();
+                var date_end = $('#date_end').val();
+
+                if (date_start > date_end) {
+                    $('#MsgError').html(
+                        'La date debut de la promo ne doit pas etre superieur à la date de fin').css({
+                        'color': 'white',
+                        'background-color': 'red',
+                        'font-size': '16px'
+                    });
+                    $('.btn-submit').prop('disabled', true)
+                } else {
+                    $('#MsgError').html(' ')
+                    $('.btn-submit').prop('disabled', false)
+                }
+            });
+
+
+            $('#date_end').change(function(e) {
+                var date_end = $(this).val();
+                var date_start = $('#date_start').val();
+
+                if (date_end < date_start) {
+                    $('#MsgError').html(
+                        'La date fin de la promo ne doit pas etre inferieur à la date de debut').css({
+                        'color': 'white',
+                        'background-color': 'red',
+                        'font-size': '16px'
+                    });
+                    $('.btn-submit').prop('disabled', true)
+                } else {
+                    $('#MsgError').html(' ')
+                    $('.btn-submit').prop('disabled', false)
+                }
+            });
+        });
     </script>
 @endsection

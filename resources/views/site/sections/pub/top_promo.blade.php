@@ -1,8 +1,8 @@
 <!-- ========== Start top promo ========== -->
 <style>
-   .promo-banner{
-    background-color: rgb(237, 70, 70)
-   }
+    .promo-banner {
+        background-color: rgb(237, 70, 70)
+    }
 </style>
 
 
@@ -12,12 +12,13 @@
         <div class="container">
             <div class="row">
 
-              
+
                 <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 m-auto">
 
                     <div class=" promo-banner py-3 mb-3 fs-5">
-                        <span id="" class=" text-white p-2 text-center">Se termine dans <span class="fw-bold" id="Promo-Timer"></span>
-                            Profitez de {{$top_promo['discount']}}%
+                        <span id="" class=" text-white p-2 text-center">Se termine dans <span class="fw-bold"
+                                id="Promo-Timer"></span>
+                            Profitez de {{ $top_promo['discount'] }}%
                             de reduction !</span>
                     </div>
                     <div class="img-box2 ">
@@ -73,22 +74,52 @@
 <script>
     $(document).ready(function() {
 
-var value = {{Js::from($top_promo)}}
-console.log(value);
+        var topPromo = {{ Js::from($top_promo) }}
 
-        setInterval(function time() {
-            var d = new Date();
-            var hours = 24 - d.getHours();
-            var min = 60 - d.getMinutes();
-            if ((min + '').length == 1) {
-                min = '0' + min;
-            }
-            var sec = 60 - d.getSeconds();
-            if ((sec + '').length == 1) {
-                sec = '0' + sec;
-            }
-            jQuery('#Promo-Timer').html(hours + ':' + min + ':' + sec)
+        var startDate = topPromo.date_debut_pub
+        var endDate = topPromo.date_fin_pub
+
+
+        function countDown() {
+            var currDate = new Date(startDate)
+            var endTime = new Date(endDate);
+            endTime = (Date.parse(endTime) / 1000);
+            var now = new Date();
+            now = (Date.parse(now) / 1000);
+            //var endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 24);			
+
+
+            // $("#log").html(endTime.getHour());
+            var timeLeft = endTime - now;
+
+            var days = Math.floor(timeLeft / 86400);
+            var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
+            var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600)) / 60);
+            var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
+            // if (hours > 8) {
+            //     hours = 0;
+            //     minutes = 0;
+            //     seconds = 0;
+            // }
+            // if (hours < "17") {
+            //     hours = "0" + hours;
+            // }
+            // if (minutes < "10") {
+            //     minutes = "0" + minutes;
+            // }
+            // if (seconds < "10") {
+            //     seconds = "0" + seconds;
+            // }
+
+            $("#Promo-Timer").html(days + ' j' + " : " + hours + ' h' + " : " + minutes + ' m' + " : " + seconds+ ' s');
+
+        }
+
+        setInterval(function() {
+            countDown();
         }, 1000);
+
+
     });
 </script>
 
