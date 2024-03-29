@@ -16,8 +16,8 @@
         <div class="container">
             <div class="row">
 
-                  <div class="col-12 promo-banner py-3 mb-3 fs-5">
-                        <span class=" text-white p-2 ">Se termine dans <span class="fw-bold"
+                  <div class="col-12 promo-banner text-center py-2 mb-3 fs-5">
+                        <span class=" text-white p-2 text-center ">Se termine dans <span class="fw-bold"
                                 id="Promo-Timer"></span>
                             Profitez de {{ $top_promo['discount'] }}%
                             de reduction !</span>
