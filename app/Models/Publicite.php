@@ -19,6 +19,9 @@ class Publicite extends Model implements HasMedia
         'discount', //remise
         'button_name', // nom du boutton
         'status',  //active ou desactiver
+        'date_debut_pub',
+        'date_debut_pub',
+        'status_pub',
         'created_at',
         'updated_at',
         'deleted_at'

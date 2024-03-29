@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('role')->nullable();
             $table->string('shop_name')->nullable();
             $table->string('localisation')->nullable();
+            $table->string('date_anniversaire')->nullable();
 
 
             $table->rememberToken();

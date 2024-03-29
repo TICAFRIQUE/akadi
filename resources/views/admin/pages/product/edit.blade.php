@@ -44,24 +44,27 @@
 @section('css')
     <link rel="stylesheet" href="{{ asset('admin/assets/bundles/jquery-selectric/selectric.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/bundles/select2/dist/css/select2.min.css') }}">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
+
 @endsection
 
 
 <script>
     //upload principal image
- function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
 
-                reader.onload = function(e) {
-                    $('#img-preview')
-                        .attr('src', e.target.result);
-                };
+            reader.onload = function(e) {
+                $('#img-preview')
+                    .attr('src', e.target.result);
+            };
 
 
-                reader.readAsDataURL(input.files[0]);
-            }
+            reader.readAsDataURL(input.files[0]);
         }
+    }
 </script>
 <section class="section">
     <div class="section-body">
@@ -90,8 +93,8 @@
                             <div class="form-group row mb-4">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Price</label>
                                 <div class="col-sm-12 col-md-7">
-                                    <input name="price" value="{{ $product['price'] }}" type="number"
-                                        class="form-control currency" required>
+                                    <input name="price" id="product_price" value="{{ $product['price'] }}"
+                                        type="number" class="form-control currency" required>
                                     <div class="invalid-feedback">
                                         Champs obligatoire
                                     </div>
@@ -106,7 +109,7 @@
                                     <select name="categories" id="category" class="form-control select2" required>
                                         @foreach ($category_backend as $item)
                                             {{-- @if ($product->categories->containsStrict('id', $item['id'])) @selected(true) @endif --}}
-                                            <option value="{{ $item['id'] }}" tag={{ $item['name']}}
+                                            <option value="{{ $item['id'] }}" tag={{ $item['name'] }}
                                                 @if ($product->categories->containsStrict('id', $item['id'])) @selected(true) @endif>
                                                 {{ $item['name'] }}</option>
                                         @endforeach
@@ -184,10 +187,52 @@
                                 </div>
                             </div>
 
+
+                            <hr>
+                            <!-- ========== Start Remise ========== -->
+                            <h4 class="fw-bold ">REMISE</h4>
+                            <p class="fw-bold fs-2 col-12" id="MsgError"></p>
+                            <div class="form-group row">
+
+                                <div class="col-sm-3">
+                                    <label class="col-sm-12 col-form-label">Montant de la remise</label>
+
+                                    <input type="number" id="discount_price" value="{{ $product['montant_remise'] }}"
+                                        name="montant_remise" class="form-control">
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <label class="col-sm-12 col-form-label">Pourcentage(%) </label>
+
+                                    <input type="number" id="discount"
+                                        value="{{ $product['pourcentage_remise'] }}" name="pourcentage_remise"
+                                        class="form-control">
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <label class="col-sm-12 col-form-label">Date Debut</label>
+
+                                    <input type="text" id="date_start"
+                                        value="{{ $product['date_debut_remise'] }}" name="date_debut_remise"
+                                        class="form-control datetimepicker">
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <label class="col-sm-12 col-form-label">Date Fin</label>
+
+                                    <input type="text" id="date_end" value="{{ $product['date_fin_remise'] }}"
+                                        name="date_fin_remise" class="form-control datetimepicker">
+                                </div>
+
+                            </div>
+                            <!-- ========== End Remise ========== -->
+
+                            <hr>
+
                             <div class="form-group row mb-4">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
                                 <div class="col-sm-12 col-md-7 text-lg-right">
-                                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                    <button type="submit" class="btn btn-primary w-100">Modifier</button>
                                 </div>
                             </div>
                         </div>
@@ -202,8 +247,9 @@
 
 @section('script')
     <script src="{{ asset('admin/assets/bundles/select2/dist/js/select2.full.min.js') }}"></script>
-
     <script src="{{ asset('admin/assets/bundles/jquery-selectric/jquery.selectric.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js">
+    </script>
 @endsection
 <script type="text/javascript">
     $(document).ready(function() {
@@ -330,6 +376,101 @@
 
 
 
+        // SCRIPT FOR DISCOUNT
+
+        //amount 
+        $('#discount_price').keyup(function(e) {
+            var discount_price = $('#discount_price').val()
+            var product_price = $('#product_price').val()
+
+            if (parseFloat(discount_price) > parseFloat(product_price)) {
+                $('#MsgError').html('Le prix de la remise doit etre inferieur au prix normal').css({
+                    'color': 'white',
+                    'background-color': 'red',
+                    'font-size': '16px'
+                });
+                $('.btn-submit').prop('disabled', true)
+            } else {
+                // calcul de pourcentage
+                var discount = parseFloat(discount_price * 100) / parseFloat(product_price)
+
+                $('#discount').val(Math.round(discount))
+
+
+                $('#MsgError').html(' ')
+                $('.btn-submit').prop('disabled', false)
+
+            }
+
+        });
+
+
+        //percent
+        $('#discount').keyup(function(e) {
+            var discount = $('#discount').val()
+            var product_price = $('#product_price').val()
+
+            if (discount > 100) {
+                $('#MsgError').html('Le pourcentage ne doit pas exceder 100%').css({
+                    'color': 'white',
+                    'background-color': 'red',
+                    'font-size': '16px'
+                });
+                $('.btn-submit').prop('disabled', true)
+            } else {
+                var amount_discount = parseFloat(product_price) * (discount / 100)
+                $('#discount_price').val(amount_discount)
+
+                $('#MsgError').html(' ')
+                $('.btn-submit').prop('disabled', false)
+            }
+        });
+
+
+        //date discount
+
+        $(".datetimepicker").each(function() {
+            $(this).datetimepicker();
+        });
+
+
+
+        $('#date_start').change(function(e) {
+            var date_start = $(this).val();
+            var date_end = $('#date_end').val();
+
+            if (date_start > date_end) {
+                $('#MsgError').html(
+                    'La date debut de la promo ne doit pas etre superieur à la date de fin').css({
+                    'color': 'white',
+                    'background-color': 'red',
+                    'font-size': '16px'
+                });
+                $('.btn-submit').prop('disabled', true)
+            } else {
+                $('#MsgError').html(' ')
+                $('.btn-submit').prop('disabled', false)
+            }
+        });
+
+
+        $('#date_end').change(function(e) {
+            var date_end = $(this).val();
+            var date_start = $('#date_start').val();
+
+            if (date_end < date_start) {
+                $('#MsgError').html(
+                    'La date fin de la promo ne doit pas etre inferieur à la date de debut').css({
+                    'color': 'white',
+                    'background-color': 'red',
+                    'font-size': '16px'
+                });
+                $('.btn-submit').prop('disabled', true)
+            } else {
+                $('#MsgError').html(' ')
+                $('.btn-submit').prop('disabled', false)
+            }
+        });
 
 
 

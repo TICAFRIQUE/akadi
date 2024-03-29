@@ -8,8 +8,8 @@
     @includeWhen(!Auth::check(), 'site.sections.popup-register')
 
     <!--==============================
-                                                        Breadcumb
-                                                    ============================== -->
+                                                                            Breadcumb
+                                                                        ============================== -->
     <div class="breadcumb-wrapper " data-bg-src="">
         <div class="container z-index-common">
             <div class="breadcumb-content">
@@ -24,8 +24,8 @@
             </div>
         </div>
     </div><!--==============================
-                                                        Product Details
-                                                        ==============================-->
+                                                                            Product Details
+                                                                            ==============================-->
     <section class="th-product-wrapper product-details space-top space-extra-bottom">
         <div class="container">
             <div class="row">
@@ -59,9 +59,19 @@
                             <a href="shop-details.html" class="woocommerce-review-link">(<span class="count">3</span>
                                 customer reviews)</a>
                         </div> --}}
-                        <h4 class="product-title"> {{ $product['title'] }} </h4>
-                        <span class="price fs-2"> {{ number_format($product['price'], 0, ',', ' ') }} FCFA
-                            <del></del></span>
+                        <h4 class="product-title mb-4"> {{ $product['title'] }} </h4>
+                        @if ($product['montant_remise'] != null)
+                            <span class="price fs-2">
+                                {{ number_format($product['montant_remise'], 0, ',', ' ') }} FCFA
+                                <del class="text-dark"> {{ number_format($product['price'], 0, ',', ' ') }} FCFA
+                                </del>
+                            </span>
+                        @else
+                            <span class="price fs-2"> {{ number_format($product['price'], 0, ',', ' ') }}
+                                FCFA
+                                <del></del>
+                            </span>
+                        @endif
 
                         <div class="product_meta">
                             <span class="sku_wrapper">Description: <span class="sku"> {!! $product['description'] !!}
@@ -129,25 +139,35 @@
                                             alt="Product Image">
                                     </a>
 
-
-                                    {{-- <div class="th-menu_discount">
-                                        <span class="sale">24% OFF</span>
-                                    </div> --}}
+                                    @if ($item['montant_remise'])
+                                        <div class="th-menu_discount">
+                                            <span class="sale">{{ $item['pourcentage_remise'] }}% OFF</span>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="th-menu-content">
-                                    <span class=" text-dark fw-bold"><a
-                                            href="{{ route('detail-produit', $item['slug']) }}" class="text-dark" style="font-size: 14px">{{Str::limit($item['title'], 30, '...') }}</a>
+                                    <span class=" text-dark fw-bold"><a href="{{ route('detail-produit', $item['slug']) }}"
+                                            class="text-dark"
+                                            style="font-size: 14px">{{ Str::limit($item['title'], 30, '...') }}</a>
                                     </span>
                                     {{-- <p class="th-menu_desc">Barbecue Italian cuisine pizza</p> --}}
-                                    <span class="th-menu_price"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA
-                                    </span>
+                                    @if ($item['montant_remise'] != null)
+                                        <span class="th-menu_price">
+                                            {{ number_format($item['montant_remise'], 0, ',', ' ') }} FCFA
+                                            <del class="text-dark"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA
+                                            </del>
+                                        </span>
+                                    @else
+                                        <span class="th-menu_price"> {{ number_format($item['price'], 0, ',', ' ') }}
+                                            FCFA
+                                            <del></del>
+                                        </span>
+                                    @endif
                                 </div>
 
                                 <div class="product-action mt-4">
-                                    <a href="" class="btn btn-danger addCart"  data-id="{{ $item['id'] }}><span class="action-text">Ajouter au
-                                            panier</span> <span class="icon"><i
-                                                class="far fa-cart-shopping"></i></span></a>
-
+                                    <button class="btn btn-danger addCart" data-id="{{ $item['id'] }}"><i
+                                            class="fal fa-cart-plus "></i> Ajouter au panier</button>
                                 </div>
                                 <div class="fire"><img src="{{ asset('site/assets/img/update_2/shape/fire.png') }}"
                                         alt="shape"></div>

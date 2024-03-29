@@ -294,6 +294,11 @@
     <!-- Custom JS File -->
     <script src="{{ asset('admin/assets/js/custom.js') }}"></script>
     <!-- CDN JS File -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js">
+    </script>
 
 
 </body>

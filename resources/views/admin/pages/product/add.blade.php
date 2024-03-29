@@ -5,6 +5,7 @@
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('admin/assets/css/custom.css') }}">
+
 @endpush
 
 <script>
@@ -197,33 +198,34 @@
                             <hr>
                             <!-- ========== Start Remise ========== -->
                             <h4 class="fw-bold ">REMISE</h4>
+                            <p class="fw-bold fs-2 col-12" id="MsgError"></p>
                             <div class="form-group row">
-                                <p class="fw-bold fs-2" id="MsgError"></p>
 
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Montant de la remise</label>
 
-                                    <input type="number" id="discount_price" name="price_discount"
+                                    <input type="number" id="discount_price" name="montant_remise"
                                         class="form-control">
                                 </div>
 
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Pourcentage(%) </label>
 
-                                    <input type="number" id="discount" name="discount" class="form-control">
+                                    <input type="number" id="discount" name="pourcentage_remise"
+                                        class="form-control">
                                 </div>
 
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Date Debut</label>
 
-                                    <input type="date" id="date_start" name="date_start"
+                                    <input type="text" id="date_start" name="date_debut_remise"
                                         class="form-control datetimepicker">
                                 </div>
 
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Date Fin</label>
 
-                                    <input type="date" id="date_end" name="date_end"
+                                    <input type="text" id="date_end" name="date_fin_remise"
                                         class="form-control datetimepicker">
                                 </div>
 
@@ -234,7 +236,8 @@
                             <div class="form-group row mb-4">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
                                 <div class="col-sm-12 col-md-7 text-lg-right">
-                                    <button type="submit" class="btn btn-primary btn-submit">Enregistrer</button>
+                                    <button type="submit"
+                                        class="btn btn-primary btn-submit w-100">Enregistrer</button>
                                 </div>
                             </div>
                         </div>
@@ -252,7 +255,6 @@
 
     <script src="{{ asset('admin/assets/bundles/select2/dist/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('admin/assets/bundles/jquery-selectric/jquery.selectric.min.js') }}"></script>
-
 @endsection
 <script type="text/javascript">
     $(document).ready(function() {
@@ -361,14 +363,17 @@
             var product_price = $('#product_price').val()
 
             if (parseFloat(discount_price) > parseFloat(product_price)) {
-                $('#MsgError').html('Le prix de la remise doit etre inferieur au prix normal').css(
-                    'color', 'red');
+                $('#MsgError').html('Le prix de la remise doit etre inferieur au prix normal').css({
+                    'color': 'white',
+                    'background-color': 'red',
+                    'font-size': '16px'
+                });
                 $('.btn-submit').prop('disabled', true)
             } else {
                 // calcul de pourcentage
                 var discount = parseFloat(discount_price * 100) / parseFloat(product_price)
 
-                $('#discount').val(discount)
+                $('#discount').val(Math.round(discount))
 
 
                 $('#MsgError').html(' ')
@@ -385,19 +390,66 @@
             var product_price = $('#product_price').val()
 
             if (discount > 100) {
-                $('#MsgError').html('Le pourcentage ne doit pas exceder 100%').css(
-                    'color', 'red');
+                $('#MsgError').html('Le pourcentage ne doit pas exceder 100%').css({
+                    'color': 'white',
+                    'background-color': 'red',
+                    'font-size': '16px'
+                });
                 $('.btn-submit').prop('disabled', true)
             } else {
                 var amount_discount = parseFloat(product_price) * (discount / 100)
-               $('#discount_price').val(amount_discount)
+                $('#discount_price').val(amount_discount)
 
                 $('#MsgError').html(' ')
                 $('.btn-submit').prop('disabled', false)
             }
-
         });
 
+
+        //date discount
+
+        $(".datetimepicker").each(function() {
+            $(this).datetimepicker();
+        });
+
+
+
+        $('#date_start').change(function(e) {
+            var date_start = $(this).val();
+            var date_end = $('#date_end').val();
+
+            if (date_start > date_end) {
+                $('#MsgError').html(
+                    'La date debut de la promo ne doit pas etre superieur à la date de fin').css({
+                    'color': 'white',
+                    'background-color': 'red',
+                    'font-size': '16px'
+                });
+                $('.btn-submit').prop('disabled', true)
+            } else {
+                $('#MsgError').html(' ')
+                $('.btn-submit').prop('disabled', false)
+            }
+        });
+
+
+        $('#date_end').change(function(e) {
+            var date_end = $(this).val();
+            var date_start = $('#date_start').val();
+
+            if (date_end < date_start) {
+                $('#MsgError').html(
+                    'La date fin de la promo ne doit pas etre inferieur à la date de debut').css({
+                    'color': 'white',
+                    'background-color': 'red',
+                    'font-size': '16px'
+                });
+                $('.btn-submit').prop('disabled', true)
+            } else {
+                $('#MsgError').html(' ')
+                $('.btn-submit').prop('disabled', false)
+            }
+        });
 
 
 

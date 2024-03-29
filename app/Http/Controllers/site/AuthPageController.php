@@ -11,6 +11,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class AuthPageController extends Controller
 {
@@ -52,11 +54,48 @@ class AuthPageController extends Controller
                 }
 
 
+                //new send mail with phpMailer
+                $mail = new PHPMailer(true);
+                require base_path("vendor/autoload.php");
+
+                try {
+
+                    /* Email SMTP Settings */
+                    $mail->SMTPDebug = 0;
+                    $mail->isSMTP();
+                    $mail->Host = 'mail.akadi.ci';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'info@akadi.ci';
+                    $mail->Password = 'S$UBfu.8s(#z';
+                    $mail->SMTPSecure = 'tls';
+                    $mail->Port = 587;
+
+                    $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+                    $mail->addAddress($request->email);
+
+                    $mail->isHTML(true);
+
+                    $mail->Subject = 'creation de compte';
+                    $mail->Body    = 'bravo';
+
+                    if (!$mail->send()) {
+                        return back()->with("error", "Email not sent.")->withErrors($mail->ErrorInfo);
+                    } else {
+                        return back()->with("success", "Email has been sent.");
+                    }
+                } catch (Exception $e) {
+                    return back()->with('error', 'Message could not be sent.');
+                }
+            
+
+
+
+
                 //send mail for our register
-                Mail::send('site.pages.auth.email.email_register', ['user' => $request['name']], function ($message) use ($request) {
-                    $message->to($request->email);
-                    $message->subject('Création de compte');
-                });
+                // Mail::send('site.pages.auth.email.email_register', ['user' => $request['name']], function ($message) use ($request) {
+                //     $message->to($request->email);
+                //     $message->subject('Création de compte');
+                // });
                 
 
                 //redirection apres connexion

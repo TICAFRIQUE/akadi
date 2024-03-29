@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('button_name')->nullable();
             $table->integer('discount')->nullable();
             $table->string('statut')->nullable()->default('active'); // ,
+            $table->dateTime('date_debut_pub')->nullable();
+            $table->dateTime('date_debut_fin')->nullable();
+            $table->string('status_pub')->nullable(); // , en cour, bientot, termine
             $table->softDeletes();
             $table->timestamps();
         });

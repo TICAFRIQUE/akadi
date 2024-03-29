@@ -68,6 +68,11 @@ class ProductController extends Controller
             'description' => $request['description'],
             'price' => $request['price'],
             'sub_category_id' => $request['subcategories'],
+            'montant_remise' => $request['montant_remise'],
+            'pourcentage_remise' => $request['pourcentage_remise'],
+            'date_debut_remise' => $request['date_debut_remise'],
+            'date_fin_remise' => $request['date_fin_remise'],
+            'status_remise' => '',
             'user_id' => $userId
         ]);
 
@@ -188,7 +193,12 @@ class ProductController extends Controller
             'title' => $request['title'],
             'description' => $request['description'],
             'price' => $request['price'],
-            'sub_category_id' => $request['subcategories']
+            'sub_category_id' => $request['subcategories'],
+            'montant_remise' => $request['montant_remise'],
+            'pourcentage_remise' => $request['pourcentage_remise'],
+            'date_debut_remise' => $request['date_debut_remise'],
+            'date_fin_remise' => $request['date_fin_remise'],
+            'status_remise' => '',
 
         ]);
 

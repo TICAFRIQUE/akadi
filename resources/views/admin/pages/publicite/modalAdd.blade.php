@@ -48,16 +48,18 @@
                       @csrf
                       <div class="card-body">
                           <div class="form-group row">
-                              <div class="col-sm-9">
-                                  <label class="col-sm-3 col-form-label">Type de la publicite</label>
+                              <p class="fw-bold fs-2 col-12" id="MsgError"></p>
+
+                              <div class="col-sm-3">
+                                  <label class="col-sm-12 col-form-label">Type de la publicite</label>
                                   <select name="type" class="form-control selectric " required>
                                       <option disabled selected value>Choisir un type</option>
                                       @php
                                           $type = [
                                               'slider',
-                                              'popup',
-                                              'arriere-plan',
-                                              'banniere',
+                                              //   'popup',
+                                              //   'arriere-plan',
+                                              //   'banniere',
                                               'small-card',
                                               'top-promo',
                                           ];
@@ -72,6 +74,20 @@
                                       Champ obligatoire
                                   </div>
 
+                              </div>
+
+                              <div class="col-sm-3">
+                                  <label class="col-sm-12 col-form-label">Date Debut de la publicité</label>
+
+                                  <input type="text" id="date_start" name="date_debut_pub"
+                                      class="form-control datetimepicker">
+                              </div>
+
+                              <div class="col-sm-3">
+                                  <label class="col-sm-12 col-form-label">Date Fin de la publicité</label>
+
+                                  <input type="text" id="date_end" name="date_fin_pub"
+                                      class="form-control datetimepicker">
                               </div>
 
                               <div class="col-sm-3">
@@ -97,21 +113,19 @@
                           </div>
 
                           <div class="form-group row">
-                              <label class="col-sm-3 col-form-label">Texte</label>
-                              <div class="col-sm-9">
+                              <div class="col-sm-8">
+                                  <label class="col-sm-12 col-form-label">Texte</label>
                                   <textarea name="texte" class="form-control"></textarea>
                               </div>
-                          </div>
 
-                          <div class="form-group row">
-                              <label class="col-sm-3 col-form-label">image</label>
-                              <div class="col-sm-9">
+                              <div class="col-sm-4">
+                                  <label class="col-sm-3 col-form-label">image</label>
                                   <img id="img-preview"
                                       src="https://ami-sni.com/wp-content/themes/consultix/images/no-image-found-360x250.png"
                                       width="250px" />
                                   <div>
                                       <input type="file" name="image" class="form-control"
-                                          onchange="readURL(this);" >
+                                          onchange="readURL(this);">
                                       {{-- <div class="invalid-feedback">
                                           Champs obligatoire
                                       </div> --}}
@@ -119,12 +133,64 @@
                               </div>
                           </div>
 
+
                       </div>
                       <div class="card-footer text-right">
-                          <button type="submit" class="btn btn-primary">Valider</button>
+                          <button type="submit" class="btn btn-primary w-100">Valider</button>
                       </div>
                   </form>
               </div>
           </div>
       </div>
   </div>
+
+  <script>
+      $(document).ready(function() {
+
+
+          //date discount
+
+          $(".datetimepicker").each(function() {
+              $(this).datetimepicker();
+          });
+
+
+
+          $('#date_start').change(function(e) {
+              var date_start = $(this).val();
+              var date_end = $('#date_end').val();
+
+              if (date_start > date_end) {
+                  $('#MsgError').html(
+                      'La date debut de la promo ne doit pas etre superieur à la date de fin').css({
+                      'color': 'white',
+                      'background-color': 'red',
+                      'font-size': '16px'
+                  });
+                  $('.btn-submit').prop('disabled', true)
+              } else {
+                  $('#MsgError').html(' ')
+                  $('.btn-submit').prop('disabled', false)
+              }
+          });
+
+
+          $('#date_end').change(function(e) {
+              var date_end = $(this).val();
+              var date_start = $('#date_start').val();
+
+              if (date_end < date_start) {
+                  $('#MsgError').html(
+                      'La date fin de la promo ne doit pas etre inferieur à la date de debut').css({
+                      'color': 'white',
+                      'background-color': 'red',
+                      'font-size': '16px'
+                  });
+                  $('.btn-submit').prop('disabled', true)
+              } else {
+                  $('#MsgError').html(' ')
+                  $('.btn-submit').prop('disabled', false)
+              }
+          });
+      });
+  </script>

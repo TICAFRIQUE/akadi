@@ -48,7 +48,11 @@ class PubliciteController extends Controller
             'button_name' => $request['button_name'],
             'texte' => $request['texte'],
             'discount' => $request['discount'],
+            'date_debut_pub' => $request['date_debut_pub'],
+            'date_fin_pub' => $request['date_fin_pub'],
+            'status_pub' => $request['status_pub'],
             'button_name' => $request['button_name'],
+
         ]);
 
 
@@ -98,7 +102,11 @@ class PubliciteController extends Controller
             'button_name' => $request['button_name'],
             'texte' => $request['texte'],
             'discount' => $request['discount'],
+            'date_debut_pub' => $request['date_debut_pub'],
+            'date_fin_pub' => $request['date_fin_pub'],
+            'status_pub' => $request['status_pub'],
             'button_name' => $request['button_name'],
+
 
         ]);
 

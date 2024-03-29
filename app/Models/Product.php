@@ -33,6 +33,11 @@ class Product extends Model implements HasMedia
         'sub_category_id',
         'disponibilite',
         'user_id',
+        'montant_remise',
+        'pourcentage_remise',
+        'date_debut_remise',
+        'date_fin_remise',
+        'status_remise', // en cour, terminer , bientot
         'created_at',
         'updated_at',
         'deleted_at'

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('slug')->nullable();
             $table->double('price')->nullable();
             $table->longText('description')->nullable();
+            $table->boolean('disponibilite')->after('user_id')->nullable()->default(1); //1: disponible 0: rupture
 
 
             $table->foreignId('collection_id')
@@ -37,6 +38,13 @@ return new class extends Migration
             ->constrained('users')
             ->onUpdate('cascade')
             ->onDelete('set null');
+
+            //remise
+            $table->double('montant_remise')->nullable();
+            $table->integer('pourcentage_remise')->nullable();
+            $table->date('date_debut_remise')->nullable();
+            $table->date('date_fin_remise')->nullable();
+            $table->string('status_remise')->nullable(); // en cour , terminer, bientot
 
             $table->softDeletes();
             

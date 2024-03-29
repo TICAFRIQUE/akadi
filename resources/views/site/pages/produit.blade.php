@@ -46,6 +46,12 @@
                                 <a href="{{ route('detail-produit', $item['slug']) }}">
                                     <img src="{{ asset($item->getFirstMediaUrl('product_image')) }}" alt="Product Image">
                                 </a>
+                                @if ($item['montant_remise'])
+                                     <div class="th-menu_discount">
+                                        <span class="sale">{{$item['pourcentage_remise']}}% OFF</span>
+                                    </div>
+                                @endif
+                               
                             </div>
                             <div class="product-content">
                                 @if ($item['subcategorie'])
@@ -56,11 +62,20 @@
                                         class="category">{{ $item['subcategorie'] ? $item['subcategorie']['name'] : $item['categories'][0]['name'] }}</a>
                                 @endif
 
-                                <span class="text-dark" ><a href="{{ route('detail-produit', $item['slug']) }}" class="text-dark fw-bold" style="font-size: 14px">
-                                      {{Str::limit($item['title'], 30, '...') }}</a></span>
+                                <span class="text-dark"><a href="{{ route('detail-produit', $item['slug']) }}"
+                                        class="text-dark fw-bold" style="font-size: 14px">
+                                        {{ Str::limit($item['title'], 30, '...') }}</a></span>
 
-                                <span class="price"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA
-                                    <del></del></span>
+                                @if ($item['montant_remise'] != null)
+                                    <span class="price"> {{ number_format($item['montant_remise'], 0, ',', ' ') }}
+                                        FCFA
+                                        <del> {{ number_format($item['price'], 0, ',', ' ') }} FCFA </del>
+                                    </span>
+                                @else
+                                    <span class="price"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA
+                                        <del></del>
+                                    </span>
+                                @endif
                                 <div class="actions">
                                     {{-- <a href="" class=""><i class="fal fa-eye"></i>Ajouter</a> --}}
                                     <button class="btn btn-danger addCart" data-id="{{ $item['id'] }}"><i

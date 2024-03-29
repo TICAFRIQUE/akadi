@@ -30,14 +30,19 @@ Categorie and products
                 </div>
                 <div class="row gy-4 filter-active">
                     @foreach ($categories as $categorie)
-                        @foreach ($categorie['products'] as $plats)
-                            <div class="col-lg-6 filter-item cat{{ $plats['pivot']['category_id'] }}">
+                        @foreach ($categorie['products'] as $product)
+                            <div class="col-lg-6 filter-item cat{{ $product['pivot']['category_id'] }}">
                                 <div class="th-product list-view">
                                     <div class="product-img">
-                                      <a href="{{ route('detail-produit', $plats['slug']) }}">
-                                          <img src="{{ asset($plats->getFirstMediaUrl('product_image')) }}"
-                                            alt="Product Image">
-                                      </a>
+                                        <a href="{{ route('detail-produit', $product['slug']) }}">
+                                            <img src="{{ asset($product->getFirstMediaUrl('product_image')) }}"
+                                                alt="Product Image">
+                                        </a>
+                                        {{-- @if ($product['montant_remise'])
+                                            <div class="th-menu_discount w-10">
+                                                <span class="sale">{{ $product['pourcentage_remise'] }}% OFF</span>
+                                            </div>
+                                        @endif --}}
                                     </div>
                                     <div class="product-content">
                                         {{-- <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5">
@@ -45,24 +50,34 @@ Categorie and products
                                                     class="rating">1</span> customer rating</span>
                                         </div> --}}
                                         <h3 class="product-title"><a
-                                                href="{{ route('detail-produit', $plats['slug']) }}">{{ $plats['title'] }}</a>
+                                                href="{{ route('detail-produit', $product['slug']) }}">{{ $product['title'] }}</a>
                                         </h3>
-                                        @if ($plats['subcategorie'])
-                                            <a href="/produit?sous-categorie={{ $plats['subcategorie']['id'] }}"
-                                                class="category text-danger">{{ $plats['subcategorie'] ? $plats['subcategorie']['name'] : $plats['categories'][0]['name'] }}</a>
+                                        @if ($product['subcategorie'])
+                                            <a href="/produit?sous-categorie={{ $product['subcategorie']['id'] }}"
+                                                class="category text-danger">{{ $product['subcategorie'] ? $product['subcategorie']['name'] : $product['categories'][0]['name'] }}</a>
                                         @else
-                                            <a href="/produit?categorie={{ $plats['categories'][0]['id'] }}"
-                                                class="category text-danger">{{ $plats['subcategorie'] ? $plats['subcategorie']['name'] : $plats['categories'][0]['name'] }}</a>
+                                            <a href="/produit?categorie={{ $product['categories'][0]['id'] }}"
+                                                class="category text-danger">{{ $product['subcategorie'] ? $product['subcategorie']['name'] : $product['categories'][0]['name'] }}</a>
                                         @endif
-                                        <p class="product-text"> {!! substr(strip_tags($plats->description), 0, 50) !!}.... </p>
-                                        <span class="price"> {{ number_format($plats['price'], 0 , ',', ' ') }} FCFA
-                                            <del></del></span>
+                                        <p class="product-text"> {!! substr(strip_tags($product->description), 0, 50) !!}.... </p>
+
+                                        @if ($product['montant_remise'] != null)
+                                            <span class="price">
+                                                {{ number_format($product['montant_remise'], 0, ',', ' ') }} FCFA
+                                                <del> {{ number_format($product['price'], 0, ',', ' ') }} FCFA </del>
+                                            </span>
+                                        @else
+                                            <span class="price"> {{ number_format($product['price'], 0, ',', ' ') }}
+                                                FCFA
+                                                <del></del>
+                                            </span>
+                                        @endif
 
                                         <div class="actions">
-                                            <a href="{{ route('detail-produit', $plats['slug']) }}" class="icon-btn"><i
-                                                    class="far fa-eye"></i></a>
+                                            <a href="{{ route('detail-produit', $product['slug']) }}"
+                                                class="icon-btn"><i class="far fa-eye"></i></a>
                                             <button class="icon-btn"><i class="far fa-cart-plus addCart"
-                                                    data-id="{{ $plats['id'] }}"></i></button>
+                                                    data-id="{{ $product['id'] }}"></i></button>
                                             {{-- <a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> --}}
                                         </div>
                                     </div>
