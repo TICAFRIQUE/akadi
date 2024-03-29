@@ -45,7 +45,6 @@ class PubliciteController extends Controller
         $publicite = Publicite::create([
             'type' => $request['type'],
             'url' => $request['url'],
-            'button_name' => $request['button_name'],
             'texte' => $request['texte'],
             'discount' => $request['discount'],
             'date_debut_pub' => $request['date_debut_pub'],
@@ -99,7 +98,6 @@ class PubliciteController extends Controller
         $publicite = tap(Publicite::find($id))->update([
             'type' => $request['type'],
             'url' => $request['url'],
-            'button_name' => $request['button_name'],
             'texte' => $request['texte'],
             'discount' => $request['discount'],
             'date_debut_pub' => $request['date_debut_pub'],
