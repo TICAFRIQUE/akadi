@@ -100,7 +100,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Texte</label>
                                     <div class="col-sm-9">
-                                        <textarea name="texte" class="form-control">
+                                        <textarea name="texte" class="form-control summernote">
                                            {{ $publicite['texte'] }}
                                         </textarea>
                                     </div>

@@ -1,8 +1,12 @@
 <!-- ========== Start top promo ========== -->
 <style>
     .promo-banner {
-        background-color: rgb(237, 70, 70)
+        background-color: #f85d05
     }
+
+     /* .promo-banner span {
+        background-color: #f85d05
+    } */
 </style>
 
 
@@ -16,7 +20,7 @@
                 <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 m-auto">
 
                     <div class=" promo-banner py-3 mb-3 fs-5">
-                        <span id="" class=" text-white p-2 text-center">Se termine dans <span class="fw-bold"
+                        <span class=" text-white p-2 ">Se termine dans <span class="fw-bold"
                                 id="Promo-Timer"></span>
                             Profitez de {{ $top_promo['discount'] }}%
                             de reduction !</span>
@@ -47,7 +51,7 @@
 
 
                         <p class="fs-4">
-                            {{ $top_promo['texte'] }}
+                            {!!$top_promo['texte']!!}
                         </p>
 
 
@@ -76,9 +80,12 @@
 
         var topPromo = {{ Js::from($top_promo) }}
 
+
         var startDate = topPromo.date_debut_pub
         var endDate = topPromo.date_fin_pub
 
+        var dateNow = new Date();
+        console.log(dateNow == startDate);
 
         function countDown() {
             var currDate = new Date(startDate)
@@ -111,7 +118,8 @@
             //     seconds = "0" + seconds;
             // }
 
-            $("#Promo-Timer").html(days + ' j' + " : " + hours + ' h' + " : " + minutes + ' m' + " : " + seconds+ ' s');
+            $("#Promo-Timer").html(days + ' j' + " : " + hours + ' h' + " : " + minutes + ' m' + " : " +
+                seconds + ' s');
 
         }
 

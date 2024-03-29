@@ -51,7 +51,6 @@ class PubliciteController extends Controller
             'date_fin_pub' => $request['date_fin_pub'],
             'status_pub' => $request['status_pub'],
             'button_name' => $request['button_name'],
-
         ]);
 
 

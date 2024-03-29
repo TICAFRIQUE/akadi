@@ -115,7 +115,7 @@
                           <div class="form-group row">
                               <div class="col-sm-8">
                                   <label class="col-sm-12 col-form-label">Texte</label>
-                                  <textarea name="texte" class="form-control"></textarea>
+                                  <textarea name="texte" class="form-control summernote"></textarea>
                               </div>
 
                               <div class="col-sm-4">
