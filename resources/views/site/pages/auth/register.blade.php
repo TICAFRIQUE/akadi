@@ -46,6 +46,7 @@
 
                         <div class="col-6">
                             <select name="jour" class="form-control">
+                                <option disabled selected>Jour</option>
                                 @for ($i = 1; $i < 32; $i++)
                                     <option value="{{ str_pad($i,2,"0",STR_PAD_LEFT) }}"> {{str_pad($i,2,"0",STR_PAD_LEFT) }} </option>
                                 @endfor
@@ -72,6 +73,8 @@
                                     ];
 
                                 @endphp
+                                <option disabled selected>Mois</option>
+
                                 @foreach ($month as $key => $item)
                                     <option value="{{ str_pad($key,2,"0",STR_PAD_LEFT) }}">{{ $item }} </option>
                                 @endforeach
