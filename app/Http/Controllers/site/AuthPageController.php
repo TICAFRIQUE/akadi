@@ -58,35 +58,26 @@ class AuthPageController extends Controller
                 $mail = new PHPMailer(true);
                 require base_path("vendor/autoload.php");
 
-                try {
+                /* Email SMTP Settings */
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host = 'mail.akadi.ci';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'info@akadi.ci';
+                $mail->Password = 'S$UBfu.8s(#z';
+                $mail->SMTPSecure = 'tls';
+                $mail->Port = 587;
 
-                    /* Email SMTP Settings */
-                    $mail->SMTPDebug = 0;
-                    $mail->isSMTP();
-                    $mail->Host = 'mail.akadi.ci';
-                    $mail->SMTPAuth = true;
-                    $mail->Username = 'info@akadi.ci';
-                    $mail->Password = 'S$UBfu.8s(#z';
-                    $mail->SMTPSecure = 'tls';
-                    $mail->Port = 587;
+                $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+                $mail->addAddress($request->email);
 
-                    $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-                    $mail->addAddress($request->email);
+                $mail->isHTML(true);
 
-                    $mail->isHTML(true);
+                $mail->Subject = 'creation de compte';
+                $mail->Body    = 'bravo';
 
-                    $mail->Subject = 'creation de compte';
-                    $mail->Body    = 'bravo';
 
-                    if (!$mail->send()) {
-                        return back()->with("error", "Email not sent.")->withErrors($mail->ErrorInfo);
-                    } else {
-                        return back()->with("success", "Email has been sent.");
-                    }
-                } catch (Exception $e) {
-                    return back()->with('error', 'Message could not be sent.');
-                }
-            
+              
 
 
 

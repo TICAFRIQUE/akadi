@@ -16,15 +16,14 @@
         <div class="container">
             <div class="row">
 
-
-                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 m-auto">
-
-                    <div class=" promo-banner py-3 mb-3 fs-5">
+                  <div class="col-12 promo-banner py-3 mb-3 fs-5">
                         <span class=" text-white p-2 ">Se termine dans <span class="fw-bold"
                                 id="Promo-Timer"></span>
                             Profitez de {{ $top_promo['discount'] }}%
                             de reduction !</span>
                     </div>
+                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 m-auto">
+
                     <div class="img-box2 ">
 
                         <div class="shape1" style="left: 0">
