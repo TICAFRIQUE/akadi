@@ -40,13 +40,13 @@ class AuthPageController extends Controller
                 ]);
 
 
-                  $date_anniv = '';
-                if ($request->jour && $request->mois) {
-                    $date_anniv = $request->jour . '-' . $request->mois; //date anniversaire
+                //   $date_anniv = '';
+                // if ($request->jour && $request->mois) {
+                //     $date_anniv = $request->jour . '-' . $request->mois; //date anniversaire
 
-                }else{
-                    $date_anniv = '';
-                }
+                // }else{
+                //     $date_anniv = '';
+                // }
 
 
                 // dd($date_anniv);
@@ -55,7 +55,7 @@ class AuthPageController extends Controller
                     'phone' => $request['phone'],
                     'email' => $request->email,
                     'email' => $request->email,
-                    'date_anniversaire' => $date_anniv,
+                    // 'date_anniversaire' => $date_anniv,
                     'role' => 'client',
                     'password' => Hash::make($request['password']),
                 ]);

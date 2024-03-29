@@ -40,7 +40,7 @@
                 </div>
 
 
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label>Votre date d'anniversaire <strong>(Peut-être qu'une surprise vous atteindra le Jour-J)</strong></label>
                     <div class="row">
 
@@ -82,7 +82,7 @@
                         </div>
                     </div>
 
-                </div>
+                </div> --}}
 
                 <input type="text" name="url_previous" value="{{ url()->previous() }}" hidden>
 
