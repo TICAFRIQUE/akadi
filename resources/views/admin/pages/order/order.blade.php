@@ -32,7 +32,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($orders as $key => $item)
-                                            <tr id="row_{{$item['id']}}">
+                                            <tr id="row_{{ $item['id'] }}">
                                                 <td>{{ ++$key }} </td>
                                                 <td><span style="font-weight:bold">{{ $item['code'] }}</span>
                                                     <br> <span
@@ -41,7 +41,7 @@
                                                 </td>
                                                 <td>{{ $item['user']['name'] }} </td>
                                                 {{-- <td>{{ $item['delivery_name'] }} - {{ $item['delivery_price'] }} </td> --}}
-                                                <td>{{ number_format($item['total'], 0 , '', ' ' )}} </td>
+                                                <td>{{ number_format($item['total'], 0, '', ' ') }} </td>
                                                 <td>
                                                     {{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}
                                                     <br>
@@ -58,7 +58,7 @@
                                                                 class="dropdown-item has-icon"><i class="fas fa-eye"></i>
                                                                 Detail</a>
 
-                                                            @if ($item['status'] != 'livrée'  && $item['status'] != 'annulée' )
+                                                            @if ($item['status'] != 'livrée' && $item['status'] != 'annulée')
                                                                 <a href="/admin/order/changeState?cs=confirmée && id={{ $item['id'] }}"
                                                                     class="dropdown-item has-icon"><i
                                                                         class="fas fa-check"></i>
@@ -97,4 +97,62 @@
             </div>
         </div>
     </section>
+
+    <script>
+     $(document).ready(function () {
+           var table = $('#tableExport').DataTable({
+            // destroy: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+
+            drawCallback: function(settings) {
+                // $('.delete').on("click", function(e) {
+                //     e.preventDefault();
+                //     var Id = $(this).attr('data-id');
+                //     swal({
+                //         title: "Suppression",
+                //         text: "Veuillez confirmer la suppression",
+                //         type: "warning",
+                //         showCancelButton: true,
+                //         confirmButtonText: "Confirmer",
+                //         cancelButtonText: "Annuler",
+                //     }).then((result) => {
+                //         if (result) {
+                //             $.ajax({
+                //                 type: "POST",
+                //                 url: "/admin/auth/destroy/" + Id,
+                //                 dataType: "json",
+                //                 data: {
+                //                     _token: '{{ csrf_token() }}',
+
+                //                 },
+                //                 success: function(response) {
+                //                     if (response.status === 200) {
+                //                         Swal.fire({
+                //                             toast: true,
+                //                             icon: 'success',
+                //                             title: 'Utilisateur supprimé avec success',
+                //                             animation: false,
+                //                             position: 'top',
+                //                             background: '#3da108e0',
+                //                             iconColor: '#fff',
+                //                             color: '#fff',
+                //                             showConfirmButton: false,
+                //                             timer: 500,
+                //                             timerProgressBar: true,
+                //                         });
+                //                         $('#row_' + Id).remove();
+
+                //                     }
+                //                 }
+                //             });
+                //         }
+                //     });
+                // });
+            }
+        });
+     });
+    </script>
 @endsection

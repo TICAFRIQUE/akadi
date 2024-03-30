@@ -50,9 +50,9 @@
                                                             class="text-capitalize fw-bold">{{ $role['name'] }}</span>
                                                     @endforeach
                                                 </td>
-                                               
-                                              
-                                                    <td >
+
+
+                                                <td>
                                                     <div class="dropdown">
                                                         <a href="#" data-toggle="dropdown"
                                                             class="btn btn-warning dropdown-toggle">Options</a>
@@ -86,49 +86,63 @@
     <script>
         $(document).ready(function() {
 
-            $('.delete').on("click", function(e) {
-                e.preventDefault();
-                var Id = $(this).attr('data-id');
-                swal({
-                    title: "Suppression",
-                    text: "Veuillez confirmer la suppression",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Confirmer",
-                    cancelButtonText: "Annuler",
-                }).then((result) => {
-                    if (result) {
-                        $.ajax({
-                            type: "POST",
-                            url: "/admin/auth/destroy/" + Id,
-                            dataType: "json",
-                            data: {
-                                _token: '{{ csrf_token() }}',
 
-                            },
-                            success: function(response) {
-                                if (response.status === 200) {
-                                    Swal.fire({
-                                        toast: true,
-                                        icon: 'success',
-                                        title: 'Utilisateur supprimé avec success',
-                                        animation: false,
-                                        position: 'top',
-                                        background: '#3da108e0',
-                                        iconColor: '#fff',
-                                        color: '#fff',
-                                        showConfirmButton: false,
-                                        timer: 500,
-                                        timerProgressBar: true,
-                                    });
-                                    $('#row_' + Id).remove();
 
-                                }
+            var table = $('#tableExport').DataTable({
+                // destroy: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+
+                drawCallback: function(settings) {
+                    $('.delete').on("click", function(e) {
+                        e.preventDefault();
+                        var Id = $(this).attr('data-id');
+                        swal({
+                            title: "Suppression",
+                            text: "Veuillez confirmer la suppression",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Confirmer",
+                            cancelButtonText: "Annuler",
+                        }).then((result) => {
+                            if (result) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/admin/auth/destroy/" + Id,
+                                    dataType: "json",
+                                    data: {
+                                        _token: '{{ csrf_token() }}',
+
+                                    },
+                                    success: function(response) {
+                                        if (response.status === 200) {
+                                            Swal.fire({
+                                                toast: true,
+                                                icon: 'success',
+                                                title: 'Utilisateur supprimé avec success',
+                                                animation: false,
+                                                position: 'top',
+                                                background: '#3da108e0',
+                                                iconColor: '#fff',
+                                                color: '#fff',
+                                                showConfirmButton: false,
+                                                timer: 500,
+                                                timerProgressBar: true,
+                                            });
+                                            $('#row_' + Id).remove();
+
+                                        }
+                                    }
+                                });
                             }
                         });
-                    }
-                });
+                    });
+                }
             });
+
+
         });
     </script>
 @endsection
