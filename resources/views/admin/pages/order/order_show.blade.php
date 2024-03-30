@@ -113,6 +113,16 @@
             @endif
 
 
+             @if ($orders['note'])
+                <h6 class="p-2" style="background-color: #e1e6ea">Commentaire du client</h6>
+
+                <div class="fst-italic p-2">
+                    <p> {{ $orders['note'] }} </p>
+
+                </div>
+            @endif
+
+
     </div>
     <!--end to page content-->
 

@@ -167,6 +167,8 @@ class CartPageController extends Controller
                 $delivery_mode = $_GET['data']['delivery_mode'];
                 $address = $_GET['data']['address'];
                 $address_yango = $_GET['data']['address_yango'];
+                $note = $_GET['data']['note'];
+
 
 
                 //calculer le total TTC
@@ -189,6 +191,8 @@ class CartPageController extends Controller
                     'address' => $address,
                     'address_yango' => $address_yango,
                     'mode_livraison' => $delivery_mode,
+                    'note' => $note,
+
 
 
 

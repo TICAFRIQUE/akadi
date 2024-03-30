@@ -195,6 +195,13 @@
 
 
 
+                                                    <!-- ========== Start note du client ========== -->
+                                                    <div class="my-3">
+                                                       <textarea name="note" id="note" class="border border-danger" cols="30" rows="10" placeholder="Ecrivez un commentaire pour votre commande (Ex: Ne pas mettre de sel) "></textarea>
+                                                    </div>
+                                                    <!-- ========== End note du client ========== -->
+
+
                                                 </form>
                                             </td>
                                         </tr>
@@ -290,7 +297,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
         $('.delivery_mode').change(function(e) {
             e.preventDefault();
             var mode_livraison = $('.delivery_mode option:selected').attr('tag');
-            
+
             //si mode_livraison == domicile
             if (mode_livraison == 'domicile') {
                 $('.delivery').show(200)
@@ -352,6 +359,8 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
             var address_yango = $('#address_yango').val() // adresse de destinantion pour mode yango
             var address = $('#address').val() // precision du lieu exact de livraison 
             var delivery_mode = $('.delivery_mode').val() // mode de la livraison
+            var note = $('#note').val() //commentaire sur le produit du user
+
 
 
             //si le lieu de livraison n'est pas choisi , on affiche un message d'alerte
@@ -431,7 +440,8 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                     prix_livraison,
                     lieu_livraison,
                     delivery_mode,
-                    total_order
+                    total_order,
+                    note
                 }
 
                 $.ajax({

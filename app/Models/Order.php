@@ -33,6 +33,7 @@ class Order extends Model
         'available_product', //disponibilite
         'user_id',
         'date_order',
+        'note', // la note du client
         'created_at',
         'updated_at',
     ];
