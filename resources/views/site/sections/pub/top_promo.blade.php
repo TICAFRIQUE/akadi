@@ -4,7 +4,7 @@
         background-color: #f85d05
     }
 
-     /* .promo-banner span {
+    /* .promo-banner span {
         background-color: #f85d05
     } */
 </style>
@@ -16,12 +16,28 @@
         <div class="container">
             <div class="row">
 
-                  <div class="col-12 promo-banner text-center py-2 mb-3 fs-5">
+
+                <!-- ========== Start banner promo ========== -->
+
+                @if ($top_promo['status_pub'] == 'bientot')
+                    <div class="col-12 promo-banner text-center py-2 mb-3 fs-5">
+                        <span class=" text-white p-2 text-center ">Veuillez patienter
+                            <span class="fw-bold"> {{ \Carbon\Carbon::parse($top_promo['date_debut_pub'])->diffForHumans() }} </span>
+
+                            pour profitez de {{ $top_promo['discount'] }}%
+                            de reduction !</span>
+                    </div>
+                @elseif ($top_promo['status_pub'] == 'en cour')
+                    <div class="col-12 promo-banner text-center py-2 mb-3 fs-5">
                         <span class=" text-white p-2 text-center ">Se termine dans <span class="fw-bold"
                                 id="Promo-Timer"></span>
                             Profitez de {{ $top_promo['discount'] }}%
                             de reduction !</span>
                     </div>
+                @endif
+                <!-- ========== End banner promo ========== -->
+
+
                 <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 m-auto">
 
                     <div class="img-box2 ">
@@ -50,22 +66,16 @@
 
 
                         <p class="fs-4">
-                            {!!$top_promo['texte']!!}
+                            {!! $top_promo['texte'] !!}
                         </p>
 
 
                     </div>
-                    {{-- <p class="mt-n2 mb-10">Bientôt disponible.</p> --}}
+                    @if ($top_promo['status_pub']=='en cour')
                     <div class="btn-wrap style1">
-                        <a href="{{ $top_promo['url'] }}" class="th-btn m-auto">{{ $top_promo['button_name'] }}</a>
-                        {{-- <div class="about-counter1">
-                        <h3 class="counter-title"><span class="counter-number">24</span></h3>
-                        <div class="media-body">
-                            <p class="counter-info">YEARS OF</p>
-                            <h5 class="counter-text">Experience</h5>
-                        </div>
-                    </div> --}}
-                    </div>
+                       <a href="{{ $top_promo['url'] }}" class="th-btn m-auto" >{{ $top_promo['button_name'] }}</a>
+                   </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -83,48 +93,53 @@
         var startDate = topPromo.date_debut_pub
         var endDate = topPromo.date_fin_pub
 
-        var dateNow = new Date();
-        console.log(dateNow == startDate);
+        var status_pub = topPromo.status_pub
 
-        function countDown() {
-            var currDate = new Date(startDate)
-            var endTime = new Date(endDate);
-            endTime = (Date.parse(endTime) / 1000);
-            var now = new Date();
-            now = (Date.parse(now) / 1000);
-            //var endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 24);			
+        if (status_pub == 'en cour') {
+            $('.promo-banner').show(300);
+
+            function countDown() {
+                var currDate = new Date(startDate)
+                var endTime = new Date(endDate);
+                endTime = (Date.parse(endTime) / 1000);
+                var now = new Date();
+                now = (Date.parse(now) / 1000);
+                //var endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 24);			
 
 
-            // $("#log").html(endTime.getHour());
-            var timeLeft = endTime - now;
+                // $("#log").html(endTime.getHour());
+                var timeLeft = endTime - now;
 
-            var days = Math.floor(timeLeft / 86400);
-            var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
-            var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600)) / 60);
-            var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
-            // if (hours > 8) {
-            //     hours = 0;
-            //     minutes = 0;
-            //     seconds = 0;
-            // }
-            // if (hours < "17") {
-            //     hours = "0" + hours;
-            // }
-            // if (minutes < "10") {
-            //     minutes = "0" + minutes;
-            // }
-            // if (seconds < "10") {
-            //     seconds = "0" + seconds;
-            // }
+                var days = Math.floor(timeLeft / 86400);
+                var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
+                var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600)) / 60);
+                var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
+                if (hours ==0) {
+                    // hours = '';
+                    // minutes = '';
+                    // seconds = 0;
+                }
+                // if (hours < "17") {
+                //     hours = "0" + hours;
+                // }
+                // if (minutes < "10") {
+                //     minutes = "0" + minutes;
+                // }
+                // if (seconds < "10") {
+                //     seconds = "0" + seconds;
+                // }
 
-            $("#Promo-Timer").html(days + ' j' + " : " + hours + ' h' + " : " + minutes + ' m' + " : " +
-                seconds + ' s');
+                $("#Promo-Timer").html(days + ' j' + " : " + hours + ' h' + " : " + minutes + ' m' + " : " +
+                    seconds + ' s');
 
+            }
+
+            setInterval(function() {
+                countDown();
+            }, 1000);
         }
 
-        setInterval(function() {
-            countDown();
-        }, 1000);
+
 
 
     });

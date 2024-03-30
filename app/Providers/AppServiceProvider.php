@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use App\Models\Category;
+use App\Models\Publicite;
 use App\Models\Collection;
 use App\Models\SubCategory;
 use Spatie\Permission\Models\Role;
@@ -24,9 +26,41 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        /****************************start publicite */
+
+        //declenchez la promo
+        $publicite = Publicite::whereType('top-promo')->whereStatus('active')->first();
+
+        if ($publicite) {
+            $status_pub = ''; // bientot , en cour, termine
+            $status = '';  // active ,  desactive
+            if ($publicite['date_debut_pub'] > Carbon::now()) {
+                $status_pub = 'bientot';
+                $status = 'active';
+            } elseif ($publicite['date_fin_pub'] < Carbon::now()) {
+                $status_pub = 'termine';
+                $status = 'desactive';
+            } else {
+                $status_pub = 'en cour';
+                $status = 'active';
+            }
+
+
+            Publicite::whereType('top-promo')->whereStatus('active')
+                ->update([
+                    'status' => $status,
+                    'status_pub' => $status_pub,
+                ]);
+        }
+
+        /****************************end publicite */
+
+
         //category frontend
-        $category = Category::with(['products' =>fn($q)=>$q->whereDisponibilite(1)->orderBy('created_at', 'DESC')->get()
-        ,'media', 'subcategories'])
+        $category = Category::with([
+            'products' => fn ($q) => $q->whereDisponibilite(1)->orderBy('created_at', 'DESC')->get(), 'media', 'subcategories'
+        ])
             ->whereNotIn('name', ['Pack'])
             ->orderBy('created_at', 'DESC')->get();
         // dd($category->toArray());
@@ -40,13 +74,13 @@ class AppServiceProvider extends ServiceProvider
 
         $subcategory = SubCategory::with(['products', 'media', 'category'])->orderBy('name', 'ASC')->get();
 
-      
+
 
         $roles = Role::where('name', '!=', 'developpeur')->get();
 
 
 
-        View::composer('*', function ($view) use ($category, $subcategory, $roles,$category_backend) {
+        View::composer('*', function ($view) use ($category, $subcategory, $roles, $category_backend) {
             $view->with([
                 'categories' => $category,
                 'subcategories' => $subcategory,

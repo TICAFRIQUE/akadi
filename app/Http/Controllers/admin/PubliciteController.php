@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Models\Publicite;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 class PubliciteController extends Controller
 {
@@ -98,13 +99,12 @@ class PubliciteController extends Controller
             'type' => $request['type'],
             'url' => $request['url'],
             'texte' => $request['texte'],
+            'status' => 'active',
             'discount' => $request['discount'],
             'date_debut_pub' => $request['date_debut_pub'],
             'date_fin_pub' => $request['date_fin_pub'],
             'status_pub' => $request['status_pub'],
             'button_name' => $request['button_name'],
-
-
         ]);
 
         //upload category_image 

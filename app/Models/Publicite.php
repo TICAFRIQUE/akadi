@@ -21,7 +21,7 @@ class Publicite extends Model implements HasMedia
         'status',  //active ou desactiver
         'date_debut_pub',
         'date_fin_pub',
-        'status_pub',
+        'status_pub', // en cour, bientot, termine
         'created_at',
         'updated_at',
         'deleted_at'
