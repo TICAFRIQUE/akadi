@@ -113,13 +113,13 @@
                         <div class="row">
                             <div class="">
                                 <h5 class="">Total du panier</h5>
-                                <div class="cart_totals">
-                                    <h6 class="sousTotal p-3"> <b> {{ number_format($sousTotal) }}
-                                            FCFA</b></h6>
+                                <div class="cart_totals p-4">
+                                    <span class="sousTotal p-3 fw-bold text-dark fs-3 p-4"> <b> {{ number_format($sousTotal, 0, ',', ' ') }}
+                                            FCFA</b></span>
                                 </div>
 
                                 <div>
-                                    <a href="{{ route('liste-produit') }}" class="th-btn rounded-2 mb-3 w-100">Continuer
+                                    <a href="{{ route('liste-produit') }}" class="th-btn rounded-2 my-3 w-100">Continuer
                                         les achats</a>
 
                                     <a href="{{ route('checkout') }}" class="th-btn rounded-2 mb-3 w-100">Poursuivre
