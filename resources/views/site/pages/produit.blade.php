@@ -48,7 +48,7 @@
                                 </a>
                                 @if ($item['montant_remise'])
                                     <div class="th-menu_discount">
-                                        <span class="sale">{{ $item['pourcentage_remise'] }}% OFF</span>
+                                        <span class="sale">- {{ $item['pourcentage_remise'] }}% </span>
                                     </div>
                                 @endif
 
@@ -67,7 +67,10 @@
                                         {{ Str::limit($item['title'], 30, '...') }}</a></span>
 
                                 @if ($item['montant_remise'] != null && $item['status_remise'] == 'en cour')
-                                    <span class="price"> {{ number_format($item['montant_remise'], 0, ',', ' ') }}
+                                    @php
+                                        $new_price = $item['price'] - $item['montant_remise']; //prix promo
+                                    @endphp
+                                    <span class="price"> {{ number_format($new_price, 0, ',', ' ') }}
                                         FCFA
                                         <del>
                                             {{ number_format($item['price'], 0, ',', ' ') }} FCFA </del>

@@ -52,6 +52,7 @@ Categorie and products
                                         <h3 class="product-title"><a
                                                 href="{{ route('detail-produit', $product['slug']) }}">{{ $product['title'] }}</a>
                                         </h3>
+                                        
                                         @if ($product['subcategorie'])
                                             <a href="/produit?sous-categorie={{ $product['subcategorie']['id'] }}"
                                                 class="category text-danger">{{ $product['subcategorie'] ? $product['subcategorie']['name'] : $product['categories'][0]['name'] }}</a>
@@ -62,8 +63,12 @@ Categorie and products
                                         <p class="product-text"> {!! substr(strip_tags($product->description), 0, 50) !!}.... </p>
 
                                         @if ($product['montant_remise'] != null &&  $product['status_remise'] == 'en cour')
-                                            <span class="price">
-                                                {{ number_format($product['montant_remise'], 0, ',', ' ') }} FCFA
+                                            
+                                        <span class="price">
+                                                @php
+                                                    $new_price = $product['price'] - $product['montant_remise'] //prix promo
+                                                @endphp
+                                                {{ number_format($new_price, 0, ',', ' ') }} FCFA
                                                 <del> {{ number_format($product['price'], 0, ',', ' ') }} FCFA </del>
                                             </span>
                                         @else

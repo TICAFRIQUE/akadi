@@ -23,8 +23,8 @@
             </div>
         </div>
     </div><!--==============================Product Details==============================-->
-                                                                                    
-                                                                                    
+
+
     <section class="th-product-wrapper product-details space-top space-extra-bottom">
         <div class="container">
             <div class="row">
@@ -60,9 +60,14 @@
                         </div> --}}
                         <h4 class="product-title mb-4"> {{ $product['title'] }} </h4>
                         @if ($product['montant_remise'] != null && $product['status_remise'] == 'en cour')
+                            @php
+                                $new_price = $product['price'] - $product['montant_remise']; //prix promo
+                            @endphp
+                            <span class="bg-danger text-white p-2 fw-bold">- {{ $product['pourcentage_remise'] }} %</span>
+
                             <span class="price fs-2">
-                                {{ number_format($product['montant_remise'], 0, ',', ' ') }} FCFA
-                                <del  class="text-dark"> {{ number_format($product['price'], 0, ',', ' ') }} FCFA
+                                {{ number_format($new_price, 0, ',', ' ') }} FCFA
+                                <del class="text-dark"> {{ number_format($product['price'], 0, ',', ' ') }} FCFA
                                 </del>
                             </span>
                         @else
@@ -140,7 +145,7 @@
 
                                     @if ($item['montant_remise'])
                                         <div class="th-menu_discount">
-                                            <span class="sale">{{ $item['pourcentage_remise'] }}% OFF</span>
+                                            <span class="sale"> - {{ $item['pourcentage_remise'] }}</span>
                                         </div>
                                     @endif
                                 </div>
@@ -151,8 +156,11 @@
                                     </span>
                                     {{-- <p class="th-menu_desc">Barbecue Italian cuisine pizza</p> --}}
                                     @if ($item['montant_remise'] != null && $item['status_remise'] == 'en cour')
+                                        @php
+                                            $new_price = $item['price'] - $item['montant_remise']; //prix promo
+                                        @endphp
                                         <span class="th-menu_price">
-                                            {{ number_format($item['montant_remise'], 0, ',', ' ') }} FCFA
+                                            {{ number_format($new_price, 0, ',', ' ') }} FCFA
                                             <del class="text-dark"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA
                                             </del>
                                         </span>

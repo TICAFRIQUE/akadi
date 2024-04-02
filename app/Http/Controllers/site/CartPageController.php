@@ -32,7 +32,7 @@ class CartPageController extends Controller
         //verifier si le produit a une remise
         $price = 0;
         if ($product['montant_remise'] != null && $product['status_remise'] == 'en cour') {
-            $price = $product['montant_remise'];
+            $price = $product['price'] - $product['montant_remise'];
         } else {
             $price = $product['price'];
         }
