@@ -121,10 +121,13 @@ class ProductPageController extends Controller
     {
 
         $search = $request['q'];
-        $product = Product::with(['categories', 'subcategorie', 'media'])
+        $product = Product::with([
+            'categories', 'subcategorie', 'media'
+        ])
             ->where('title', 'Like', "%{$search}%")
             ->whereDisponibilite(1)
             ->orderBy('created_at', 'desc')->inRandomOrder()->get();
+
         return view('site.pages.produit', compact('product',));
     }
 }

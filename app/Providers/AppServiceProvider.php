@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Publicite;
 use App\Models\Collection;
@@ -29,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
 
         /****************************start publicite */
 
-        //declenchez la promo
+        //declenchez la promo publicitaire
         $publicite = Publicite::whereType('top-promo')->whereStatus('active')->first();
 
         if ($publicite) {
@@ -55,6 +56,41 @@ class AppServiceProvider extends ServiceProvider
         }
 
         /****************************end publicite */
+
+
+
+
+        /****************************start product remise */
+
+        //declenchez la promo product
+        $remise = Product::where('montant_remise', '!=', null)->get();
+
+        if ($remise) {
+            $status_remise = ''; // bientot , en cour, termine
+            $montant_remise = '';
+            $date_debut_remise = '';
+            $date_fin_remise = '';
+
+            foreach ($remise as $value) {
+                if ($value['date_debut_remise'] > Carbon::now()) {
+                    $status_remise = 'bientot';
+                } elseif ($value['date_fin_remise'] < Carbon::now()) {
+                    $status_remise = 'termine';
+                  
+                } else {
+                    $status_remise = 'en cour';
+                }
+
+                Product::whereId($value['id'])
+                    ->update([
+                        'status_remise' => $status_remise,
+                    ]);
+            }
+        }
+
+        /****************************end product remise */
+
+
 
 
         //category frontend

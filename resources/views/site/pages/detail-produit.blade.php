@@ -7,9 +7,8 @@
 @section('content')
     @includeWhen(!Auth::check(), 'site.sections.popup-register')
 
-    <!--==============================
-                                                                            Breadcumb
-                                                                        ============================== -->
+    <!--============================== Breadcumb  ============================== -->
+
     <div class="breadcumb-wrapper " data-bg-src="">
         <div class="container z-index-common">
             <div class="breadcumb-content">
@@ -23,9 +22,9 @@
                 </ul>
             </div>
         </div>
-    </div><!--==============================
-                                                                            Product Details
-                                                                            ==============================-->
+    </div><!--==============================Product Details==============================-->
+                                                                                    
+                                                                                    
     <section class="th-product-wrapper product-details space-top space-extra-bottom">
         <div class="container">
             <div class="row">
@@ -60,10 +59,10 @@
                                 customer reviews)</a>
                         </div> --}}
                         <h4 class="product-title mb-4"> {{ $product['title'] }} </h4>
-                        @if ($product['montant_remise'] != null)
+                        @if ($product['montant_remise'] != null && $product['status_remise'] == 'en cour')
                             <span class="price fs-2">
                                 {{ number_format($product['montant_remise'], 0, ',', ' ') }} FCFA
-                                <del class="text-dark"> {{ number_format($product['price'], 0, ',', ' ') }} FCFA
+                                <del  class="text-dark"> {{ number_format($product['price'], 0, ',', ' ') }} FCFA
                                 </del>
                             </span>
                         @else
@@ -151,7 +150,7 @@
                                             style="font-size: 14px">{{ Str::limit($item['title'], 30, '...') }}</a>
                                     </span>
                                     {{-- <p class="th-menu_desc">Barbecue Italian cuisine pizza</p> --}}
-                                    @if ($item['montant_remise'] != null)
+                                    @if ($item['montant_remise'] != null && $item['status_remise'] == 'en cour')
                                         <span class="th-menu_price">
                                             {{ number_format($item['montant_remise'], 0, ',', ' ') }} FCFA
                                             <del class="text-dark"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA

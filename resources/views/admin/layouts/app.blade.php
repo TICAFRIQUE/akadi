@@ -82,7 +82,7 @@
                                     class="nav-link nav-link-lg
                                   collapse-btn"> <i
                                         data-feather="align-justify"></i></a></li>
-                            <li><a href="https://akadi.ci" target="blank" class="nav-link nav-link-lg">
+                            <li><a href="{{route('page-acceuil')}}" target="blank" class="nav-link nav-link-lg">
                                     <i data-feather="eye"></i>
                                 </a></li>
                             {{-- <li>

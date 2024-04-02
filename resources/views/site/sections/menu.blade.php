@@ -41,11 +41,11 @@
         <div class="container">
             <div class="row justify-content-center justify-content-lg-between align-items-center gy-2">
                 <div class="col-auto d-none d-lg-block">
-                    <a  href="https://maps.app.goo.gl/sDP5zuFWbu4CLivk8" target="blank">
-                    <p class="header-info">
-                        <i class="fa-solid fa-location-dot"></i>
-                        Angré derrière la pharmacie Arcade
-                    </p>
+                    <a href="https://maps.app.goo.gl/sDP5zuFWbu4CLivk8" target="blank">
+                        <p class="header-info">
+                            <i class="fa-solid fa-location-dot"></i>
+                            Angré derrière la pharmacie Arcade
+                        </p>
                     </a>
                     <p class="header-info">
                         <i class="fa-solid fa-phone"></i>
@@ -120,20 +120,12 @@
 
                             <div class="col-auto">
                                 <div class="header-button">
-                                    <button type="button" class="simple-icon searchBoxToggler"><i
-                                            class="far fa-search"></i></button>
-                                    <a href="{{ route('panier') }}" class="simple-icon">
-                                        <i class="far fa-cart-shopping"></i>
-                                        <span class="badge"> {{ Session::get('totalQuantity') ?? '0' }} </span>
-                                    </a>
-
                                     @guest
                                         <a href="{{ route('login') }}" class="simple-icon">
                                             <i class="far fa-user"></i>
                                         </a>
 
                                     @endguest
-
 
                                     @auth
                                         <div class="dropdown">
@@ -161,8 +153,15 @@
                                             </ul>
                                         </div>
                                     @endauth
-                                    {{-- <a href="contact.html" class="th-btn rounded-2 style3">Book a Table<i
-                                        class="fa-solid fa-arrow-right ms-2"></i></a> --}}
+
+                                    <button type="button" class="simple-icon searchBoxToggler"><i
+                                            class="far fa-search"></i></button>
+
+                                    <a href="{{ route('panier') }}" class="simple-icon">
+                                        <i class="far fa-cart-shopping"></i>
+                                        <span class="badge"> {{ Session::get('totalQuantity') ?? '0' }} </span>
+                                    </a>
+
                                 </div>
                             </div>
                         </div>

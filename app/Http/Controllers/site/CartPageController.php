@@ -29,6 +29,15 @@ class CartPageController extends Controller
 
         $cart = session()->get('cart', []);
 
+        //verifier si le produit a une remise
+        $price = 0;
+        if ($product['montant_remise'] != null && $product['status_remise'] == 'en cour') {
+            $price = $product['montant_remise'];
+        } else {
+            $price = $product['price'];
+        }
+        ##############################
+
         if (isset($cart[$id])) {
             $cart[$id]['quantity']++;
         } else {
@@ -38,7 +47,7 @@ class CartPageController extends Controller
                 "slug" => $product->slug,
                 "title" => $product->title,
                 "quantity" => 1,
-                "price" => $product->price,
+                "price" => $price,
                 "image" => $product->media[0]->getUrl(),
             ];
         }
@@ -138,7 +147,7 @@ class CartPageController extends Controller
 
         return response()->json([
             'delivery_price' => $delivery_price,
-            'total_price' => number_format($total_price, 0, ',' , ' '),
+            'total_price' => number_format($total_price, 0, ',', ' '),
             'delivery_name' => $delivery_name,
 
         ]);
@@ -169,12 +178,10 @@ class CartPageController extends Controller
                 $address_yango = $_GET['data']['address_yango'];
                 $note = $_GET['data']['note'];
 
-
-
                 //calculer le total TTC
-               
+
                 $totalOrder =
-                $subTotal + $delivery_price;
+                    $subTotal + $delivery_price;
 
                 //quantité des produit au panier
                 $quantity_product = count((array) session('cart'));

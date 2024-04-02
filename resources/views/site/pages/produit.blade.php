@@ -47,11 +47,11 @@
                                     <img src="{{ asset($item->getFirstMediaUrl('product_image')) }}" alt="Product Image">
                                 </a>
                                 @if ($item['montant_remise'])
-                                     <div class="th-menu_discount">
-                                        <span class="sale">{{$item['pourcentage_remise']}}% OFF</span>
+                                    <div class="th-menu_discount">
+                                        <span class="sale">{{ $item['pourcentage_remise'] }}% OFF</span>
                                     </div>
                                 @endif
-                               
+
                             </div>
                             <div class="product-content">
                                 @if ($item['subcategorie'])
@@ -66,10 +66,11 @@
                                         class="text-dark fw-bold" style="font-size: 14px">
                                         {{ Str::limit($item['title'], 30, '...') }}</a></span>
 
-                                @if ($item['montant_remise'] != null)
+                                @if ($item['montant_remise'] != null && $item['status_remise'] == 'en cour')
                                     <span class="price"> {{ number_format($item['montant_remise'], 0, ',', ' ') }}
                                         FCFA
-                                        <del> {{ number_format($item['price'], 0, ',', ' ') }} FCFA </del>
+                                        <del>
+                                            {{ number_format($item['price'], 0, ',', ' ') }} FCFA </del>
                                     </span>
                                 @else
                                     <span class="price"> {{ number_format($item['price'], 0, ',', ' ') }} FCFA

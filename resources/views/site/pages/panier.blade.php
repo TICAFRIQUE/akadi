@@ -24,7 +24,7 @@
             <div class="row">
                 @include('admin.components.validationMessage')
 
-                <div class="col-md-12">
+                <div class="col-md-9">
                     <div class="woocommerce-notices-wrapper">
                         <div class="woocommerce-message">Panier <span
                                 class="quantityProduct">({{ count((array) session('cart')) }})</span></div>
@@ -44,38 +44,38 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
-
                                     @foreach (session('cart') as $id => $details)
                                         @php $sousTotal += $details['price'] * $details['quantity'] @endphp
 
                                         <tr class="cart_item" id="row_{{ $id }}">
-                                            <td data-title="Product">
+                                            <td data-title="produit">
                                                 <a class="cart-productimage"
                                                     href="{{ route('detail-produit', $details['slug']) }}"><img
-                                                        width="91" height="91" src="{{ $details['image'] }} "
+                                                        width="50" height="50" src="{{ $details['image'] }} "
                                                         alt="Image">
                                                     <br> <span>{{ $details['title'] }} * </span> <span class="text-dark"
                                                         id="qte{{ $id }}"> {{ $details['quantity'] }}</span>
 
                                                 </a>
                                             </td>
-                                            <td data-title="Price">
+                                            <td data-title="prix">
                                                 <span class="amount text-dark"><bdi>
                                                         {{ number_format($details['price'], 0) }}
                                                         <span></span>
                                                     </bdi></span>
                                             </td>
-                                            <td data-title="Quantity">
+                                            <td data-title="Qte">
                                                 <div class="quantity">
-                                                    <button class="quantity-minus qty-btn qte-decrease_{{ $id }} text-dark"
+                                                    <button
+                                                        class="quantity-minus qty-btn qte-decrease_{{ $id }} text-dark"
                                                         onclick="decreaseValue({{ $id }})"><i
                                                             class="far fa-minus"></i></button>
                                                     <input type="number" id="{{ $id }}" id="qty-input"
-                                                        class="qty-input{{ $id }}  qte-input"
+                                                        class="qty-input{{ $id }}  qte-input" style="width: 30px"
                                                         value="{{ $details['quantity'] ?? 1 }}" min="1"
                                                         max="99" readonly>
-                                                    <button class="quantity-plus qty-btn qte-increase_{{ $id }} text-dark"
+                                                    <button
+                                                        class="quantity-plus qty-btn qte-increase_{{ $id }} text-dark"
                                                         onclick="increaseValue({{ $id }})"><i
                                                             class="far fa-plus"></i></button>
                                                 </div>
@@ -84,11 +84,12 @@
                                                 @php
                                                     $total = $details['price'] * $details['quantity'];
                                                 @endphp
-                                                <span class="amount"><bdi><span id="totalPriceQty{{ $id }}">
+                                                <span class="amount fw-bold text-dark"><bdi><span
+                                                            id="totalPriceQty{{ $id }}">
                                                             {{ number_format($total) }}
                                                         </span>FCFA</bdi></span>
                                             </td>
-                                            <td data-title="Remove">
+                                            <td data-title="Action">
                                                 <a href="#" data-id="{{ $id }}"
                                                     class="remove remove-from-cart"><i class="fal fa-trash-alt"></i></a>
                                             </td>
@@ -96,18 +97,7 @@
                                     @endforeach
 
 
-                                    <tr>
-                                        <td colspan="2" class="actions">
-                                            {{-- <button type="submit" class="th-btn rounded-2">Update cart</button> --}}
-                                            <a href="{{ route('liste-produit') }}" class="th-btn rounded-2">Continuer
-                                                les achats</a>
 
-                                            <a href="{{ route('checkout') }}" class="th-btn rounded-2 ">Poursuivre
-                                                La commande <span class="sousTotal"> <b> ({{ number_format($sousTotal) }})
-                                                        FCFA</b></span> </a>
-
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </form>
@@ -118,37 +108,28 @@
                     @endif
                 </div>
 
-                {{-- @if (session('cart'))
-                    <div class="col-md-4">
+                @if (session('cart'))
+                    <div class="col-md-3">
                         <div class="row">
                             <div class="">
-                                <h2 class="h4 summary-title">Resumé du panier</h2>
-                                <table class="cart_totals" cellspacing="0">
-                                    <tbody>
-                                        <tr>
-                                            <td>Sous total</td>
-                                            <td data-title="Total">
-                                                <span data-subTotal="{{$sousTotal}}" class="amount sousTotal">
-                                                    <h6 class="text-danger"> FCFA</h6>
-                                                </span>
-                                            </td>
-                                        </tr>
-                                       
-                                    </tbody>
-                                  
-                                </table>
+                                <h5 class="">Total du panier</h5>
+                                <div class="cart_totals">
+                                    <h6 class="sousTotal p-3"> <b> {{ number_format($sousTotal) }}
+                                            FCFA</b></h6>
+                                </div>
 
-                                <div class="wc-proceed-to-checkout mb-30">
-                                    <a href="#" class="th-btn rounded-2 confirmOrder">Finaliser la commande</a>
+                                <div>
+                                    <a href="{{ route('liste-produit') }}" class="th-btn rounded-2 mb-3 w-100">Continuer
+                                        les achats</a>
+
+                                    <a href="{{ route('checkout') }}" class="th-btn rounded-2 mb-3 w-100">Poursuivre
+                                        La commande </a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                @endif --}}
+                @endif
             </div>
-
-
-
         </div>
     </div>
     <!-- ========== End panier ========== -->
@@ -187,7 +168,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                     var totalPriceQty = response.cart[id].quantity * response.cart[id].price
                     var totalPriceQty = totalPriceQty.toLocaleString("en-US");
                     $('#totalPriceQty' + IdProduct).html(totalPriceQty);
-                    $('.sousTotal').html('(' + response.sousTotal + ') FCFA');
+                    $('.sousTotal').html(response.sousTotal +  ' FCFA');
                     $('.badge').html(response.totalQte);
 
                     Swal.fire({
@@ -239,7 +220,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                     var totalPriceQty = response.cart[id].quantity * response.cart[id].price
                     var totalPriceQty = totalPriceQty.toLocaleString("en-US");
                     $('#totalPriceQty' + IdProduct).html(totalPriceQty);
-                    $('.sousTotal').html('(' + response.sousTotal + ') FCFA');
+                    $('.sousTotal').html( response.sousTotal + ' FCFA');
                     $('.badge').html(response.totalQte);
 
 
@@ -313,10 +294,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                             $('#row_' + IdProduct).remove();
                             if (response.countCart == 0) {
                                 window.location.href = "{{ route('panier') }}";
-
                             }
-
-
                         }
                     });
 

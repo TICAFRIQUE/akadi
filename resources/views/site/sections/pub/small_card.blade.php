@@ -27,10 +27,23 @@ Petite section de publicité
                             </div>
                         </a>
                         <p class="text-dark fw-500  text-center text-capitalize">
-                             <a class="fs-4 text-dark" href="{{ route('detail-produit', $item['slug']) }}">{{ $item['title'] }} </a>
-                            <br><span class="fs-5 fw-medium " style="color:rgb(249, 135, 5)">{{number_format($item['price'] , 0 , ',', ' ')}} <small>FCFA</small> </span>
-                            </p>
-                            
+                            <a class="fs-4 text-dark"
+                                href="{{ route('detail-produit', $item['slug']) }}">{{ $item['title'] }} </a>
+                            <br>
+                            @if ($item['montant_remise'] !=null && $item['status_remise'] == 'en cour')
+                                <span class="fs-5 fw-medium " style="color:rgb(249, 135, 5)">
+                                    {{ number_format($item['montant_remise'], 0, ',', ' ') }} <small>FCFA</small>
+                                    <del class="text-dark">
+                                        {{ number_format($item['price'], 0, ',', ' ') }} FCFA </del>
+                                </span>
+                            @else
+                                <span class="fs-5 fw-medium " style="color:rgb(249, 135, 5)">
+                                    {{ number_format($item['price'], 0, ',', ' ') }} <small>FCFA</small>
+                                </span>
+                            @endif
+
+                        </p>
+
 
                     </div>
                 @endforeach

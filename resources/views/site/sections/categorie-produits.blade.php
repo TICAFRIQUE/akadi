@@ -61,7 +61,7 @@ Categorie and products
                                         @endif
                                         <p class="product-text"> {!! substr(strip_tags($product->description), 0, 50) !!}.... </p>
 
-                                        @if ($product['montant_remise'] != null)
+                                        @if ($product['montant_remise'] != null &&  $product['status_remise'] == 'en cour')
                                             <span class="price">
                                                 {{ number_format($product['montant_remise'], 0, ',', ' ') }} FCFA
                                                 <del> {{ number_format($product['price'], 0, ',', ' ') }} FCFA </del>
