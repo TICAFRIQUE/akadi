@@ -204,9 +204,9 @@
 
 
                                                     <!-- ========== Start date precommande ========== -->
-                                                    <div class="my-3">
+                                                    {{-- <div class="my-3">
                                                         <input type="text" class="datetimepicker" name="date_precommande" id="date_precommande" placeholder="Choisir une date et heure de livraison">
-                                                    </div>
+                                                    </div> --}}
                                                     <!-- ========== End date precommande ========== -->
 
 
@@ -527,19 +527,19 @@
 
 
         //datepicker
-        $(".datetimepicker").each(function() {
-            $(this).datetimepicker({
-                showOtherMonths: true,
-                selectOtherMonths: true,
-                changeMonth: true,
-                changeYear: true,
-                showButtonPanel: true,
-                dateFormat: 'yy-mm-dd',
-                minDate: 0,
-                stepMinute : 15
-            });
+        // $(".datetimepicker").each(function() {
+        //     $(this).datetimepicker({
+        //         showOtherMonths: true,
+        //         selectOtherMonths: true,
+        //         changeMonth: true,
+        //         changeYear: true,
+        //         showButtonPanel: true,
+        //         dateFormat: 'yy-mm-dd',
+        //         minDate: 0,
+        //         stepMinute : 15
+        //     });
             
-        });
+        // });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
