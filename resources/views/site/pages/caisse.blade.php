@@ -205,11 +205,12 @@
 
                                                     <!-- ========== Start date precommande ========== -->
                                                     {{-- <div class="my-3">
-                                                        <input type="text" class="datetimepicker" name="date_precommande" id="date_precommande" placeholder="Choisir une date et heure de livraison">
+                                                        <input type="text" class="datetimepicker" name="date_precommande"
+                                                            id="date_precommande"
+                                                            placeholder="Choisir une date et heure de livraison" readonly>
                                                     </div> --}}
+
                                                     <!-- ========== End date precommande ========== -->
-
-
 
                                                 </form>
                                             </td>
@@ -229,17 +230,29 @@
                                                 </strong>
                                             </td>
                                         </tr>
+                                        {{-- <tr>
+                                            <td>Date & Heure de livraison : </td>
+                                            <td>
+                                                <span id="date_livraison"></span>
+
+                                            </td>
+                                        </tr> --}}
                                     </tfoot>
                                 </table>
 
                                 <div class="wc-proceed-to-checkout mb-30">
                                     @auth
 
-                                        <a href="#" class="th-btn rounded-2 confirmOrder">Confirmer la commande
-                                            <div class="spinner-grow text-white" role="status">
+                                        <button href="#" class="th-btn rounded-2 confirmOrder w-100">Confirmer la commande
+
+                                        </button>
+
+                                        <button disabled class="btn btn-dark fw-bold btn_loading">Un instant ! commande en cour
+                                            de traitement
+                                            <div class="spinner-grow text-white " role="status">
                                                 <span class="visually-hidden">Loading...</span>
                                             </div>
-                                        </a>
+                                        </button>
                                     @endauth
 
 
@@ -257,12 +270,15 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-      <link rel="stylesheet"
+    <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js">
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" crossorigin="anonymous"></script>
+
 
     <script>
         //variable global
@@ -370,13 +386,14 @@
 
 
         //Enregistrer les informations de la commande 
-        $('.spinner-grow').hide();
+        // $('.spinner-grow').hide();
 
+        $('.btn_loading').hide();
         $('.confirmOrder').click(function(e) {
             e.preventDefault()
 
-            $('.confirmOrder').prop("disabled", true);
-            $(".spinner-grow").show();
+            // $('.confirmOrder').prop("disabled", true);
+            // $(".spinner-grow").show();
 
             var deliveryId = $('.delivery').val(); // ID du lieu de livraison choisi
             var address_yango = $('#address_yango').val() // adresse de destinantion pour mode yango
@@ -453,6 +470,10 @@
                 });
             } else {
                 //send data to back
+                $('.btn_loading').show();
+                $('.confirmOrder').hide();
+
+
                 var subTotal = $('.sousTotal').attr('data-subTotal');
                 var total_order = parseFloat(subTotal) + parseFloat(prix_livraison)
 
@@ -477,7 +498,7 @@
                     success: function(response) {
 
                         if (response.status === 200) {
-                            $(".spinner-grow").hide();
+                            $('.btn_loading').hide();
 
                             let timerInterval
                             Swal.fire({
@@ -528,6 +549,7 @@
 
         //datepicker
         // $(".datetimepicker").each(function() {
+
         //     $(this).datetimepicker({
         //         showOtherMonths: true,
         //         selectOtherMonths: true,
@@ -536,9 +558,51 @@
         //         showButtonPanel: true,
         //         dateFormat: 'yy-mm-dd',
         //         minDate: 0,
-        //         stepMinute : 15
+        //         minTime: '10:30',
+        //         maxTime: '18:30',
+        //         allowTimes: [
+        //             // '07:30', '08:00', '08:30', '09:00', '09:30',
+        //             '10:30', '12:00', '13:30', '15:00', '16:30', '18:00'
+        //         ],
+
         //     });
-            
+
+        // });
+
+        //get date_precommande value
+        //on verifie s'il n'est pas encore 18h
+
+        // let dt = new Date();
+        // var hours = dt.getHours();
+        // if (hours >= 17) {
+        //     dt.setMinutes(dt.getMinutes() + 1080);
+        //     $('#date_livraison').html(dt.toLocaleString("fr-FR"));
+        // } else if (hours < 17) {
+        //     dt.setMinutes(dt.getMinutes() + 90);
+        //     $('#date_livraison').html(dt.toLocaleString("fr-FR"))
+        // }
+
+
+
+
+        // $('#date_precommande').change(function(e) {
+        //     e.preventDefault();
+        //     var date_precommande = $(this).val();
+        //     // var newDateTime = moment(date_precommande, "YYYY/MM/DD hh:mm:ss")
+        //     //     .add(10, 'minutes')
+        //     //     .format('YYYY-MM-DD hh:mm:ss');
+
+        //     let dt = new Date(date_precommande);
+        //     var hours = dt.getHours();
+
+        //     if (hours >= 17) {
+        //         dt.setMinutes(dt.getMinutes() + 1080);
+        //         $('#date_livraison').html(dt.toLocaleString("fr-FR"));
+        //     } else if (hours < 17) {
+        //         dt.setMinutes(dt.getMinutes() + 90);
+        //         $('#date_livraison').html(dt.toLocaleString("fr-FR"))
+        //     }
+
         // });
     </script>
 
