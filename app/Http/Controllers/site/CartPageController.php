@@ -7,8 +7,10 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Delivery;
 use Illuminate\Http\Request;
+use PHPMailer\PHPMailer\PHPMailer;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
 class CartPageController extends Controller
@@ -200,9 +202,6 @@ class CartPageController extends Controller
                     'mode_livraison' => $delivery_mode,
                     'note' => $note,
 
-
-
-
                     // 'discount' => '',
                     // 'delivery_planned' => Carbon::now()->addDay(3), //date de livraison prevue
                     // 'delivery_date' => '', //date de livraison
@@ -220,10 +219,46 @@ class CartPageController extends Controller
                         'total' => $value['price'] * $value['quantity'],
                     ]);
                 }
+                //new send mail with phpMailer
+                $mail = new PHPMailer(true);
+                // require base_path("vendor/autoload.php");
+
+                /* Email SMTP Settings */
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host = 'mail.akadi.ci';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'info@akadi.ci';
+                $mail->Password = 'S$UBfu.8s(#z';
+                $mail->SMTPSecure = 'ssl';
+                $mail->Port = 465;
+
+                $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+                $mail->addAddress('ane.assbill@gmail.com');
+
+                $mail->isHTML(true);
+
+
+                $mail->Subject = 'Nouvelle commande';
+                $mail->Body    = '<b> Vous avez reçu une nouvelle
+                                    <br> 
+                                    <a href="' . env('APP_URL') . '/admin/order?s=attente">Voir les commandes en attente</a>
+                                    </b>';
+                $mail->send();
+
+
+                // Mail::send('site.pages.auth.email.email_register', ['user' => Auth::user()->name], function ($message) use ($request) {
+                //     $message->to('alexkouamelan96@gmail.com');
+                //     $message->subject('Création de compte');
+                // });
+
 
                 //supprimer la session du panier
                 Session::forget('cart');
                 Session::forget('totalQuantity');
+
+
+
 
                 return response()->json([
                     'message' => 'commande enregistrée avec success',

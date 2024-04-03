@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="{{Config::get('app.locale')}}">
+<html class="no-js" lang="{{ Config::get('app.locale') }}">
 
 <head>
     <meta charset="utf-8">
@@ -33,6 +33,9 @@
         href="https://fonts.googleapis.com/css2?family=Lobster+Two:wght@400;700&family=Roboto:wght@100;300;400;500;700&family=Rubik:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
 
+
+  
+
     <!--==============================
  All CSS File
  ============================== -->
@@ -50,6 +53,8 @@
     <link rel="stylesheet" href="{{ asset('site/assets/css/slick.min.css') }}">
     <!-- Theme Custom CSS -->
     <link rel="stylesheet" href="{{ asset('site/assets/css/style.css') }}">
+
+
 
 </head>
 
@@ -139,11 +144,10 @@ Product Lightbox
                                     <div class="info-box_icon">
                                         <i class="fal fa-location-dot"></i>
                                     </div>
-                                    <a
-                                        href="https://maps.app.goo.gl/sDP5zuFWbu4CLivk8" target="blank">
-                                    <p class="info-box_text">
-                                         Angré derrière la pharmacie Arcade
-                                         
+                                    <a href="https://maps.app.goo.gl/sDP5zuFWbu4CLivk8" target="blank">
+                                        <p class="info-box_text">
+                                            Angré derrière la pharmacie Arcade
+
                                         </p>
                                     </a>
                                 </div>

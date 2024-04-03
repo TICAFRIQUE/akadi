@@ -197,9 +197,18 @@
 
                                                     <!-- ========== Start note du client ========== -->
                                                     <div class="my-3">
-                                                       <textarea name="note" id="note" class="border border-danger" cols="30" rows="10" placeholder="Ecrivez un commentaire pour votre commande (Ex: Ne pas mettre de sel) "></textarea>
+                                                        <textarea name="note" id="note" class="border border-danger" cols="30" rows="10"
+                                                            placeholder="Ecrivez un commentaire pour votre commande (Ex: Ne pas mettre de sel) "></textarea>
                                                     </div>
                                                     <!-- ========== End note du client ========== -->
+
+
+                                                    <!-- ========== Start date precommande ========== -->
+                                                    <div class="my-3">
+                                                        <input type="text" class="datetimepicker" name="date_precommande" id="date_precommande" placeholder="Choisir une date et heure de livraison">
+                                                    </div>
+                                                    <!-- ========== End date precommande ========== -->
+
 
 
                                                 </form>
@@ -225,7 +234,12 @@
 
                                 <div class="wc-proceed-to-checkout mb-30">
                                     @auth
-                                        <a href="#" class="th-btn rounded-2 confirmOrder">Confirmer la commande</a>
+
+                                        <a href="#" class="th-btn rounded-2 confirmOrder">Confirmer la commande
+                                            <div class="spinner-grow text-white" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </a>
                                     @endauth
 
 
@@ -236,16 +250,19 @@
                 @endif
             </div>
 
-
-
         </div>
     </div>
     <!-- ========== End panier ========== -->
-    <link href="
-https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
-" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+      <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js">
+    </script>
 
     <script>
         //variable global
@@ -353,8 +370,14 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
 
 
         //Enregistrer les informations de la commande 
+        $('.spinner-grow').hide();
+
         $('.confirmOrder').click(function(e) {
             e.preventDefault()
+
+            $('.confirmOrder').prop("disabled", true);
+            $(".spinner-grow").show();
+
             var deliveryId = $('.delivery').val(); // ID du lieu de livraison choisi
             var address_yango = $('#address_yango').val() // adresse de destinantion pour mode yango
             var address = $('#address').val() // precision du lieu exact de livraison 
@@ -454,6 +477,8 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                     success: function(response) {
 
                         if (response.status === 200) {
+                            $(".spinner-grow").hide();
+
                             let timerInterval
                             Swal.fire({
                                 title: 'Enregistrement de la commande',
@@ -498,6 +523,22 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
 
 
             }
+        });
+
+
+        //datepicker
+        $(".datetimepicker").each(function() {
+            $(this).datetimepicker({
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                dateFormat: 'yy-mm-dd',
+                minDate: 0,
+                stepMinute : 15
+            });
+            
         });
     </script>
 
