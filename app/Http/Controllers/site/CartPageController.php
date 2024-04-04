@@ -277,7 +277,7 @@ class CartPageController extends Controller
                 $mail->Port = 465;
 
                 $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-                $mail->addAddress('alexkouamelan96@gmail.com');
+                $mail->addAddress('ane.assbill@gmail.com');
 
                 $mail->isHTML(true);
 
@@ -298,7 +298,7 @@ class CartPageController extends Controller
                 foreach ($data_products  as $key => $value) {
                     $mail->Body .=
 
-                    ' 
+                        ' 
                          <div margin-bottom:10px>
                      <b> Produit ' . ++$key . ' <div>
                     <p>Nom : ' . $value['name'] . '</p>
@@ -314,7 +314,7 @@ class CartPageController extends Controller
                         <p>Mode de livraison : ' . $order['mode_livraison'] . '</p>
                         <p>Adresse: ' . $order['address'] . '</p>
                         <p>Adresse de yango: ' . $order['address_yango'] . '</p>
-                        <p>Note de commande: ' . $order['note'] . '</p>
+                        <p>Note de la commande: ' . $order['note'] . '</p>
 
 
                  <a href="' . env('APP_URL') . '/admin/order?s=attente">Voir les commandes en attente</a>
@@ -323,7 +323,7 @@ class CartPageController extends Controller
                  <b>
                 
                 ';
-                
+
 
 
 
