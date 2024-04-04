@@ -181,6 +181,10 @@ class CartPageController extends Controller
                 $address = $_GET['data']['address'];
                 $address_yango = $_GET['data']['address_yango'];
                 $note = $_GET['data']['note'];
+                $type_commande = $_GET['data']['type_commande'];
+                $delivery_planned = $_GET['data']['delivery_planned'];
+
+
 
                 //calculer le total TTC
 
@@ -203,9 +207,11 @@ class CartPageController extends Controller
                     'address_yango' => $address_yango,
                     'mode_livraison' => $delivery_mode,
                     'note' => $note,
+                    'type_order' => $type_commande,
+
 
                     // 'discount' => '',
-                    // 'delivery_planned' => Carbon::now()->addDay(3), //date de livraison prevue
+                    'delivery_planned' => $delivery_planned, //date de livraison prevue
                     // 'delivery_date' => '', //date de livraison
                     'status' => 'attente',         // livré, en attente
                     // 'available_product' =>  '' //disponibilite

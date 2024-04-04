@@ -203,12 +203,36 @@
                                                     <!-- ========== End note du client ========== -->
 
 
+                                                    <!-- ========== Start check type commande ========== -->
+                                                    <div class="form-check">
+                                                        <input class="form-check-input typeCmd" type="radio"
+                                                            name="type_commande" value="cmd_normal" id="flexRadioDefault1"
+                                                            checked>
+                                                        <label class="form-check-label" for="flexRadioDefault1">
+                                                            Commande normal <small class="text-danger"
+                                                                style="font-size: 10px">(Commande instantanée)</small>
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check py-3">
+                                                        <input class="form-check-input typeCmd" type="radio"
+                                                            name="type_commande" value="cmd_precommande"
+                                                            id="flexRadioDefault2">
+                                                        <label class="form-check-label" for="flexRadioDefault2">
+                                                            Précommande <small class="text-danger"
+                                                                style="font-size: 10px">(Vous pouvez choisir une date
+                                                                ulterieure pour recevoir la commande)</small>
+                                                        </label>
+                                                    </div>
+                                                    <!-- ========== End check type commande ========== -->
+
+
+
                                                     <!-- ========== Start date precommande ========== -->
-                                                    {{-- <div class="my-3">
-                                                        <input type="text" class="datetimepicker" name="date_precommande"
-                                                            id="date_precommande"
+                                                    <div class="my-3">
+                                                        <input type="text" class="datetimepicker"
+                                                            name="date_precommande" id="date_precommande"
                                                             placeholder="Choisir une date et heure de livraison" readonly>
-                                                    </div> --}}
+                                                    </div>
 
                                                     <!-- ========== End date precommande ========== -->
 
@@ -230,20 +254,21 @@
                                                 </strong>
                                             </td>
                                         </tr>
-                                        {{-- <tr>
+                                        <tr>
                                             <td>Date & Heure de livraison : </td>
                                             <td>
-                                                <span id="date_livraison"></span>
+                                                <span id="date_livraison"> </span>
 
                                             </td>
-                                        </tr> --}}
+                                        </tr>
                                     </tfoot>
                                 </table>
 
                                 <div class="wc-proceed-to-checkout mb-30">
                                     @auth
 
-                                        <button href="#" class="th-btn rounded-2 confirmOrder w-100">Confirmer la commande
+                                        <button href="#" class="th-btn rounded-2 confirmOrder w-100">Confirmer la
+                                            commande
 
                                         </button>
 
@@ -284,6 +309,8 @@
         //variable global
         var prix_livraison = 0
         var lieu_livraison = ''
+        var type_cmd = 'cmd_normal'
+        var dlp = '' // date livraison precommande
 
 
         // mettre à jour la livraison
@@ -392,9 +419,6 @@
         $('.confirmOrder').click(function(e) {
             e.preventDefault()
 
-            // $('.confirmOrder').prop("disabled", true);
-            // $(".spinner-grow").show();
-
             var deliveryId = $('.delivery').val(); // ID du lieu de livraison choisi
             var address_yango = $('#address_yango').val() // adresse de destinantion pour mode yango
             var address = $('#address').val() // precision du lieu exact de livraison 
@@ -476,6 +500,8 @@
 
                 var subTotal = $('.sousTotal').attr('data-subTotal');
                 var total_order = parseFloat(subTotal) + parseFloat(prix_livraison)
+                var type_commande = type_cmd
+                var delivery_planned = $('#date_livraison').html();// date de livraison prevue
 
                 var data = {
                     subTotal,
@@ -485,7 +511,9 @@
                     lieu_livraison,
                     delivery_mode,
                     total_order,
-                    note
+                    note,
+                    type_commande,
+                    delivery_planned
                 }
 
                 $.ajax({
@@ -496,7 +524,6 @@
                     },
                     dataType: "json",
                     success: function(response) {
-console.log(response);
                         if (response.status === 200) {
                             $('.btn_loading').hide();
 
@@ -547,63 +574,116 @@ console.log(response);
         });
 
 
+
+        $("#date_precommande").hide();
+
+        // type de commande  ...precommande ou commande normatl
+        //recuperation des valeurs selectionnée
+        $("input[name=type_commande]").on("click", function() {
+            var typeCmd = $('input[name="type_commande"]:checked').val();
+            type_cmd = typeCmd
+
+            if (typeCmd == 'cmd_precommande') {
+                $("#date_precommande").show();
+                // $("#date_precommande").val('');
+
+            } else {
+                type_cmd = 'cmd_normal'
+                $("#date_precommande").hide();
+                $("#date_precommande").val('');
+                let dt = new Date();
+                var hours = dt.getHours();
+                var minute = dt.getMinutes();
+
+                var tomorrow = dt + 1
+                if (hours >= 17 || hours <= 9) {
+                    dt.setDate(dt.getDate() + 1);
+                    $('#date_livraison').html('Livraison prévu le ' + dt.toLocaleDateString() + ' à 10h30m');
+                    dlp = dt.toLocaleDateString()
+                } else if (hours >= 8) {
+                    dt.setMinutes(dt.getMinutes() + 90);
+                    $('#date_livraison').html(dt.toLocaleString("fr-FR"))
+                    dlp = dt.toLocaleDateString()
+
+                }
+            }
+
+        })
+
+
+
         //datepicker
-        // $(".datetimepicker").each(function() {
 
-        //     $(this).datetimepicker({
-        //         showOtherMonths: true,
-        //         selectOtherMonths: true,
-        //         changeMonth: true,
-        //         changeYear: true,
-        //         showButtonPanel: true,
-        //         dateFormat: 'yy-mm-dd',
-        //         minDate: 0,
-        //         minTime: '10:30',
-        //         maxTime: '18:30',
-        //         allowTimes: [
-        //             // '07:30', '08:00', '08:30', '09:00', '09:30',
-        //             '10:30', '12:00', '13:30', '15:00', '16:30', '18:00'
-        //         ],
 
-        //     });
+        $(".datetimepicker").each(function() {
 
-        // });
+            $(this).datetimepicker({
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                dateFormat: 'yy-mm-dd',
+                minDate: 0,
+                // minTime: '10:00',
+                // maxTime: '18:00',
+                allowTimes: [
+
+                    '10:30', '12:00', '13:30', '15:00', '16:30', '17:30',
+                ],
+
+            });
+
+        });
 
         //get date_precommande value
         //on verifie s'il n'est pas encore 18h
 
-        // let dt = new Date();
-        // var hours = dt.getHours();
-        // if (hours >= 17) {
-        //     dt.setMinutes(dt.getMinutes() + 1080);
-        //     $('#date_livraison').html(dt.toLocaleString("fr-FR"));
-        // } else if (hours < 17) {
-        //     dt.setMinutes(dt.getMinutes() + 90);
-        //     $('#date_livraison').html(dt.toLocaleString("fr-FR"))
-        // }
+        let dt = new Date();
+        var hours = dt.getHours();
+        var minute = dt.getMinutes();
+
+        var tomorrow = dt + 1
+        if (hours >= 17 || hours <= 9) {
+            dt.setDate(dt.getDate() + 1);
+            $('#date_livraison').html('Livraison prévu le ' + dt.toLocaleDateString() + ' à 10h30m');
+            dlp = dt.toLocaleDateString()
+
+        } else if (hours >= 8) {
+            dt.setMinutes(dt.getMinutes() + 90);
+            $('#date_livraison').html(dt.toLocaleString("fr-FR"))
+            dlp = dt.toLocaleDateString()
+
+        }
 
 
 
 
-        // $('#date_precommande').change(function(e) {
-        //     e.preventDefault();
-        //     var date_precommande = $(this).val();
-        //     // var newDateTime = moment(date_precommande, "YYYY/MM/DD hh:mm:ss")
-        //     //     .add(10, 'minutes')
-        //     //     .format('YYYY-MM-DD hh:mm:ss');
+        $('#date_precommande').change(function(e) {
+            e.preventDefault();
+            var date_precommande = $(this).val();
+            // var newDateTime = moment(date_precommande, "YYYY/MM/DD hh:mm:ss")
+            //     .add(10, 'minutes')
+            //     .format('YYYY-MM-DD hh:mm:ss');
 
-        //     let dt = new Date(date_precommande);
-        //     var hours = dt.getHours();
+            let dt = new Date(date_precommande);
 
-        //     if (hours >= 17) {
-        //         dt.setMinutes(dt.getMinutes() + 1080);
-        //         $('#date_livraison').html(dt.toLocaleString("fr-FR"));
-        //     } else if (hours < 17) {
-        //         dt.setMinutes(dt.getMinutes() + 90);
-        //         $('#date_livraison').html(dt.toLocaleString("fr-FR"))
-        //     }
+            var hours = dt.getHours();
+            var minute = dt.getMinutes();
+            var days = dt.getDate();
+            var month = dt.getMonth();
+            var fullYear = dt.getFullYear();
 
-        // });
+            if (hours > 17 || hours <= 9) {
+                // dt.setMinutes(dt.getMinutes() + 1080);
+                $('#date_livraison').html('Livraison prévu le ' + dt.toLocaleDateString() +
+                    ' à 10h30m');
+            } else if (hours >= 8) {
+                // dt.setMinutes(dt.getMinutes() + 90);
+                $('#date_livraison').html(dt.toLocaleString("fr-FR"))
+            }
+
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>

@@ -34,6 +34,7 @@ class Order extends Model
         'user_id',
         'date_order',
         'note', // la note du client
+        'type_order', // normal ,  precommande
         'created_at',
         'updated_at',
     ];

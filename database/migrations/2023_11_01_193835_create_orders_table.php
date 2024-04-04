@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->double('discount')->nullable();
             $table->string('total')->nullable();
-            $table->dateTime('delivery_planned')->nullable(); //date de livraison prevue
+            $table->string('delivery_planned')->nullable(); //date de livraison prevue
             $table->dateTime('delivery_date')->nullable(); //date de livraison
             $table->string('status')->nullable(); // attente", en cour ,livré
             $table->string('payment method')->nullable(); 
