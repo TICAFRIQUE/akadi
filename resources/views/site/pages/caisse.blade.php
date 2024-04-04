@@ -496,7 +496,7 @@
                     },
                     dataType: "json",
                     success: function(response) {
-
+console.log(response);
                         if (response.status === 200) {
                             $('.btn_loading').hide();
 

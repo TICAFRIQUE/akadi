@@ -54,13 +54,13 @@ class OrderController extends Controller
                 'user', 'products'
                 => fn ($q) => $q->with('media')
             ])
-            ->orderBy('created_at', 'DESC')->first();
+            ->orderBy('created_at', 'DESC')->first();   
 
 
         return PDF::loadView('admin.pages.order.invoicePdf', compact('orders'))
             ->setPaper('a5', 'portrait')
             ->setWarnings(true)
-            // ->save(public_path("storage/fichier.pdf"))
+            ->save(public_path("storage/".$orders['id'].".pdf"))
             ->stream(Str::slug($orders->code) . ".pdf");
 
         // return $pdf->download(Str::slug($orders->code) . ".pdf");

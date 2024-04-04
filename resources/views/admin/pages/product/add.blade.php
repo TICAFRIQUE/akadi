@@ -249,6 +249,8 @@
 </section>
 
 
+
+
 @section('script')
     {{-- <script src="{{ asset('site/assets/js/jquery.min.js') }}"></script> --}}
 

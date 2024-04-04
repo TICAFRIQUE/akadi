@@ -6,12 +6,14 @@ use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Delivery;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\PHPMailer;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Arr;
 
 class CartPageController extends Controller
 {
@@ -212,6 +214,7 @@ class CartPageController extends Controller
                 ]);
 
                 //insert data in pivot order_product
+
                 foreach (session('cart') as $key => $value) {
                     $order->products()->attach($key, [
                         'quantity' => $value['quantity'],
@@ -219,6 +222,46 @@ class CartPageController extends Controller
                         'total' => $value['price'] * $value['quantity'],
                     ]);
                 }
+
+
+                $orders = Order::whereId($order['id'])
+                    ->with([
+                        'user', 'products'
+                        => fn ($q) => $q->with('media')
+                    ])
+                    ->orderBy('created_at', 'DESC')->first();
+
+                $data_products = [];
+
+                // $product = json_encode($data_products);
+
+                foreach ($orders['products']  as $key => $value) {
+                    $name = $value['title'];
+                    $qte = $value['pivot']['quantity'];
+                    $price = $value['pivot']['unit_price'];
+                    $total = $value['pivot']['quantity'] * $value['pivot']['unit_price'];
+
+                    array_push($data_products, ['name' => $name, 'qte' => $qte, 'price' => $price, 'total' => $total]);
+                }
+
+                foreach ($data_products  as $key => $value) {
+                }
+
+                // return response()->json([
+                //     'message' => $data_products
+                // ]);
+
+
+
+                // return PDF::loadView(
+                //     'admin.pages.order.invoicePdf',
+                //     compact('orders')
+                // )
+                //     ->setPaper('a5', 'portrait')
+                //     ->setWarnings(true)
+                //     ->save(public_path("storage/" . $orders['id'] . ".pdf"));
+
+
                 //new send mail with phpMailer
                 $mail = new PHPMailer(true);
                 // require base_path("vendor/autoload.php");
@@ -234,16 +277,57 @@ class CartPageController extends Controller
                 $mail->Port = 465;
 
                 $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-                $mail->addAddress('ane.assbill@gmail.com');
+                $mail->addAddress('alexkouamelan96@gmail.com');
 
                 $mail->isHTML(true);
 
 
                 $mail->Subject = 'Nouvelle commande';
-                $mail->Body    = '<b> Vous avez reçu une nouvelle
+
+                $mail->Body    =
+                    '<b> Vous avez reçu une nouvelle
                                     <br> 
-                                    <a href="' . env('APP_URL') . '/admin/order?s=attente">Voir les commandes en attente</a>
+                                    <h3 style="text-align:center ; margin-bottom:30px"> <u>Detail de la commande</u> </h3>
+                                    <div style="margin-bottom: 10px">
+                                        <p>Nom du client : ' . Auth::user()->name . '</p>
+                                        <p>Contact du client : ' . Auth::user()->phone . '</p>
+                                       
+                                    </div>
+
                                     </b>';
+                foreach ($data_products  as $key => $value) {
+                    $mail->Body .=
+
+                    ' 
+                         <div margin-bottom:10px>
+                     <b> Produit ' . ++$key . ' <div>
+                    <p>Nom : ' . $value['name'] . '</p>
+                     <p>qte : ' . $value['qte'] . '</p>
+                     <p>prix : ' . $value['price'] . '</p>
+                    </div>
+                    <br>
+                                        ';
+                }
+                $mail->Body .= '
+                  <b> 
+                        <p>Total : ' . $order['total'] . '</p>
+                        <p>Mode de livraison : ' . $order['mode_livraison'] . '</p>
+                        <p>Adresse: ' . $order['address'] . '</p>
+                        <p>Adresse de yango: ' . $order['address_yango'] . '</p>
+                        <p>Note de commande: ' . $order['note'] . '</p>
+
+
+                 <a href="' . env('APP_URL') . '/admin/order?s=attente">Voir les commandes en attente</a>
+
+
+                 <b>
+                
+                ';
+                
+
+
+
+                // $mail->addAttachment("storage/" . $orders['id'] . ".pdf");
                 $mail->send();
 
 
