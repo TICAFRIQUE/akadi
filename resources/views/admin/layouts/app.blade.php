@@ -104,28 +104,37 @@
                         <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
                                 class="nav-link nav-link-lg message-toggle"><i data-feather="bell" class="bell"></i>
                                 <span class="badge headerBadge1">
-                                    {{ count($orders_attente) }}</span> </a>
+                                    {{ count($orders_new) }}</span> </a>
                             <div class="dropdown-menu dropdown-list dropdown-menu-right pullDown">
                                 <div class="dropdown-header">
                                     Messages
                                     <div class="float-right">
-                                        <a href="#">Marquer lu</a>
+                                        <a href="/admin/order/changeState?cs=all" class="btn btn-link" >Tous confirmer</a>
                                     </div>
                                 </div>
                                 <div class="dropdown-list-content dropdown-list-message">
-                                    <a href="#" class="dropdown-item"> <span
-                                            class="dropdown-item-avatar
-											text-white"> <i class="fa fa-shopping-bag"></i>
-                                        </span> <span class="dropdown-item-desc"> <span class="message-user">John
-                                                Deo</span>
-                                            <span class="time messege-text">Please check your mail !!</span>
-                                            <span class="time">2 Min Ago</span>
-                                        </span>
-                                    </a> 
-                                   
+                                    @foreach ($orders_new as $item)
+                                        <a href="{{ route('order.show', $item['id']) }}" class="dropdown-item"> <span
+                                                class="dropdown-item-avatar
+											text-dark"> <i
+                                                    data-feather="shopping-cart"></i>
+                                            </span> <span class="dropdown-item-desc"> <span
+                                                    class="message-user text-info fw-bold">{{ $item['code'] }}</span>
+                                                <span
+                                                    class="badge {{ $item['status'] == 'attente' ? 'badge-primary' : ($item['status'] == 'livrée' ? 'badge-success' : ($item['status'] == 'confirmée' ? 'badge-info' : ($item['status'] == 'annulée' ? 'badge-danger' : ($item['status'] == 'precommande' ? 'badge-dark' : '')))) }} text-white p-1 px-3"><i
+                                                        class="{{ $item['status'] == 'precommande' ? 'fa fa-clock' : '' }}"></i>
+                                                    {{ $item['status'] }}
+                                                </span> <span class="time text-capitalize text-dark fst-italic">
+                                                    {{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}</span>
+                                            </span>
+                                        </a>
+                                    @endforeach
+
+
                                 </div>
                                 <div class="dropdown-footer text-center">
-                                    <a href="#">Voir tous les commandes en attentes <i class="fas fa-chevron-right"></i></a>
+                                    <a href="{{route('order.index')}}">Voir tous les commandes en attentes <i
+                                            class="fas fa-chevron-right"></i></a>
                                 </div>
                             </div>
                         </li>

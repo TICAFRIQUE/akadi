@@ -87,6 +87,12 @@ class OrderController extends Controller
             ]);
         }
 
+        if ($state == 'all') {
+            $changeState = Order::whereStatus("attente")->update([
+                'status' => 'confirmée'
+            ]);
+        }
+
         return back()->withSuccess('statut changé avec success');
     }
 }

@@ -276,7 +276,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($orders_attente as $key => $item)
+                                    @foreach ($orders_new as $key => $item)
                                         <tr>
                                             <td>{{ ++$key }} </td>
                                             <td><span style="font-weight:bold">{{ $item['code'] }}</span>
@@ -587,30 +587,29 @@
             </div>
         </div>
     </div>
-    <button id="play" ></button>
+    {{-- <button id="play"></button>
     <audio id="pop">
         <source src="{{ asset('admin/assets/audio/ring.mp3') }}" type="audio/mpeg">
-    </audio>
+    </audio> --}}
 
     <script>
         $(document).ready(function() {
 
             var order = {{ Js::from($orders_attente) }}
-
-            
+            console.log(order);
+            $('<audio id="chatAudio"><source src="{{ asset("admin/assets/audio/ring.mp3") }}" type="audio/mpeg"></audio>')
+                .appendTo(
+                    'body');
             if (order.length > 0) {
-                $('#play').click(function(e) {
-                    e.preventDefault();
-                    $('audio#pop')[0].play()
-                });
-
-                $('#play').trigger(eventType);
-
-
+                setInterval(() => {
+                    $('#chatAudio')[0].play();
+                }, 5000);
             }
 
+            $('#stop').click(function(e) {
 
-
+                $('#chatAudio')[0].pause();
+            });
 
 
 

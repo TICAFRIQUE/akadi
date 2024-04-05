@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Publicite;
@@ -76,7 +77,6 @@ class AppServiceProvider extends ServiceProvider
                     $status_remise = 'bientot';
                 } elseif ($value['date_fin_remise'] < Carbon::now()) {
                     $status_remise = 'termine';
-                  
                 } else {
                     $status_remise = 'en cour';
                 }
@@ -115,13 +115,32 @@ class AppServiceProvider extends ServiceProvider
         $roles = Role::where('name', '!=', 'developpeur')->get();
 
 
+        /*********************ORDER GET */
 
-        View::composer('*', function ($view) use ($category, $subcategory, $roles, $category_backend) {
+        $orders_attente = Order::orderBy('created_at', 'DESC')
+            ->whereIn('status', ['attente'])
+            ->get();
+
+
+        $orders_new = Order::orderBy('created_at', 'DESC')
+            ->whereIn('status', ['attente', 'precommande'])
+            ->get();
+
+        View::composer('*', function ($view) use (
+            $category,
+            $subcategory,
+            $roles,
+            $category_backend,
+            $orders_attente,
+            $orders_new,
+        ) {
             $view->with([
                 'categories' => $category,
                 'subcategories' => $subcategory,
                 'roles' => $roles,
                 'category_backend' => $category_backend,
+                'orders_attente' => $orders_attente,
+                'orders_new' => $orders_new,
 
             ]);
         });

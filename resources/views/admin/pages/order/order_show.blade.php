@@ -45,7 +45,7 @@
             <div class="fst-italic p-2 d-flex  justify-content-between">
                 <div>
                     <span class="text-dark fw-bold">Commande: <b>#{{ $orders['code'] }}</b> <span
-                            class="badge {{ $orders['status'] == 'attente' ? 'badge-primary' : ($orders['status'] == 'livrée' ? 'badge-success' : ($orders['status'] == 'confirmée' ? 'badge-info' : ($orders['status'] == 'annulée' ? 'badge-danger' : ''))) }} text-white p-1 px-3">{{ $orders['status'] }}
+                            class="badge {{ $orders['status'] == 'attente' ? 'badge-primary' : ($orders['status'] == 'livrée' ? 'badge-success' : ($orders['status'] == 'confirmée' ? 'badge-info' : ($orders['status'] == 'annulée' ? 'badge-danger' : ($orders['status'] == 'precommande' ? 'badge-dark' : ' ')))) }} text-white p-1 px-3">{{ $orders['status'] }}
                         </span> </span><br>
                     <span>Commandé le: <b>{{ $orders['created_at']->format('d-m-Y') }}</b> </span><br>
                     <span>Nombre d'articles: <b>{{ $orders['quantity_product'] }}</b> </span><br>
@@ -100,6 +100,10 @@
                         <span>Tarif livraison: <b>Les frais sont à la charge du client</b> </span><br>
                 @endif
 
+                @if ($orders['type_order'] =='cmd_precommande')
+                     <span>Date & Heure de livraison: <b> {{$orders['delivery_planned']}} </b> </span><br>
+                @endif
+
             </div>
 
 
@@ -113,14 +117,15 @@
             @endif
 
 
-             @if ($orders['note'])
+            @if ($orders['note'])
                 <h6 class="p-2" style="background-color: #e1e6ea">Commentaire du client</h6>
 
                 <div class="fst-italic p-2">
                     <p> {{ $orders['note'] }} </p>
-
                 </div>
             @endif
+
+
 
 
     </div>

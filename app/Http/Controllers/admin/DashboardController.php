@@ -14,6 +14,11 @@ class DashboardController extends Controller
     //home dashboard
     public function index(){
         $orders_attente = Order::orderBy('created_at','DESC')
+        ->whereIn('status', ['attente'])
+        ->get();
+
+
+        $orders_new = Order::orderBy('created_at', 'DESC')
         ->whereIn('status', ['attente', 'precommande'])
         ->get();
 
@@ -29,7 +34,8 @@ class DashboardController extends Controller
             'orders_attente',
             'orders',  
             'products',  
-            'users'
+            'users',
+            'orders_new' 
 
         ));
       
