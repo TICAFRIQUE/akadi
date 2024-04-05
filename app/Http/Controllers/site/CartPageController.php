@@ -195,12 +195,11 @@ class CartPageController extends Controller
 
                 //status commande
                 $status = "";
-               if( $type_commande == 'cmd_precommande'){
-                $status = "precommande";
-               }else{
+                if ($type_commande == 'cmd_precommande') {
+                    $status = "precommande";
+                } else {
                     $status = "attente";
-
-               }
+                }
 
                 //enregistrer la commande
                 $order = Order::firstOrCreate([
@@ -290,7 +289,7 @@ class CartPageController extends Controller
                 $mail->Port = 465;
 
                 $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-                $mail->addAddress('ane.assbill@gmail.com');
+                $mail->addAddress('Restaurantakadi@gmail.com');
 
                 $mail->isHTML(true);
 
