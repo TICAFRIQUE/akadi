@@ -14,7 +14,7 @@ class DashboardController extends Controller
     //home dashboard
     public function index(){
         $orders_attente = Order::orderBy('created_at','DESC')
-        ->whereStatus('attente')
+        ->whereIn('status', ['attente', 'precommande'])
         ->get();
 
 

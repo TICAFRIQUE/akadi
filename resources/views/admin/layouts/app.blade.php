@@ -82,7 +82,7 @@
                                     class="nav-link nav-link-lg
                                   collapse-btn"> <i
                                         data-feather="align-justify"></i></a></li>
-                            <li><a href="{{route('page-acceuil')}}" target="blank" class="nav-link nav-link-lg">
+                            <li><a href="{{ route('page-acceuil') }}" target="blank" class="nav-link nav-link-lg">
                                     <i data-feather="eye"></i>
                                 </a></li>
                             {{-- <li>
@@ -96,10 +96,39 @@
                                     </div>
                                 </form>
                             </li> --}}
+
+
                         </ul>
                     </div>
                     <ul class="navbar-nav navbar-right">
-
+                        <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
+                                class="nav-link nav-link-lg message-toggle"><i data-feather="bell" class="bell"></i>
+                                <span class="badge headerBadge1">
+                                    {{ count($orders_attente) }}</span> </a>
+                            <div class="dropdown-menu dropdown-list dropdown-menu-right pullDown">
+                                <div class="dropdown-header">
+                                    Messages
+                                    <div class="float-right">
+                                        <a href="#">Marquer lu</a>
+                                    </div>
+                                </div>
+                                <div class="dropdown-list-content dropdown-list-message">
+                                    <a href="#" class="dropdown-item"> <span
+                                            class="dropdown-item-avatar
+											text-white"> <i class="fa fa-shopping-bag"></i>
+                                        </span> <span class="dropdown-item-desc"> <span class="message-user">John
+                                                Deo</span>
+                                            <span class="time messege-text">Please check your mail !!</span>
+                                            <span class="time">2 Min Ago</span>
+                                        </span>
+                                    </a> 
+                                   
+                                </div>
+                                <div class="dropdown-footer text-center">
+                                    <a href="#">Voir tous les commandes en attentes <i class="fas fa-chevron-right"></i></a>
+                                </div>
+                            </div>
+                        </li>
                         <li class="dropdown"><a href="#" data-toggle="dropdown"
                                 class="nav-link dropdown-toggle nav-link-lg nav-link-user"> <img alt="image"
                                     src="{{ asset('admin/assets/img/user.png') }}" class="user-img-radious-style">
@@ -168,7 +197,12 @@
                                 <a href="{{ route('product.index') }}" class="nav-link"><i
                                         data-feather="shopping-bag"></i><span>Produits</span></a>
                             </li>
+
                             <li class="dropdown">
+                                <a href="{{ route('order.index') }}" class="nav-link"><i
+                                        data-feather="shopping-bag"></i><span>Commandes</span></a>
+                            </li>
+                            {{-- <li class="dropdown">
                                 <a href="#" class="menu-toggle nav-link has-dropdown"><i
                                         data-feather="shopping-cart"></i><span>Commandes</span></a>
                                 <ul class="dropdown-menu">
@@ -182,7 +216,7 @@
                                             commandes</a></li>
 
                                 </ul>
-                            </li>
+                            </li> --}}
 
                             @role(['developpeur', 'administrateur', 'gestionnaire'])
                                 <li class="dropdown">
@@ -294,7 +328,8 @@
     <!-- Custom JS File -->
     <script src="{{ asset('admin/assets/js/custom.js') }}"></script>
     <!-- CDN JS File -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js">
@@ -304,6 +339,5 @@
 </body>
 
 
-<!-- index.html  21 Nov 2019 03:47:04 GMT -->
 
 </html>

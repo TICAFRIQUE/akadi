@@ -46,7 +46,7 @@
                                 <a href="{{ route('detail-produit', $item['slug']) }}">
                                     <img src="{{ asset($item->getFirstMediaUrl('product_image')) }}" alt="Product Image">
                                 </a>
-                                @if ($item['montant_remise'])
+                                @if ($item['status_remise']== 'en cour')
                                     <div class="th-menu_discount">
                                         <span class="sale">- {{ $item['pourcentage_remise'] }}% </span>
                                     </div>

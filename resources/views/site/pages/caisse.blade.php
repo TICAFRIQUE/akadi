@@ -501,7 +501,7 @@
                 var subTotal = $('.sousTotal').attr('data-subTotal');
                 var total_order = parseFloat(subTotal) + parseFloat(prix_livraison)
                 var type_commande = type_cmd
-                var delivery_planned = $('#date_livraison').html();// date de livraison prevue
+                var delivery_planned = $('#date_livraison').html(); // date de livraison prevue
 
                 var data = {
                     subTotal,
@@ -617,6 +617,7 @@
 
         $(".datetimepicker").each(function() {
 
+             let dt = new Date();
             $(this).datetimepicker({
                 showOtherMonths: true,
                 selectOtherMonths: true,
@@ -624,7 +625,9 @@
                 changeYear: true,
                 showButtonPanel: true,
                 dateFormat: 'yy-mm-dd',
-                minDate: 0,
+
+                minDate : dt.setDate(dt.getDate() + 1),
+    //   maxDate : +3,
                 // minTime: '10:00',
                 // maxTime: '18:00',
                 allowTimes: [

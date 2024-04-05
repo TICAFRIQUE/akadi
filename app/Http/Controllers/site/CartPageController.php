@@ -187,15 +187,22 @@ class CartPageController extends Controller
 
 
                 //calculer le total TTC
-
                 $totalOrder =
                     $subTotal + $delivery_price;
 
                 //quantité des produit au panier
                 $quantity_product = count((array) session('cart'));
 
-                //enregistrer la commande
+                //status commande
+                $status = "";
+               if( $type_commande == 'cmd_precommande'){
+                $status = "precommande";
+               }else{
+                    $status = "attente";
 
+               }
+
+                //enregistrer la commande
                 $order = Order::firstOrCreate([
                     "user_id" => Auth::user()->id,
                     'quantity_product' => $quantity_product,
@@ -213,7 +220,7 @@ class CartPageController extends Controller
                     // 'discount' => '',
                     'delivery_planned' => $delivery_planned, //date de livraison prevue
                     // 'delivery_date' => '', //date de livraison
-                    'status' => 'attente',         // livré, en attente
+                    'status' => $status,         // livré, en attente
                     // 'available_product' =>  '' //disponibilite
                     'payment method' => 'paiement à la livraison',
                     'date_order' => Carbon::now()->format('Y-m-d')

@@ -4,25 +4,27 @@
     <section class="section">
         @include('admin.components.validationMessage')
 
-<style>
-  .card-content{
-    color: #fff;
-  }
-.card-order{
-  background: linear-gradient(135deg, #f48665 0%, #fda23f 100%) !important;
-}
+        <style>
+            .card-content {
+                color: #fff;
+            }
 
-.card-product{
-    background: linear-gradient(135deg, #289cf5, #84c0ec) !important;
-}
-.card-user{
-  background: linear-gradient(135deg, #06a278 0%, #12d298 100%) !important;
-}
+            .card-order {
+                background: linear-gradient(135deg, #f48665 0%, #fda23f 100%) !important;
+            }
 
-.card-visit{
-  background: linear-gradient(135deg, #f48665 0%, #d75ce2 100%) !important;
-}
-</style>
+            .card-product {
+                background: linear-gradient(135deg, #289cf5, #84c0ec) !important;
+            }
+
+            .card-user {
+                background: linear-gradient(135deg, #06a278 0%, #12d298 100%) !important;
+            }
+
+            .card-visit {
+                background: linear-gradient(135deg, #f48665 0%, #d75ce2 100%) !important;
+            }
+        </style>
 
         <div class="row ">
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -33,7 +35,7 @@
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                                     <div class="card-content">
                                         <h5 class="font-15">Commandes</h5>
-                                        <h2 class="mb-3 font-18">{{$orders}}</h2>
+                                        <h2 class="mb-3 font-18">{{ $orders }}</h2>
                                         {{-- <p class="mb-0"><span class="col-green">10%</span> Increase</p> --}}
                                     </div>
                                 </div>
@@ -55,7 +57,7 @@
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                                     <div class="card-content">
                                         <h5 class="font-15"> Produits</h5>
-                                        <h2 class="mb-3 font-18">{{$products}}</h2>
+                                        <h2 class="mb-3 font-18">{{ $products }}</h2>
                                         {{-- <p class="mb-0"><span class="col-orange">09%</span> Decrease</p> --}}
                                     </div>
                                 </div>
@@ -77,7 +79,7 @@
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                                     <div class="card-content">
                                         <h5 class="font-15">Clients</h5>
-                                        <h2 class="mb-3 font-18">{{$users}} </h2>
+                                        <h2 class="mb-3 font-18">{{ $users }} </h2>
                                         {{-- <p class="mb-0"><span class="col-green">18%</span>
                                             Increase</p> --}}
                                     </div>
@@ -279,7 +281,9 @@
                                             <td>{{ ++$key }} </td>
                                             <td><span style="font-weight:bold">{{ $item['code'] }}</span>
                                                 <br> <span
-                                                    class="badge {{ $item['status'] == 'attente' ? 'badge-primary' : ($item['status'] == 'livrée' ? 'badge-success' : ($item['status'] == 'confirmée' ? 'badge-info' : ($item['status'] == 'annulée' ? 'badge-danger' : ''))) }} text-white p-1 px-3">{{ $item['status'] }}
+                                                    class="badge {{ $item['status'] == 'attente' ? 'badge-primary' : ($item['status'] == 'livrée' ? 'badge-success' : ($item['status'] == 'confirmée' ? 'badge-info' : ($item['status'] == 'annulée' ? 'badge-danger' : ($item['status'] == 'precommande' ? 'badge-dark' : '')))) }} text-white p-1 px-3"><i
+                                                        class="{{ $item['status'] == 'precommande' ? 'fa fa-clock' : '' }}"></i>
+                                                    {{ $item['status'] }}
                                                 </span>
 
                                             </td>
@@ -583,4 +587,87 @@
             </div>
         </div>
     </div>
+    <button id="play" ></button>
+    <audio id="pop">
+        <source src="{{ asset('admin/assets/audio/ring.mp3') }}" type="audio/mpeg">
+    </audio>
+
+    <script>
+        $(document).ready(function() {
+
+            var order = {{ Js::from($orders_attente) }}
+
+            
+            if (order.length > 0) {
+                $('#play').click(function(e) {
+                    e.preventDefault();
+                    $('audio#pop')[0].play()
+                });
+
+                $('#play').trigger(eventType);
+
+
+            }
+
+
+
+
+
+
+
+            var table = $('#tableExport').DataTable({
+                // destroy: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+
+                drawCallback: function(settings) {
+                    // $('.delete').on("click", function(e) {
+                    //     e.preventDefault();
+                    //     var Id = $(this).attr('data-id');
+                    //     swal({
+                    //         title: "Suppression",
+                    //         text: "Veuillez confirmer la suppression",
+                    //         type: "warning",
+                    //         showCancelButton: true,
+                    //         confirmButtonText: "Confirmer",
+                    //         cancelButtonText: "Annuler",
+                    //     }).then((result) => {
+                    //         if (result) {
+                    //             $.ajax({
+                    //                 type: "POST",
+                    //                 url: "/admin/auth/destroy/" + Id,
+                    //                 dataType: "json",
+                    //                 data: {
+                    //                     _token: '{{ csrf_token() }}',
+
+                    //                 },
+                    //                 success: function(response) {
+                    //                     if (response.status === 200) {
+                    //                         Swal.fire({
+                    //                             toast: true,
+                    //                             icon: 'success',
+                    //                             title: 'Utilisateur supprimé avec success',
+                    //                             animation: false,
+                    //                             position: 'top',
+                    //                             background: '#3da108e0',
+                    //                             iconColor: '#fff',
+                    //                             color: '#fff',
+                    //                             showConfirmButton: false,
+                    //                             timer: 500,
+                    //                             timerProgressBar: true,
+                    //                         });
+                    //                         $('#row_' + Id).remove();
+
+                    //                     }
+                    //                 }
+                    //             });
+                    //         }
+                    //     });
+                    // });
+                }
+            });
+        });
+    </script>
 @endsection

@@ -143,9 +143,9 @@
                                             alt="Product Image">
                                     </a>
 
-                                    @if ($item['montant_remise'])
+                                    @if ($item['status_remise']=='en cour')
                                         <div class="th-menu_discount">
-                                            <span class="sale"> - {{ $item['pourcentage_remise'] }}</span>
+                                            <span class="sale"> - {{ $item['pourcentage_remise'] }} %</span>
                                         </div>
                                     @endif
                                 </div>
