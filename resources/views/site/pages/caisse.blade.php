@@ -45,7 +45,7 @@
 
 
                                     @foreach (session('cart') as $id => $details)
-                                        @php $sousTotal += $details['price'] * $details['quantity'] @endphp
+                                        @php $sousTotal += $details['price'] * $details['quantity'] /** sous total***/ @endphp
 
                                         <tr class="cart_item" id="row_{{ $id }}">
                                             <td data-title="Product">
@@ -67,12 +67,42 @@
                                             </td>
                                             <td data-title="Total">
                                                 @php
-                                                    $total = $details['price'] * $details['quantity'];
+                                                    $total = $details['price'] * $details['quantity']; // prix article * quantité
                                                 @endphp
-                                                <span class="amount"><bdi><span id="totalPriceQty{{ $id }}">
+                                                <span class="amount text-dark fw-bold"><bdi><span
+                                                            id="totalPriceQty{{ $id }}">
                                                             {{ number_format($total, 0, ',', ' ') }}
-                                                        </span>FCFA</bdi></span>
+                                                        </span> FCFA</bdi></span>
+                                                <!-- ========== Start coupon ========== -->
+
+
+
+                                                @if ($product_coupon)
+                                                    @foreach ($product_coupon as $item)
+                                                        @if (in_array($id, [$item['coupon'][0]['pivot']['product_id']]))
+                                                            <div class="d-flex">
+                                                                <input type="text" name="coupon"
+                                                                    value="{{ $item['coupon'][0]['code'] }}"
+                                                                    placeholder="Coupon de réduction" required readonly>
+                                                                <button role="button" product-id={{ $id }}
+                                                                    data-total={{ $total }}
+                                                                    data-sousTotal={{ $sousTotal }}
+                                                                    data-pourcentage={{ $item['coupon'][0]['pourcentage_coupon'] }}
+                                                                    data-code={{ $item['coupon'][0]['code'] }}
+                                                                    class="btn btn-dark text-white applyCouponBtn"
+                                                                    id="btnApply_{{ $id }}">Appliquer</button>
+
+                                                            </div>
+                                                             <small class="text-danger">Profitez de <b>{{ $item['coupon'][0]['pourcentage_coupon'] }} % </b> de réduction sur le total</small>
+
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+
+                                                <!-- ========== End coupon ========== -->
                                             </td>
+
+
 
                                         </tr>
                                     @endforeach
@@ -206,8 +236,8 @@
                                                     <!-- ========== Start check type commande ========== -->
                                                     <div class="form-check">
                                                         <input class="form-check-input typeCmd" type="radio"
-                                                            name="type_commande" value="cmd_normal" id="flexRadioDefault1"
-                                                            checked>
+                                                            name="type_commande" value="cmd_normal"
+                                                            id="flexRadioDefault1" checked>
                                                         <label class="form-check-label" for="flexRadioDefault1">
                                                             Commande normal <small class="text-danger"
                                                                 style="font-size: 10px">(Commande instantanée)</small>
@@ -313,11 +343,77 @@
         var dlp = '' // date livraison precommande
 
 
+
+        //stocker le sous total en storage
+        var sousTotal = $('.sousTotal').attr('data-subTotal');
+        localStorage.setItem('sousTotal', sousTotal)
+
+
+        //gestion de coupon de reduction
+
+        $('.applyCouponBtn').click(function(e) {
+            e.preventDefault();
+
+            var isNewSousTotal = localStorage.getItem('sousTotal');
+
+            var productId = $(this).attr('product-id');
+            var total = $(this).attr('data-total'); // total article * qté
+            var sous_total = $('.sousTotal').attr('data-subTotal');
+            var pourcentage = $(this).attr('data-pourcentage');
+            var code_coupon = $(this).attr('data-code');
+
+
+            //calcul de montant coupon ---apres reduction
+            var montant_reduction = parseFloat(total) * parseFloat(pourcentage / 100);
+            var new_total = parseFloat(total) - parseFloat(montant_reduction) // total prix article * Qte
+            $('#totalPriceQty' + productId).html(parseInt(new_total).toLocaleString())
+
+            //disabled btn apply
+            $('#btnApply_' + productId).prop('disabled', true);
+
+            // recalculer le sous total
+            var newSousTotal = isNewSousTotal - montant_reduction
+            localStorage.setItem('sousTotal', newSousTotal);
+
+            $('.sousTotal').html('<h6 class="text-danger">' + parseInt(newSousTotal).toLocaleString() +
+                ' FCFA</h6>');
+
+            $('.total_order').html(parseInt(newSousTotal).toLocaleString() + ' FCFA');
+
+
+
+
+            var data = {
+                productId,
+            }
+
+            // $.ajax({
+            //     type: "GET",
+            //     url: "/refresh-coupon/" + productId,
+            //     data: {
+            //         data
+            //     },
+            //     dataType: "json",
+            //     success: function(response) {
+            //         console.log(typeof(response.new_sousTotal), response);
+            //         $('#totalPriceQty' + productId).html(response.new_total);
+            //         $('.sousTotal').html(+response.new_sousTotal + ' FCFA');
+            //     }
+            // });
+
+
+        });
+
+
+
+
         // mettre à jour la livraison
         $('.delivery').change(function(e) {
             e.preventDefault();
             var deliveryId = $('.delivery option:selected').val();
-            var subTotal = $('.sousTotal').attr('data-subTotal');
+            // var subTotal = $('.sousTotal').attr('data-subTotal');
+            var subTotal = localStorage.getItem('sousTotal');
+
 
             //Afficher le champs address si le lieu de livraison est choisi"
             $('#address').show(300)
@@ -344,8 +440,6 @@
         });
 
 
-
-
         //Recuperer les information  de livraison
         //cacher le champs address par defaut
         $('#address').hide()
@@ -357,6 +451,7 @@
         $('.delivery_mode').change(function(e) {
             e.preventDefault();
             var mode_livraison = $('.delivery_mode option:selected').attr('tag');
+            var subTotal = localStorage.getItem('sousTotal');
 
             //si mode_livraison == domicile
             if (mode_livraison == 'domicile') {
@@ -372,7 +467,7 @@
             if (mode_livraison == 'yango') {
                 $('#address_yango').show(200)
                 $('.delivery_price').html('les frais sont votre charge')
-                $('.total_order').html($('.sousTotal').attr('data-subTotal') + ' FCFA');
+                $('.total_order').html(parseInt(subTotal).toLocaleString() + ' FCFA');
                 $('.delivery_name').html('')
                 $('._delivery_price').show()
 
@@ -390,13 +485,13 @@
             }
 
             //si mode_livraison == recuperer
-
+            var subTotal = localStorage.getItem('sousTotal');;
             if (mode_livraison == 'recuperer') {
                 $('._delivery_price').hide()
                 $('#address').hide()
                 $('#address_yango').hide()
                 $('.delivery').hide()
-                $('.total_order').html($('.sousTotal').attr('data-subTotal') + ' FCFA');
+                $('.total_order').html(parseInt(subTotal).toLocaleString() + ' FCFA');
 
                 //initialisation 
 
@@ -498,9 +593,10 @@
                 $('.confirmOrder').hide();
 
 
-                var subTotal = $('.sousTotal').attr('data-subTotal');
+                var subTotal = localStorage.getItem('sousTotal');
+
                 var total_order = parseFloat(subTotal) + parseFloat(prix_livraison)
-                var type_commande = type_cmd
+                var type_commande = type_cmd // type de la commande ...precommande , normal
                 var delivery_planned = $('#date_livraison').html(); // date de livraison prevue
 
                 var data = {
@@ -617,7 +713,7 @@
 
         $(".datetimepicker").each(function() {
 
-             let dt = new Date();
+            let dt = new Date();
             $(this).datetimepicker({
                 showOtherMonths: true,
                 selectOtherMonths: true,
@@ -626,8 +722,8 @@
                 showButtonPanel: true,
                 dateFormat: 'yy-mm-dd',
 
-                minDate : dt.setDate(dt.getDate() + 1),
-    //   maxDate : +3,
+                minDate: dt.setDate(dt.getDate() + 1),
+                //   maxDate : +3,
                 // minTime: '10:00',
                 // maxTime: '18:00',
                 allowTimes: [

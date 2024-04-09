@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Order;
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Publicite;
@@ -91,6 +93,53 @@ class AppServiceProvider extends ServiceProvider
         /****************************end product remise */
 
 
+        /****************************coupon de reduction */
+        //declenchez le coupon de reduction
+        $coupon = Coupon::get();
+
+        if ($coupon) {
+            $status_coupon = ''; // bientot , en cour, termine
+            $date_debut_coupon = '';
+            $date_fin_coupon = '';
+
+            foreach ($coupon as $value) {
+                if ($value['date_debut_coupon'] > Carbon::now()) {
+                    $status_coupon = 'bientot';
+                } elseif ($value['date_fin_coupon'] < Carbon::now()) {
+                    $status_coupon = 'termine';
+                } else {
+                    $status_coupon = 'en cour';
+                }
+                // update status
+                Coupon::whereId($value['id'])
+                    ->update([
+                        'status_coupon' => $status_coupon,
+                    ]);
+            }
+
+            //delete coupon status ==terminé
+            Coupon::where('status_coupon', 'termine')->delete();
+            
+               
+        }
+
+
+
+        //update user role
+
+        $users = User::withCount(['roles', 'orders'])
+            ->whereHas('roles', fn ($q) => $q->where('name', '!=', 'developpeur'))
+            ->orderBy('created_at', 'DESC')->get();
+
+            // dd($users->toArray());
+        //  foreach ($users as $key => $value) {
+        //     if ($value['orders_count']) {
+        //         # code...
+        //     }
+        //  }
+            
+
+
 
 
         //category frontend
@@ -113,6 +162,8 @@ class AppServiceProvider extends ServiceProvider
 
 
         $roles = Role::where('name', '!=', 'developpeur')->get();
+        $roleWithoutClient = Role::whereNotIn('name', ['developpeur', 'client' , 'fidele', 'prospect'])->get();
+
 
 
         /*********************ORDER GET */
@@ -133,15 +184,17 @@ class AppServiceProvider extends ServiceProvider
             $category_backend,
             $orders_attente,
             $orders_new,
+            $roleWithoutClient
         ) {
             $view->with([
                 'categories' => $category,
                 'subcategories' => $subcategory,
                 'roles' => $roles,
+                'roleWithoutClient' => $roleWithoutClient,
+
                 'category_backend' => $category_backend,
                 'orders_attente' => $orders_attente,
                 'orders_new' => $orders_new,
-
             ]);
         });
     }

@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 @section('title', 'auth')
-@section('sub-title', 'Liste des utilisateurs')
+@section('sub-title', 'Liste des clients')
 
 
 @section('content')
@@ -17,24 +17,6 @@
                                 <h4>Liste de tous les utilisateurs</h4>
                             @endif
 
-
-                            @if (request('user') =='client' || request('client'))
-                                
-                            <!-- ========== Start filter ========== -->
-                            <div class="dropdown d-inline">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-filter"></i> Filtre par type de client
-                                </button>
-                                <div class="dropdown-menu fw-bold">
-                                    <a class="dropdown-item has-icon" href="/admin/auth?client=prospect">Prospects</a>
-                                    <a class="dropdown-item has-icon" href="/admin/auth?client=fidele">Fidèles</a>
-                                </div>
-                            </div>
-                            <!-- ========== End filter ========== -->
-                            @endif
-
-
                             <a href="{{ route('user.register') }}" class="btn btn-primary">Ajouter un
                                 utilsateur</a>
                         </div>
@@ -44,15 +26,12 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Status</th>
                                             <th>Nom</th>
                                             <th>Contact</th>
                                             <th>Email</th>
                                             {{-- <th>Boutique</th>
                                             <th>Localisation</th> --}}
                                             <th>Type utilisateur</th>
-                                            <th>Commandes</th>
-
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -60,8 +39,6 @@
                                         @foreach ($users as $key => $item)
                                             <tr id="row_{{ $item['id'] }}">
                                                 <td>{{ ++$key }} </td>
-                                                <td>  
-                                                    <span class="badge badge-{{$item->orders->count() > 0 ? 'success' : 'primary'}}">{{$item->orders->count() > 0 ? 'Fidèle' : 'Prospect'}}</span> </td>
                                                 <td>{{ $item['name'] }}</td>
                                                 <td>{{ $item['phone'] }}</td>
                                                 <td>{{ $item['email'] }}</td>
@@ -72,10 +49,6 @@
                                                         <br> <span
                                                             class="text-capitalize fw-bold">{{ $role['name'] }}</span>
                                                     @endforeach
-                                                </td>
-
-                                                <td>
-                                                    {{$item->orders->count()}}
                                                 </td>
 
 

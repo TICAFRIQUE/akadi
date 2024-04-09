@@ -103,6 +103,13 @@ class Product extends Model implements HasMedia
         return $this->hasMany(Commentaire::class);
     }
 
+
+    public function coupon()
+    {
+        return $this->belongsToMany(Coupon::class);
+    }
+
+
     /*******resize image */
 
     //     public function registerMediaConversions(Media $media = null)

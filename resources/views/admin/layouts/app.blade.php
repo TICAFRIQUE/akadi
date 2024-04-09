@@ -107,9 +107,10 @@
                                     {{ count($orders_new) }}</span> </a>
                             <div class="dropdown-menu dropdown-list dropdown-menu-right pullDown">
                                 <div class="dropdown-header">
-                                    Messages
+                                    Notifications
                                     <div class="float-right">
-                                        <a href="/admin/order/changeState?cs=all" class="btn btn-link" >Tous confirmer</a>
+                                        <a href="/admin/order/changeState?cs=all" class="btn btn-link">Tous
+                                            confirmer</a>
                                     </div>
                                 </div>
                                 <div class="dropdown-list-content dropdown-list-message">
@@ -133,7 +134,7 @@
 
                                 </div>
                                 <div class="dropdown-footer text-center">
-                                    <a href="{{route('order.index')}}">Voir tous les commandes en attentes <i
+                                    <a href="{{ route('order.index') }}">Voir tous les commandes en attentes <i
                                             class="fas fa-chevron-right"></i></a>
                                 </div>
                             </div>
@@ -207,6 +208,12 @@
                                         data-feather="shopping-bag"></i><span>Produits</span></a>
                             </li>
 
+
+                            <li class="dropdown">
+                                <a href="{{ route('coupon.index') }}" class="nav-link"><i
+                                        data-feather="gift"></i><span>Coupon de reduction</span></a>
+                            </li>
+
                             <li class="dropdown">
                                 <a href="{{ route('order.index') }}" class="nav-link"><i
                                         data-feather="shopping-bag"></i><span>Commandes</span></a>
@@ -229,16 +236,20 @@
 
                             @role(['developpeur', 'administrateur', 'gestionnaire'])
                                 <li class="dropdown">
+                                    <a href="/admin/auth?user=client" class="nav-link"><i
+                                            data-feather="users"></i><span>Clients</span></a>
+                                </li>
+                                <li class="dropdown">
                                     <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                                            data-feather="users"></i><span>Utilisateurs</span></a>
+                                            data-feather="lock"></i><span>Administrateurs</span></a>
                                     <ul class="dropdown-menu">
-                                        @foreach ($roles as $item)
+                                        @foreach ($roleWithoutClient as $item)
                                             <li><a class="nav-link" href="/admin/auth?user={{ $item['name'] }}">
                                                     {{ $item['name'] }} </a></li>
                                         @endforeach
 
-                                        <li><a class="nav-link" href="{{ route('user.list') }}">Liste des
-                                                utilisateurs</a></li>
+                                        {{-- <li><a class="nav-link" href="{{ route('user.list') }}">Liste des
+                                                utilisateurs</a></li> --}}
                                     </ul>
 
                                 </li>

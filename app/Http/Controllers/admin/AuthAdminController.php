@@ -20,14 +20,32 @@ class AuthAdminController extends Controller
     public function listUser()
     {
         $role = request('user');
+        $type_client = request('client');
 
-        $users = User::with('roles')
+
+        $users = User::withCount(['roles', 'orders'])
             ->whereHas('roles', fn ($q) => $q->where('name', '!=', 'developpeur'))
             ->when($role, fn ($q, $role) => $q->whereHas('roles', fn ($q) => $q->where('name', $role)))
+            ->when($type_client=='prospect', fn ($q) => $q->having('orders_count', '==', 0)
+            ->where('role', 'client')
+            )
+            ->when($type_client == 'fidele', fn ($q) => $q->having('orders_count', '>', 0))
+
             ->orderBy('created_at', 'DESC')->get();
-        // dd($user->toArray());
+        // dd($users->toArray());
         return view('admin.pages.user.userList', compact('users'));
     }
+
+
+    // public function typeClient(){
+    //     $type = request('type_client');
+
+    //     $users = User::with('roles')
+    //         ->whereHas('roles', fn ($q) => $q->where('name', '==', 'client'))
+    //         // ->when($role, fn ($q, $role) => $q->whereHas('roles', fn ($q) => $q->where('name', $role)))
+    //         ->orderBy('created_at', 'DESC')->get();
+    //     return view('admin.pages.user.client' ,compact('users'));
+    // }
 
 
     public function registerForm(Request $request)

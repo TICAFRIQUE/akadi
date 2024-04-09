@@ -60,7 +60,7 @@
                                             </td>
                                             <td data-title="prix">
                                                 <span class="amount text-dark"><bdi>
-                                                        {{ number_format($details['price'], 0) }}
+                                                        {{ number_format($details['price'], 0 ,  ',' , ' ') }} FCFA
                                                         <span></span>
                                                     </bdi></span>
                                             </td>
@@ -122,7 +122,7 @@
                                     <a href="{{ route('liste-produit') }}" class="th-btn rounded-2 my-3 w-100">Continuer
                                         les achats</a>
 
-                                    <a href="{{ route('checkout') }}" class="th-btn rounded-2 mb-3 w-100">Poursuivre
+                                    <a href="{{ route('checkout') }}" class="th-btn rounded-2 mb-3 w-100 nextBtn" data-sousTotal="{{$sousTotal}}">Poursuivre
                                         La commande </a>
                                 </div>
                             </div>
@@ -140,6 +140,13 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <script>
+
+        $('.nextBtn').click(function name(e) {
+           var sousTotal = $(this).attr('data-sousTotal')
+           localStorage.setItem('sousTotal' , sousTotal)
+        })
+
+      
         function increaseValue(id) {
             var value = parseInt(document.getElementById(id).value);
             value = isNaN(value) ? 0 : value;
@@ -276,7 +283,6 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css
                                 .sousTotal + ' FCFA' + '</h6>');
                             $('.badge').html(response.totalQte);
                             $('.quantityProduct').html('(' + response.countCart + ')');
-
 
                             Swal.fire({
                                 toast: true,

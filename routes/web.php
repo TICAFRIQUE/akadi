@@ -2,15 +2,16 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\admin\SettingController;
 use App\Http\Controllers\site\AuthController;
 use App\Http\Controllers\site\CartController;
 use App\Http\Controllers\site\SiteController;
 use App\Http\Controllers\admin\OrderController;
 use App\Http\Controllers\site\VendorController;
+use App\Http\Controllers\admin\CouponController;
 use App\Http\Controllers\site\AccountController;
 use App\Http\Controllers\site\SupportController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\admin\SettingController;
 use App\Http\Controllers\site\AuthPageController;
 use App\Http\Controllers\site\CartPageController;
 use App\Http\Controllers\site\HomePageController;
@@ -142,6 +143,8 @@ Route::middleware(['admin'])->group(function () {
     //Auth admin
     Route::prefix('admin/auth')->controller(AuthAdminController::class)->group(function () {
         route::get('', 'listUser')->name('user.list');
+        // route::get('typeClient', 'typeClient')->name('user.typeClient');
+
         route::get('register', 'registerForm')->name('user.registerForm');
         route::post('register', 'register')->name('user.register');
         route::get('edit/{id}', 'edit')->name('user.edit');
@@ -215,7 +218,7 @@ Route::middleware(['admin'])->group(function () {
 
     //publicite
 
-    /** Collection **/
+   
     Route::prefix('admin/publicite')->controller(PubliciteController::class)->group(function () {
         route::get('', 'index')->name('publicite.index');
         route::post('', 'store')->name('publicite.store');
@@ -235,6 +238,18 @@ Route::prefix('admin/temoignage')->controller(TemoignageController::class)->grou
     route::post('update/{id}', 'update')->name('temoignage.update');
     route::post('destroy/{id}', 'destroy')->name('temoignage.destroy');
 });
+
+
+/** Coupon de reduction **/
+Route::prefix('admin/coupon')->controller(CouponController::class)->group(function () {
+    route::get('', 'index')->name('coupon.index');
+    route::get('create', 'create')->name('coupon.create');
+    route::post('', 'store')->name('coupon.store');
+    // route::get('edit/{id}', 'edit')->name('temoignage.edit');
+    // route::post('update/{id}', 'update')->name('temoignage.update');
+    route::post('destroy/{id}', 'destroy')->name('coupon.destroy');
+});
+
 
 
 
@@ -261,6 +276,8 @@ Route::patch('update-cart', [CartPageController::class, 'update'])->name('update
 Route::delete('remove-from-cart', [CartPageController::class, 'remove'])->name('remove.from.cart');
 Route::get('finaliser-ma-commande', [CartPageController::class, 'checkout'])->name('checkout')->middleware(['auth']);
 Route::get('refresh-shipping/{id}', [CartPageController::class, 'refreshShipping'])->middleware(['auth']);
+Route::get('refresh-coupon/{id}', [CartPageController::class, 'refreshCoupon'])->middleware(['auth']);
+
 Route::get('save-order', [CartPageController::class, 'storeOrder'])->name('store.order')->middleware(['auth']);
 
 

@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\site;
 
+use Arr;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Order;
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\Delivery;
-use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use PHPMailer\PHPMailer\PHPMailer;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Session;
-use Arr;
 
 class CartPageController extends Controller
 {
@@ -21,7 +24,11 @@ class CartPageController extends Controller
     public function panier()
     {
 
-        return view('site.pages.panier');
+        $product = Product::withWhereHas('coupon', fn ($q) => $q->where('status_coupon', 'en cour'))->get();
+
+        // dd($product->toArray());
+
+        return view('site.pages.panier', compact('product'));
     }
 
 
@@ -30,6 +37,7 @@ class CartPageController extends Controller
     {
 
         $product = Product::findOrFail($id);
+        // $product = Product::whereId($id)->withWhereHas('coupon', fn ($q) => $q->where('status_coupon', 'en cour'))->first();
 
         $cart = session()->get('cart', []);
 
@@ -53,6 +61,12 @@ class CartPageController extends Controller
                 "quantity" => 1,
                 "price" => $price,
                 "image" => $product->media[0]->getUrl(),
+                // "coupon" => $product->coupon[0]->code,
+                // "pourcentage_coupon" => $product->coupon[0]->pourcentage_coupon,
+                // "status_coupon" => $product->coupon[0]->status_coupon,
+
+
+
             ];
         }
 
@@ -70,11 +84,11 @@ class CartPageController extends Controller
 
 
 
-
         return response()->json([
             'countCart' => $countCart,
             'cart' => $cart,
             'totalQte' => $totalQuantity,
+
 
         ]);
     }
@@ -157,12 +171,74 @@ class CartPageController extends Controller
         ]);
     }
 
+    //deduction de la remise du coupon
+    public function refreshCoupon($id)
+    {
+
+        $total = $_GET['data']['total']; //prix total article
+        $sousTotal = $_GET['data']['sous_total'];
+        $pourcentage = $_GET['data']['pourcentage'];
+        $code_coupon = $_GET['data']['code_coupon'];
+
+
+        // calculer montant_reduction
+        $montant_reduction = $total * ($pourcentage / 100);
+        $new_total = $total - $montant_reduction;
+
+
+        // recalculer le sous total
+        $new_sousTotal =   $sousTotal - $new_total;
+
+
+
+
+
+        //supprimer l'utilisateur qui a utiliser le coupon
+        // $coupon = Coupon::whereCode($code_coupon)->first();
+        // DB::table('coupon_product')->where('coupon_id', $coupon['id'])
+        //     ->where('product_id', $id)->delete();
+
+
+        // $product = Product::findOrFail($id);
+
+        // $cart[$id]["coupon"] = $product->coupon[0]->code;
+        // $cart[$id]["pourcentage_coupon"] = $product->coupon[0]->pourcentage_coupon;
+        // $cart[$id]["status_coupon"] = $product->coupon[0]->status_coupon;
+        // session()->put('cart', $cart);
+
+        return response()->json([
+            'new_total' => $new_total,
+            'new_sousTotal' => $new_sousTotal,
+        ]);
+    }
+
     //caisse--resumé du panier
-    public function checkout()
+    public function checkout(Request $request)
     {
         $delivery = Delivery::orderBy('zone', 'ASC')->get();
 
-        return view('site.pages.caisse', compact('delivery'));
+        $product_coupon = "";
+        if (count(Auth::user()->coupon) > 0) {
+            $product_coupon = Product::withWhereHas('coupon', fn ($q) => $q->where('status_coupon', 'en cour')
+                ->whereCode(Auth::user()->coupon[0]['code']))->get();
+        } else {
+            $product_coupon = "";
+        }
+
+        // dd($product_coupon);
+        // Auth::user()->coupon[0]['code'];
+        // Auth::user()->coupon[0]['status_coupon'] == 'en cour';
+        // if (session('cart')) {
+        //     $item = Session::get('cart');
+
+        //     foreach ($item as $key => $value) {
+        //         dd($value);
+        //     }
+        // }
+
+
+
+        return view('site.pages.caisse', compact('delivery', 'product_coupon'));
     }
 
 
@@ -235,6 +311,10 @@ class CartPageController extends Controller
                     ]);
                 }
 
+                //delete product in table coupon_product
+                // Auth::user()->coupon[0]['code']
+
+
 
                 $orders = Order::whereId($order['id'])
                     ->with([
@@ -243,6 +323,16 @@ class CartPageController extends Controller
                     ])
                     ->orderBy('created_at', 'DESC')->first();
 
+
+                //delete product in table coupon_product
+                foreach ($orders['products']  as $key => $value) {
+                    $id = $value['id'];
+                    DB::table('coupon_product')->where('coupon_id' , Auth::user()->coupon[0]['id'] )
+                    ->where('product_id',  $id )->delete();
+                }
+
+
+                // function for send data to email
                 $data_products = [];
 
                 // $product = json_encode($data_products);
@@ -256,22 +346,12 @@ class CartPageController extends Controller
                     array_push($data_products, ['name' => $name, 'qte' => $qte, 'price' => $price, 'total' => $total]);
                 }
 
-                foreach ($data_products  as $key => $value) {
-                }
+                // foreach ($data_products  as $key => $value) {
+                // }
 
                 // return response()->json([
                 //     'message' => $data_products
                 // ]);
-
-
-
-                // return PDF::loadView(
-                //     'admin.pages.order.invoicePdf',
-                //     compact('orders')
-                // )
-                //     ->setPaper('a5', 'portrait')
-                //     ->setWarnings(true)
-                //     ->save(public_path("storage/" . $orders['id'] . ".pdf"));
 
 
                 //new send mail with phpMailer

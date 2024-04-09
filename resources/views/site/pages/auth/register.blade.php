@@ -39,6 +39,8 @@
                     <input type="password" class="form-control" name="password" placeholder="de********">
                 </div>
 
+                <input type="text" name="role" value="client" hidden>
+
 
                 <div class="form-group">
                     <label>Votre date d'anniversaire <strong>(Peut-être qu'une surprise vous atteindra le Jour-J)</strong></label>
