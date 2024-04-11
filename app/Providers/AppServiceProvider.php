@@ -119,26 +119,35 @@ class AppServiceProvider extends ServiceProvider
 
             //delete coupon status ==terminé
             Coupon::where('status_coupon', 'termine')->delete();
-            
-               
         }
 
 
 
         //update user role
-
+        //user have not order
         $users = User::withCount(['roles', 'orders'])
-            ->whereHas('roles', fn ($q) => $q->where('name', '!=', 'developpeur'))
+            ->whereNotIn('role', ['developpeur', 'administrateur', 'gestionnaire'])
+            // ->having('orders_count', '=', 1)
+            // ->whereHas('roles', fn ($q) => $q->where('name', '!=', 'developpeur'))
             ->orderBy('created_at', 'DESC')->get();
 
-            // dd($users->toArray());
-        //  foreach ($users as $key => $value) {
-        //     if ($value['orders_count']) {
-        //         # code...
-        //     }
-        //  }
-            
+        // dd($users->toArray());
+        $now = Carbon::now()->format('m');
+        // dd($now);
+        foreach ($users as $key => $value) {
 
+
+            if ($value['orders_count'] == 0) {
+                // $value->syncRoles('prospect');
+                User::whereId($value['id'])->update(['role' => 'prospect']);
+            }
+            foreach ($value['orders'] as $key => $order) {
+                $order_month = Carbon::parse($order['date_order'])->format('m');
+                if ($value['orders_count'] > 0 && $order_month == $now) {
+                    User::whereId($value['id'])->update(['role' => 'fidele']);
+                }
+            }
+        }
 
 
 
@@ -162,7 +171,7 @@ class AppServiceProvider extends ServiceProvider
 
 
         $roles = Role::where('name', '!=', 'developpeur')->get();
-        $roleWithoutClient = Role::whereNotIn('name', ['developpeur', 'client' , 'fidele', 'prospect'])->get();
+        $roleWithoutClient = Role::whereNotIn('name', ['developpeur', 'client', 'fidele', 'prospect'])->get();
 
 
 

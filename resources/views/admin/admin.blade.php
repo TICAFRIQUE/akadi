@@ -259,16 +259,24 @@
         <!-- ========== Start graphique statistic ========== -->
 
         {{-- <div class="row">
-            <div class="col-12 col-sm-12 col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Meilleurs clients</h4>
-                    </div>
-                    <div class="card-body">
-                        <div id="chart4" class="chartsh"></div>
-                    </div>
+           <div class="col-lg-6 col-md-12 col-12 col-sm-12">
+                <div class="card mt-sm-5 mt-md-0">
+                  <div class="card-header">
+                    <h4>Visitors</h4>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="donutChart"></canvas>
+                    <ul class="p-t-30 list-unstyled">
+                      <li class="padding-5"><span><i class="fa fa-circle m-r-5 col-black"></i></span>Search Engines<span
+                          class="float-right">30%</span></li>
+                      <li class="padding-5"><span><i class="fa fa-circle m-r-5 col-green"></i></span>Direct Click<span
+                          class="float-right">50%</span></li>
+                      <li class="padding-5"><span><i class="fa fa-circle m-r-5 col-orange"></i></span>Video Click<span
+                          class="float-right">20%</span></li>
+                    </ul>
+                  </div>
                 </div>
-            </div>
+              </div>
             <div class="col-12 col-sm-12 col-lg-4">
                 <div class="card">
                     <div class="card-header">

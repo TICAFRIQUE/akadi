@@ -12,13 +12,19 @@
                         @include('admin.components.validationMessage')
                         <div class="card-header d-flex justify-content-between">
                             @if (request('user'))
-                                <h4>Liste des {{ request('user') }} ({{ count($users) }}) </h4>
-                            @else
-                                <h4>Liste de tous les utilisateurs</h4>
+                                <h4>Liste des utilisateurs {{ request('user') }} ({{ count($users) }}) </h4>
+                            @endif
+
+                            @if (request('client'))
+                                <h4>Liste des clients {{ request('client') }} ({{ count($users) }}) </h4>
+                            {{-- @else
+                                <h4>Liste de tous les clients</h4> --}}
                             @endif
 
 
-                            @if (request('user') =='client' || request('client'))
+
+
+                            @if (request('client'))
                                 
                             <!-- ========== Start filter ========== -->
                             <div class="dropdown d-inline">
@@ -68,10 +74,11 @@
                                                 {{-- <td>  {{ $item['shop_name'] }} </td>
                                                 <td>{{ $item['localisation'] }} </td> --}}
                                                 <td>
-                                                    @foreach ($item['roles'] as $role)
+                                                    {{ $item['role'] }}
+                                                    {{-- @foreach ($item['roles'] as $role)
                                                         <br> <span
                                                             class="text-capitalize fw-bold">{{ $role['name'] }}</span>
-                                                    @endforeach
+                                                    @endforeach --}}
                                                 </td>
 
                                                 <td>

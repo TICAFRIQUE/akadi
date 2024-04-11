@@ -22,6 +22,7 @@
     <script src="{{ asset('admin/assets/js/jquery.min.js') }}"></script>
 
     <link rel="stylesheet" href="{{ asset('admin/assets/css/app.min.css') }}">
+    <link rel="stylesheet" href="{{asset('admin/assets/bundles/jqvmap/dist/jqvmap.min.css')}}">
     <link rel="stylesheet" href="{{ asset('admin/assets/bundles/datatables/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/bundles/datatables/datatables.min.css') }}">
     <link rel="stylesheet"
@@ -236,7 +237,7 @@
 
                             @role(['developpeur', 'administrateur', 'gestionnaire'])
                                 <li class="dropdown">
-                                    <a href="/admin/auth?user=client" class="nav-link"><i
+                                    <a href="/admin/auth?client=all" class="nav-link"><i
                                             data-feather="users"></i><span>Clients</span></a>
                                 </li>
                                 <li class="dropdown">
@@ -340,6 +341,13 @@
     {{-- <script src="{{ asset('admin/assets/js/page/forms-advanced-forms.js') }}"></script> --}}
     <script src="{{ asset('admin/assets/bundles/sweetalert/sweetalert.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/page/sweetalert.js') }}"></script>
+    <script src="{{asset('admin/assets/bundles/echart/echarts.js')}}"></script>
+    <script src="{{asset('admin/assets/js/page/chart-amchart.js')}}"></script>
+    <script src="{{asset('admin/assets/bundles/jqvmap/dist/jquery.vmap.min.js')}}"></script>
+    <script src="{{asset('admin/assets/bundles/jqvmap/dist/maps/jquery.vmap.world.js')}}"></script>
+    <script src="{{asset('admin/assets/js/page/widget-chart.js')}}"></script>
+    <script src="{{asset('admin/assets/js/page/widget-data.js')}}"></script>
+
     @yield('script')
     @stack('js')
     <script src="{{ asset('admin/assets/js/scripts.js') }}"></script>

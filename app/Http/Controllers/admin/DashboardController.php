@@ -33,7 +33,7 @@ class DashboardController extends Controller
         //count all user  
         $users = User::count();
 
-
+ ############################################
         // statistic order
         $orders_days = Order::orderBy('created_at', 'DESC')
             ->whereDay('date_order', Carbon::now()->day)
@@ -56,7 +56,9 @@ class DashboardController extends Controller
         $orders_week = Order::orderBy('created_at', 'DESC')
             ->whereBetween('date_order', [$startWeek, $endWeek])->get();
 
+            
 
+  ############################################
         // Chiffre affaire
         $ca_days = Order::orderBy('created_at', 'DESC')
             ->whereDay('date_order', Carbon::now()->day)

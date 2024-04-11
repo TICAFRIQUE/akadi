@@ -24,14 +24,23 @@ class AuthAdminController extends Controller
 
 
         $users = User::withCount(['roles', 'orders'])
-            ->whereHas('roles', fn ($q) => $q->where('name', '!=', 'developpeur'))
-            ->when($role, fn ($q, $role) => $q->whereHas('roles', fn ($q) => $q->where('name', $role)))
-            ->when($type_client=='prospect', fn ($q) => $q->having('orders_count', '==', 0)
-            ->where('role', 'client')
+            // ->whereHas('roles', fn ($q) => $q->where('name', '!=', 'developpeur'))
+            ->whereNotIn('role', ['developpeur'])
+
+            // ->when($role, fn ($q, $role) => $q->whereHas('roles', fn ($q) => $q->where('name', $role)))
+            ->when($role, fn ($q, $role) => $q->whereRole($role))
+
+            ->when(
+                $type_client == 'prospect',
+                fn ($q) => $q->where('role', 'prospect')
+                // ->where('role', 'client')
             )
-            ->when($type_client == 'fidele', fn ($q) => $q->having('orders_count', '>', 0))
+            ->when($type_client == 'fidele', fn ($q) => $q->where('role', 'fidele'))
+
+            ->when($type_client == 'all', fn ($q) => $q->whereIn('role' , ['fidele' , 'prospect']))
 
             ->orderBy('created_at', 'DESC')->get();
+
         // dd($users->toArray());
         return view('admin.pages.user.userList', compact('users'));
     }
