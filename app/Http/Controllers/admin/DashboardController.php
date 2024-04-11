@@ -88,6 +88,7 @@ class DashboardController extends Controller
         ####################### TOP CLIENT#####################
         //meilleur client
         $top_user_order = User::withCount('orders')
+        ->with('orders',fn($q)=>$q->whereNotIn('status', ['annulée']))
             ->having('orders_count', '>', 0)
             ->orderBy('orders_count', 'DESC')->take(5)->get();
 
@@ -101,7 +102,7 @@ class DashboardController extends Controller
         $client_prospect = User::withCount('orders')
         ->where('role', 'prospect')->count();
 
-        // dd($client_fidele);
+        // dd($top_user_order->toArray());
 
 
 

@@ -296,7 +296,7 @@
                                         </div>
                                         <div class="media-items">
                                             <div class="media-item">
-                                                <div class="media-value badge badge-info">{{ $item['orders_count'] }}
+                                                <div class="media-value badge badge-info">{{count($item['orders']) }}
                                                 </div>
                                                 <div class="media-label">Commandes</div>
                                             </div>
@@ -510,9 +510,9 @@
                         <i class="fas fa-undo"></i> Restore Default
                     </a>
 
-                     <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
+                     {{-- <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
                         <i class="fas fa-setting"></i> Mode maintenance
-                    </a>
+                    </a> --}}
                 </div>
             </div>
         </div>
