@@ -15,6 +15,11 @@ class DashboardController extends Controller
     //home dashboard
     public function index()
     {
+
+
+        // $product = Product::withCount('orders')->get();
+        // dd($product->toArray());
+
         $orders_attente = Order::orderBy('created_at', 'DESC')
             ->whereIn('status', ['attente'])
             ->get();
@@ -33,19 +38,19 @@ class DashboardController extends Controller
         //count all user  
         $users = User::count();
 
- ############################################
+        ############################## STATISTIQUE ORDER ###########
         // statistic order
         $orders_days = Order::orderBy('created_at', 'DESC')
             ->whereDay('date_order', Carbon::now()->day)
-            ->get();
+            ->count();
 
         $orders_month = Order::orderBy('created_at', 'DESC')
             ->whereMonth('date_order', Carbon::now()->month)
-            ->get();
+            ->count();
 
         $orders_year = Order::orderBy('created_at', 'DESC')
             ->whereYear('date_order', Carbon::now()->year)
-            ->get();
+            ->count();
 
         //orders semaine
 
@@ -54,11 +59,11 @@ class DashboardController extends Controller
 
 
         $orders_week = Order::orderBy('created_at', 'DESC')
-            ->whereBetween('date_order', [$startWeek, $endWeek])->get();
+            ->whereBetween('date_order', [$startWeek, $endWeek])->count();
 
-            
 
-  ############################################
+
+        #################################### CHIFFRE AFFAIRE ###################
         // Chiffre affaire
         $ca_days = Order::orderBy('created_at', 'DESC')
             ->whereDay('date_order', Carbon::now()->day)
@@ -80,8 +85,23 @@ class DashboardController extends Controller
             ->whereStatus('livrée')
             ->sum('total');
 
+        ####################### TOP CLIENT#####################
+        //meilleur client
+        $top_user_order = User::withCount('orders')
+            ->having('orders_count', '>', 0)
+            ->orderBy('orders_count', 'DESC')->take(5)->get();
 
-        //    dd($ca_days);
+
+        ####################### TYPE DE CLIENT#####################
+        //client fidele
+        $client_fidele = User::withCount('orders')
+        ->where('role' , 'fidele')->get()->count();
+
+        //client fidele
+        $client_prospect = User::withCount('orders')
+        ->where('role', 'prospect')->count();
+
+        // dd($client_fidele);
 
 
 
@@ -104,6 +124,13 @@ class DashboardController extends Controller
             'ca_week',
             'ca_month',
             'ca_year',
+
+            //top user order
+            'top_user_order',
+
+            //type client
+            'client_prospect',
+            'client_fidele',
 
 
         ));

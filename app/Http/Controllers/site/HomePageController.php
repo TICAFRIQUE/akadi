@@ -31,13 +31,16 @@ class HomePageController extends Controller
         // recuperer la publicité Top promo
         $top_promo = Publicite::with('media')->whereType('top-promo')->whereStatus('active')->first();
 
+        // recuperer les informations
+        $information = Publicite::with('media')->whereType('information')->whereStatus('active')->first();
+
         //recuperer la liste des temoignages
         $feedback = Temoignage::orderBy('created_at', 'DESC')->get();
 
         // foreach ($sliders as $key => $value) {
 
         // }
-        // dd($sliders->toArray());
-        return view('site.pages.accueil',  compact('sliders', 'background', 'top_promo', 'feedback', 'pack'));
+        // dd($information->toArray());
+        return view('site.pages.accueil',  compact('sliders', 'background', 'top_promo', 'feedback', 'pack', 'information'));
     }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\site\AuthController;
 use App\Http\Controllers\site\CartController;
 use App\Http\Controllers\site\SiteController;
@@ -120,6 +121,27 @@ use App\Http\Controllers\admin\SubCategoryController;
 
 
 /******************************************Route  Admin****************************** **/
+
+//Maintenance mode
+// Route::get(
+//     '/enable-maintenance-mode',
+//     function () {
+//         Artisan::call('down', [
+//             '--secret' => 'akadi@2024',
+//             '--render' => 'welcome',
+//         ]);
+//     }
+// );
+
+
+// Route::get(
+//     '/disable-maintenance-mode',
+//     function () {
+//         Artisan::call('up');
+//     }
+// );
+
+
 ##login  for dashboard
 Route::controller(AuthAdminController::class)->group(function () {
     route::get('/sign-in', 'login')->name('auth.login');
@@ -137,7 +159,6 @@ Route::middleware(['admin'])->group(function () {
     Route::prefix('admin/setting')->controller(SettingController::class)->group(function () {
         route::get('', 'index')->name('setting.index');
         route::post('setting/store', 'store')->name('setting.store');
-
     });
 
     //Auth admin
@@ -204,8 +225,6 @@ Route::middleware(['admin'])->group(function () {
         route::post('update/{id}', 'update')->name('product.update');
         route::post('destroy/{id}', 'destroy')->name('product.destroy');
         route::post('availableProduct/{id}', 'availableProduct')->name('product.available');
-
-
     });
 
     //orders
@@ -218,7 +237,7 @@ Route::middleware(['admin'])->group(function () {
 
     //publicite
 
-   
+
     Route::prefix('admin/publicite')->controller(PubliciteController::class)->group(function () {
         route::get('', 'index')->name('publicite.index');
         route::post('', 'store')->name('publicite.store');

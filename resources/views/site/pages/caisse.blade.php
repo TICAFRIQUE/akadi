@@ -15,6 +15,7 @@
             </div>
         </div>
     </div>
+    @include('site.sections.pub.infos')
 
 
     @include('admin.components.validationMessage')

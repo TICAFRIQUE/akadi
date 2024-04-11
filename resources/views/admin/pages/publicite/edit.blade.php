@@ -46,6 +46,8 @@
                                                     'banniere',
                                                     'small-card',
                                                     'top-promo',
+                                                    'information',
+
                                                 ];
                                             @endphp
                                             @foreach ($type as $item)

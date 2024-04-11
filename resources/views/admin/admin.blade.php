@@ -125,7 +125,7 @@
                         <div class="padding-10">
                             <div class="text-right">
                                 <h3 class="font-light mb-0">
-                                    <i class="ti-arrow-up text-success"></i> {{count($orders_days)}}
+                                    <i class="ti-arrow-up text-success"></i> {{ $orders_days }}
                                 </h3>
                                 <span class="text-muted">Commande du jour</span>
                             </div>
@@ -135,7 +135,7 @@
             </div>
 
 
-              <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                 <div class="card card-statistic-1">
                     {{-- <div class="card-icon l-bg-purple mt">
                     <i class="fas fa-cart-plus"></i>
@@ -144,7 +144,7 @@
                         <div class="padding-10">
                             <div class="text-right">
                                 <h3 class="font-light mb-0">
-                                    <i class="ti-arrow-up text-success"></i> {{count($orders_week)}}
+                                    <i class="ti-arrow-up text-success"></i> {{ $orders_week }}
                                 </h3>
                                 <span class="text-muted">Commande semaine</span>
                             </div>
@@ -153,7 +153,7 @@
                 </div>
             </div>
 
-              <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                 <div class="card card-statistic-1">
                     {{-- <div class="card-icon l-bg-purple mt">
                     <i class="fas fa-cart-plus"></i>
@@ -162,7 +162,7 @@
                         <div class="padding-10">
                             <div class="text-right">
                                 <h3 class="font-light mb-0">
-                                    <i class="ti-arrow-up text-success"></i> {{count($orders_month)}}
+                                    <i class="ti-arrow-up text-success"></i> {{ $orders_month }}
                                 </h3>
                                 <span class="text-muted">Commande du mois</span>
                             </div>
@@ -171,7 +171,7 @@
                 </div>
             </div>
 
-              <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                 <div class="card card-statistic-1">
                     {{-- <div class="card-icon l-bg-purple mt">
                     <i class="fas fa-cart-plus"></i>
@@ -180,7 +180,7 @@
                         <div class="padding-10">
                             <div class="text-right">
                                 <h3 class="font-light mb-0">
-                                    <i class="ti-arrow-up text-success"></i> {{count($orders_year)}}
+                                    <i class="ti-arrow-up text-success"></i> {{ $orders_year }}
                                 </h3>
                                 <span class="text-muted">Commande année</span>
                             </div>
@@ -197,7 +197,8 @@
                         <div class="p-t-20 d-flex justify-content-between">
                             <div class="col">
                                 <h6 class="mb-0">Revenu Jour</h6>
-                                <span class="font-weight-bold mb-0 font-20"> {{number_format($ca_days, 0 , ',', ' ')}} <small>FCFA</small> </span>
+                                <span class="font-weight-bold mb-0 font-20"> {{ number_format($ca_days, 0, ',', ' ') }}
+                                    <small>FCFA</small> </span>
                             </div>
                             <i class="fas fa-hand-holding-usd card-icon col-cyan font-30 p-r-30"></i>
                         </div>
@@ -212,7 +213,8 @@
                         <div class="p-t-20 d-flex justify-content-between">
                             <div class="col">
                                 <h6 class="mb-0">Revenu Semaine</h6>
-                                <span class="font-weight-bold mb-0 font-20">{{number_format($ca_week, 0 , ',', ' ')}} <small>FCFA</small></span>
+                                <span class="font-weight-bold mb-0 font-20">{{ number_format($ca_week, 0, ',', ' ') }}
+                                    <small>FCFA</small></span>
                             </div>
                             <i class="fas fa-hand-holding-usd card-icon col-cyan font-30 p-r-30"></i>
                         </div>
@@ -221,13 +223,14 @@
                 </div>
             </div>
 
-             <div class="col-xl-3 col-lg-6">
+            <div class="col-xl-3 col-lg-6">
                 <div class="card">
                     <div class="card-bg">
                         <div class="p-t-20 d-flex justify-content-between">
                             <div class="col">
                                 <h6 class="mb-0">Revenu Mois</h6>
-                                <span class="font-weight-bold mb-0 font-20">{{number_format($ca_month , 0 , ',', ' ')}} <small>FCFA</small></span>
+                                <span class="font-weight-bold mb-0 font-20">{{ number_format($ca_month, 0, ',', ' ') }}
+                                    <small>FCFA</small></span>
                             </div>
                             <i class="fas fa-hand-holding-usd card-icon col-cyan font-30 p-r-30"></i>
                         </div>
@@ -237,13 +240,14 @@
             </div>
 
 
-             <div class="col-xl-3 col-lg-6">
+            <div class="col-xl-3 col-lg-6">
                 <div class="card">
                     <div class="card-bg">
                         <div class="p-t-20 d-flex justify-content-between">
                             <div class="col">
                                 <h6 class="mb-0">Revenu Année</h6>
-                                <span class="font-weight-bold mb-0 font-20">{{number_format($ca_year)}} <small>FCFA</small></span>
+                                <span class="font-weight-bold mb-0 font-20">{{ number_format($ca_year, 0, ',', ' ') }}
+                                    <small>FCFA</small></span>
                             </div>
                             <i class="fas fa-hand-holding-usd card-icon col-cyan font-30 p-r-30"></i>
                         </div>
@@ -254,56 +258,70 @@
         </div>
 
 
-        
+
 
         <!-- ========== Start graphique statistic ========== -->
 
-        {{-- <div class="row">
-           <div class="col-lg-6 col-md-12 col-12 col-sm-12">
-                <div class="card mt-sm-5 mt-md-0">
-                  <div class="card-header">
-                    <h4>Visitors</h4>
-                  </div>
-                  <div class="card-body">
-                    <canvas id="donutChart"></canvas>
-                    <ul class="p-t-30 list-unstyled">
-                      <li class="padding-5"><span><i class="fa fa-circle m-r-5 col-black"></i></span>Search Engines<span
-                          class="float-right">30%</span></li>
-                      <li class="padding-5"><span><i class="fa fa-circle m-r-5 col-green"></i></span>Direct Click<span
-                          class="float-right">50%</span></li>
-                      <li class="padding-5"><span><i class="fa fa-circle m-r-5 col-orange"></i></span>Video Click<span
-                          class="float-right">20%</span></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            <div class="col-12 col-sm-12 col-lg-4">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-6">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Meilleurs categories</h4>
+                        <h4>Type de client</h4>
                     </div>
                     <div class="card-body">
-                        <div class="summary">
-                            <div class="summary-chart active" data-tab-group="summary-tab" id="summary-chart">
-                                <div id="chart3" class="chartsh"></div>
-                            </div>
-                            <div data-tab-group="summary-tab" id="summary-text">
-                            </div>
+                        <div class="recent-report__chart">
+                            <div id="chart7"></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-4">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-6">
                 <div class="card">
                     <div class="card-header">
-                        <h4>produits les plus commandés</h4>
+                        <h4>Top 5 Clients</h4>
                     </div>
                     <div class="card-body">
-                        <div id="chart2" class="chartsh"></div>
+                        <div class="card-body">
+                            <ul class="list-unstyled user-details list-unstyled-border list-unstyled-noborder">
+                                @foreach ($top_user_order as $item)
+                                    <li class="media">
+                                        <img alt="image" class="mr-3 rounded-circle" width="50"
+                                            src="{{ asset('site/assets/img/custom/avatar.png') }}">
+                                        <div class="media-body">
+                                            <div class="media-title"> {{ $item['name'] }} </div>
+                                            <div class="text-job text-muted"> <i class="fa fa-phone"></i>
+                                                {{ $item['phone'] }} </div>
+                                            <div class="text-job text-muted text-lowercase"> <i
+                                                    class="fa fa-envelope"></i> {{ $item['email'] }} </div>
+                                        </div>
+                                        <div class="media-items">
+                                            <div class="media-item">
+                                                <div class="media-value badge badge-info">{{ $item['orders_count'] }}
+                                                </div>
+                                                <div class="media-label">Commandes</div>
+                                            </div>
+                                            {{-- <div class="media-item">
+                                            <div class="media-value">10K</div>
+                                            <div class="media-label">Followers</div>
+                                        </div>
+                                        <div class="media-item">
+                                            <div class="media-value">2,312</div>
+                                            <div class="media-label">Following</div>
+                                        </div> --}}
+                                        </div>
+                                    </li>
+                                @endforeach
+
+                            </ul>
+                        </div>
+
+
+                        </ul>
                     </div>
                 </div>
             </div>
-        </div> --}}
+
+        </div>
 
         <!-- ========== End graphique statistic ========== -->
 
@@ -491,6 +509,10 @@
                     <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
                         <i class="fas fa-undo"></i> Restore Default
                     </a>
+
+                     <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
+                        <i class="fas fa-setting"></i> Mode maintenance
+                    </a>
                 </div>
             </div>
         </div>
@@ -501,15 +523,66 @@
     </audio> --}}
 
     @push('js')
+        <script src="{{ asset('admin/assets/bundles/apexcharts/apexcharts.min.js') }}"></script>
+        <!-- Page Specific JS File -->
+        <script src="{{ asset('admin/assets/js/page/chart-apexcharts.js') }}"></script>
         <script src="{{ asset('admin/assets/bundles/chartjs/chart.min.js') }}"></script>
         <script src="{{ asset('admin/assets/js/page/widget-data.js') }}"></script>
     @endpush
 
     <script>
+       
         $(document).ready(function() {
 
+
+             // 'use strict';
+        $(function() {
+            // chart1();
+            // chart2();
+            // chart3();
+            // chart4();
+            // chart5();
+            // chart6();
+            chart7();
+            // chart8();
+        });
+
+        //chart type client 
+        function chart7() {
+            var client_fidele = {{ Js::from($client_fidele) }}
+            var client_prospect = {{ Js::from($client_prospect) }}
+
+            var options = {
+                chart: {
+                    width: 400,
+                    type: 'pie',
+                },
+                labels: [ 'Client-prospect', 'Client-fidele',],
+                series: [ client_prospect, client_fidele],
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            }
+
+            var chart = new ApexCharts(
+                document.querySelector("#chart7"),
+                options,
+                client_fidele,
+                client_prospect
+            );
+
+            chart.render();
+        }
+
             var order = {{ Js::from($orders_attente) }}
-            console.log(order);
             $('<audio id="chatAudio"><source src="{{ asset('admin/assets/audio/ring.mp3') }}" type="audio/mpeg"></audio>')
                 .appendTo(
                     'body');
@@ -523,6 +596,9 @@
 
                 $('#chatAudio')[0].pause();
             });
+
+
+
 
 
 

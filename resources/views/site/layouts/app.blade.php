@@ -169,6 +169,15 @@ Product Lightbox
                                         <a href="mailto:info@akadi.ci" class="info-box_link">info@akadi.ci</a>
                                     </p>
                                 </div>
+
+                                 <div class="info-box">
+                                    <div class="info-box_icon">
+                                        <i class="fal fa-watch"></i>
+                                    </div>
+                                    <p class="info-box_text">
+                                        <a href="#" class="info-box_link">Ouverture : 10H30 - 18H</a>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>

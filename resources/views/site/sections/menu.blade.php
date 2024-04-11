@@ -37,8 +37,10 @@
 ==============================-->
 <header class="th-header header-layout2">
     <div class="header-shape1"></div>
+    
     <div class="header-top">
         <div class="container">
+
             <div class="row justify-content-center justify-content-lg-between align-items-center gy-2">
                 <div class="col-auto d-none d-lg-block">
                     <a href="https://maps.app.goo.gl/sDP5zuFWbu4CLivk8" target="blank">
@@ -54,6 +56,10 @@
                     <p class="header-info">
                         <i class="fa-solid fa-envelope"></i>
                         <a href="mailto:info@akadi.ci">info@akadi.ci</a>
+                    </p>
+                    <p class="header-info">
+                        <i class="fa-solid fa-watch"></i>
+                        <a href="#">Ouvert de : 10h30 à 18h</a>
                     </p>
                 </div>
                 <div class="col-auto">
@@ -71,6 +77,7 @@
             </div>
         </div>
     </div>
+
     <div class="sticky-wrapper">
         <div class="sticky-active">
             <!-- Main Menu Area -->

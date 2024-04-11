@@ -23,7 +23,7 @@
             </div>
         </div>
     </div><!--==============================Product Details==============================-->
-
+    @include('site.sections.pub.infos')
 
     <section class="th-product-wrapper product-details space-top space-extra-bottom">
         <div class="container">
@@ -143,7 +143,7 @@
                                             alt="Product Image">
                                     </a>
 
-                                    @if ($item['status_remise']=='en cour')
+                                    @if ($item['status_remise'] == 'en cour')
                                         <div class="th-menu_discount">
                                             <span class="sale"> - {{ $item['pourcentage_remise'] }} %</span>
                                         </div>

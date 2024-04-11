@@ -5,6 +5,7 @@ namespace App\Http\Controllers\site;
 use Exception;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Publicite;
 use App\Models\Commentaire;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
@@ -73,6 +74,7 @@ class ProductPageController extends Controller
     public function detail_produit($slug)
     {
         try {
+          
             $product = Product::whereSlug($slug)
                 ->with(['categories', 'subcategorie', 'media'])
                 ->firstOrFail();

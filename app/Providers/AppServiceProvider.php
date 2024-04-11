@@ -186,6 +186,11 @@ class AppServiceProvider extends ServiceProvider
             ->whereIn('status', ['attente', 'precommande'])
             ->get();
 
+        //information from publicite
+        // recuperer les informations
+        $information = Publicite::with('media')->whereType('information')->whereStatus('active')->first();
+
+
         View::composer('*', function ($view) use (
             $category,
             $subcategory,
@@ -193,9 +198,11 @@ class AppServiceProvider extends ServiceProvider
             $category_backend,
             $orders_attente,
             $orders_new,
-            $roleWithoutClient
+            $roleWithoutClient,
+            $information
         ) {
             $view->with([
+                'information' => $information,
                 'categories' => $category,
                 'subcategories' => $subcategory,
                 'roles' => $roles,

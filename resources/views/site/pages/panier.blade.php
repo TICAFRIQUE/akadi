@@ -16,6 +16,7 @@
         </div>
     </div>
 
+    @include('site.sections.pub.infos')
 
 
     <!-- ========== Start panier ========== -->
