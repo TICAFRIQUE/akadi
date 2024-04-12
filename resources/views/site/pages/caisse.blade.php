@@ -775,7 +775,7 @@
             var fullYear = dt.getFullYear();
 
             if (hours > 17 || hours <= 9) {
-                // dt.setMinutes(dt.getMinutes() + 1080);
+                // dt.setMinutes(dt.getMinutes() + 1080);     
                 $('#date_livraison').html('Livraison prévu le ' + dt.toLocaleDateString() +
                     ' à 10h30m');
             } else if (hours >= 8) {

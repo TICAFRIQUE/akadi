@@ -27,7 +27,6 @@ class OrderController extends Controller
     // detail of order user
     public function showOrder($id)
     {
-
         $orders = Order::whereId($id)
             ->with([
                 'user', 'products'
@@ -71,7 +70,7 @@ class OrderController extends Controller
     }
 
 
-    //change state
+    //changer le status de la commande
     public function changeState(Request $request)
     {
         $state = request('cs'); // cs => change state 

@@ -46,16 +46,6 @@ class AuthAdminController extends Controller
     }
 
 
-    // public function typeClient(){
-    //     $type = request('type_client');
-
-    //     $users = User::with('roles')
-    //         ->whereHas('roles', fn ($q) => $q->where('name', '==', 'client'))
-    //         // ->when($role, fn ($q, $role) => $q->whereHas('roles', fn ($q) => $q->where('name', $role)))
-    //         ->orderBy('created_at', 'DESC')->get();
-    //     return view('admin.pages.user.client' ,compact('users'));
-    // }
-
 
     public function registerForm(Request $request)
     {

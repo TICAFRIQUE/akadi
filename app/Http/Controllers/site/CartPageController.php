@@ -61,11 +61,6 @@ class CartPageController extends Controller
                 "quantity" => 1,
                 "price" => $price,
                 "image" => $product->media[0]->getUrl(),
-                // "coupon" => $product->coupon[0]->code,
-                // "pourcentage_coupon" => $product->coupon[0]->pourcentage_coupon,
-                // "status_coupon" => $product->coupon[0]->status_coupon,
-
-
 
             ];
         }
@@ -225,17 +220,6 @@ class CartPageController extends Controller
             $product_coupon = "";
         }
 
-        // dd($product_coupon);
-        // Auth::user()->coupon[0]['code'];
-        // Auth::user()->coupon[0]['status_coupon'] == 'en cour';
-        // if (session('cart')) {
-        //     $item = Session::get('cart');
-
-        //     foreach ($item as $key => $value) {
-        //         dd($value);
-        //     }
-        // }
-
 
 
         return view('site.pages.caisse', compact('delivery', 'product_coupon'));
@@ -249,7 +233,7 @@ class CartPageController extends Controller
 
             if (session('cart')) {
 
-                //informations depuis ajax
+                //informations depuis le front ajax
                 $subTotal = $_GET['data']['subTotal'];
                 $delivery_name = $_GET['data']['lieu_livraison'];
                 $delivery_price = $_GET['data']['prix_livraison'];
@@ -291,7 +275,6 @@ class CartPageController extends Controller
                     'note' => $note,
                     'type_order' => $type_commande,
 
-
                     // 'discount' => '',
                     'delivery_planned' => $delivery_planned, //date de livraison prevue
                     // 'delivery_date' => '', //date de livraison
@@ -311,10 +294,12 @@ class CartPageController extends Controller
                     ]);
                 }
 
+
+
+
+
                 //delete product in table coupon_product
                 // Auth::user()->coupon[0]['code']
-
-
 
                 $orders = Order::whereId($order['id'])
                     ->with([
@@ -327,8 +312,8 @@ class CartPageController extends Controller
                 //delete product in table coupon_product
                 foreach ($orders['products']  as $key => $value) {
                     $id = $value['id'];
-                    DB::table('coupon_product')->where('coupon_id' , Auth::user()->coupon[0]['id'] )
-                    ->where('product_id',  $id )->delete();
+                    DB::table('coupon_product')->where('coupon_id', Auth::user()->coupon[0]['id'])
+                        ->where('product_id',  $id)->delete();
                 }
 
 
@@ -346,12 +331,7 @@ class CartPageController extends Controller
                     array_push($data_products, ['name' => $name, 'qte' => $qte, 'price' => $price, 'total' => $total]);
                 }
 
-                // foreach ($data_products  as $key => $value) {
-                // }
-
-                // return response()->json([
-                //     'message' => $data_products
-                // ]);
+                
 
 
                 //new send mail with phpMailer

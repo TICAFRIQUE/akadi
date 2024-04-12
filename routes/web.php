@@ -1,16 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
-use App\Http\Controllers\site\AuthController;
-use App\Http\Controllers\site\CartController;
-use App\Http\Controllers\site\SiteController;
 use App\Http\Controllers\admin\OrderController;
-use App\Http\Controllers\site\VendorController;
 use App\Http\Controllers\admin\CouponController;
-use App\Http\Controllers\site\AccountController;
-use App\Http\Controllers\site\SupportController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\SettingController;
 use App\Http\Controllers\site\AuthPageController;
@@ -38,108 +30,6 @@ use App\Http\Controllers\admin\SubCategoryController;
 |
 */
 
-/********************************** Controller Site *********************************************************/
-
-
-// Route::controller(AuthController::class)->group(function () {
-//     route::get('/login', 'loginForm')->name('login-form');
-//     route::post('/login', 'login')->name('login');
-//     route::get('/register', 'registerForm')->name('register-form');
-//     route::post('/register', 'register')->name('register');
-
-
-
-//     /******Socialite route */
-
-//     // La redirection vers le provider
-//     Route::get("redirect/{provider}", 'redirect')->name('socialite.redirect');
-//     // Le callback du provider
-//     Route::get("callback/{provider}", 'callback')->name('socialite.callback');
-
-//     /****** End Socialite route */
-
-//     route::get('/logout', 'logout')->name('logout');
-// });
-
-// //support 
-// Route::controller(SupportController::class)->group(function () {
-//     route::get('/help', 'index')->name('help-index');
-//     route::get('/becomeVendor', 'becomeVendor')->name('help-becomeVendor');
-//     route::get('/privacyPolicy', 'privacyPolicy')->name('help-privacyPolicy');
-//     route::get('/assistance', 'assistance')->name('help-assistance');
-//     route::get('/about', 'about')->name('help-about');
-// });
-
-// Route::controller(AccountController::class)->group(function () {
-//     route::get('/my-account', 'account')->name('my-account')->middleware(['auth']);
-//     route::get('/my-profile/{id}', 'profile')->name('my-profile')->middleware(['auth']);
-//     route::post('/my-profile/update/{id}', 'profile')->name('my-profile-update')->middleware(['auth']);
-//     route::get('/my-order', 'order')->name('my-order')->middleware(['auth']);
-//     route::get('/my-order/{id}', 'orderDetail')->name('detail-order')->middleware(['auth']);
-// });
-
-
-// //vendor 
-// Route::controller(VendorController::class)->group(function () {
-//     route::get('/vendor-order', 'vendorOrder')->name('vendor-order')->middleware(['auth']);
-//     route::get('/vendor-order/{id}', 'vendorOrderDetail')->name('vendor-detail-order')->middleware(['auth']);
-//     route::post('/vendor-available/{id}', 'vendorAvailable')->name('vendor-available')->middleware(['auth']);
-// });
-
-
-
-
-// Route::controller(SiteController::class)->group(function () {
-//     if ((new \Jenssegers\Agent\Agent())->isDesktop()) {
-//         Route::get('/', 'index')->name('index'); //frame mobile
-//         Route::get('/home', 'home')->name('home');
-//     } elseif ((new \Jenssegers\Agent\Agent())->isTablet()) {
-//         Route::get('/', 'home')->name('home');
-//     } elseif ((new \Jenssegers\Agent\Agent())->isMobile()) {
-//         Route::get('/', 'home')->name('home');
-//     }
-
-
-//     Route::get('/category-list', 'categoryList')->name('category-list');
-//     Route::get('/subcategory', 'subCategoryList')->name('subcategory-list');
-//     Route::get('/product-detail/{id}', 'product_detail')->name('product-detail');
-//     Route::get('/shop', 'shop')->name('shop');  //with parametre category ID
-//     Route::get('product/q', 'searchProduct')->name('search');
-// });
-
-
-// //Cart route
-// Route::get('cart', [CartController::class, 'cart'])->name('cart');
-// Route::get('add-to-cart/{id}', [CartController::class, 'addToCart'])->name('add.to.cart');
-// Route::patch('update-cart', [CartController::class, 'update'])->name('update.cart');
-// Route::delete('remove-from-cart', [CartController::class, 'remove'])->name('remove.from.cart');
-// Route::get('checkout', [CartController::class, 'checkout'])->middleware(['auth'])->name('checkout');
-// Route::get('refresh-shipping/{id}', [CartController::class, 'refreshShipping']);
-// Route::get('save-order', [CartController::class, 'storeOrder'])->name('store.order')->middleware(['auth']);
-
-
-
-
-/******************************************Route  Admin****************************** **/
-
-//Maintenance mode
-// Route::get(
-//     '/enable-maintenance-mode',
-//     function () {
-//         Artisan::call('down', [
-//             '--secret' => 'akadi@2024',
-//             '--render' => 'welcome',
-//         ]);
-//     }
-// );
-
-
-// Route::get(
-//     '/disable-maintenance-mode',
-//     function () {
-//         Artisan::call('up');
-//     }
-// );
 
 
 ##login  for dashboard
@@ -192,16 +82,6 @@ Route::middleware(['admin'])->group(function () {
         route::post('update/{id}', 'update')->name('sub-category.update');
         route::post('destroy/{id}', 'destroy')->name('sub-category.destroy');
     });
-
-    /** Collection **/
-    Route::prefix('admin/collection')->controller(CollectionController::class)->group(function () {
-        route::get('', 'index')->name('collection.index');
-        route::post('', 'store')->name('collection.store');
-        route::get('edit/{id}', 'edit')->name('collection.edit');
-        route::post('update/{id}', 'update')->name('collection.update');
-        route::post('destroy/{id}', 'destroy')->name('collection.destroy');
-    });
-
 
 
 
