@@ -211,16 +211,17 @@ class CartPageController extends Controller
     public function checkout(Request $request)
     {
         $delivery = Delivery::orderBy('zone', 'ASC')->get();
+        $auth_coupon = User::where('id', Auth::user()->id)->withWhereHas('coupon', fn ($q) => $q->where('status_coupon', 'en cour'))->first();
 
         $product_coupon = "";
         if (count(Auth::user()->coupon) > 0) {
             $product_coupon = Product::withWhereHas('coupon', fn ($q) => $q->where('status_coupon', 'en cour')
-                ->whereCode(Auth::user()->coupon[0]['code']))->get();
+                ->whereCode($auth_coupon['coupon'][0]['code']))->get();
         } else {
             $product_coupon = "";
         }
 
-
+// dd($product_coupon->toArray());
 
         return view('site.pages.caisse', compact('delivery', 'product_coupon'));
     }
