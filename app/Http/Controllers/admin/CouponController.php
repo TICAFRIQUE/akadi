@@ -77,7 +77,7 @@ class CouponController extends Controller
     public function destroy(string $id)
     {
         //
-        Product::whereId($id)->delete();
+        Coupon::whereId($id)->delete();
         return response()->json([
             'status' => 200
         ]);
