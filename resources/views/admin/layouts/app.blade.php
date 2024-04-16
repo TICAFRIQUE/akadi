@@ -366,6 +366,26 @@
     </script>
 
 
+    <script>
+        $(document).ready(function() {
+            var order = {{ Js::from($orders_attente) }}
+            $('<audio id="chatAudio"><source src="{{ asset('admin/assets/audio/ring.mp3') }}" type="audio/mpeg"></audio>')
+                .appendTo(
+                    'body');
+            if (order.length > 0) {
+                setInterval(() => {
+                    $('#chatAudio')[0].play();
+                }, 5000);
+            }
+
+            $('#stop').click(function(e) {
+
+                $('#chatAudio')[0].pause();
+            });
+        });
+    </script>
+
+
 </body>
 
 
