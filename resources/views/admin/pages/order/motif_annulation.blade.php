@@ -3,7 +3,7 @@
 @endphp
 <!-- Modal with form -->
 <div class="col-md-10 m-auto" id="motif_annulation">
-    <form action="{{ route('delivery.store') }}" class="needs-validation" novalidate="" method="post"
+    <form action="{{ route('order.orderCancel') }}" class="needs-validation" novalidate="" method="post"
         enctype="multipart/form-data">
         @csrf
         <div class="card-body">
@@ -29,6 +29,8 @@
                 <div class="col-sm-9 motif_autre">
                     <textarea name="motif_autre" id="_motif_autre" cols="30" rows="10" class="form-control" placeholder="Preciser si un autre motif "></textarea>
                 </div>
+
+                <input type="text" name="commandeId" id="commandeId" hidden>
             </div>
 
 

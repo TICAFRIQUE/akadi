@@ -113,7 +113,7 @@ Route::middleware(['admin'])->group(function () {
         Route::get('show/{id}', 'showOrder')->name('order.show');
         Route::get('invoice/{id}', 'invoice')->name('order.invoice');
         Route::get('changeState', 'changeState')->name('order.changeState');
-        Route::get('motif', 'motif')->name('order.motif');
+        Route::post('orderCancel', 'orderCancel')->name('order.orderCancel');
 
 
     });

@@ -191,7 +191,8 @@
                         e.preventDefault();
                         //on recupere ID de la commande
                         var cmdId = $(this).attr('data-id');
-
+                        
+                        $('#commandeId').val(cmdId);
 
                         //scroller jusqu'au formulaire motif annulation
                         $('html, body').animate({

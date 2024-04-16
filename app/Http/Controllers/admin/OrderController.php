@@ -53,13 +53,13 @@ class OrderController extends Controller
                 'user', 'products'
                 => fn ($q) => $q->with('media')
             ])
-            ->orderBy('created_at', 'DESC')->first();   
+            ->orderBy('created_at', 'DESC')->first();
 
 
         return PDF::loadView('admin.pages.order.invoicePdf', compact('orders'))
             ->setPaper('a5', 'portrait')
             ->setWarnings(true)
-            ->save(public_path("storage/".$orders['id'].".pdf"))
+            ->save(public_path("storage/" . $orders['id'] . ".pdf"))
             ->stream(Str::slug($orders->code) . ".pdf");
 
         // return $pdf->download(Str::slug($orders->code) . ".pdf");
@@ -96,7 +96,19 @@ class OrderController extends Controller
     }
 
 
-    // public function motif(){
-    //     return view('')
-    // }
+    public function orderCancel(Request $request)  // cancel order with reason
+    {
+        $motif = "";
+        if ($request['motif'] == 'autre') {
+            $motif = $request['motif_autre'];
+        } else {
+            $motif = $request['motif'];
+        }
+        Order::whereId($request['commandeId'])->update([
+            'status' => 'annulée',
+            'raison_annulation_cmd' =>$motif
+        ]);
+
+        return back()->withSuccess('Commande annulée avec success');
+    }
 }
