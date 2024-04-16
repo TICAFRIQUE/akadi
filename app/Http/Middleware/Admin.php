@@ -16,7 +16,7 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user() && Auth::user()->role!="client") {
+        if (Auth::user() && in_array(Auth::user()->role , ['developpeur', 'webmaster', 'administrateur' , 'gestionnaire'])) {
             return $next($request);
         } else {
             return redirect()->route('auth.login')->withError('Access non autorisé');
