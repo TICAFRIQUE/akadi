@@ -221,7 +221,7 @@ class CartPageController extends Controller
             $product_coupon = "";
         }
 
-// dd($product_coupon->toArray());
+        // dd($product_coupon->toArray());
 
         return view('site.pages.caisse', compact('delivery', 'product_coupon'));
     }
@@ -311,11 +311,14 @@ class CartPageController extends Controller
 
 
                 //delete product in table coupon_product
-                foreach ($orders['products']  as $key => $value) {
-                    $id = $value['id'];
-                    DB::table('coupon_product')->where('coupon_id', Auth::user()->coupon[0]['id'])
-                        ->where('product_id',  $id)->delete();
-                }
+                // if (count(Auth::user()->coupon) > 0) {
+                //     foreach ($orders['products']  as $key => $value) {
+                //         $id = $value['id'];
+                //         DB::table('coupon_product')->where('coupon_id', Auth::user()->coupon[0]['id'])
+                //             ->where('product_id',  $id)->delete();
+                //     }
+                // }
+
 
 
                 // function for send data to email
@@ -332,7 +335,7 @@ class CartPageController extends Controller
                     array_push($data_products, ['name' => $name, 'qte' => $qte, 'price' => $price, 'total' => $total]);
                 }
 
-                
+
 
 
                 //new send mail with phpMailer

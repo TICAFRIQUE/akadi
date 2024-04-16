@@ -32,7 +32,6 @@ class AccountPageController extends Controller
         $cancelOrder = Order::whereId($id)->update([
             'status' => 'annulée',
             'raison_annulation_cmd' => $request['motif']
-
         ]);
 
         return back()->withSuccess('Votre commande à été annulée');

@@ -94,4 +94,9 @@ class OrderController extends Controller
 
         return back()->withSuccess('statut changé avec success');
     }
+
+
+    // public function motif(){
+    //     return view('')
+    // }
 }
