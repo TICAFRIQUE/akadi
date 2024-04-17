@@ -153,14 +153,6 @@ class AppServiceProvider extends ServiceProvider
 
         // notify_birthday 
         $now = Carbon::now()->endOfDay();
-        // $now = Carbon::parse($now);
-        // $now_day = $now->day;
-        // $now_month = $now->monthName;
-        // $date1 = Carbon::now()->format('d-m-Y');
-        // $date2 = Carbon::parse('18-04-2024')->format('d-m-Y');
-        // $date_diff =   $date1->diffInDays($date2 , false);
-        //   dd($now);
-
 
         $user = User::get();
         foreach ($user as $key => $value) {
