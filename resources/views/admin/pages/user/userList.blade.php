@@ -72,9 +72,9 @@
                                                 <td>{{ $item['phone'] }}</td>
                                                 <td>{{ $item['email'] }}</td>
                                                 @php
-                                                    $date = \Carbon\Carbon::parse($nex_date)->locale('fr_FR');
                                                     $Y = date('Y');
                                                     $nex_date = $item['date_anniversaire'] . '-' . $Y;
+                                                    $date = \Carbon\Carbon::parse($nex_date)->locale('fr_FR');
                                                     $date = $date->day . ' ' . $date->monthName;
 
                                                 @endphp
