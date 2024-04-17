@@ -112,8 +112,8 @@ class DashboardController extends Controller
         return view('admin.admin', compact(
 
             //user birthday
-            'user_upcoming_birthday',
-            'user_birthday',
+            // 'user_upcoming_birthday',
+            // 'user_birthday',
             'orders_attente',
             'orders',
             'products',
