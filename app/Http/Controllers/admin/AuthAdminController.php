@@ -37,12 +37,32 @@ class AuthAdminController extends Controller
             )
             ->when($type_client == 'fidele', fn ($q) => $q->where('role', 'fidele'))
 
-            ->when($type_client == 'all', fn ($q) => $q->whereIn('role' , ['fidele' , 'prospect']))
+            ->when($type_client == null, fn ($q) => $q->whereIn('role', ['fidele', 'prospect']))
 
             ->orderBy('created_at', 'DESC')->get();
 
         // dd($users->toArray());
         return view('admin.pages.user.userList', compact('users'));
+    }
+
+
+    public function userDetail($id)
+    {
+        $user = User::withCount(['roles', 'orders'])
+            ->with(['roles', 'orders'])
+            ->whereId($id)->first();
+
+        $orders_annule = Order::where('user_id' , $id)
+            ->whereStatus('annulée')->count();
+
+        $orders_livre = Order::where('user_id' , $id)
+            ->whereStatus('livrée')->count();
+
+        return view('admin.pages.user.userDetail', compact(
+            'user',
+            'orders_annule',
+            'orders_livre'
+        ));
     }
 
 

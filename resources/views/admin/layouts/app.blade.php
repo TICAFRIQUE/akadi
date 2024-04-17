@@ -102,6 +102,7 @@
                         </ul>
                     </div>
                     <ul class="navbar-nav navbar-right">
+                        <!-- ========== Start notification orders ========== -->
                         <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
                                 class="nav-link nav-link-lg message-toggle"><i data-feather="bell" class="bell"></i>
                                 <span class="badge headerBadge1">
@@ -140,6 +141,54 @@
                                 </div>
                             </div>
                         </li>
+                        <!-- ========== End notification orders ========== -->
+
+
+                        <!-- ========== Start notification birthdays ========== -->
+                        <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
+                                class="nav-link nav-link-lg message-toggle"><i data-feather="gift" class="bell"></i>
+                                @if (count($user_birthday) > 0)
+                                    <span class="badge headerBadge2">
+                                        {{ count($user_birthday) }}</span>
+                                @elseif (count($user_upcoming_birthday) > 0)
+                                    <span class="badge headerBadge1">
+                                        {{ count($user_upcoming_birthday) }}</span>
+                                @endif
+
+
+
+                            </a>
+                            <div class="dropdown-menu dropdown-list dropdown-menu-right pullDown">
+                                <div class="dropdown-header">
+                                    Notifications Anniversaire
+                                    {{-- <div class="float-right">
+                                        <a href="/admin/order/changeState?cs=all" class="btn btn-link">Tous
+                                            confirmer</a>
+                                    </div> --}}
+                                </div>
+                                <div class="dropdown-list-content dropdown-list-message">
+                                    @if (count($user_birthday) > 0)
+                                        @foreach ($user_birthday as $item)
+                                            <a href="{{ route('user.detail', $item['id']) }}" class="dropdown-item">
+                                                <span class="dropdown-item-avatar
+											text-dark"> <i
+                                                        data-feather="user"></i>
+                                                </span> <span class="dropdown-item-desc"> <span
+                                                        class="message-user text-info fw-bold">Ajourd'hui est
+                                                        l'anniversaire de <b>{{ $item['name'] }}</b> </span>
+
+                                            </a>
+                                        @endforeach
+                                    @endif
+
+
+
+                                </div>
+
+                            </div>
+                        </li>
+                        <!-- ========== End notification orders ========== -->
+
                         <li class="dropdown"><a href="#" data-toggle="dropdown"
                                 class="nav-link dropdown-toggle nav-link-lg nav-link-user"> <img alt="image"
                                     src="{{ asset('admin/assets/img/user.png') }}" class="user-img-radious-style">
@@ -210,10 +259,10 @@
                             </li>
 
 
-                            <li class="dropdown">
+                            {{-- <li class="dropdown">
                                 <a href="{{ route('coupon.index') }}" class="nav-link"><i
                                         data-feather="gift"></i><span>Coupon de reduction</span></a>
-                            </li>
+                            </li> --}}
 
                             <li class="dropdown">
                                 <a href="{{ route('order.index') }}" class="nav-link"><i
@@ -237,7 +286,7 @@
 
                             @role(['developpeur', 'administrateur', 'gestionnaire'])
                                 <li class="dropdown">
-                                    <a href="/admin/auth?client=all" class="nav-link"><i
+                                    <a href="/admin/auth?client" class="nav-link"><i
                                             data-feather="users"></i><span>Clients</span></a>
                                 </li>
                                 <li class="dropdown">

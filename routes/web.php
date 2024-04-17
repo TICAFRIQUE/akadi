@@ -13,7 +13,6 @@ use App\Http\Controllers\admin\DeliveryController;
 use App\Http\Controllers\admin\AuthAdminController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\PubliciteController;
-use App\Http\Controllers\admin\CollectionController;
 use App\Http\Controllers\admin\TemoignageController;
 use App\Http\Controllers\site\AccountPageController;
 use App\Http\Controllers\site\ProductPageController;
@@ -54,6 +53,8 @@ Route::middleware(['admin'])->group(function () {
     //Auth admin
     Route::prefix('admin/auth')->controller(AuthAdminController::class)->group(function () {
         route::get('', 'listUser')->name('user.list');
+        route::get('detail/{id}', 'userDetail')->name('user.detail');
+
         // route::get('typeClient', 'typeClient')->name('user.typeClient');
 
         route::get('register', 'registerForm')->name('user.registerForm');

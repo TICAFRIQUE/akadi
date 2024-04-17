@@ -12,10 +12,12 @@
                 <div class="col-sm-9 mb-3">
                     <select name="motif" class="form-control" id="motif_selected" required>
                         <option selected disabled value>Selectionner un motif d'annulation</option>
-                        <option value="doublon">Doublon</option>
+                        <option value="doublon">annuler par le client</option>
                         <option value="client injoignable">Client injoignable</option>
+                        <option value="plaisantin">problème livreur</option>
                         <option value="mauvais client">Mauvais client</option>
                         <option value="plaisantin">Plaisantin</option>
+                        <option value="doublon">Doublon</option>
                         <option value="autre">Autre</option>
                     </select>
 

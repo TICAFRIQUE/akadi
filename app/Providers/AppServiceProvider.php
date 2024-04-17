@@ -149,6 +149,35 @@ class AppServiceProvider extends ServiceProvider
             }
         }
 
+        ################################################  NOTIFY BIRTHDAY FUNCTION #####################
+
+        // notify_birthday 
+        $now = Carbon::now()->endOfDay();
+        // $now = Carbon::parse($now);
+        // $now_day = $now->day;
+        // $now_month = $now->monthName;
+        // $date1 = Carbon::now()->format('d-m-Y');
+        // $date2 = Carbon::parse('18-04-2024')->format('d-m-Y');
+        // $date_diff =   $date1->diffInDays($date2 , false);
+        //   dd($now);
+
+
+        $user = User::get();
+        foreach ($user as $key => $value) {
+            $Y = date('Y');
+            $nex_date = $value['date_anniversaire'] . '-' . $Y;
+            $date_birthday = Carbon::parse($nex_date)->endOfDay();
+            $date_diff = $now->diffInDays($date_birthday, false);
+            // dd($date_diff);
+            //update diff date in notify birthday
+            User::whereId($value['id'])->update(['notify_birthday' => $date_diff]);
+        }
+
+
+        $user_upcoming_birthday = User::where('notify_birthday', 2)->get(); // anniversaire a venir dans 2 jours
+        $user_birthday = User::where('notify_birthday', 0)->get(); // anniversaire du jour 
+
+
 
 
         //category frontend
@@ -199,7 +228,9 @@ class AppServiceProvider extends ServiceProvider
             $orders_attente,
             $orders_new,
             $roleWithoutClient,
-            $information
+            $information,
+            $user_upcoming_birthday,
+            $user_birthday
         ) {
             $view->with([
                 'information' => $information,
@@ -211,6 +242,10 @@ class AppServiceProvider extends ServiceProvider
                 'category_backend' => $category_backend,
                 'orders_attente' => $orders_attente,
                 'orders_new' => $orders_new,
+                'user_upcoming_birthday' => $user_upcoming_birthday,
+                'user_birthday' => $user_birthday,
+
+
             ]);
         });
     }

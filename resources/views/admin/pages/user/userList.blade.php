@@ -15,29 +15,28 @@
                                 <h4>Liste des utilisateurs {{ request('user') }} ({{ count($users) }}) </h4>
                             @endif
 
-                            @if (request('client'))
+                            @if (request('client') || request('client')==null)
                                 <h4>Liste des clients {{ request('client') }} ({{ count($users) }}) </h4>
-                            {{-- @else
+                                {{-- @else
                                 <h4>Liste de tous les clients</h4> --}}
                             @endif
 
 
 
 
-                            @if (request('client'))
-                                
-                            <!-- ========== Start filter ========== -->
-                            <div class="dropdown d-inline">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-filter"></i> Filtre par type de client
-                                </button>
-                                <div class="dropdown-menu fw-bold">
-                                    <a class="dropdown-item has-icon" href="/admin/auth?client=prospect">Prospects</a>
-                                    <a class="dropdown-item has-icon" href="/admin/auth?client=fidele">Fidèles</a>
+                            @if (request('client')|| request('client')==null)
+                                <!-- ========== Start filter ========== -->
+                                <div class="dropdown d-inline">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-filter"></i> Filtre par type de client
+                                    </button>
+                                    <div class="dropdown-menu fw-bold">
+                                        <a class="dropdown-item has-icon" href="/admin/auth?client=prospect">Prospects</a>
+                                        <a class="dropdown-item has-icon" href="/admin/auth?client=fidele">Fidèles</a>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- ========== End filter ========== -->
+                                <!-- ========== End filter ========== -->
                             @endif
 
 
@@ -54,8 +53,7 @@
                                             <th>Nom</th>
                                             <th>Contact</th>
                                             <th>Email</th>
-                                            {{-- <th>Boutique</th>
-                                            <th>Localisation</th> --}}
+                                            <th>Date anniversaire</th>
                                             <th>Type utilisateur</th>
                                             <th>Commandes</th>
 
@@ -66,13 +64,24 @@
                                         @foreach ($users as $key => $item)
                                             <tr id="row_{{ $item['id'] }}">
                                                 <td>{{ ++$key }} </td>
-                                                <td>  
-                                                    <span class="badge badge-{{$item->orders->count() > 0 ? 'success' : 'primary'}}">{{$item->orders->count() > 0 ? 'Fidèle' : 'Prospect'}}</span> </td>
+                                                <td>
+                                                    <span
+                                                        class="badge badge-{{ $item->orders->count() > 0 ? 'success' : 'primary' }}">{{ $item->orders->count() > 0 ? 'Fidèle' : 'Prospect' }}</span>
+                                                </td>
                                                 <td>{{ $item['name'] }}</td>
                                                 <td>{{ $item['phone'] }}</td>
                                                 <td>{{ $item['email'] }}</td>
-                                                {{-- <td>  {{ $item['shop_name'] }} </td>
-                                                <td>{{ $item['localisation'] }} </td> --}}
+                                                @php
+                                                    $date = \Carbon\Carbon::parse($nex_date)->locale('fr_FR');
+                                                    $Y = date('Y');
+                                                    $nex_date = $item['date_anniversaire'] . '-' . $Y;
+                                                    $date = $date->day . ' ' . $date->monthName;
+
+                                                @endphp
+                                                <td> {{ $date }}
+                                                </td>
+
+
                                                 <td>
                                                     {{ $item['role'] }}
                                                     {{-- @foreach ($item['roles'] as $role)
@@ -82,7 +91,7 @@
                                                 </td>
 
                                                 <td>
-                                                    {{$item->orders->count()}}
+                                                    {{ $item->orders->count() }}
                                                 </td>
 
 
@@ -91,7 +100,9 @@
                                                         <a href="#" data-toggle="dropdown"
                                                             class="btn btn-warning dropdown-toggle">Options</a>
                                                         <div class="dropdown-menu">
-
+                                                            <a href="{{ route('user.detail', $item['id']) }}"
+                                                                class="dropdown-item has-icon"><i class="far fa-eye"></i>
+                                                                Detail</a>
                                                             <a href="{{ route('user.edit', $item['id']) }}"
                                                                 class="dropdown-item has-icon"><i class="far fa-edit"></i>
                                                                 Edit</a>

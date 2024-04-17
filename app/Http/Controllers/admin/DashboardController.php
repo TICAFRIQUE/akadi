@@ -15,10 +15,10 @@ class DashboardController extends Controller
     //home dashboard
     public function index()
     {
+        // get user birthday 
 
+     
 
-        // $product = Product::withCount('orders')->get();
-        // dd($product->toArray());
 
         $orders_attente = Order::orderBy('created_at', 'DESC')
             ->whereIn('status', ['attente'])
@@ -28,6 +28,8 @@ class DashboardController extends Controller
         $orders_new = Order::orderBy('created_at', 'DESC')
             ->whereIn('status', ['attente', 'precommande'])
             ->get();
+
+
 
 
         //statistic
@@ -88,7 +90,7 @@ class DashboardController extends Controller
         ####################### TOP CLIENT#####################
         //meilleur client
         $top_user_order = User::withCount('orders')
-        ->with('orders',fn($q)=>$q->whereNotIn('status', ['annulée']))
+            ->with('orders', fn ($q) => $q->whereNotIn('status', ['annulée']))
             ->having('orders_count', '>', 0)
             ->orderBy('orders_count', 'DESC')->take(5)->get();
 
@@ -96,11 +98,11 @@ class DashboardController extends Controller
         ####################### TYPE DE CLIENT#####################
         //client fidele
         $client_fidele = User::withCount('orders')
-        ->where('role' , 'fidele')->get()->count();
+            ->where('role', 'fidele')->get()->count();
 
         //client fidele
         $client_prospect = User::withCount('orders')
-        ->where('role', 'prospect')->count();
+            ->where('role', 'prospect')->count();
 
         // dd($top_user_order->toArray());
 
@@ -108,6 +110,10 @@ class DashboardController extends Controller
 
 
         return view('admin.admin', compact(
+
+            //user birthday
+            'user_upcoming_birthday',
+            'user_birthday',
             'orders_attente',
             'orders',
             'products',

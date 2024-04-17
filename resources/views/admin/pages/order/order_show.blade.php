@@ -10,7 +10,7 @@
         @include('admin.components.validationMessage')
 
         <div class="py-3 d-flex justify-content-between">
-            <a href="{{ route('order.index') }}" class="py-3" href="#"><i data-feather="arrow-left"></i>Retour</a>
+            <button class="py-3 btn btn-link" onclick="history.back()"><i data-feather="arrow-left"></i>Retour</button>
 
             @if ($orders['status'] != 'livrée' && $orders['status'] != 'annulée')
                 <div class="dropdown">

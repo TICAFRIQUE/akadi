@@ -34,7 +34,9 @@ class User extends Authenticatable
         'role',
         'shop_name',
         'localisation',
-        'date_anniversaire'
+        'date_anniversaire',
+        'notify_birthday'
+
     ];
 
     public static function boot()

@@ -4155,6 +4155,17 @@ h6 .badge {
     background: #6677ef;
     border-radius: 10px;
 }
+
+
+.navbar .dropdown-list-toggle .message-toggle .headerBadge2 {
+    position: absolute;
+    top: 4px;
+    right: 0px;
+    font-weight: 300;
+    padding: 3px 6px;
+    background: #ef1c74;
+    border-radius: 10px;
+}
 .navbar .dropdown-list-toggle .notification-toggle .headerBadge2 {
     position: absolute;
     top: 5px;

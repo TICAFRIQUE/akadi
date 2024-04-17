@@ -33,7 +33,7 @@
                                 <th class="" colspan=""># </th>
                                 <th class="" colspan="">Produits</th>
                                 <th class="" colspan="">Total TTC</th>
-                                <th class="">Action</th>
+                                {{-- <th class="">Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -82,13 +82,13 @@
                                         <span> <b>Total : {{ $item['total'] }} FCFA </b> </span>
                                     </td>
 
-                                    <td
+                                    {{-- <td
                                         class="{{ $item['status'] == 'annulée' ? 'd-none' : ($item['status'] == 'livrée' ? 'd-none' : '') }} ">
                                         <a href="#" role="button" class="button rounded-2"
                                           data-bs-toggle="modal" data-bs-target="#modalId{{$item['id']}}"  value="58" title="">
                                             <i class="far fa-cancel"></i><span class="tinvwl-txt">Annuler</span>
                                         </a>
-                                    </td>
+                                    </td> --}}
                                 </tr>
 
                                 @include('site.sections.raison_annulation_cmd')
