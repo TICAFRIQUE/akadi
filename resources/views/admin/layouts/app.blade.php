@@ -164,7 +164,7 @@
                                                         data-feather="user"></i>
 
                                                 </span> <span class="dropdown-item-desc "> <span
-                                                        class="message-user  fw-bold">Ajourd'hui est
+                                                        class="message-user  fw-bold">Ajourd'hui c'est
                                                         l'anniversaire de <b class=""
                                                             style="color:rgb(232, 11, 170)">{{ $item['name'] }}</b>
                                                     </span>

@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Publicite;
 use App\Models\Collection;
 use App\Models\SubCategory;
+use PHPMailer\PHPMailer\PHPMailer;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -166,8 +167,47 @@ class AppServiceProvider extends ServiceProvider
         }
 
 
-        $user_upcoming_birthday = User::where('notify_birthday', 2)->OrWhere('notify_birthday' , 1)->get(); // anniversaire a venir dans 2 jours
+
+        $user_upcoming_birthday = User::where('notify_birthday', 2)->OrWhere('notify_birthday', 1)->get(); // anniversaire a venir dans 2 jours
         $user_birthday = User::where('notify_birthday', 0)->get(); // anniversaire du jour 
+
+
+        ###SEND MAIL TO ADMIN USER IF BIRTHDAY DATE ARRIVED ###
+
+        // if (count($user_upcoming_birthday) > 0) {
+        //     $mail = new PHPMailer(true);
+        //     // require base_path("vendor/autoload.php");
+
+        //     /* Email SMTP Settings */
+        //     $mail->SMTPDebug = 0;
+        //     $mail->isSMTP();
+        //     $mail->Host = 'mail.akadi.ci';
+        //     $mail->SMTPAuth = true;
+        //     $mail->Username = 'info@akadi.ci';
+        //     $mail->Password = 'S$UBfu.8s(#z';
+        //     $mail->SMTPSecure = 'ssl';
+        //     $mail->Port = 465;
+
+        //     $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+        //     $mail->addAddress('alexkouamelan96@gmail.com');
+
+        //     $mail->isHTML(true);
+
+
+        //     $mail->Subject = 'Anniversaire';
+        //     $mail->Body =
+        //         '<b> Bonjour, C\'est bientot l\'anniversaire de vos client   <b>';
+
+        //     $mail->send();
+        // }
+
+        ######################################################### //new send mail with phpMailer
+
+
+
+
+
+
 
 
 
