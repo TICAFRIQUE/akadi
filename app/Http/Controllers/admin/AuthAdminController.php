@@ -52,10 +52,10 @@ class AuthAdminController extends Controller
             ->with(['roles', 'orders'])
             ->whereId($id)->first();
 
-        $orders_annule = Order::where('user_id' , $id)
+        $orders_annule = Order::where('user_id', $id)
             ->whereStatus('annulée')->count();
 
-        $orders_livre = Order::where('user_id' , $id)
+        $orders_livre = Order::where('user_id', $id)
             ->whereStatus('livrée')->count();
 
         return view('admin.pages.user.userDetail', compact(
@@ -127,13 +127,24 @@ class AuthAdminController extends Controller
 
     public function update(Request $request, $id)
     {
-        // dd($request);
+        // dd($request->toArray());
+
+        $date_anniv = '';
+        if ($request->jour && $request->mois) {
+            $date_anniv = $request->jour . '-' . $request->mois; //date anniversaire
+
+        } else {
+            $date_anniv = '';
+        }
+
+
         $user = tap(User::find($id))->update([
             'name' => $request['name'],
             'phone' => $request['phone'],
             'email' => $request->email,
             'shop_name' => $request->shop_name,
             'role' => $request->role,
+            'date_anniversaire' => $date_anniv,
             'localisation' => $request->localisation,
             'password' => Hash::make($request['password']),
         ]);

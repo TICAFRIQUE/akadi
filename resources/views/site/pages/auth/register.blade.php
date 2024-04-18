@@ -78,7 +78,7 @@
                                 <option disabled selected>Mois</option>
 
                                 @foreach ($month as $key => $item)
-                                    <option value="{{ str_pad($key,2,"0",STR_PAD_LEFT) }}">{{ $item }} </option>
+                                    <option value="{{ str_pad(++$key,2,"0",STR_PAD_LEFT) }}">{{ $item }} </option>
                                 @endforeach
                             </select>
                         </div>

@@ -166,7 +166,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
 
-        $user_upcoming_birthday = User::where('notify_birthday', 2)->get(); // anniversaire a venir dans 2 jours
+        $user_upcoming_birthday = User::where('notify_birthday', 2)->OrWhere('notify_birthday' , 1)->get(); // anniversaire a venir dans 2 jours
         $user_birthday = User::where('notify_birthday', 0)->get(); // anniversaire du jour 
 
 
@@ -208,7 +208,7 @@ class AppServiceProvider extends ServiceProvider
             ->get();
 
         //information from publicite
-        // recuperer les informations
+        // recuperer les informations publicité
         $information = Publicite::with('media')->whereType('information')->whereStatus('active')->first();
 
 

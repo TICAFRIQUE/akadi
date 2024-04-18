@@ -78,24 +78,77 @@
                                             Champs obligatoire
                                         </div>
                                     </div>
-                                    @role('administrateur')
-                                    <div class="form-group col-6">
-                                        <label for="password2" class="d-block">Role</label>
-                                        <select name="role" class="form-control select2"  required>
-                                            <option disabled selected value>Choisir un role</option>
-                                            {{-- @if ($user->roles->containsStrict('id', $item['id'])) @selected(true) @endif --}}
-                                            @foreach ($roles as $item)
-                                                <option value="{{ $item['name'] }}"
-                                                {{$item['name'] == $user['role'] ? 'selected' : ''}}
-                                                >
-                                                    {{ $item['name'] }} </option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            Champs obligatoire
+                                    @role(['administrateur', 'developpeur'])
+                                        <div class="form-group col-6">
+                                            <label for="password2" class="d-block">Role</label>
+                                            <select name="role" class="form-control select2" required>
+                                                <option disabled selected value>Choisir un role</option>
+                                                {{-- @if ($user->roles->containsStrict('id', $item['id'])) @selected(true) @endif --}}
+                                                @foreach ($roles as $item)
+                                                    <option value="{{ $item['name'] }}"
+                                                        {{ $item['name'] == $user['role'] ? 'selected' : '' }}>
+                                                        {{ $item['name'] }} </option>
+                                                @endforeach
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Champs obligatoire
+                                            </div>
+                                        </div>
+                                    @endrole
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Votre date d'anniversaire <strong>(Peut-être qu'une surprise vous atteindra le
+                                            Jour-J)</strong></label>
+                                    <div class="row">
+                                        @php
+                                            $Y = date('Y');
+                                            $nex_date = $user['date_anniversaire'] . '-' . $Y;
+                                            $date = \Carbon\Carbon::parse($nex_date)->locale('fr_FR');
+                                            $day = $date->day;
+                                            $date_month = $date->monthName;
+
+                                        @endphp
+                                        <div class="col-6">
+                                            <select name="jour" class="form-control">
+                                                <option disabled selected>Jour</option>
+                                                @for ($i = 1; $i < 32; $i++)
+                                                    <option value="{{str_pad($i, 2, '0', STR_PAD_LEFT) }}" {{$day==$i ? 'selected' : ''}}>
+                                                        {{ str_pad($i, 2, '0', STR_PAD_LEFT) }} </option>
+                                                @endfor
+                                            </select>
+
+                                        </div>
+                                        <div class="col-6">
+
+                                            <select name="mois" class="form-control">
+                                                @php
+                                                    $month = [
+                                                        'janvier',
+                                                        'février',
+                                                        'mars',
+                                                        'avril',
+                                                        'mai',
+                                                        'juin',
+                                                        'juillet',
+                                                        'août',
+                                                        'septembre',
+                                                        'octobre',
+                                                        'novembre',
+                                                        'décembre',
+                                                    ];
+
+                                                @endphp
+                                                <option disabled selected>Mois</option>
+
+                                                @foreach ($month as $key => $item)
+                                                    <option value="{{ str_pad(++$key, 2, '0', STR_PAD_LEFT) }}"{{$date_month==$item ? 'selected' : ''}}>
+                                                        {{ $item }} </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
-                                    @endrole
+
                                 </div>
 
                                 {{-- auth fornisseur / vendeur --}}
@@ -120,9 +173,9 @@
                                         <label for="password" class="d-block">Mot de passe (<small
                                                 class="text-danger">Entrer un nouveau mot de passe si vous souhaitez le
                                                 modifier </small>) </label>
-                                        <input id="password" type="password" class="form-control"
-                                             name="password" aria-autocomplete="none" autocomplete="off">
-                                      
+                                        <input id="password" type="password" class="form-control" name="password"
+                                            aria-autocomplete="none" autocomplete="off">
+
                                     </div>
 
                                     <div class="form-group col-4 my-auto">

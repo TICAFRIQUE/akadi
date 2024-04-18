@@ -147,40 +147,52 @@
                         <!-- ========== Start notification birthdays ========== -->
                         <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
                                 class="nav-link nav-link-lg message-toggle"><i data-feather="gift" class="bell"></i>
-                                @if (count($user_birthday) > 0)
-                                    <span class="badge headerBadge2">
-                                        {{ count($user_birthday) }}</span>
-                                @elseif (count($user_upcoming_birthday) > 0)
-                                    <span class="badge headerBadge1">
-                                        {{ count($user_upcoming_birthday) }}</span>
-                                @endif
-
-
-
+                                <span class="badge headerBadge2">
+                                    {{ count($user_birthday) + count($user_upcoming_birthday) }}</span>
                             </a>
                             <div class="dropdown-menu dropdown-list dropdown-menu-right pullDown">
                                 <div class="dropdown-header">
                                     Notifications Anniversaire
-                                    {{-- <div class="float-right">
-                                        <a href="/admin/order/changeState?cs=all" class="btn btn-link">Tous
-                                            confirmer</a>
-                                    </div> --}}
                                 </div>
                                 <div class="dropdown-list-content dropdown-list-message">
                                     @if (count($user_birthday) > 0)
+                                        <h6>Anniversaire du jour </h6>
                                         @foreach ($user_birthday as $item)
-                                            <a href="{{ route('user.detail', $item['id']) }}" class="dropdown-item">
-                                                <span class="dropdown-item-avatar
-											text-dark"> <i
+                                            <a href="{{ route('user.detail', $item['id']) }}" class="dropdown-item"
+                                                style="">
+                                                <span class="dropdown-item-avatar text-dark"> <i
                                                         data-feather="user"></i>
-                                                </span> <span class="dropdown-item-desc"> <span
-                                                        class="message-user text-info fw-bold">Ajourd'hui est
-                                                        l'anniversaire de <b>{{ $item['name'] }}</b> </span>
 
+                                                </span> <span class="dropdown-item-desc "> <span
+                                                        class="message-user  fw-bold">Ajourd'hui est
+                                                        l'anniversaire de <b class=""
+                                                            style="color:rgb(232, 11, 170)">{{ $item['name'] }}</b>
+                                                    </span>
                                             </a>
                                         @endforeach
                                     @endif
+                                    <hr>
+                                    @if (count($user_upcoming_birthday) > 0)
+                                        <h6>Anniversaire à venir </h6>
 
+                                        @foreach ($user_upcoming_birthday as $item)
+                                            <p>
+                                                <a href="{{ route('user.detail', $item['id']) }}"
+                                                    class="dropdown-item"
+                                                    style="background-color: rgb(255, 249, 249)">
+                                                    <span class="dropdown-item-avatar text-dark"><i
+                                                            data-feather="user"></i> </span>
+
+                                                    <span
+                                                        class="dropdown-item-desc text-dark message-user text-dark fw-bold">
+                                                        Dans {{ $item['notify_birthday'] }} jours est l'anniversaire de
+                                                        <b style="color: rgb(8, 0, 122)"> {{ $item['name'] }} </b>
+                                                    </span>
+
+                                                </a>
+                                            </p>
+                                        @endforeach
+                                    @endif
 
 
                                 </div>

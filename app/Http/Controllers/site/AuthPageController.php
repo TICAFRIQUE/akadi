@@ -22,6 +22,7 @@ class AuthPageController extends Controller
         if (request()->method() == 'GET') {
             return view('site.pages.auth.register');
         } elseif (request()->method() == 'POST') {
+            // dd($request->toArray());
 
             //on verifie si le nouvel utilisateur est déja dans la BD à partir du phone
             $user_verify_phone = User::wherePhone($request['phone'])->first();
