@@ -171,7 +171,6 @@ Route::controller(ProductPageController::class)->group(function () {
 });
 
 
-
 // //Cart route
 Route::get('panier', [CartPageController::class, 'panier'])->name('panier');
 Route::get('add-to-cart/{id}', [CartPageController::class, 'addToCart'])->name('add.to.cart');
