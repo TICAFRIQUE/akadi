@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable,HasRoles,HasPermissions;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPermissions;
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +22,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
 
-     public $incrementing = false;
+    public $incrementing = false;
 
     protected $fillable = [
         'id_socialite',
@@ -44,16 +44,17 @@ class User extends Authenticatable
         parent::boot();
         self::creating(function ($model) {
             $model->id = IdGenerator::generate(['table' => 'users', 'length' => 10, 'prefix' =>
-        mt_rand()]);
-    
+            mt_rand()]);
         });
     }
 
-    public function orders(){
+    public function orders()
+    {
         return $this->hasMany(Order::class);
     }
 
-    public function products(){
+    public function products()
+    {
         return $this->hasMany(Product::class);
     }
 
@@ -67,7 +68,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Coupon::class);
     }
-    
+
 
     /**
      * The attributes that should be hidden for serialization.

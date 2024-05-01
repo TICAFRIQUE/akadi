@@ -47,7 +47,9 @@
                                             #
                                         </th>
                                         <th>code</th>
-                                        <th>client</th>
+                                        <th>Nom du client</th>
+                                        <th>Contact du client</th>
+                                        <th>Email du client</th>
                                         {{-- <th>Livraison</th> --}}
                                         <th>Total</th>
                                         <th>date</th>
@@ -65,12 +67,14 @@
                                                     {{ $item['status'] }}
                                                 </span>
                                             </td>
-                                            <td>{{ $item['user']['name'] }} </td>
+                                            <td>{{ $item['user']['name'] }}</td>
+                                            <td> {{ $item['user']['phone'] }}</td>
+                                            <td> {{ $item['user']['email'] }}</td>
                                             {{-- <td>{{ $item['delivery_name'] }} - {{ $item['delivery_price'] }} </td> --}}
                                             <td>{{ number_format($item['total'], 0, '', ' ') }} </td>
                                             <td>
-                                                {{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}
-                                                <br>
+                                                {{-- {{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}
+                                                <br> --}}
                                                 {{ \Carbon\Carbon::parse($item['created_at'])->isoFormat('dddd D MMMM YYYY') }}
 
                                             </td>
@@ -191,7 +195,7 @@
                         e.preventDefault();
                         //on recupere ID de la commande
                         var cmdId = $(this).attr('data-id');
-                        
+
                         $('#commandeId').val(cmdId);
 
                         //scroller jusqu'au formulaire motif annulation

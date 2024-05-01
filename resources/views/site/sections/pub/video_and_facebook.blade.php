@@ -6,7 +6,7 @@
                 <div class="video-box1">
 
 
-                    <iframe width="640" height="360" src="https://www.youtube.com/embed/QH55W44Tx0w"
+                    <iframe width="640" height="360" src="https://www.youtube.com/embed/ULSIGpRSHhM"
                         title="TASTY CHICKEN MASALA FRY | CHATPATA CHICKEN FRY RECIPE | CHICKEN FRY" frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowfullscreen></iframe>
@@ -20,7 +20,7 @@
                                 class="fas fa-play"></i></a>
                     </div> --}}
                     <div class="text-center text-xl-center">
-                        <a href="#" class="th-btn rounded-2">Voir plus de videos<i
+                        <a href="https://www.youtube.com/@akadi2113" target="blank" class="th-btn rounded-2">Voir plus de videos<i
                                 class="fa-solid fa-arrow-right ms-2"></i></a>
                     </div>
                 </div>
