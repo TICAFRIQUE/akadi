@@ -75,7 +75,7 @@
                                             <td>
                                                 {{-- {{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}
                                                 <br> --}}
-                                                {{ \Carbon\Carbon::parse($item['created_at'])->isoFormat('dddd D MMMM YYYY') }}
+                                                {{ \Carbon\Carbon::parse($item['date_order'])->isoFormat('dddd D MMMM YYYY') }}
 
                                             </td>
 

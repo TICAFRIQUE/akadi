@@ -36,7 +36,7 @@ class AuthPageController extends Controller
                 $request->validate([
                     'name' => 'required',
                     'phone' => 'required|unique:users',
-                    'email' => '',
+                    'email' => 'required',
                     'password' => 'required',
                 ]);
 

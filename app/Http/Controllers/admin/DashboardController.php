@@ -19,35 +19,35 @@ class DashboardController extends Controller
         // get user birthday 
 
 
-       
-            $mail = new PHPMailer(true);
-            // require base_path("vendor/autoload.php");
 
-            /* Email SMTP Settings */
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = 'mail.akadi.ci';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'info@akadi.ci';
-            $mail->Password = 'S$UBfu.8s(#z';
-            $mail->SMTPSecure = 'ssl';
-            $mail->Port = 465;
+        $mail = new PHPMailer(true);
+        // require base_path("vendor/autoload.php");
 
-            $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-            $mail->addAddress('alexkouamelan96@gmail.com');
+        /* Email SMTP Settings */
+        $mail->SMTPDebug = 0;
+        $mail->isSMTP();
+        $mail->Host = 'mail.akadi.ci';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'info@akadi.ci';
+        $mail->Password = 'S$UBfu.8s(#z';
+        $mail->SMTPSecure = 'ssl';
+        $mail->Port = 465;
 
-            $mail->isHTML(true);
+        $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+        $mail->addAddress('alexkouamelan96@gmail.com');
 
-
-            $mail->Subject = 'Anniversaire';
-            $mail->Body =
-                '<b> Bonjour, C\'est bientot l\'anniversaire de vos client   <b>';
-
-            $mail->send();
-        
+        $mail->isHTML(true);
 
 
-     
+        $mail->Subject = 'Anniversaire';
+        $mail->Body =
+            '<b> Bonjour, C\'est bientot l\'anniversaire de vos client   <b>';
+
+        $mail->send();
+
+
+
+
 
 
         $orders_attente = Order::orderBy('created_at', 'DESC')
@@ -73,8 +73,10 @@ class DashboardController extends Controller
         ############################## STATISTIQUE ORDER ###########
         // statistic order
         $orders_days = Order::orderBy('created_at', 'DESC')
-            ->whereDay('date_order', Carbon::now()->day)
+            ->where('date_order',Carbon::now()->format('Y-m-d'))
             ->count();
+
+        // dd($orders_days);
 
         $orders_month = Order::orderBy('created_at', 'DESC')
             ->whereMonth('date_order', Carbon::now()->month)
@@ -86,8 +88,9 @@ class DashboardController extends Controller
 
         //orders semaine
 
-        $startWeek = Carbon::now()->subWeek()->startOfWeek();
-        $endWeek   = Carbon::now()->subWeek()->endOfWeek();
+        $startWeek =  Carbon::now()->startOfWeek(Carbon::MONDAY);
+        $endWeek =  Carbon::now()->endOfWeek(Carbon::SUNDAY);
+
 
 
         $orders_week = Order::orderBy('created_at', 'DESC')
@@ -98,9 +101,11 @@ class DashboardController extends Controller
         #################################### CHIFFRE AFFAIRE ###################
         // Chiffre affaire
         $ca_days = Order::orderBy('created_at', 'DESC')
-            ->whereDay('date_order', Carbon::now()->day)
+            ->where('date_order', Carbon::now()->format('Y-m-d'))
             ->whereStatus('livrée')
             ->sum('total');
+
+
 
         $ca_week = Order::orderBy('created_at', 'DESC')
             ->whereBetween('date_order', [$startWeek, $endWeek])

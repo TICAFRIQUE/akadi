@@ -32,7 +32,7 @@
                 <div class="form-group">
                     <label>Email</label>
                     <input type="email" name="email" class="form-control" min="10" max="10"
-                        placeholder="Ex: alex@gmail.com">
+                        placeholder="Ex: alex@gmail.com" required>
                 </div>
                 <div class="form-group">
                     <label>Mot de passe</label>
