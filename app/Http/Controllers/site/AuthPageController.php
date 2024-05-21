@@ -41,15 +41,15 @@ class AuthPageController extends Controller
                 ]);
 
 
-                  $date_anniv = '';
+                $date_anniv = '';
                 if ($request->jour && $request->mois) {
                     $date_anniv = $request->jour . '-' . $request->mois; //date anniversaire
 
-                }else{
+                } else {
                     $date_anniv = '';
                 }
 
-                
+
                 $user = User::firstOrCreate([
                     'name' => $request['name'],
                     'phone' => $request['phone'],
@@ -193,10 +193,48 @@ class AuthPageController extends Controller
                 'created_at' => Carbon::now()
             ]);
 
-            Mail::send('site.pages.auth.forgetPassword.email_send', ['token' => $token], function ($message) use ($request) {
-                $message->to($request->email);
-                $message->subject('réinitialiser son mot de passe');
-            });
+            ###################   EMAIL SEND ###################
+
+            // Mail::send('site.pages.auth.forgetPassword.email_send', ['token' => $token], function ($message) use ($request) {
+            //     $message->to($request->email);
+            //     $message->subject('réinitialiser son mot de passe');
+            // });
+
+            $url = route('reset.password.get', 'token=' . $token);
+
+            //new send mail with phpMailer
+            $mail = new PHPMailer(true);
+            // require base_path("vendor/autoload.php");
+
+            /* Email SMTP Settings */
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host = 'mail.akadi.ci';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'info@akadi.ci';
+            $mail->Password = 'S$UBfu.8s(#z';
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port = 465;
+
+            $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+            $mail->addAddress($request->email);
+
+            $mail->isHTML(true);
+
+
+            $mail->Subject = 'Email de recuperation de mot de passe';
+            $mail->Body = '
+            
+            <h1 style="text-align: center; color: #220072;"><strong>Email de recuperation de mot de passe</strong></h1>
+        <p style="text-align: center;">Vous pouvez réinitialiser votre mot de passe à partir du lien ci-dessous .</p>
+        <p style="text-align: center;"><a
+        style="background: rgb(35, 35, 35); color: #ffffff; padding: 10px 50px; border-radius: 3px;"  
+        href="' . $url . '">Cliquez pour réinitialiser</a></p>
+            ';
+            $mail->send();
+
+
+            ###################   EMAIL SEND ###################
 
             return back()->with('success', 'Nous avons envoyé par e-mail le lien de réinitialisation de votre mot de passe !');
         }
