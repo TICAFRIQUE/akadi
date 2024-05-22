@@ -136,6 +136,42 @@ class OrderController extends Controller
 <p style="text-align: center;">Merci pour votre confiance , <a href="http://Akadi.ci" target="_blank" rel="noopener noreferrer">www.akadi.ci</a></p>
             ';
             $mail->send();
+        } elseif ($state == 'annulée') {
+            $data = [
+                'imagePath' => asset('site/assets/img/custom/AKADI.png'),
+            ];
+            //new send mail with phpMailer
+            $mail = new PHPMailer(true);
+            // require base_path("vendor/autoload.php");
+
+            /* Email SMTP Settings */
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host = 'mail.akadi.ci';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'info@akadi.ci';
+            $mail->Password = 'S$UBfu.8s(#z';
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port = 465;
+
+            $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+            $mail->addAddress($order->user->email);
+
+            $mail->isHTML(true);
+
+
+            $mail->Subject = 'Annulation de la commande';
+            $mail->Body =
+                '<p style="text-align: center;>  <img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80">
+      
+</p>
+
+<p style="text-align: center;">Hello, ' . $order->user->name . ' </p>
+<p style="text-align: center;">Votre commande de <b>#' . $order->code . '</b> a été annuléé </p>
+<p style="text-align: center;">Raison d\'annulation : ' . $order->raison_annulation_cmd . '</p>
+<p style="text-align: center;">Merci pour votre confiance , <a href="http://Akadi.ci" target="_blank" rel="noopener noreferrer">www.akadi.ci</a></p>
+            ';
+            $mail->send();
         }
 
 

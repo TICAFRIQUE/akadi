@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('shop_name')->nullable();
             $table->string('localisation')->nullable();
             $table->string('date_anniversaire')->nullable();
+            $table->integer('notify_birthday')->nullable();
 
 
             $table->rememberToken();

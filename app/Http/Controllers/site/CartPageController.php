@@ -338,7 +338,7 @@ class CartPageController extends Controller
 
 
 
-                //new send mail with phpMailer
+                //new send mail to admin after order
                 $mail = new PHPMailer(true);
                 // require base_path("vendor/autoload.php");
 
