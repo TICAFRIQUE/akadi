@@ -24,13 +24,13 @@ return new class extends Migration
             ->nullable()
             ->constrained('orders')
             ->onUpdate('cascade')
-            ->onDelete('set null');
+            ->onDelete('cascade');
 
             $table->foreignId('product_id')
             ->nullable()
             ->constrained('products')
             ->onUpdate('cascade')
-            ->onDelete('set null');
+            ->onDelete('cascade');
 
             $table->timestamps();
         });

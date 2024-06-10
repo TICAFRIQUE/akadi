@@ -74,10 +74,9 @@
                                                             id="totalPriceQty{{ $id }}">
                                                             {{ number_format($total, 0, ',', ' ') }}
                                                         </span> FCFA</bdi></span>
+
+
                                                 <!-- ========== Start coupon ========== -->
-
-
-
                                                 @if ($product_coupon)
                                                     @foreach ($product_coupon as $item)
                                                         @if (in_array($id, [$item['coupon'][0]['pivot']['product_id']]))
@@ -94,8 +93,9 @@
                                                                     id="btnApply_{{ $id }}">Appliquer</button>
 
                                                             </div>
-                                                             <small class="text-danger">Profitez de <b>{{ $item['coupon'][0]['pourcentage_coupon'] }} % </b> de réduction sur le total</small>
-
+                                                            <small class="text-danger">Profitez de
+                                                                <b>{{ $item['coupon'][0]['pourcentage_coupon'] }} % </b> de
+                                                                réduction sur le total</small>
                                                         @endif
                                                     @endforeach
                                                 @endif
@@ -355,13 +355,18 @@
         $('.applyCouponBtn').click(function(e) {
             e.preventDefault();
 
+            //insert code promo in localstorage
+            var code_coupon = $(this).attr('data-code');
+
+            localStorage.setItem('code-promo', code_coupon)
+
+
             var isNewSousTotal = localStorage.getItem('sousTotal');
 
             var productId = $(this).attr('product-id');
             var total = $(this).attr('data-total'); // total article * qté
             var sous_total = $('.sousTotal').attr('data-subTotal');
             var pourcentage = $(this).attr('data-pourcentage');
-            var code_coupon = $(this).attr('data-code');
 
 
             //calcul de montant coupon ---apres reduction
@@ -486,7 +491,7 @@
             }
 
             //si mode_livraison == recuperer
-            var subTotal = localStorage.getItem('sousTotal');;
+            var subTotal = localStorage.getItem('sousTotal');
             if (mode_livraison == 'recuperer') {
                 $('._delivery_price').hide()
                 $('#address').hide()
@@ -595,7 +600,7 @@
 
 
                 var subTotal = localStorage.getItem('sousTotal');
-
+                var code_promo = localStorage.getItem('code-promo');
                 var total_order = parseFloat(subTotal) + parseFloat(prix_livraison)
                 var type_commande = type_cmd // type de la commande ...precommande , normal
                 var delivery_planned = $('#date_livraison').html(); // date de livraison prevue
@@ -610,7 +615,8 @@
                     total_order,
                     note,
                     type_commande,
-                    delivery_planned
+                    delivery_planned,
+                    code_promo,
                 }
 
                 $.ajax({

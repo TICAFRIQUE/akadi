@@ -90,15 +90,15 @@
                             <!-- ========== Start Remise ========== -->
 
                             <div class="form-group row">
+                                <p class="fw-bold fs-2 col-12" id="MsgError"></p>
 
-                                <div class="col-sm-6">
-                                    <label class="col-sm-12 col-form-label">Saisir un code ou cliquer sur
-                                        generer</label>
+                                <div class="col-sm-3">
+                                    <label class="col-sm-12 col-form-label">Code coupon</label>
                                     <div class="d-flex">
                                         <button class="btn btn-primary" id="codeCouponBtn">Generer</button>
 
                                         <input type="text" id="codeCoupon" name="code" class="form-control"
-                                            required>
+                                            required >
                                         <div class="invalid-feedback">
                                             Champs obligatoire
                                         </div>
@@ -112,7 +112,7 @@
                                         class="form-control">
                                 </div> --}}
 
-                                <div class="col-sm-6">
+                                <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Pourcentage(%) </label>
 
                                     <input type="number" id="discount" name="pourcentage_coupon" class="form-control"
@@ -122,14 +122,8 @@
                                     </div>
                                 </div>
 
-                            </div>
-                            <!-- ========== End Remise ========== -->
 
-
-                            <!-- ========== Start Date ========== -->
-                            <div class="form-group row">
-                                <p class="fw-bold fs-2 col-12" id="MsgError"></p>
-                                <div class="col-sm-6">
+                                <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Date Debut</label>
 
                                     <input type="text" id="date_start" name="date_debut_coupon"
@@ -139,7 +133,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-6">
+                                <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Date Fin</label>
 
                                     <input type="text" id="date_end" name="date_fin_coupon"
@@ -151,7 +145,10 @@
                                 </div>
 
                             </div>
-                            <!-- ========== End Date ========== -->
+                            <!-- ========== End Remise ========== -->
+
+
+
 
 
                             <hr>
@@ -169,7 +166,7 @@
                                             sélectionner</label>
                                     </div>
 
-                                    <select name="customers[]" id="customer" class="form-control select2 " multiple>
+                                    <select name="customers[]" id="customer" class="form-control select2 " multiple required>
                                         @foreach ($customer as $item)
                                             <option value="{{ $item['id'] }}"> {{ $item['name'] }} </option>
                                         @endforeach
@@ -187,7 +184,7 @@
                                             sélectionner</label>
                                     </div>
 
-                                    <select name="products[]" id="product" class="form-control select2 " multiple>
+                                    <select name="products[]" id="product" class="form-control select2 " multiple required>
                                         @foreach ($product as $item)
                                             <option value="{{ $item['id'] }}"> {{ $item['title'] }} </option>
                                         @endforeach
@@ -431,13 +428,16 @@
         //Generate code coupon
         $('#codeCouponBtn').click(function(e) {
             e.preventDefault();
-            var code = "";
-            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var code = "AK-";
+            // abcdefghijklmnopqrstuvwxyz
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 8; i++)
                 code += possible.charAt(Math.floor(Math.random() * possible.length));
 
             $('#codeCoupon').val(code)
+            $('#codeCoupon').prop('readonly' , true)
+
 
         });
 

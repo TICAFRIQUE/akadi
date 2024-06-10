@@ -57,7 +57,7 @@
                                                     {{ $item['date_debut_coupon'] }}
                                                 </td>
                                                 <td class="align-middle">
-                                                    {{ $item['Expiration'] }}
+                                                    {{ $item['date_fin_coupon'] }}
                                                 </td>
                                                 <td class="align-middle">
                                                     {{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}

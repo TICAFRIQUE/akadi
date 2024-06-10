@@ -13,18 +13,20 @@ return new class extends Migration
     {
         Schema::create('coupon_user', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('coupon_id')
                 ->nullable()
                 ->constrained('coupons')
                 ->onUpdate('cascade')
-                ->onDelete('set null');
+                ->onDelete('cascade');
 
             $table->foreignId('user_id')
                 ->nullable()
                 ->constrained('users')
                 ->onUpdate('cascade')
-                ->onDelete('set null');
+                ->onDelete('cascade');
 
+            $table->integer('nbre_utilisation')->default(0); //nombre de fois que le coupon sera utilisé par l'utilisateur
             $table->timestamps();
         });
     }

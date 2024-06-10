@@ -271,10 +271,10 @@
                             </li>
 
 
-                            {{-- <li class="dropdown">
+                            <li class="dropdown">
                                 <a href="{{ route('coupon.index') }}" class="nav-link"><i
                                         data-feather="gift"></i><span>Coupon de reduction</span></a>
-                            </li> --}}
+                            </li>
 
                             <li class="dropdown">
                                 <a href="{{ route('order.index') }}" class="nav-link"><i

@@ -18,26 +18,26 @@ return new class extends Migration
             $table->string('slug')->nullable();
             $table->double('price')->nullable();
             $table->longText('description')->nullable();
-            $table->boolean('disponibilite')->after('user_id')->nullable()->default(1); //1: disponible 0: rupture
+            $table->boolean('disponibilite')->nullable()->default(1); //1: disponible 0: rupture
 
 
             $table->foreignId('collection_id')
             ->nullable()
             ->constrained('collections')
             ->onUpdate('cascade')
-            ->onDelete('set null');
+            ->onDelete('cascade');
 
             $table->foreignId('sub_category_id')
             ->nullable()
             ->constrained('sub_categories')
             ->onUpdate('cascade')
-            ->onDelete('set null');
+            ->onDelete('cascade');
 
             $table->foreignId('user_id')
             ->nullable()
             ->constrained('users')
             ->onUpdate('cascade')
-            ->onDelete('set null');
+            ->onDelete('cascade');
 
             //remise
             $table->double('montant_remise')->nullable();

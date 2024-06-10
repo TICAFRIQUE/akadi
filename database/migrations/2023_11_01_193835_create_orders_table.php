@@ -22,23 +22,25 @@ return new class extends Migration
             $table->string('address_yango')->nullable(); //adresse de recuperation
             $table->string('mode_livraison')->nullable(); //domicile, sur_place, yango
 
+
             $table->double('discount')->nullable();
             $table->string('total')->nullable();
             $table->string('delivery_planned')->nullable(); //date de livraison prevue
             $table->dateTime('delivery_date')->nullable(); //date de livraison
             $table->string('status')->nullable(); // attente", en cour ,livré
-            $table->string('payment method')->nullable(); 
+            $table->string('payment method')->nullable();
             $table->string('available_product')->default('yes')->nullable(); // disponibilite du produit
             $table->date('date_order')->nullable();
             $table->longText('raison_annulation_cmd')->nullable();
+            $table->longText('note')->nullable();
+            $table->string('type_order')->nullable();
             $table->foreignId('user_id')
-            ->nullable()
-            ->constrained('users')
-            ->onUpdate('cascade')
-            ->onDelete('set null');
+                ->nullable()
+                ->constrained('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
 
             $table->timestamps();
-
         });
     }
 

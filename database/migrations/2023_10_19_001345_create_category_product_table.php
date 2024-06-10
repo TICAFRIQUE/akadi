@@ -18,13 +18,13 @@ return new class extends Migration
             ->nullable()
             ->constrained('categories')
             ->onUpdate('cascade')
-            ->onDelete('set null');
+            ->onDelete('cascade');
 
             $table->foreignId('product_id')
             ->nullable()
             ->constrained('products')
             ->onUpdate('cascade')
-            ->onDelete('set null');
+            ->onDelete('cascade');
 
             // $table->foreignIdFor(\App\Models\Category::class)->constrained()->onDelete('cascade');
             // $table->foreignIdFor(\App\Models\Product::class)->constrained()->onDelete('cascade');

@@ -210,8 +210,14 @@ class CartPageController extends Controller
     //caisse--resumé du panier
     public function checkout(Request $request)
     {
+        //liste des zone de livraison
         $delivery = Delivery::orderBy('zone', 'ASC')->get();
-        $auth_coupon = User::where('id', Auth::user()->id)->withWhereHas('coupon', fn ($q) => $q->where('status_coupon', 'en cour'))->first();
+
+        //verifier si le client a un coupon associé a u produit de son panier
+        $auth_coupon = User::where('id', Auth::user()->id)->withWhereHas('coupon', function ($q) {
+            $q->where('status_coupon', 'en cour');
+            $q->where('coupon_user.nbre_utilisation', 0);
+        })->first();
 
         $product_coupon = "";
         if (count(Auth::user()->coupon) > 0) {
@@ -221,13 +227,19 @@ class CartPageController extends Controller
             $product_coupon = "";
         }
 
+
         // dd($product_coupon->toArray());
+
+        // dd(Auth::user()->coupon[0]->pivot->toArray());
+
 
         return view('site.pages.caisse', compact('delivery', 'product_coupon'));
     }
 
 
-    //store order
+
+
+    //store order---- enregistrer la commande de l'utilisateur
     public function storeOrder(Request $request)
     {
         if (Auth::check()) {
@@ -244,6 +256,7 @@ class CartPageController extends Controller
                 $note = $_GET['data']['note'];
                 $type_commande = $_GET['data']['type_commande'];
                 $delivery_planned = $_GET['data']['delivery_planned'];
+                $code_promo = $_GET['data']['code_promo'];
 
 
 
@@ -285,6 +298,7 @@ class CartPageController extends Controller
                     'date_order' => Carbon::now()->format('Y-m-d')
                 ]);
 
+
                 //insert data in pivot order_product
 
                 foreach (session('cart') as $key => $value) {
@@ -296,12 +310,19 @@ class CartPageController extends Controller
                 }
 
 
+                //function for update code promo
+                if (isset($code_promo)) {
+                    $code = Coupon::whereCode($code_promo)->first();
+                    if ($code) {
+                        DB::table('coupon_user')
+                            ->where('user_id', Auth::user()->id)
+                            ->where('coupon_id',  $code['id'])
+                            ->update(['nbre_utilisation'=> 1]);
+                    }
+                }
 
 
-
-                //delete product in table coupon_product
-                // Auth::user()->coupon[0]['code']
-
+                // function for send data to email -- envoi de email
                 $orders = Order::whereId($order['id'])
                     ->with([
                         'user', 'products'
@@ -309,22 +330,7 @@ class CartPageController extends Controller
                     ])
                     ->orderBy('created_at', 'DESC')->first();
 
-
-                //delete product in table coupon_product
-                // if (count(Auth::user()->coupon) > 0) {
-                //     foreach ($orders['products']  as $key => $value) {
-                //         $id = $value['id'];
-                //         DB::table('coupon_product')->where('coupon_id', Auth::user()->coupon[0]['id'])
-                //             ->where('product_id',  $id)->delete();
-                //     }
-                // }
-
-
-
-                // function for send data to email
                 $data_products = [];
-
-                // $product = json_encode($data_products);
 
                 foreach ($orders['products']  as $key => $value) {
                     $name = $value['title'];

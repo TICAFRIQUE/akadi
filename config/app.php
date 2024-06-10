@@ -170,6 +170,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TelescopeServiceProvider::class,
         RealRashid\SweetAlert\SweetAlertServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Orangehill\Iseed\IseedServiceProvider::class,

@@ -66,7 +66,7 @@ class User extends Authenticatable
 
     public function coupon()
     {
-        return $this->belongsToMany(Coupon::class);
+        return $this->belongsToMany(Coupon::class)->withPivot('nbre_utilisation')->withTimestamps();;
     }
 
 
