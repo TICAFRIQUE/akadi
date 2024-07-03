@@ -2,6 +2,18 @@
 <html class="no-js" lang="{{ Config::get('app.locale') }}">
 
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTWQ17CVRB"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-BTWQ17CVRB');
+    </script>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Akadi - @yield('title')</title>
@@ -34,7 +46,7 @@
         rel="stylesheet">
 
 
-  
+
 
     <!--==============================
  All CSS File
@@ -170,7 +182,7 @@ Product Lightbox
                                     </p>
                                 </div>
 
-                                 <div class="info-box">
+                                <div class="info-box">
                                     <div class="info-box_icon">
                                         <i class="fal fa-watch"></i>
                                     </div>
