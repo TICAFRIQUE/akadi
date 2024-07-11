@@ -9,11 +9,11 @@
         .invoice-box {
             max-width: 800px;
             margin: auto;
-            padding: 10px;
+            padding: 5px;
             border: 1px solid #ececec;
             /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); */
             font-size: 12px;
-            line-height: 24px;
+            line-height: 15px;
             font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
             color: #000000;
         }
@@ -38,7 +38,7 @@
         }
 
         .invoice-box table tr.top table td.title {
-            font-size: 15px;
+            font-size: 12px;
             line-height: 15px;
             color: #333;
         }
@@ -106,95 +106,104 @@
 </head>
 
 <body>
-    <div class="invoice-box">
-        <table cellpadding="0" cellspacing="0">
-            <tr class="top">
-                <td colspan="4">
-                    <table>
-                        <tr>
-                            <td class="title">
-                                {{-- https://akadi.ci/wp-content/uploads/2023/10/cropped-logo-site-ak.png --}}
-                                <img src="https://akadi.ci/site/assets/img/custom/logo.png" width="50" />
-                            </td>
 
-                            <td>
-                                N°Cmd #: {{ $orders['code'] }} <br />
-                                Date Cmd: {{ $orders['created_at']->format('d-m-Y') }} <br />
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
+    @for ($i = 1; $i <= 2; $i++)
 
-            <tr class="information">
-                <td colspan="4">
-                    <table>
-                        <tr>
-                            <td>
-                                <span>SAV: <b>07 58 83 83 38</b> </span><br>
-                                <span>Email: <b>info@akadi.ci</b> </span><br>
-                                <span>Adresse: <b>Plateau Dokui</b> </span><br>
+        <div class="invoice-box">
+            <table cellpadding="0" cellspacing="0">
+                <tr class="top">
+                    <td colspan="4">
+                        <table>
+                            <tr>
+                                <td class="title">
+                                    {{-- https://akadi.ci/wp-content/uploads/2023/10/cropped-logo-site-ak.png --}}
+                                    <img src="https://akadi.ci/site/assets/img/custom/logo.png" width="50" />
+                                </td>
 
-                            </td>
+                                <td>
+                                    N°Cmd #: {{ $orders['code'] }} <br />
+                                    Date Cmd: {{ $orders['created_at']->format('d-m-Y') }} <br />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
 
-                            <td>
-                                <span>Nom: <b>{{ $orders['user']['name'] }}</b> </span><br>
-                                <span>Email: <b>{{ $orders['user']['email'] }}</b> </span><br>
-                                <span>Téléphone: <b>{{ $orders['user']['phone'] }}</b> </span><br>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
+                <tr class="information">
+                    <td colspan="4">
+                        <table>
+                            <tr>
+                                <td>
+                                    <span>SAV: <b>07 58 83 83 38</b> </span><br>
+                                    <span>Email: <b>info@akadi.ci</b> </span><br>
+                                    <span>Adresse: <b>Plateau Dokui</b> </span><br>
 
-            {{-- <tr class="heading">
-                <td>Payment Method</td>
+                                </td>
 
-                <td>Check #</td>
-            </tr> --}}
+                                <td>
+                                    <span>Nom: <b>{{ $orders['user']['name'] }}</b> </span><br>
+                                    <span>Email: <b>{{ $orders['user']['email'] }}</b> </span><br>
+                                    <span>Téléphone: <b>{{ $orders['user']['phone'] }}</b> </span><br>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
 
-            {{-- <tr class="details">
-                <td>Check</td>
+                {{-- <tr class="heading">
+            <td>Payment Method</td>
 
-                <td>1000</td>
-            </tr> --}}
+            <td>Check #</td>
+        </tr> --}}
 
-            <tr class="heading">
-                <td>Produit</td>
-                <td>Qté</td>
-                <td>Pu</td>
-                <td>Total</td>
-            </tr>
-            @foreach ($orders['products'] as $item)
-                <tr class="item">
-                    <td> {{ $item['title'] }}</td>
-                    <td>{{ $item['pivot']['quantity'] }} </td>
-                    <td> {{ number_format($item['pivot']['unit_price']) }}</td>
-                    @php
-                        $total = $item['pivot']['quantity'] * $item['pivot']['unit_price'];
-                    @endphp
-                    <td> {{ number_format($total) }}</td>
+                {{-- <tr class="details">
+            <td>Check</td>
+
+            <td>1000</td>
+        </tr> --}}
+
+                <tr class="heading">
+                    <td>Produit</td>
+                    <td>Qté</td>
+                    <td>Pu</td>
+                    <td>Total</td>
+                </tr>
+                @foreach ($orders['products'] as $item)
+                    <tr class="item">
+                        <td> {{ $item['title'] }}</td>
+                        <td>{{ $item['pivot']['quantity'] }} </td>
+                        <td> {{ number_format($item['pivot']['unit_price']) }}</td>
+                        @php
+                            $total = $item['pivot']['quantity'] * $item['pivot']['unit_price'];
+                        @endphp
+                        <td> {{ number_format($total) }}</td>
+
+                    </tr>
+                @endforeach
+                <tr class="total" style="text-align:right;">
+                    <td colspan="4" style="padding-right:40px; padding-top:10px"> <b>Sous-total</b>:
+                        {{ number_format($orders['subtotal']) }} FCFA</td>
+                </tr>
+
+                <tr class="total" style="text-align:right;">
+                    <td colspan="4" style="padding-right:40px;"> <b>Livraison</b>:
+                        {{ number_format($orders['delivery_price']) }} FCFA</td>
+
 
                 </tr>
-            @endforeach
-            <tr class="total" style="text-align:right;">
-                <td colspan="4" style="padding-right:40px; padding-top:10px"> <b>Sous-total</b>:
-                    {{ number_format($orders['subtotal']) }} FCFA</td>
-            </tr>
 
-            <tr class="total" style="text-align:right;">
-                <td colspan="4" style="padding-right:40px;"> <b>Livraison</b>:
-                    {{ number_format($orders['delivery_price']) }} FCFA</td>
+                <tr class="total" style="text-align:right;">
+                    <td colspan="4" style="padding-right:40px;"> <b>TOTAL</b>:
+                        {{ number_format($orders['total']) }} FCFA</td>
+                </tr>
+            </table>
+        </div>
+        <small style="text-align:center">Reçu imprimé le
+            {{ \Carbon\Carbon::now()->format('d/m/Y') }} </small>
 
+        <hr style="border : 1px dotted rgb(0, 0, 0)">
+    @endfor
 
-            </tr>
-
-            <tr class="total" style="text-align:right;">
-                <td colspan="4" style="padding-right:40px;"> <b>TOTAL</b>:
-                    {{ number_format($orders['total']) }} FCFA</td>
-            </tr>
-        </table>
-    </div>
 </body>
 
 </html>

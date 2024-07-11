@@ -13,13 +13,23 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 class OrderController extends Controller
 {
     //get all order 
-    public function getAllOrder()
+    public function getAllOrder(Request $request)
     {
+        // dd($request->all);
         //request('s') ## s => status ,  filter from status order
         $orders = Order::orderBy('created_at', 'DESC')
             ->when(request('d'), fn ($q) => $q->where('date_order', Carbon::now()->format('Y-m-d')))
             ->when(request('s'), fn ($q) => $q->whereStatus(request('s')))
+            //get orders between two dates
+            ->when(request('date_debut') && request('date_fin'), fn ($q) => $q->whereBetween('date_order', [request('date_debut'), request('date_fin')]))
+            ->when(request('date_debut') || request('date_fin'), fn ($q) => $q->whereIn('date_order', [request('date_debut'), request('date_fin')]))
             ->get();
+
+            //get request date debut
+            $date_debut = request('date_debut');
+            //get request date fin
+            $date_fin = request('date_fin');
+            
 
         return view('admin.pages.order.order', compact(['orders']));
     }

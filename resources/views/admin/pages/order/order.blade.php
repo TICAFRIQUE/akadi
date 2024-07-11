@@ -2,14 +2,104 @@
 @section('title', 'order')
 @section('sub-title', 'Liste des commandes')
 
+<style>
+    .card-order1 {
+        background: linear-gradient(135deg, #289cf5, #84c0ec) !important;
+        color: white
+    }
+
+    .card-order {
+        background: linear-gradient(135deg, #06a278 0%, #12d298 100%) !important;
+    }
+    .card-content{
+        color: white
+    }
+</style>
 @section('content')
     <div class="section-body">
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-around">
-                        <h4>Commandes {{ request('d') ? request('d') : request('s') }} </h4>
+                    {{-- <h5 class="p-3">Liste des Commandes
+                        @if (request('date_debut') && request('date_fin'))
+                            du {{ \Carbon\Carbon::parse(request('date_debut'))->format('d-m-Y') }} au
+                            {{ \Carbon\Carbon::parse(request('date_fin'))->format('d-m-Y') }}
+                        @elseif (request('date_debut'))
+                            du {{ \Carbon\Carbon::parse(request('date_debut'))->format('d-m-Y') }}
+                        @elseif (request('date_fin'))
+                            du {{ \Carbon\Carbon::parse(request('date_fin'))->format('d-m-Y') }}
+                        @else
+                            {{ request('d') ? request('d') : request('s') }}
+                        @endif
+                    </h5> --}}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-order">
+                                <div class="card-statistic-4">
+                                    <div class="align-items-center justify-content-between">
+                                        <div class="row ">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
+                                                <div class="card-content">
+                                                    <h5 class="">Commandes
+                                                        @if (request('date_debut') && request('date_fin'))
+                                                            du
+                                                            {{ \Carbon\Carbon::parse(request('date_debut'))->format('d-m-Y') }}
+                                                            au
+                                                            {{ \Carbon\Carbon::parse(request('date_fin'))->format('d-m-Y') }}
+                                                        @elseif (request('date_debut'))
+                                                            du
+                                                            {{ \Carbon\Carbon::parse(request('date_debut'))->format('d-m-Y') }}
+                                                        @elseif (request('date_fin'))
+                                                            du
+                                                            {{ \Carbon\Carbon::parse(request('date_fin'))->format('d-m-Y') }}
+                                                        @else
+                                                            {{ request('d') ? request('d') : request('s') }}
+                                                        @endif
+                                                    </h5>
+                                                    <h2 class="mb-3 font-18">{{ count($orders) }}</h2>
+                                                    {{-- <p class="mb-0"><span class="col-green">10%</span> Increase</p> --}}
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
+                                                <div class="banner-img">
+                                                    {{-- <img src="assets/img/banner/1.png" alt=""> --}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card card-order1">
+                                <div class="card-statistic-4">
+                                    <div class="align-items-center justify-content-between">
+                                        <div class="row ">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
+                                                <div class="card-content">
+                                                    <h5 class="">Total</h5>
+                                                    <h2 class="mb-3 font-18"> {{ number_format($orders->sum('total') , 0 , ',',' ')}} FCFA </h2>
+                                                    {{-- <p class="mb-0"><span class="col-green">10%</span> Increase</p> --}}
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
+                                                <div class="banner-img">
+                                                    {{-- <img src="assets/img/banner/1.png" alt=""> --}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="d-flex justify-content-between">
+                        <hr class="w-50 bg-secondary" size="5">
+                        <h4>Filtre</h4>
+                        <hr class="w-50 bg-secondary" size="5">
+                    </div>
+                    <div class="card-header d-flex justify-content-between">
                         <!-- ========== Start filter ========== -->
                         <div class="dropdown d-inline">
                             <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2"
@@ -24,16 +114,54 @@
                                 <a class="dropdown-item has-icon" href="/admin/order?s=annulée">Annulées</a>
                                 <a class="dropdown-item has-icon fw-bold" href="/admin/order?s=precommande"> <i
                                         class="far fa-clock"></i> Précommandes</a>
+                                <a class="dropdown-item has-icon" href="{{ route('order.index') }}">Toute les commandes</a>
+
 
                             </div>
                         </div>
+
+
+                        <form action="{{ route('order.index') }}" method="get" class="px-3">
+                            @csrf
+                            <!-- date start-->
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label for="date">Date debut</label>
+                                        <input type="date" name="date_debut" id="dateStart" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label for="date">Date fin</label>
+                                        <input type="date" name="date_fin" id="dateEnd" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 mt-3">
+                                    <div class="form-group">
+                                        <label for="date"></label>
+                                        <button type="submit" class="btn btn-primary">Valider</button>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </form>
                         <!-- ========== End filter ========== -->
+
+
+                        <!-- ========== Start Statistic ========== -->
+
+                        <!-- ========== End Statistic ========== -->
+
 
                     </div>
 
                     @include('admin.components.validationMessage')
 
                     <div class="card-body">
+
                         <!-- ========== Start Section ========== -->
                         @include('admin.pages.order.motif_annulation')
                         <!-- ========== End Section ========== -->
@@ -107,7 +235,8 @@
                                                                         data-feather="x-circle"></i> Annuler</a> --}}
 
 
-                                                            <a href="#" role="button" data-id="{{ $item['id'] }}"
+                                                            <a href="#" role="button"
+                                                                data-id="{{ $item['id'] }}"
                                                                 class="dropdown-item has-icon text-danger btnCancel"><i
                                                                     data-feather="x-circle"></i> Annuler</a>
 
