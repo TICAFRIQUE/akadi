@@ -8,11 +8,11 @@
             <!-- two date for get product between date-->
         </div>
         <form id="dateRangeForm" class="m-auto">
-            <label for="start_date">Start Date:</label>
+            <label for="start_date">Debut:</label>
             <input type="date" id="start_date" name="start_date">
-            <label for="end_date">End Date:</label>
+            <label for="end_date">Fin:</label>
             <input type="date" id="end_date" name="end_date">
-            <button type="submit">Get Data</button>
+            <button type="submit" class="bg-primary text-white border-0">Obtenir les données</button>
         </form>
 
         {{-- <div class="row m-auto">
@@ -51,54 +51,53 @@
 
 <script>
     $(document).ready(function() {
-        //without rangetime
-        // $.ajax({
-        //     url: "{{ route('dashboard.product-statistic') }}",
-        //     method: 'GET',
-          
-        //     success: function(data) {
-        //         //map
-        //         // console.log(data.top_product_order.map(item => item.title));
+        // without rangetime
+        $.ajax({
+            url: "{{ route('dashboard.product-statistic') }}",
+            method: 'GET',
 
-        //         var options = {
-        //             series: [{
-        //                 name: 'Nombre de commande',
-        //                 data: data.top_product_order.map(item => item
-        //                     .orders_count)
-        //             }],
-        //             chart: {
-        //                 type: 'bar',
-        //                 height: 350,
-        //                 toolbar: {
-        //                     show: true,
-        //                     tools: {
-        //                         download: false // <== line to add
+            success: function(data) {
+                //map
+                // console.log(data.top_product_order.map(item => item.title));
 
-        //                     }
-        //                 }
-        //             },
-        //             plotOptions: {
-        //                 bar: {
-        //                     borderRadius: 4,
-        //                     borderRadiusApplication: 'end',
-        //                     horizontal: true,
-        //                 }
-        //             },
-        //             dataLabels: {
-        //                 enabled: true
-        //             },
-        //             xaxis: {
+                var options = {
+                    series: [{
+                        name: 'Nombre de commande',
+                        data: data.top_product_order.map(item => item
+                            .orders_count)
+                    }],
+                    chart: {
+                        type: 'bar',
+                        height: 350,
+                        toolbar: {
+                            show: true,
+                            tools: {
+                                download: false // <== line to add
 
-        //                 categories: data.top_product_order.map(item => item.title)
-        //             }
-        //         };
+                            }
+                        }
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 4,
+                            borderRadiusApplication: 'end',
+                            horizontal: true,
+                        }
+                    },
+                    dataLabels: {
+                        enabled: true
+                    },
+                    xaxis: {
 
-        //         var chart = new ApexCharts(document.querySelector("#chart"), options);
-        //         chart.render();
-        //     }
-        // });
+                        categories: data.top_product_order.map(item => item.title)
+                    }
+                };
 
-//
+                var chart = new ApexCharts(document.querySelector("#chart"), options);
+                chart.render();
+            }
+        });
+
 
         $('#dateRangeForm').submit(function(e) {
             e.preventDefault();
@@ -113,43 +112,50 @@
                 },
                 success: function(data) {
                     //map
-                    // console.log(data.top_product_order.map(item => item.title));
 
-                    var options = {
-                        series: [{
-                            name: 'Nombre de commande',
-                            data: data.top_product_order.map(item => item
-                                .orders_count)
-                        }],
-                        chart: {
-                            type: 'bar',
-                            height: 350,
-                            toolbar: {
-                                show: true,
-                                tools: {
-                                    download: false // <== line to add
+                    if (data.top_product_order.length > 0) {
+                      $('#chart').html('');
+                        var options = {
+                            series: [{
+                                name: 'Nombre de commande',
+                                data: data.top_product_order.map(item => item
+                                    .orders_count)
+                            }],
+                            chart: {
+                                type: 'bar',
+                                height: 350,
+                                toolbar: {
+                                    show: true,
+                                    tools: {
+                                        download: false // <== line to add
 
+                                    }
                                 }
-                            }
-                        },
-                        plotOptions: {
-                            bar: {
-                                borderRadius: 4,
-                                borderRadiusApplication: 'end',
-                                horizontal: true,
-                            }
-                        },
-                        dataLabels: {
-                            enabled: true
-                        },
-                        xaxis: {
+                            },
+                            plotOptions: {
+                                bar: {
+                                    borderRadius: 4,
+                                    borderRadiusApplication: 'end',
+                                    horizontal: true,
+                                }
+                            },
+                            dataLabels: {
+                                enabled: true
+                            },
+                            xaxis: {
 
-                            categories: data.top_product_order.map(item => item.title)
-                        }
-                    };
+                                categories: data.top_product_order.map(item => item
+                                    .title)
+                            }
+                        };
 
-                    var chart = new ApexCharts(document.querySelector("#chart"), options);
-                    chart.render();
+                        var chart = new ApexCharts(document.querySelector("#chart"),
+                            options);
+                        chart.render();
+                    }else{
+                      $('#chart').html('<div class="alert alert-info" role="alert">Aucune données n\'a été trouvé pour les dates choisis</div>');
+                       
+                    }
                 }
             });
         });

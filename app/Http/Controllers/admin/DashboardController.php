@@ -204,19 +204,19 @@ class DashboardController extends Controller
             )
                 ->withCount('orders')
                 ->having('orders_count', '>', 0)
-                ->orderBy('orders_count', 'DESC')->take(5)->get();
+                ->orderBy('orders_count', 'DESC')->get();
         } else {
 
             $top_product_order = Product::withCount('orders')
                 ->with('orders', fn ($q) => $q->whereNotIn('status', ['annulée']))
                 ->having('orders_count', '>', 0)
-                ->orderBy('orders_count', 'DESC')->take(5)->get();
+                ->orderBy('orders_count', 'DESC')->get();
             // dd($top_product_order->toArray());
 
-            return response()->json([
-                'status' => 'success',
-                'top_product_order' => $top_product_order,
-            ]);
         }
+        return response()->json([
+            'status' => 'success',
+            'top_product_order' => $top_product_order,
+        ]);
     }
 }
