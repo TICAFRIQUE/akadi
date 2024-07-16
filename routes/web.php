@@ -42,6 +42,8 @@ Route::middleware(['admin'])->group(function () {
     //Dashboard
     Route::prefix('dashboard')->controller(DashboardController::class)->group(function () {
         route::get('', 'index')->name('dashboard.index');
+        route::get('product-statistic', 'product_statistic')->name('dashboard.product-statistic');
+
     });
 
     //Setting
@@ -111,6 +113,7 @@ Route::middleware(['admin'])->group(function () {
     //orders
     route::prefix('admin/order')->controller(OrderController::class)->group(function () {
         Route::get('/', 'getAllOrder')->name('order.index');
+        Route::get('/filter', 'filter')->name('order.filter');
         Route::get('show/{id}', 'showOrder')->name('order.show');
         Route::get('invoice/{id}', 'invoice')->name('order.invoice');
         Route::get('changeState', 'changeState')->name('order.changeState');

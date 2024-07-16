@@ -11,7 +11,8 @@
     .card-order {
         background: linear-gradient(135deg, #06a278 0%, #12d298 100%) !important;
     }
-    .card-content{
+
+    .card-content {
         color: white
     }
 </style>
@@ -41,20 +42,21 @@
                                             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                                                 <div class="card-content">
                                                     <h5 class="">Commandes
-                                                        @if (request('date_debut') && request('date_fin'))
-                                                            du
-                                                            {{ \Carbon\Carbon::parse(request('date_debut'))->format('d-m-Y') }}
-                                                            au
-                                                            {{ \Carbon\Carbon::parse(request('date_fin'))->format('d-m-Y') }}
-                                                        @elseif (request('date_debut'))
-                                                            du
-                                                            {{ \Carbon\Carbon::parse(request('date_debut'))->format('d-m-Y') }}
-                                                        @elseif (request('date_fin'))
-                                                            du
-                                                            {{ \Carbon\Carbon::parse(request('date_fin'))->format('d-m-Y') }}
-                                                        @else
-                                                            {{ request('d') ? request('d') : request('s') }}
-                                                        @endif
+                                                        {{ request('status') != 'all' ? request('status') : '' }}</h5>
+                                                    @if (request('date_debut') && request('date_fin'))
+                                                        du
+                                                        {{ \Carbon\Carbon::parse(request('date_debut'))->format('d-m-Y') }}
+                                                        au
+                                                        {{ \Carbon\Carbon::parse(request('date_fin'))->format('d-m-Y') }}
+                                                    @elseif (request('date_debut'))
+                                                        du
+                                                        {{ \Carbon\Carbon::parse(request('date_debut'))->format('d-m-Y') }}
+                                                    @elseif (request('date_fin'))
+                                                        du
+                                                        {{ \Carbon\Carbon::parse(request('date_fin'))->format('d-m-Y') }}
+                                                    @else
+                                                        {{ request('d') ? request('d') : request('s') }}
+                                                    @endif
                                                     </h5>
                                                     <h2 class="mb-3 font-18">{{ count($orders) }}</h2>
                                                     {{-- <p class="mb-0"><span class="col-green">10%</span> Increase</p> --}}
@@ -78,7 +80,8 @@
                                             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                                                 <div class="card-content">
                                                     <h5 class="">Total</h5>
-                                                    <h2 class="mb-3 font-18"> {{ number_format($orders->sum('total') , 0 , ',',' ')}} FCFA </h2>
+                                                    <h2 class="mb-3 font-18">
+                                                        {{ number_format($orders->sum('total'), 0, ',', ' ') }} FCFA </h2>
                                                     {{-- <p class="mb-0"><span class="col-green">10%</span> Increase</p> --}}
                                                 </div>
                                             </div>
@@ -115,33 +118,54 @@
                                 <a class="dropdown-item has-icon fw-bold" href="/admin/order?s=precommande"> <i
                                         class="far fa-clock"></i> Précommandes</a>
                                 <a class="dropdown-item has-icon" href="{{ route('order.index') }}">Toute les commandes</a>
-
-
                             </div>
                         </div>
 
 
-                        <form action="{{ route('order.index') }}" method="get" class="px-3">
+                        <form class="needs-validation" action="{{ route('order.index') }}" method="get" class="px-3"
+                            novalidate>
                             @csrf
                             <!-- date start-->
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="date">Statut</label>
+                                        <select name="status" class="form-control" required>
+                                            <option value="all">Toutes les commandes</option>
+                                            <option value="attente" {{ request('status') == 'attente' ? 'selected' : '' }}>
+                                                Attentes</option>
+                                            <option value="confirmée"
+                                                {{ request('status') == 'confirmée' ? 'selected' : '' }}>Confirmée</option>
+                                            <option value="livrée" {{ request('status') == 'livrée' ? 'selected' : '' }}>
+                                                Livrées</option>
+                                            <option value="annulée" {{ request('status') == 'annulée' ? 'selected' : '' }}>
+                                                Annulées</option>
+                                            <option value="precommande"
+                                                {{ request('status') == 'precommande' ? 'selected' : '' }}>Précommandes
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="date">Date debut</label>
-                                        <input type="date" name="date_debut" id="dateStart" class="form-control">
+                                        <input type="date" name="date_debut" id="dateStart"
+                                            value="{{ request('date_debut') }}" class="form-control" style="padding: 20px"
+                                            required>
                                     </div>
                                 </div>
 
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="date">Date fin</label>
-                                        <input type="date" name="date_fin" id="dateEnd" class="form-control">
+                                        <input type="date" name="date_fin" value="{{ request('date_fin') }}"
+                                            id="dateEnd" class="form-control" style="padding: 20px"required>
                                     </div>
                                 </div>
-                                <div class="col-md-2 mt-3">
+                                <div class="col-md-2" style="margin-top: 30px">
                                     <div class="form-group">
                                         <label for="date"></label>
-                                        <button type="submit" class="btn btn-primary">Valider</button>
+                                        <button type="submit" class="btn btn-primary p-2">Valider</button>
                                     </div>
                                 </div>
 
@@ -174,6 +198,7 @@
                                         <th class="text-center">
                                             #
                                         </th>
+                                        <th>Statut</th>
                                         <th>code</th>
                                         <th>Nom du client</th>
                                         <th>Contact du client</th>
@@ -188,13 +213,16 @@
                                     @foreach ($orders as $key => $item)
                                         <tr id="row_{{ $item['id'] }}">
                                             <td>{{ ++$key }} </td>
-                                            <td><span style="font-weight:bold">{{ $item['code'] }}</span>
-                                                <br> <span
+
+                                            <td>
+                                                <span
                                                     class="badge {{ $item['status'] == 'attente' ? 'badge-primary' : ($item['status'] == 'livrée' ? 'badge-success' : ($item['status'] == 'confirmée' ? 'badge-info' : ($item['status'] == 'annulée' ? 'badge-danger' : ($item['status'] == 'precommande' ? 'badge-dark' : '')))) }} text-white p-1 px-3"><i
                                                         class="{{ $item['status'] == 'precommande' ? 'fa fa-clock' : '' }}"></i>
                                                     {{ $item['status'] }}
                                                 </span>
                                             </td>
+
+                                            <td><span style="font-weight:bold">{{ $item['code'] }}</span> </td>
                                             <td>{{ $item['user']['name'] }}</td>
                                             <td> {{ $item['user']['phone'] }}</td>
                                             <td> {{ $item['user']['email'] }}</td>
@@ -218,7 +246,8 @@
 
                                                         @if ($item['status'] != 'livrée' && $item['status'] != 'annulée')
                                                             <a href="/admin/order/changeState?cs=confirmée && id={{ $item['id'] }}"
-                                                                class="dropdown-item has-icon"><i class="fas fa-check"></i>
+                                                                class="dropdown-item has-icon"><i
+                                                                    class="fas fa-check"></i>
                                                                 Confirmée</a>
                                                             <a href="/admin/order/changeState?cs=livrée && id={{ $item['id'] }}"
                                                                 class="dropdown-item has-icon"><i
@@ -260,14 +289,77 @@
         </div>
     </div>
 
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.colVis.min.js"></script>
     <script>
         $(document).ready(function() {
             var table = $('#tableExport').DataTable({
                 // destroy: true,
                 dom: 'Bfrtip',
                 buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
+
+                    // {
+                    //     extend: 'colvis',
+                    //     text: 'Colonne à afficher',
+                    //     className: 'btn btn-warning',
+                    //     exportOptions: {
+                    //        columns: ':visible'
+                    //     },
+
+                    // },
+
+                    {
+                        extend: 'copy',
+                        // text: 'Copier',
+                        // className: 'btn btn-primary',
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5,6,7]
+                        },
+
+                    },
+
+                    {
+                        extend: 'csv',
+                        // text: 'Csv',
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5,6,7]
+                        },
+
+                    },
+
+
+                    {
+                        extend: 'excel',
+                        // text: 'Excel',
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5,6,7]
+                        },
+
+                    },
+
+                    {
+                        extend: 'pdf',
+                        // text: 'Pdf',
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5,6,7]
+                        },
+
+                    },
+
+                    {
+                        extend: 'print',
+                        // text: 'Imprimer',
+                        exportOptions: {
+                            columns: [0,1,2,3,4,5,6,7]
+                        },
+
+                    },
+
+
                 ],
+
+
+
+
 
                 drawCallback: function(settings) {
                     // $('.delete').on("click", function(e) {

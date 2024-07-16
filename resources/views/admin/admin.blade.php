@@ -2,6 +2,7 @@
 
 @section('content')
     <section class="section">
+
         @include('admin.components.validationMessage')
 
         <style>
@@ -320,6 +321,13 @@
                     </div>
                 </div>
             </div>
+
+
+
+          <!-- ========== Start statistic product and category more buy ========== -->
+          @include('admin.pages.statistic.product_and_category')
+          <!-- ========== End statistic product and category more buy ========== -->
+          
 
         </div>
 

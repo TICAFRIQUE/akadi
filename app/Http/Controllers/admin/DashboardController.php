@@ -34,20 +34,16 @@ class DashboardController extends Controller
         $mail->Port = 465;
 
         $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-        $mail->addAddress('alexkouamelan96@gmail.com');
+        $mail->addAddress('Restaurantakadi@gmail.com');
 
         $mail->isHTML(true);
 
 
         $mail->Subject = 'Anniversaire';
         $mail->Body =
-            '<b> Bonjour, C\'est bientot l\'anniversaire de vos client   <b>';
+            '<b> Bonjour Akadi, C\'est bientot l\'anniversaire de vos client  <br> Veuillez consulter les notifications sur le dashboard  <b>';
 
         $mail->send();
-
-
-
-
 
 
         $orders_attente = Order::orderBy('created_at', 'DESC')
@@ -73,7 +69,7 @@ class DashboardController extends Controller
         ############################## STATISTIQUE ORDER ###########
         // statistic order
         $orders_days = Order::orderBy('created_at', 'DESC')
-            ->where('date_order',Carbon::now()->format('Y-m-d'))
+            ->where('date_order', Carbon::now()->format('Y-m-d'))
             ->count();
 
         // dd($orders_days);
@@ -143,7 +139,17 @@ class DashboardController extends Controller
 
 
 
+        ####################### Statistic product #####################
+        //meilleur produit
+        $top_product_order = Product::withCount('orders')
+            ->with('orders', fn ($q) => $q->whereNotIn(
+                'status',
+                ['annulée']
+            ))
+            ->having('orders_count', '>', 0)
+            ->orderBy('orders_count', 'DESC')->take(5)->get();
 
+        // dd($top_product_order->toArray());
         return view('admin.admin', compact(
 
             //user birthday
@@ -174,7 +180,27 @@ class DashboardController extends Controller
             'client_prospect',
             'client_fidele',
 
+            //product
+            'top_product_order',
+
 
         ));
+    }
+
+    public function product_statistic(){
+        //meilleur produit
+        $top_product_order = Product::withCount('orders')
+            ->with('orders', fn ($q) => $q->whereNotIn(
+                'status',
+                ['annulée']
+            ))
+            ->having('orders_count', '>', 0)
+            ->orderBy('orders_count', 'DESC')->take(5)->get();
+            // dd($top_product_order->toArray());
+            
+            return response()->json([
+                'status' => 'success',
+                'top_product_order' => $top_product_order,
+            ]);
     }
 }

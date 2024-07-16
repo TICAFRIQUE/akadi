@@ -21,18 +21,40 @@ class OrderController extends Controller
             ->when(request('d'), fn ($q) => $q->where('date_order', Carbon::now()->format('Y-m-d')))
             ->when(request('s'), fn ($q) => $q->whereStatus(request('s')))
             //get orders between two dates
-            ->when(request('date_debut') && request('date_fin'), fn ($q) => $q->whereBetween('date_order', [request('date_debut'), request('date_fin')]))
-            ->when(request('date_debut') || request('date_fin'), fn ($q) => $q->whereIn('date_order', [request('date_debut'), request('date_fin')]))
+            ->when(
+                request('date_debut') && request('date_fin') && request('status') != 'all',
+                fn ($q) => $q->whereBetween('date_order', [request('date_debut'), request('date_fin')])->whereStatus(request('status'))
+            )
+            ->when(request('status') == 'all') // toutes les commandes
+            ->whereBetween('date_order', [request('date_debut'), request('date_fin')])
             ->get();
-
-            //get request date debut
-            $date_debut = request('date_debut');
-            //get request date fin
-            $date_fin = request('date_fin');
-            
 
         return view('admin.pages.order.order', compact(['orders']));
     }
+
+
+    //filter
+    public function filter(Request $request)
+    {
+        try {
+            // dd($request->date_debut==null);
+            $orders = Order::query()
+                //when only request('status') 
+                ->when($request->status)
+                ->whereStatus($request->status)
+
+                //when request('status') and request('date_debut')
+                ->when($request->status && $request->date_debut)
+                ->whereStatus($request->status)
+                ->where('date_order', $request->date_debut)
+                ->orderBy('created_at', 'DESC')->get();
+
+            return view('admin.pages.order.order', compact(['orders']));
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
 
     //show order     
     // detail of order user

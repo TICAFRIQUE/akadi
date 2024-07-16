@@ -15,7 +15,7 @@
                                 <h4>Liste des utilisateurs {{ request('user') }} ({{ count($users) }}) </h4>
                             @endif
 
-                            @if (request('client') || request('client')==null)
+                            @if (request('client') || request('client') == null)
                                 <h4>Liste des clients {{ request('client') }} ({{ count($users) }}) </h4>
                                 {{-- @else
                                 <h4>Liste de tous les clients</h4> --}}
@@ -24,7 +24,7 @@
 
 
 
-                            @if (request('client')|| request('client')==null)
+                            @if (request('client') || request('client') == null)
                                 <!-- ========== Start filter ========== -->
                                 <div class="dropdown d-inline">
                                     <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2"
@@ -76,7 +76,6 @@
                                                     $nex_date = $item['date_anniversaire'] . '-' . $Y;
                                                     $date = \Carbon\Carbon::parse($nex_date)->locale('fr_FR');
                                                     $date = $date->day . ' ' . $date->monthName;
-
                                                 @endphp
                                                 <td> {{ $date }}
                                                 </td>
@@ -137,8 +136,67 @@
                 // destroy: true,
                 dom: 'Bfrtip',
                 buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
+
+                    // {
+                    //     extend: 'colvis',
+                    //     text: 'Colonne à afficher',
+                    //     className: 'btn btn-warning',
+                    //     exportOptions: {
+                    //        columns: ':visible'
+                    //     },
+
+                    // },
+
+                    {
+                        extend: 'copy',
+                        // text: 'Copier',
+                        // className: 'btn btn-primary',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        },
+
+                    },
+
+                    {
+                        extend: 'csv',
+                        // text: 'Csv',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        },
+
+                    },
+
+
+                    {
+                        extend: 'excel',
+                        // text: 'Excel',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        },
+
+                    },
+
+                    {
+                        extend: 'pdf',
+                        // text: 'Pdf',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        },
+
+                    },
+
+                    {
+                        extend: 'print',
+                        // text: 'Imprimer',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        },
+
+                    },
+
+
                 ],
+
 
                 drawCallback: function(settings) {
                     $('.delete').on("click", function(e) {
