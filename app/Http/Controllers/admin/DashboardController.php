@@ -187,20 +187,36 @@ class DashboardController extends Controller
         ));
     }
 
-    public function product_statistic(){
+    public function product_statistic(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
         //meilleur produit
-        $top_product_order = Product::withCount('orders')
-            ->with('orders', fn ($q) => $q->whereNotIn(
-                'status',
-                ['annulée']
-            ))
-            ->having('orders_count', '>', 0)
-            ->orderBy('orders_count', 'DESC')->take(5)->get();
+
+        //if $startDate and endDate with eloquent
+
+
+        if ($startDate && $endDate) {
+            $top_product_order = Product::whereHas(
+                'orders',
+                fn ($q) => $q->whereBetween('date_order', [$startDate, $endDate])->whereNotIn('status', ['annulée'])
+            )
+                ->withCount('orders')
+                ->having('orders_count', '>', 0)
+                ->orderBy('orders_count', 'DESC')->take(5)->get();
+        } else {
+
+            $top_product_order = Product::withCount('orders')
+                ->with('orders', fn ($q) => $q->whereNotIn('status', ['annulée']))
+                ->having('orders_count', '>', 0)
+                ->orderBy('orders_count', 'DESC')->take(5)->get();
             // dd($top_product_order->toArray());
-            
+
             return response()->json([
                 'status' => 'success',
                 'top_product_order' => $top_product_order,
             ]);
+        }
     }
 }
