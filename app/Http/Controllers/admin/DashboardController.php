@@ -233,8 +233,8 @@ class DashboardController extends Controller
     public function order_period(Request $request)
     {
         // count order by years
-        $orders_by_year = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, COUNT(*) as count')
-            ->groupBy('year', 'month')
+        $orders_by_year = Order::selectRaw('YEAR(date_order) as year, COUNT(*) as count')
+            ->groupBy('year')
             ->orderBy('year', 'DESC')
             ->get();
 
