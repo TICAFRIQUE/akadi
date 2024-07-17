@@ -71,7 +71,7 @@
                     },
                     xaxis: {
 
-                        categories: data.orders_by_month.map(item => item.month + '-' + item
+                        categories: data.orders_by_month.map(item => item.month_name + '-' + item
                             .year)
 
                     }

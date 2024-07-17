@@ -246,8 +246,8 @@ class DashboardController extends Controller
         //     # code...
         // }
 
-        $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, COUNT(*) as count')
-            ->groupBy('year', 'month')
+        $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
+            ->groupBy('year', 'month' , 'month_name')
             ->orderBy('month', 'ASC')
             ->get();
 

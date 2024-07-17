@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Publicite;
 use App\Models\Collection;
 use App\Models\SubCategory;
+use Illuminate\Support\Facades\DB;
 use PHPMailer\PHPMailer\PHPMailer;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\View;
@@ -31,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        DB::statement("SET lc_time_names = 'fr_FR'");
+
 
         /****************************start publicite */
 
