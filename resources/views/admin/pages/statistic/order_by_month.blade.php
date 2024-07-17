@@ -7,13 +7,13 @@
             <h4>Commandes par mois</h4>
             <!-- two date for get product between date-->
         </div>
-        <form id="dateRangeForm" class="m-auto">
+        {{-- <form id="dateRangeForm" class="m-auto">
             <label for="start_date">Debut:</label>
             <input type="date" id="start_date" name="start_date">
             <label for="end_date">Fin:</label>
             <input type="date" id="end_date" name="end_date">
             <button type="submit" class="bg-primary text-white border-0">Obtenir les données</button>
-        </form>
+        </form> --}}
 
         <div class="card-body">
             <div class="">
