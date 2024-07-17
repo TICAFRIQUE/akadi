@@ -43,7 +43,7 @@ Route::middleware(['admin'])->group(function () {
     Route::prefix('dashboard')->controller(DashboardController::class)->group(function () {
         route::get('', 'index')->name('dashboard.index');
         route::get('product-statistic', 'product_statistic')->name('dashboard.product-statistic');
-        route::get('category-statistic', 'category_statistic')->name('dashboard.category-statistic');
+        route::get('order-period', 'order_period')->name('dashboard.order-period');
 
 
     });

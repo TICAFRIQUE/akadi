@@ -4,7 +4,7 @@
 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-6">
     <div class="card">
         <div class="card-header">
-            <h4>Categorie avec plus commande</h4>
+            <h4>Commandes par mois</h4>
             <!-- two date for get product between date-->
         </div>
         <form id="dateRangeForm" class="m-auto">
@@ -15,26 +15,9 @@
             <button type="submit" class="bg-primary text-white border-0">Obtenir les données</button>
         </form>
 
-        {{-- <div class="row m-auto">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="date">Date debut</label>
-                    <input type="date" name="date_debut" id="dateStart" value="{{ request('date_debut') }}"
-                        class="form-control" required>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="date">Date fin</label>
-                    <input type="date" name="date_fin" value="{{ request('date_fin') }}" id="dateEnd"
-                        class="form-control" required>
-                </div>
-            </div>
-        </div> --}}
         <div class="card-body">
             <div class="">
-                <div id="chart_"></div>
+                <div id="chart_month"></div>
             </div>
         </div>
     </div>
@@ -53,19 +36,22 @@
     $(document).ready(function() {
         // without rangetime
         $.ajax({
-            url: "{{ route('dashboard.category-statistic') }}",
+            url: "{{ route('dashboard.order-period') }}",
             method: 'GET',
 
             success: function(data) {
                 //map
-                console.log(data.top_category_order.map(item => item.products[0].orders_count));
+                var month = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet',
+                    'aout', 'septembre', 'octobre', 'novembre', 'decembre'
+                ]
+                console.log(month.map(item => item ));
 
                 var options = {
                     series: [{
                         name: 'Nombre de commande',
-                        data: data.top_category_order.map(item => item.products[0].orders_count)
-                            
+                        data: data.orders_by_month.map(item => item.count)
                     }],
+
                     chart: {
                         type: 'bar',
                         height: 350,
@@ -81,22 +67,25 @@
                         bar: {
                             borderRadius: 4,
                             borderRadiusApplication: 'end',
-                            horizontal: true,
+                            horizontal: false,
                         }
                     },
                     dataLabels: {
-                        enabled: true
+                        enabled: true,
                     },
                     xaxis: {
 
-                        categories: data.top_category_order.map(item => item.name)
+                        categories: month.map(item => item)
+
                     }
                 };
 
-                var chart = new ApexCharts(document.querySelector("#chart_"), options);
+                var chart = new ApexCharts(document.querySelector("#chart_month"), options);
                 chart.render();
             }
         });
+
+
 
     });
 </script>

@@ -150,6 +150,7 @@ class DashboardController extends Controller
             ->having('orders_count', '>', 0)
             ->orderBy('orders_count', 'DESC')->take(5)->get();
 
+
         // dd($top_product_order->toArray());
         return view('admin.admin', compact(
 
@@ -229,20 +230,34 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function category_statistic(Request $request)
+    public function order_period(Request $request)
     {
-        $top_category_order = Category::with([
-            'products' =>
-            fn ($q) => $q->whereHas(
-                'orders',
-                fn ($q) => $q->whereNotIn('status', ['annulée'])
-            )->withCount('orders')
-                ->having('orders_count', '>', 0)
-        ])->get();
+        // count order by years
+        $orders_by_year = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, COUNT(*) as count')
+            ->groupBy('year', 'month')
+            ->orderBy('year', 'DESC')
+            ->get();
+
+
+        // count order by month
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        // if ( $endDate) {
+        //     # code...
+        // }
+
+        $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, COUNT(*) as count')
+            ->groupBy('year', 'month')
+            ->orderBy('month', 'DESC')
+            ->get();
+
+
 
         return response()->json([
             'status' => 'success',
-            'top_category_order' => $top_category_order,
+            'orders_by_year' => $orders_by_year,
+            'orders_by_month' => $orders_by_month,
+
         ]);
     }
 }
