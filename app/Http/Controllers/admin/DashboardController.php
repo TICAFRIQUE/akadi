@@ -214,42 +214,32 @@ class DashboardController extends Controller
             // dd($top_product_order->toArray());
 
         }
+
+
+        //Number of products per category
+        $product_per_category = Category::withCount('products')->orderBy('products_count', 'DESC')->get();
+
+
+
         return response()->json([
             'status' => 'success',
             'top_product_order' => $top_product_order,
+            'product_per_category' => $product_per_category,
+
         ]);
     }
 
     public function category_statistic(Request $request)
     {
-        // categories where there are more orders 
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        if ($startDate && $endDate) {
-            $top_category_order = Category::whereHas(
-                'products',
-                fn ($q) => $q->whereHas(
-                    'orders',
-                    fn ($q) => $q->whereBetween('date_order', [
-                        $startDate, $endDate
-                    ])->whereNotIn('status', ['annulée'])
-                )
-            )
-                ->withCount('products')
-                ->having('products_count', '>', 0)
-                ->orderBy('products_count', 'DESC')->get();
-        } else {
-            $top_category_order = Category::with([
-                'products'=>
-                fn ($q) => $q->whereHas(
-                    'orders',
-                    fn ($q) => $q->whereNotIn('status', ['annulée'])
-                )
-                ])
-                ->withCount('products')
-                ->having('products_count', '>', 0)
-                ->orderBy('products_count', 'DESC')->get();
-        }
+        $top_category_order = Category::with([
+            'products' =>
+            fn ($q) => $q->whereHas(
+                'orders',
+                fn ($q) => $q->whereNotIn('status', ['annulée'])
+            )->withCount('orders')
+                ->having('orders_count', '>', 0)
+        ])->get();
+
         return response()->json([
             'status' => 'success',
             'top_category_order' => $top_category_order,

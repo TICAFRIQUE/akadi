@@ -58,13 +58,13 @@
 
             success: function(data) {
                 //map
-                // console.log(data.top_category_order.map(item => item.name));
+                console.log(data.top_category_order.map(item => item.products[0].orders_count));
 
                 var options = {
                     series: [{
                         name: 'Nombre de commande',
-                        data: data.top_category_order.map(item => item
-                            .products_count)
+                        data: data.top_category_order.map(item => item.products[0].orders_count)
+                            
                     }],
                     chart: {
                         type: 'bar',
@@ -98,66 +98,5 @@
             }
         });
 
-
-        $('#dateRangeForm').submit(function(e) {
-            e.preventDefault();
-            var startDate = $('#start_date').val();
-            var endDate = $('#end_date').val();
-            $.ajax({
-                url: "{{ route('dashboard.product-statistic') }}",
-                method: 'GET',
-                data: {
-                    start_date: startDate,
-                    end_date: endDate
-                },
-                success: function(data) {
-                    //map
-
-                    if (data.top_category_order.length > 0) {
-                      $('#chart').html('');
-                        var options = {
-                            series: [{
-                                name: 'Nombre de commande',
-                                data: data.top_category_order.map(item => item
-                                    .products_count)
-                            }],
-                            chart: {
-                                type: 'bar',
-                                height: 350,
-                                toolbar: {
-                                    show: true,
-                                    tools: {
-                                        download: false // <== line to add
-
-                                    }
-                                }
-                            },
-                            plotOptions: {
-                                bar: {
-                                    borderRadius: 4,
-                                    borderRadiusApplication: 'end',
-                                    horizontal: true,
-                                }
-                            },
-                            dataLabels: {
-                                enabled: true
-                            },
-                            xaxis: {
-
-                                categories: data.top_category_order.map(item => item
-                                    .name)
-                            }
-                        };
-
-                        var chart = new ApexCharts(document.querySelector("#chart"),
-                            options);
-                        chart.render();
-                    }else{
-                      $('#chart').html('<div class="alert alert-info" role="alert">Aucune données n\'a été trouvé pour les dates choisis</div>');
-                       
-                    }
-                }
-            });
-        });
     });
 </script>

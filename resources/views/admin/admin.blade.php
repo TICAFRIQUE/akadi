@@ -297,7 +297,7 @@
                                         </div>
                                         <div class="media-items">
                                             <div class="media-item">
-                                                <div class="media-value badge badge-info">{{count($item['orders']) }}
+                                                <div class="media-value badge badge-info">{{ count($item['orders']) }}
                                                 </div>
                                                 <div class="media-label">Commandes</div>
                                             </div>
@@ -324,15 +324,16 @@
 
 
 
-          <!-- ========== Start statistic product more buy ========== -->
-          @include('admin.pages.statistic.top_product')
-          <!-- ========== End statistic product  more buy ========== -->
+            <!-- ========== Start statistic product more buy ========== -->
+            @include('admin.pages.statistic.top_product')
+            <!-- ========== End statistic product  more buy ========== -->
 
 
             <!-- ========== Start statistic category more buy ========== -->
-            @include('admin.pages.statistic.top_category')
+            @include('admin.pages.statistic.category_with_product
+                        ')
             <!-- ========== End statistic category more buy ========== -->
-          
+
 
         </div>
 
@@ -523,7 +524,7 @@
                         <i class="fas fa-undo"></i> Restore Default
                     </a>
 
-                     {{-- <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
+                    {{-- <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
                         <i class="fas fa-setting"></i> Mode maintenance
                     </a> --}}
                 </div>
@@ -544,58 +545,57 @@
     @endpush
 
     <script>
-       
         $(document).ready(function() {
 
 
-             // 'use strict';
-        $(function() {
-            // chart1();
-            // chart2();
-            // chart3();
-            // chart4();
-            // chart5();
-            // chart6();
-            chart7();
-            // chart8();
-        });
+            // 'use strict';
+            $(function() {
+                // chart1();
+                // chart2();
+                // chart3();
+                // chart4();
+                // chart5();
+                // chart6();
+                chart7();
+                // chart8();
+            });
 
-        //chart type client 
-        function chart7() {
-            var client_fidele = {{ Js::from($client_fidele) }}
-            var client_prospect = {{ Js::from($client_prospect) }}
+            //chart type client 
+            function chart7() {
+                var client_fidele = {{ Js::from($client_fidele) }}
+                var client_prospect = {{ Js::from($client_prospect) }}
 
-            var options = {
-                chart: {
-                    width: 400,
-                    type: 'pie',
-                },
-                labels: [ 'Client-prospect', 'Client-fidele',],
-                series: [ client_prospect, client_fidele],
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                            width: 200
-                        },
-                        legend: {
-                            position: 'bottom'
+                var options = {
+                    chart: {
+                        width: 400,
+                        type: 'pie',
+                    },
+                    labels: ['Client-prospect', 'Client-fidele', ],
+                    series: [client_prospect, client_fidele],
+                    responsive: [{
+                        breakpoint: 480,
+                        options: {
+                            chart: {
+                                width: 200
+                            },
+                            legend: {
+                                position: 'bottom'
+                            }
                         }
-                    }
-                }]
+                    }]
+                }
+
+                var chart = new ApexCharts(
+                    document.querySelector("#chart7"),
+                    options,
+                    client_fidele,
+                    client_prospect
+                );
+
+                chart.render();
             }
 
-            var chart = new ApexCharts(
-                document.querySelector("#chart7"),
-                options,
-                client_fidele,
-                client_prospect
-            );
 
-            chart.render();
-        }
-
-           
 
 
 
