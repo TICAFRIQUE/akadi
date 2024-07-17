@@ -7,13 +7,13 @@
             <h4>Commandes par mois</h4>
             <!-- two date for get product between date-->
         </div>
-        <form id="dateRangeForm" class="m-auto">
+        {{-- <form id="dateRangeForm" class="m-auto">
             <label for="start_date">Debut:</label>
             <input type="date" id="start_date" name="start_date">
             <label for="end_date">Fin:</label>
             <input type="date" id="end_date" name="end_date">
             <button type="submit" class="bg-primary text-white border-0">Obtenir les données</button>
-        </form>
+        </form> --}}
 
         <div class="card-body">
             <div class="">
@@ -41,11 +41,21 @@
 
             success: function(data) {
                 //map
-                var month = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet',
-                    'aout', 'septembre', 'octobre', 'novembre', 'decembre'
-                ]
-                console.log(month.map(item => item ));
-
+                var month = [{id:1 ,name:'janvier'}, 
+                {id:2 ,name:'février'},
+                {id:3 ,name:'mars'},
+                {id:4 ,name:'avril'},
+                {id:5 ,name:'mai'},
+                {id:6 ,name:'juin'},
+                {id:7 ,name:'juillet'},
+                {id:8 ,name:'août'},
+                {id:9 ,name:'septembre'},
+                {id:10 ,name:'octobre'},
+                {id:11 ,name:'novembre'},
+                {id:12 ,name:'décembre'}
+            ];
+           
+// console.log(month.map(item => item.name));
                 var options = {
                     series: [{
                         name: 'Nombre de commande',
@@ -75,7 +85,7 @@
                     },
                     xaxis: {
 
-                        categories: month.map(item => item)
+                        categories: data.orders_by_month.map(item => item.month)
 
                     }
                 };
