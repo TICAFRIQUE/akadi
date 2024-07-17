@@ -324,9 +324,14 @@
 
 
 
-          <!-- ========== Start statistic product and category more buy ========== -->
-          @include('admin.pages.statistic.product_and_category')
-          <!-- ========== End statistic product and category more buy ========== -->
+          <!-- ========== Start statistic product more buy ========== -->
+          @include('admin.pages.statistic.top_product')
+          <!-- ========== End statistic product  more buy ========== -->
+
+
+            <!-- ========== Start statistic category more buy ========== -->
+            @include('admin.pages.statistic.top_category')
+            <!-- ========== End statistic category more buy ========== -->
           
 
         </div>

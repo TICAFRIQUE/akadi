@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\PHPMailer;
 use App\Http\Controllers\Controller;
@@ -196,7 +197,6 @@ class DashboardController extends Controller
 
         //if $startDate and endDate with eloquent
 
-
         if ($startDate && $endDate) {
             $top_product_order = Product::whereHas(
                 'orders',
@@ -217,6 +217,42 @@ class DashboardController extends Controller
         return response()->json([
             'status' => 'success',
             'top_product_order' => $top_product_order,
+        ]);
+    }
+
+    public function category_statistic(Request $request)
+    {
+        // categories where there are more orders 
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        if ($startDate && $endDate) {
+            $top_category_order = Category::whereHas(
+                'products',
+                fn ($q) => $q->whereHas(
+                    'orders',
+                    fn ($q) => $q->whereBetween('date_order', [
+                        $startDate, $endDate
+                    ])->whereNotIn('status', ['annulée'])
+                )
+            )
+                ->withCount('products')
+                ->having('products_count', '>', 0)
+                ->orderBy('products_count', 'DESC')->get();
+        } else {
+            $top_category_order = Category::with([
+                'products'=>
+                fn ($q) => $q->whereHas(
+                    'orders',
+                    fn ($q) => $q->whereNotIn('status', ['annulée'])
+                )
+                ])
+                ->withCount('products')
+                ->having('products_count', '>', 0)
+                ->orderBy('products_count', 'DESC')->get();
+        }
+        return response()->json([
+            'status' => 'success',
+            'top_category_order' => $top_category_order,
         ]);
     }
 }
