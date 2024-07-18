@@ -6,9 +6,14 @@
         <div class="card-header">
             <h4>Commandes par mois</h4>
             <!-- two date for get product between date-->
-            <form id="dateRangeForm" class="m-auto">
-                <select name="year" id="year"></select>
-                {{-- <button type="submit" class="bg-primary text-white border-0">Obtenir les données</button> --}}
+            <form id="dateRangeYear" class="m-auto">
+                <select name="year" id="year">
+                    <option disabled selected value>Choir une année</option>
+                    @for ($i = 2023; $i <= date('Y'); $i++)
+                    <option value="{{$i}}">{{$i}}</option>
+                    @endfor
+                </select>
+                <button type="submit" class="bg-primary text-white border-0">Obtenir les données</button>
             </form>
         </div>
         
@@ -34,22 +39,22 @@
     $(document).ready(function() {
         // without rangetime
         //get years
-        function getYears(startYear, endYear) {
-            let years = [];
-            for (let year = startYear; year <= endYear; year++) {
-                years.push(year);
-            }
-            return years;
-        }
+        // function getYears(startYear, endYear) {
+        //     let years = [];
+        //     for (let year = startYear; year <= endYear; year++) {
+        //         years.push(year);
+        //     }
+        //     return years;
+        // }
 
-        let currentYear = new Date().getFullYear();
-        let yearsList = getYears(currentYear - 1, currentYear);
-        //put in my select option
-        $('#year').append('<option disabled selected value>' + 'Choisir une année' + '</option>');
+        // let currentYear = new Date().getFullYear();
+        // let yearsList = getYears(currentYear - 1, currentYear);
+        // //put in my select option
+        // $('#year').append('<option disabled selected value>' + 'Choisir une année' + '</option>');
 
-        $.each(yearsList, function(index, value) {
-            $('#year').append('<option value="' + value + '">' + value + '</option>');
-        });
+        // $.each(yearsList, function(index, value) {
+        //     $('#year').append('<option value="' + value + '">' + value + '</option>');
+        // });
 
 
 
@@ -103,10 +108,9 @@
 
 
         //get data if select year
-        $('#year').change(function(e) {
+        $('#dateRangeYear').submit(function(e) {
             e.preventDefault();
-            var year = $(this).val();
-
+            var year = $('#year option:selected').val();
             $.ajax({
                 url: "{{ route('dashboard.order-period') }}",
                 method: 'GET',
