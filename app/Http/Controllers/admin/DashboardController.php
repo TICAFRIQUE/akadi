@@ -240,17 +240,20 @@ class DashboardController extends Controller
 
 
         // count order by month
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        // if ( $endDate) {
-        //     # code...
-        // }
+        $year = $request->input('year');
 
-        $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
-            ->groupBy('year', 'month' , 'month_name')
-            ->orderBy('month', 'ASC')
-            ->get();
-
+        if ($year) {
+            $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
+                ->whereYear('date_order', $year)
+                ->groupBy('year', 'month', 'month_name')
+                ->orderBy('month', 'ASC')
+                ->get();
+        } else {
+            $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
+                ->groupBy('year', 'month', 'month_name')
+                ->orderBy('month', 'ASC')
+                ->get();
+        }
 
 
 
