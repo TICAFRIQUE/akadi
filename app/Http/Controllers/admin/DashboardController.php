@@ -240,26 +240,63 @@ class DashboardController extends Controller
 
 
         // count order by month
-        $year = $request->input('year');
+        // $year = $request->input('year');
 
-        if ($year) {
-            $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
-                ->whereYear('date_order', $year)
-                ->groupBy('year', 'month', 'month_name')
-                ->orderBy('year', 'ASC')
-                ->get();
-        } else {
-            $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
-                ->groupBy('year', 'month', 'month_name')
-                ->orderBy('year', 'ASC')
-                ->get();
-        }
+        // if ($year) {
+        //     $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
+        //         ->whereYear('date_order', $year)
+        //         ->groupBy('year', 'month', 'month_name')
+        //         ->orderBy('year', 'ASC')
+        //         ->get();
+        // } else {
+        //     $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
+        //         ->groupBy('year', 'month', 'month_name')
+        //         ->orderBy('year', 'ASC')
+        //         ->get();
+        // }
 
 
 
         return response()->json([
             'status' => 'success',
             'orders_by_year' => $orders_by_year,
+            // 'orders_by_month' => $orders_by_month,
+
+        ]);
+    }
+
+
+
+    public function order_period_month(Request $request)
+    {
+        // count order by years
+        // $orders_by_year = Order::selectRaw('YEAR(date_order) as year, COUNT(*) as count')
+        //     ->groupBy('year')
+        //     ->orderBy('year', 'ASC')
+        //     ->get();
+
+
+        // count order by month
+        $year = $request->input('year');
+
+        if ($year) {
+            $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
+            ->whereYear('date_order', $year)
+            ->groupBy('year', 'month', 'month_name')
+            ->orderBy('year', 'ASC')
+            ->get();
+        } else {
+            $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
+            ->groupBy('year', 'month', 'month_name')
+            ->orderBy('year', 'ASC')
+            ->get();
+        }
+
+
+
+        return response()->json([
+            'status' => 'success',
+            // 'orders_by_year' => $orders_by_year,
             'orders_by_month' => $orders_by_month,
 
         ]);
