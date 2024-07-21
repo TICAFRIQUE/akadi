@@ -59,7 +59,7 @@
 
 
         $.ajax({
-            url: "{{ route('dashboard.order-period-month') }}",
+            url: "{{ route('dashboard.order-period') }}",
             method: 'GET',
 
             success: function(data) {
@@ -112,7 +112,7 @@
             e.preventDefault();
             var year = $('#year option:selected').val();
             $.ajax({
-                url: "{{ route('dashboard.order-period-month') }}",
+                url: "{{ route('dashboard.order-period') }}",
                 method: 'GET',
                 data: {
                     year: year,
