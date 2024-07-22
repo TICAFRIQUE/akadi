@@ -122,7 +122,7 @@ class DashboardController extends Controller
         ####################### TOP CLIENT#####################
         //meilleur client
         $top_user_order = User::withCount('orders')
-            ->with('orders', fn ($q) => $q->whereNotIn('status', ['annulée']))
+            ->with('orders', fn ($q) => $q->whereStatus('livrée'))
             ->having('orders_count', '>', 0)
             ->orderBy('orders_count', 'DESC')->take(5)->get();
 
@@ -201,7 +201,7 @@ class DashboardController extends Controller
         if ($startDate && $endDate) {
             $top_product_order = Product::whereHas(
                 'orders',
-                fn ($q) => $q->whereBetween('date_order', [$startDate, $endDate])->whereNotIn('status', ['annulée'])
+                fn ($q) => $q->whereBetween('date_order', [$startDate, $endDate])->whereStatus('livrée')
             )
                 ->withCount('orders')
                 ->having('orders_count', '>', 0)
@@ -209,7 +209,7 @@ class DashboardController extends Controller
         } else {
 
             $top_product_order = Product::withCount('orders')
-                ->with('orders', fn ($q) => $q->whereNotIn('status', ['annulée']))
+                ->with('orders', fn ($q) => $q->whereStatus('livrée'))
                 ->having('orders_count', '>', 0)
                 ->orderBy('orders_count', 'DESC')->get();
             // dd($top_product_order->toArray());
@@ -234,7 +234,7 @@ class DashboardController extends Controller
     {
         // count order by years
         $orders_by_year = Order::selectRaw('YEAR(date_order) as year, COUNT(*) as count')
-        ->whereNotIn('status', ['annulée'])
+        ->whereStatus('livrée')
             ->groupBy('year')
             ->orderBy('year', 'ASC')
             ->get();
@@ -245,14 +245,14 @@ class DashboardController extends Controller
 
         if ($year) {
             $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
-            ->whereNotIn('status', ['annulée'])
+            ->whereStatus('livrée')
                 ->whereYear('date_order', $year)
                 ->groupBy('year', 'month', 'month_name')
                 ->orderBy('year', 'ASC')
                 ->get();
         } else {
             $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
-            ->whereNotIn('status', ['annulée'])
+            ->whereStatus('livrée')
                 ->groupBy('year', 'month', 'month_name')
                 ->orderBy('year', 'ASC')
                 ->get();
@@ -275,7 +275,7 @@ class DashboardController extends Controller
     {
         // count order by years
         $revenu_by_year = Order::selectRaw('YEAR(date_order) as year, SUM(total) as total')
-        ->whereNotIn('status', ['annulée'])
+        ->whereStatus('livrée')
             ->groupBy('year')
             ->orderBy('year', 'ASC')
             ->get();
@@ -286,14 +286,14 @@ class DashboardController extends Controller
 
         if ($year) {
             $revenu_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, SUM(total) as total')
-            ->whereNotIn('status', ['annulée'])
+            ->whereStatus('livrée')
             ->whereYear('date_order', $year)
             ->groupBy('year', 'month', 'month_name')
             ->orderBy('year', 'ASC')
             ->get();
         } else {
             $revenu_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, SUM(total) as total')
-            ->whereNotIn('status', ['annulée'])
+            ->whereStatus('livrée')
             ->groupBy('year', 'month', 'month_name')
             ->orderBy('year', 'ASC')
             ->get();
