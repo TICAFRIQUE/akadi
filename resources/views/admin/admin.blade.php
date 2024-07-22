@@ -329,13 +329,25 @@
           <!-- ========== End statistic product  more buy ========== -->
 
 
-            <!-- ========== Start statistic category more buy ========== -->
+            <!-- ========== Start statistic order more buy year ========== -->
             @include('admin.pages.statistic.order_by_year')
-            <!-- ========== End statistic category more buy ========== -->
+            <!-- ========== End statistic order more buy year ========== -->
 
-             <!-- ========== Start statistic category more buy ========== -->
+             <!-- ========== Start statistic order more buy month ========== -->
              @include('admin.pages.statistic.order_by_month')
-             <!-- ========== End statistic category more buy ========== -->
+             <!-- ========== End statistic order more buy month ========== -->
+
+
+             <!-- ========== Start chiffre d'affaire buy year ========== -->
+             @include('admin.pages.statistic.revenu_by_year')
+             
+             <!-- ========== End chiffre d'affaire buy year ========== -->
+
+               <!-- ========== Start chiffre d'affaire buy year ========== -->
+             @include('admin.pages.statistic.revenu_by_month')
+             
+             <!-- ========== End chiffre d'affaire buy year ========== -->
+             
           
 
         </div>

@@ -44,6 +44,8 @@ Route::middleware(['admin'])->group(function () {
         route::get('', 'index')->name('dashboard.index');
         route::get('product-statistic', 'product_statistic')->name('dashboard.product-statistic');
         route::get('order-period', 'order_period')->name('dashboard.order-period');
+        route::get('revenu-period', 'revenu_period')->name('dashboard.revenu-period'); // chiffre d'affaire
+
 
 
     });

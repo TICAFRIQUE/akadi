@@ -264,4 +264,46 @@ class DashboardController extends Controller
 
         ]);
     }
+
+
+//Chiffre d'affaire
+
+    public function revenu_period(Request $request) 
+    {
+        // count order by years
+        $revenu_by_year = Order::selectRaw('YEAR(date_order) as year, SUM(total) as total')
+            ->groupBy('year')
+            ->orderBy('year', 'ASC')
+            ->get();
+
+
+        // count order by month
+        $year = $request->input('year');
+
+        if ($year) {
+            $revenu_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, SUM(total) as total')
+            ->whereYear('date_order', $year)
+            ->groupBy('year', 'month', 'month_name')
+            ->orderBy('year', 'ASC')
+            ->get();
+        } else {
+            $revenu_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, SUM(total) as total')
+            ->groupBy('year', 'month', 'month_name')
+            ->orderBy('year', 'ASC')
+            ->get();
+        }
+
+
+
+        return response()->json([
+            'status' => 'success',
+            'revenu_by_year' => $revenu_by_year,
+            'revenu_by_month' => $revenu_by_month,
+
+        ]);
+    }
+
+
+
+
 }
