@@ -71,16 +71,19 @@ class DashboardController extends Controller
         // statistic order
         $orders_days = Order::orderBy('created_at', 'DESC')
             ->where('date_order', Carbon::now()->format('Y-m-d'))
+            ->whereStatus('livrée')
             ->count();
 
         // dd($orders_days);
 
         $orders_month = Order::orderBy('created_at', 'DESC')
             ->whereMonth('date_order', Carbon::now()->month)
+            ->whereStatus('livrée')
             ->count();
 
         $orders_year = Order::orderBy('created_at', 'DESC')
             ->whereYear('date_order', Carbon::now()->year)
+            ->whereStatus('livrée')
             ->count();
 
         //orders semaine
@@ -91,7 +94,9 @@ class DashboardController extends Controller
 
 
         $orders_week = Order::orderBy('created_at', 'DESC')
-            ->whereBetween('date_order', [$startWeek, $endWeek])->count();
+            ->whereBetween('date_order', [$startWeek, $endWeek])
+            ->whereStatus('livrée')
+            ->count();
 
 
 
