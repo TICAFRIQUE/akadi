@@ -98,7 +98,7 @@
                                         <button class="btn btn-primary" id="codeCouponBtn">Generer</button>
 
                                         <input type="text" id="codeCoupon" name="code" class="form-control"
-                                            required>
+                                            required >
                                         <div class="invalid-feedback">
                                             Champs obligatoire
                                         </div>
@@ -166,8 +166,7 @@
                                             sélectionner</label>
                                     </div>
 
-                                    <select name="customers[]" id="customer" class="form-control select2 " multiple
-                                        required>
+                                    <select name="customers[]" id="customer" class="form-control select2 " multiple required>
                                         @foreach ($customer as $item)
                                             <option value="{{ $item['id'] }}"> {{ $item['name'] }} </option>
                                         @endforeach
@@ -185,8 +184,7 @@
                                             sélectionner</label>
                                     </div>
 
-                                    <select name="products[]" id="product" class="form-control select2 " multiple
-                                        required>
+                                    <select name="products[]" id="product" class="form-control select2 " multiple required>
                                         @foreach ($product as $item)
                                             <option value="{{ $item['id'] }}"> {{ $item['title'] }} </option>
                                         @endforeach
@@ -207,76 +205,6 @@
                         </div>
 
                     </form>
-                </div>
-
-
-
-
-
-                <div class="card">
-                    <div class="card-header">
-                        <h4> <code>BON DE COMMANDE</code></h4>
-                    </div>
-                    <div class="card-body">
-                        <ul class="nav nav-pills" id="myTab3" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="home-tab3" data-toggle="tab" href="#couponGroupe"
-                                    role="tab" aria-controls="home" aria-selected="true">Groupe</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="profile-tab3" data-toggle="tab" href="#couponUnique"
-                                    role="tab" aria-controls="profile" aria-selected="false">Unique</a>
-                            </li>
-                            {{-- <li class="nav-item">
-                                <a class="nav-link" id="contact-tab3" data-toggle="tab" href="#contact3"
-                                    role="tab" aria-controls="contact" aria-selected="false">Contact</a>
-                            </li> --}}
-                        </ul>
-                        <div class="tab-content" id="myTabContent2">
-                            <div class="tab-pane fade show active" id="couponGroupe" role="tabpanel"
-                                aria-labelledby="home-tab3">
-                                <h2>Créer un Bon de Réduction</h2>
-                                <form action="" method="POST">
-                                    @csrf
-                                    <label>Nom du Bon :</label>
-                                    <input type="text" name="nom" required>
-
-                                    <label>Quantité :</label>
-                                    <input type="number" name="quantite" required>
-
-                                    <label>Nombre d'utilisations par utilisateur :</label>
-                                    <input type="number" name="utilisation_max" required>
-
-                                    <label>Montant Minimum :</label>
-                                    <input type="number" name="montant_min">
-
-                                    <label>Montant Maximum :</label>
-                                    <input type="number" name="montant_max">
-
-                                    <label>Date d'Expiration :</label>
-                                    <input type="date" name="expiration" required>
-
-                                    <button type="submit">Créer</button>
-                                </form>
-                            </div>
-                            <div class="tab-pane fade" id="couponUnique" role="tabpanel"
-                                aria-labelledby="profile-tab3">
-                                Sed sed metus vel lacus hendrerit tempus. Sed efficitur velit tortor, ac efficitur est
-                                lobortis
-                                quis. Nullam lacinia metus erat, sed fermentum justo rutrum ultrices. Proin quis iaculis
-                                tellus.
-                                Etiam ac vehicula eros, pharetra consectetur dui.
-                            </div>
-                            {{-- <div class="tab-pane fade" id="contact3" role="tabpanel"
-                                aria-labelledby="contact-tab3">
-                                Vestibulum imperdiet odio sed neque ultricies, ut dapibus mi maximus. Proin ligula
-                                massa,
-                                gravida in lacinia efficitur, hendrerit eget mauris. Pellentesque fermentum, sem
-                                interdum
-                                molestie finibus, nulla diam varius leo, nec varius lectus elit id dolor.
-                            </div> --}}
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -508,7 +436,7 @@
                 code += possible.charAt(Math.floor(Math.random() * possible.length));
 
             $('#codeCoupon').val(code)
-            $('#codeCoupon').prop('readonly', true)
+            $('#codeCoupon').prop('readonly' , true)
 
 
         });
