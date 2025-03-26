@@ -32,13 +32,12 @@ class CouponController extends Controller
         $customer = User::with('roles')
             ->whereHas(
                 'roles',
-                fn ($q) => $q->where('name', '!=', 'developpeur')
+                fn($q) => $q->where('name', '!=', 'developpeur')
             )
             ->orderBy('created_at', 'DESC')->get();
 
         return view('admin.pages.coupon.add',  compact('product', 'customer'));
     }
-
 
 
     public function store(Request $request)
@@ -57,14 +56,14 @@ class CouponController extends Controller
 
 
 
-        if ($request['customers']) {
-            $coupon->users()->attach($request['customers']);
-        }
+        // if ($request['customers']) {
+        //     $coupon->users()->attach($request['customers']);
+        // }
 
-        if ($request['products']) {
+        // if ($request['products']) {
 
-            $coupon->products()->attach($request['products']);
-        }
+        //     $coupon->products()->attach($request['products']);
+        // }
 
         // if ($request['customers']) {
         //     # code...
@@ -82,5 +81,4 @@ class CouponController extends Controller
             'status' => 200
         ]);
     }
-
 }

@@ -214,29 +214,31 @@
                         </li>
                         <!-- ========== End notification orders ========== -->
 
-                        <li class="dropdown"><a href="#" data-toggle="dropdown"
-                                class="nav-link dropdown-toggle nav-link-lg nav-link-user"> <img alt="image"
-                                    src="{{ asset('admin/assets/img/user.png') }}" class="user-img-radious-style">
-                                <span class="d-sm-none d-lg-inline-block"></span></a>
-                            <div class="dropdown-menu dropdown-menu-right pullDown">
-                                <div class="dropdown-title">{{ Auth::user()->name }}
-                                    <span>{{ Auth::user()->role }} </span>
-                                </div>
-                                <a href="{{ route('user.edit', Auth::user()->id) }}" class="dropdown-item has-icon">
-                                    <i class="far
-                                      fa-user"></i> Profile
-                                </a>
+                        @auth
+                            <li class="dropdown"><a href="#" data-toggle="dropdown"
+                                    class="nav-link dropdown-toggle nav-link-lg nav-link-user"> <img alt="image"
+                                        src="{{ asset('admin/assets/img/user.png') }}" class="user-img-radious-style">
+                                    <span class="d-sm-none d-lg-inline-block"></span></a>
+                                <div class="dropdown-menu dropdown-menu-right pullDown">
+                                    <div class="dropdown-title">{{ Auth::user()->name }}
+                                        <span>{{ Auth::user()->role }} </span>
+                                    </div>
+                                    <a href="{{ route('user.edit', Auth::user()->id) }}" class="dropdown-item has-icon">
+                                        <i class="far
+                              fa-user"></i> Profile
+                                    </a>
 
-                                {{-- <a href="{{route('setting.index')}}" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
-                                    Parametres
-                                </a> --}}
-                                <div class="dropdown-divider"></div>
-                                <a href="{{ route('user.logout') }}" class="dropdown-item has-icon text-danger"> <i
-                                        class="fas fa-sign-out-alt"></i>
-                                    Se deconnecter
-                                </a>
-                            </div>
-                        </li>
+                                    {{-- <a href="{{route('setting.index')}}" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
+                            Parametres
+                        </a> --}}
+                                    <div class="dropdown-divider"></div>
+                                    <a href="{{ route('user.logout') }}" class="dropdown-item has-icon text-danger"> <i
+                                            class="fas fa-sign-out-alt"></i>
+                                        Se deconnecter
+                                    </a>
+                                </div>
+                            </li>
+                        @endauth
                     </ul>
                 </nav>
                 {{-- End Horizontal nav --}}
@@ -438,6 +440,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js">
     </script>
+
+
+
 
 
     <script>

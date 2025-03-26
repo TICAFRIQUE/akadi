@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/css/custom.css') }}">
 @endpush
 
-<script>
+{{-- <script>
     //upload principal image
     function readURL(input) {
         let noimage =
@@ -26,7 +26,7 @@
             $("#img-preview").attr("src", noimage);
         }
     }
-</script>
+</script> --}}
 
 @section('content')
     <style>
@@ -82,7 +82,7 @@
                     </div>
                     @include('admin.components.validationMessage')
 
-                    <form class="needs-validation" novalidate="" action="{{ route('coupon.store') }}" method="post"
+                    {{-- <form class="needs-validation" novalidate="" action="{{ route('coupon.store') }}" method="post"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">
@@ -105,12 +105,12 @@
                                     </div>
                                 </div>
 
-                                {{-- <div class="col-sm-3">
+                                <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Montant de la remise</label>
 
                                     <input type="number" id="discount_price" name="montant_remise"
                                         class="form-control">
-                                </div> --}}
+                                </div>
 
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Pourcentage(%) </label>
@@ -206,7 +206,7 @@
                             </div>
                         </div>
 
-                    </form>
+                    </form> --}}
                 </div>
 
 
@@ -227,45 +227,20 @@
                                 <a class="nav-link" id="profile-tab3" data-toggle="tab" href="#couponUnique"
                                     role="tab" aria-controls="profile" aria-selected="false">Unique</a>
                             </li>
-                            {{-- <li class="nav-item">
-                                <a class="nav-link" id="contact-tab3" data-toggle="tab" href="#contact3"
-                                    role="tab" aria-controls="contact" aria-selected="false">Contact</a>
-                            </li> --}}
+
                         </ul>
                         <div class="tab-content" id="myTabContent2">
-                            <div class="tab-pane fade show active" id="couponGroupe" role="tabpanel"
-                                aria-labelledby="home-tab3">
-                                <h2>Créer un Bon de Réduction</h2>
-                                <form action="" method="POST">
-                                    @csrf
-                                    <label>Nom du Bon :</label>
-                                    <input type="text" name="nom" required>
 
-                                    <label>Quantité :</label>
-                                    <input type="number" name="quantite" required>
+                            <!-- ========== Start coupon groupe ========== -->
+                            @include('admin.pages.coupon.type.coupon_groupe')
+                            <!-- ========== End coupon groupe ========== -->
 
-                                    <label>Nombre d'utilisations par utilisateur :</label>
-                                    <input type="number" name="utilisation_max" required>
 
-                                    <label>Montant Minimum :</label>
-                                    <input type="number" name="montant_min">
 
-                                    <label>Montant Maximum :</label>
-                                    <input type="number" name="montant_max">
 
-                                    <label>Date d'Expiration :</label>
-                                    <input type="date" name="expiration" required>
 
-                                    <button type="submit">Créer</button>
-                                </form>
-                            </div>
-                            <div class="tab-pane fade" id="couponUnique" role="tabpanel"
-                                aria-labelledby="profile-tab3">
-                                Sed sed metus vel lacus hendrerit tempus. Sed efficitur velit tortor, ac efficitur est
-                                lobortis
-                                quis. Nullam lacinia metus erat, sed fermentum justo rutrum ultrices. Proin quis iaculis
-                                tellus.
-                                Etiam ac vehicula eros, pharetra consectetur dui.
+                            <div class="tab-pane fade" id="couponUnique" role="tabpanel" aria-labelledby="profile-tab3">
+                                <strong>Bientôt disponible </strong>
                             </div>
                             {{-- <div class="tab-pane fade" id="contact3" role="tabpanel"
                                 aria-labelledby="contact-tab3">
@@ -295,155 +270,47 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        // par defaut disabled valeur de remise si type de remise = pourcentage ou montant
 
-        //display principal image if category is pack
-        $('#principal_image').hide()
-
-        $('select[name="categories"]').change(function(e) {
-            var selectVal = $("#category option:selected").attr('tag');
-            if (selectVal == "Pack") {
-                $('#principal_image').show()
-            } else {
-                $('#principal_image').hide(100)
-            }
-        });
-
-
-
-
-        // Gestion upload image
-        if (window.File && window.FileList && window.FileReader) {
-            $("#files").on("change", function(e) {
-                var files = e.target.files,
-                    filesLength = files.length;
-                for (var i = 0; i < filesLength; i++) {
-                    var f = files[i]
-                    var fileReader = new FileReader();
-                    fileReader.onload = (function(e) {
-                        var file = e.target;
-                        $("<span class=\"pip\">" +
-                            "<img class=\"imageThumb\" src=\"" + e.target.result +
-                            "\" title=\"" + file
-                            .name + "\"/>" +
-                            "<br/><span class=\"remove\">x</span>" +
-                            "</span>").insertAfter("#files");
-                        $(".remove").click(function() {
-                            $(this).parent(".pip").remove();
-                        });
-
-                        // Old code here
-                        /*$("<img></img>", {
-                          class: "imageThumb",
-                          src: e.target.result,
-                          title: file.name + " | Click to remove"
-                        }).insertAfter("#files").click(function(){$(this).remove();});*/
-
-                    });
-                    fileReader.readAsDataURL(f);
-                }
-                // console.log(img);
-            });
+        //recuperer le type de remise
+        var typeRemise = $('#typeRemise').val();
+        if (typeRemise == 'pourcentage' || typeRemise == 'montant') {
+            $('#valeurRemise').prop('disabled', false);
         } else {
-            alert("Your browser doesn't support to File API")
+            $('#valeurRemise').prop('disabled', true);
         }
 
 
 
-        //load sub cat
-        $('.subcat').hide();
-
-        $('select[name="categories"]').on('change', function() {
-            var catId = $(this).val();
-            if (catId) {
-                $.ajax({
-                    url: '/admin/produit/loadSubCat/' + catId,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        $('select[name="subcategories"]').empty();
-                        $('select[name="subcategories"]')
-                            .append(
-                                '<option value="" selected disabled value>Selectionner une sous categorie</option>'
-                            );
-                        $.each(data, function(key, value) {
-                            $('select[name="subcategories"]').append(
-                                '<option value=" ' + value
-                                .id + '">' + value.name + '</option>');
-                            // console.log(key, value.title);
-                        })
-
-                        if (data.length > 0) {
-                            $('.subcat').show(200);
-                            $('.subCat_required').prop('required', true);
-
-                        } else {
-                            $('.subcat').hide(200);
-                            $('.subCat_required').prop('required', false);
-
-                        }
+        // recuperer le type de remise
+        $('#typeRemise').change(function(e) {
+            // si type de remise = pourcentage
+            if ($(this).val() == 'pourcentage') {
+                // activer la valeur de remise
+                $('#valeurRemise').prop('disabled', false);
+                // empecher la valeur de remise de depasser 100%
+                $('#valeurRemise').keyup(function(e) {
+                    if ($(this).val() > 100) {
+                        $(this).val(100)
                     }
-
                 })
+            } else if ($(this).val() == 'montant') {
+                // desactiver la valeur de remise
+                $('#valeurRemise').prop('disabled', false);
             } else {
-                $('select[name="subcategories"]').empty();
-                $('.subcat').hide(200);
+                // desactiver la valeur de remise
+                $('#valeurRemise').prop('disabled', true);
 
+                //mettre la valeur de remise a null
+                $('#valeurRemise').val(null);
             }
-        });
+            var type = $(this).val();
+        })
 
 
-        // SCRIPT FOR DISCOUNT
-
-        //amount 
-        $('#discount_price').keyup(function(e) {
-            var discount_price = $('#discount_price').val()
-            var product_price = $('#product_price').val()
-
-            if (parseFloat(discount_price) > parseFloat(product_price)) {
-                $('#MsgError').html('Le prix de la remise doit etre inferieur au prix normal').css({
-                    'color': 'white',
-                    'background-color': 'red',
-                    'font-size': '16px'
-                });
-                $('.btn-submit').prop('disabled', true)
-            } else {
-                // calcul de pourcentage
-                var discount = parseFloat(discount_price * 100) / parseFloat(product_price)
-
-                $('#discount').val(Math.round(discount))
 
 
-                $('#MsgError').html(' ')
-                $('.btn-submit').prop('disabled', false)
-
-            }
-
-        });
-
-
-        //percent
-        $('#discount').keyup(function(e) {
-            var discount = $('#discount').val()
-            var product_price = $('#product_price').val()
-
-            if (discount > 100) {
-                $('#MsgError').html('Le pourcentage ne doit pas exceder 100%').css({
-                    'color': 'white',
-                    'background-color': 'red',
-                    'font-size': '16px'
-                });
-                $('.btn-submit').prop('disabled', true)
-            } else {
-                var amount_discount = parseFloat(product_price) * (discount / 100)
-                $('#discount_price').val(amount_discount)
-
-                $('#MsgError').html(' ')
-                $('.btn-submit').prop('disabled', false)
-            }
-        });
-
-
-        //date discount
+        //Gestion des dates
 
         $(".datetimepicker").each(function() {
             $(this).datetimepicker({
@@ -452,66 +319,135 @@
                 changeMonth: true,
                 changeYear: true,
                 showButtonPanel: true,
-                dateFormat: 'yy-mm-dd',
+                dateFormat: 'dd-mm-yy', // Format pour la date
+                timeFormat: 'HH:mm', // Format pour l'heure
                 minDate: 0
+
             });
         });
 
 
 
-        $('#date_start').change(function(e) {
-            var date_start = $(this).val();
+
+
+        // $('#date_start').change(function(e) {
+        //     var date_start = $(this).val();
+        //     var date_end = $('#date_end').val();
+
+        //     if (date_start > date_end) {
+        //         $('#MsgError').html(
+        //             'La date debut de la promo ne doit pas etre superieur à la date de fin').css({
+        //             'color': 'white',
+        //             'background-color': 'red',
+        //             'font-size': '16px'
+        //         });
+        //         $('.btn-submit').prop('disabled', true)
+        //     } else {
+        //         $('#MsgError').html(' ')
+        //         $('.btn-submit').prop('disabled', false)
+        //     }
+        // });
+
+
+        // $('#date_end').change(function(e) {
+        //     var date_end = $(this).val();
+        //     var date_start = $('#date_start').val();
+
+        //     if (date_end < date_start) {
+        //         $('#MsgError').html(
+        //             'La date fin de la promo ne doit pas etre inferieur à la date de debut').css({
+        //             'color': 'white',
+        //             'background-color': 'red',
+        //             'font-size': '16px'
+        //         });
+        //         $('.btn-submit').prop('disabled', true)
+        //     } else {
+        //         $('#MsgError').html(' ')
+        //         $('.btn-submit').prop('disabled', false)
+        //     }
+        // });
+
+        function validateDates() {
+            var date_start = $('#date_start').val();
             var date_end = $('#date_end').val();
 
-            if (date_start > date_end) {
-                $('#MsgError').html(
-                    'La date debut de la promo ne doit pas etre superieur à la date de fin').css({
-                    'color': 'white',
-                    'background-color': 'red',
-                    'font-size': '16px'
-                });
-                $('.btn-submit').prop('disabled', true)
-            } else {
-                $('#MsgError').html(' ')
-                $('.btn-submit').prop('disabled', false)
+            if (date_start && date_end) { // Vérifie que les deux dates sont définies
+                if (date_start > date_end) {
+                    $('#MsgError').html(
+                        'La date de début de la promo ne doit pas être supérieure à la date de fin'
+                    ).css({
+                        'color': 'white',
+                        'background-color': 'red',
+                        'font-size': '16px'
+                    });
+                    $('.btn-submit').prop('disabled', true);
+                } else {
+                    $('#MsgError').html('');
+                    $('.btn-submit').prop('disabled', false);
+                }
             }
-        });
+        }
+
+        // appeler la fonction validateDates() lorsque les dates sont chargées
+        validateDates
+            (); // on appelle la fonction validateDates() pour vérifier les dates au chargement de la page
 
 
-        $('#date_end').change(function(e) {
-            var date_end = $(this).val();
-            var date_start = $('#date_start').val();
+        // appeler la fonction validateDates() lorsque les dates changent
+        $('#date_start, #date_end').on('change',
+            validateDates); // on utilise la fonction change() pour détecter les changements
 
-            if (date_end < date_start) {
-                $('#MsgError').html(
-                    'La date fin de la promo ne doit pas etre inferieur à la date de debut').css({
-                    'color': 'white',
-                    'background-color': 'red',
-                    'font-size': '16px'
-                });
-                $('.btn-submit').prop('disabled', true)
-            } else {
-                $('#MsgError').html(' ')
-                $('.btn-submit').prop('disabled', false)
-            }
-        });
+
 
 
         //Generate code coupon
+        // $('#codeCouponBtn').click(function(e) {
+        //     e.preventDefault();
+
+        //     // on va recuperer le nom du coupon et le concatenner avec le code genéré
+        //     var nom = $('#nameCoupon').val() || 'AK'; // Utilise 'AK' si le champ est vide
+        //     var code = (nom + '-').toUpperCase(); // Mets en majuscule et ajoute le tiret
+
+        //     // abcdefghijklmnopqrstuvwxyz
+        //     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+        //     for (var i = 0; i < 8; i++)
+        //         code += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        //     $('#codeCoupon').val(code)
+        //     $('#codeCoupon').prop('readonly', true)
+
+
+        // });
+
+
+        // Fonction pour générer le code en temps réel
+        function generateCode() {
+            var nom = $('#nameCoupon').val() || 'AK'; // Utilise 'AK' si le champ est vide
+            var code = (nom + '-').toUpperCase(); // Mets en majuscule et ajoute le tiret
+
+            // Génère une partie aléatoire du code
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            for (var i = 0; i < 8; i++) {
+                code += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+
+            // Met à jour le champ du code
+            $('#codeCoupon').val(code);
+        }
+
+        // Exécute la fonction dès que le champ #nameCoupon change
+        $('#nameCoupon').on('input', function() {
+            generateCode(); // Appel de la fonction de génération de code
+        });
+
+        // Générer le code initialement lors du clic sur le bouton
         $('#codeCouponBtn').click(function(e) {
             e.preventDefault();
-            var code = "AK-";
-            // abcdefghijklmnopqrstuvwxyz
-            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-            for (var i = 0; i < 8; i++)
-                code += possible.charAt(Math.floor(Math.random() * possible.length));
-
-            $('#codeCoupon').val(code)
-            $('#codeCoupon').prop('readonly', true)
-
-
+            generateCode(); // Appel de la fonction de génération de code
+            $('#codeCoupon').prop('readonly', true); // Rend le champ readonly
         });
+
 
         //customer checked
         $('#customerCheckboxAll').change(function(e) {

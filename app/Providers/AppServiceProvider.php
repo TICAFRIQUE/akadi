@@ -107,22 +107,22 @@ class AppServiceProvider extends ServiceProvider
             $date_fin_coupon = '';
 
             foreach ($coupon as $value) {
-                if ($value['date_debut_coupon'] > Carbon::now()) {
+                if ($value['date_debut'] > Carbon::now()) {
                     $status_coupon = 'bientot';
-                } elseif ($value['date_fin_coupon'] < Carbon::now()) {
-                    $status_coupon = 'termine';
+                } elseif ($value['date_fin'] < Carbon::now()) {
+                    $status_coupon = 'terminer';
                 } else {
-                    $status_coupon = 'en cour';
+                    $status_coupon = 'en_cours';
                 }
                 // update status
                 Coupon::whereId($value['id'])
                     ->update([
-                        'status_coupon' => $status_coupon,
+                        'status' => $status_coupon,
                     ]);
             }
 
             //delete coupon status ==terminé
-            Coupon::where('status_coupon', 'termine')->delete();
+            // Coupon::where('status', 'termine')->delete();
         }
 
 

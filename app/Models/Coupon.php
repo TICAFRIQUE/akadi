@@ -11,12 +11,25 @@ class Coupon extends Model
     use HasFactory;
 
     protected $fillable = [
-        'code', //code du coupon
-        // 'montant_coupon',
-        'pourcentage_coupon',
-        'date_debut_coupon',
-        'date_fin_coupon',
-        'status_coupon', // en cour, terminer , bientot
+        // 'code', //code du coupon
+        // // 'montant_coupon',
+        // 'pourcentage_coupon',
+        // 'date_debut_coupon',
+        // 'date_fin_coupon',
+        // 'status_coupon', // en cour, terminer , bientot
+        'nom',
+        'code',
+        'quantite', // nombre de bon a generer
+        'utilisation_max',
+        'type_remise',
+        'valeur_remise',
+        'montant_min',
+        'montant_max',
+        // 'expiration',
+         'date_debut',
+        'date_fin',
+        'status',
+        'type_coupon',
         'created_at',
         'updated_at',
         'deleted_at'
@@ -32,5 +45,10 @@ class Coupon extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withPivot('nbre_utilisation')->withTimestamps();
+        
     }
+
+
+    // coupon_use
+    
 }
