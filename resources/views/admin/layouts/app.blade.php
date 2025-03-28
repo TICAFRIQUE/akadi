@@ -118,7 +118,7 @@
                         <!-- ========== Start notification orders ========== -->
                         <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
                                 class="nav-link nav-link-lg message-toggle"><i data-feather="bell" class="bell"></i>
-                                <span class="badge headerBadge1">
+                                <span id="orderNew" class="badge headerBadge1">
                                     {{ count($orders_new) }}</span> </a>
                             <div class="dropdown-menu dropdown-list dropdown-menu-right pullDown">
                                 <div class="dropdown-header">
@@ -447,20 +447,70 @@
 
     <script>
         $(document).ready(function() {
-            var order = {{ Js::from($orders_attente) }}
-            $('<audio id="chatAudio"><source src="{{ asset('admin/assets/audio/ring.mp3') }}" type="audio/mpeg"></audio>')
-                .appendTo(
-                    'body');
-            if (order.length > 0) {
-                setInterval(() => {
-                    $('#chatAudio')[0].play();
-                }, 5000);
+            function newOrders() {
+                var order = {{ Js::from($orders_attente) }}
+                $('<audio id="chatAudio"><source src="{{ asset('admin/assets/audio/ring.mp3') }}" type="audio/mpeg"></audio>')
+                    .appendTo(
+                        'body');
+                if (order.length > 0) {
+                    setInterval(() => {
+                        $('#chatAudio')[0].play();
+                    }, 5000);
+                }
+
+                $('#stop').click(function(e) {
+
+                    $('#chatAudio')[0].pause();
+                });
+
+
             }
 
-            $('#stop').click(function(e) {
+            // executer la fonction au chargement de la page
+            // newOrders();
 
-                $('#chatAudio')[0].pause();
-            });
+            //executer la fonction chaque 5 secondes
+            setInterval(newOrders, 5000);
+
+            setInterval(function() {
+                $.ajax({
+                    url: "{{ route('dashboard.checkNewOrder') }}", // Remplace par ton URL correcte
+                    method: "GET",
+                    success: function(data) {
+                        if (data.count > 0) {
+                            $('#orderNew').html(data
+                            .count); // Met à jour le nombre de commandes
+
+                            // Vider la liste et ajouter les nouvelles commandes
+                            $('.dropdown-list-content').html('');
+
+                            data.orders_new.forEach(function(order) {
+                                let orderHtml = `
+                        <a href="/admin/order/show/${order.id}" class="dropdown-item">
+                            <span class="dropdown-item-avatar text-dark">
+                                <i data-feather="shopping-cart"></i>
+                            </span>
+                            <span class="dropdown-item-desc">
+                                <span class="message-user text-info fw-bold">${order.code}</span>
+                                <span class="badge badge-primary text-white p-1 px-3">${order.status}</span>
+                                <span class="time text-capitalize text-dark fst-italic">
+                                    ${order.created_at} - ${order.created_at_human}
+                                </span>
+                            </span>
+                        </a>
+                    `;
+
+                                $('.dropdown-list-content').append(orderHtml);
+                            });
+                        } else {
+                            $('#orderNew').html(
+                            ''); // Efface le badge s'il n'y a plus de commandes
+                        }
+                    }
+                });
+            }, 5000); // Vérifie toutes les 5 secondes
+
+
         });
     </script>
 
