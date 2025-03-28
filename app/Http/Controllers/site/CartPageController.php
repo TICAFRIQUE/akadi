@@ -318,7 +318,7 @@ class CartPageController extends Controller
                 $type_commande = $_GET['data']['type_commande'];
                 $delivery_planned = $_GET['data']['delivery_planned'];
                 $code_promo = $_GET['data']['code_promo'];
-                $discount = $_GET['data']['remise'] ?? null; //remise
+                $discount = $_GET['data']['remise'] ?? 0; //remise
                 //Id du coupon si il y en a
                 $coupon_id = $_GET['data']['coupon_id'] ?? null;
 

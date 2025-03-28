@@ -497,9 +497,9 @@
                         })
                         .show();
 
-                        // detruire couponId et remiseValue en storage
-                        localStorage.removeItem('couponId');
-                        localStorage.removeItem('remiseValue');
+                    // detruire couponId et remiseValue en storage
+                    localStorage.removeItem('couponId');
+                    localStorage.removeItem('remiseValue');
                 }
             });
         });
@@ -755,14 +755,15 @@
                 $('.confirmOrder').hide();
 
 
-                var subTotal = localStorage.getItem('sousTotal');
-                var code_promo = localStorage.getItem('code-promo');
+                var subTotal = localStorage.getItem('sousTotal') || 0;
+                var code_promo = localStorage.getItem('code-promo') || 0;
+
                 var total_order = parseFloat(subTotal) + parseFloat(prix_livraison)
                 var type_commande = type_cmd // type de la commande ...precommande , normal
                 var delivery_planned = $('#date_livraison').html(); // date de livraison prevue
 
                 // recuperer la remise 
-                var remise = localStorage.getItem('remiseValue');
+                var remise = localStorage.getItem('remiseValue') || 0;
                 //recuperer le coupon Id
                 var coupon_id = localStorage.getItem('couponId');
 
