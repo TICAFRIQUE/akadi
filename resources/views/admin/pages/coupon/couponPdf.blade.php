@@ -108,10 +108,10 @@
                         {{ \Carbon\Carbon::parse($coupon->date_expiration)->format('d/m/Y') }}</div>
 
                     <!-- QR Code -->
-                    <div class="qr-code">
+                    {{-- <div class="qr-code">
                         <img src="https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl={{ urlencode('https://www.akadi.ci') }}"
                             alt="QR Code">
-                    </div>
+                    </div> --}}
 
                     <!-- Commande -->
                     <div class="footer">Commandez sur <a href="https://www.akadi.ci"
