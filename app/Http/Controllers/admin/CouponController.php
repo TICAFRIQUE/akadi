@@ -8,6 +8,8 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+
 
 class CouponController extends Controller
 {
@@ -93,6 +95,16 @@ class CouponController extends Controller
         return back()->withSuccess('Coupon crée avec success');
     }
 
+    public function generateCouponPdf($id)
+    {
+        $coupon = Coupon::findOrFail($id);
+        $quantite = $coupon->quantite; // la quantité a generer
+
+        $pdf = PDF::loadView('admin.pages.coupon.couponPdf', compact('coupon', 'quantite'))
+            ->setPaper('a4', 'landscape'); // Format carte
+
+        return $pdf->download('coupon-' . $coupon->code . '.pdf');
+    }
 
     public function destroy(string $id)
     {

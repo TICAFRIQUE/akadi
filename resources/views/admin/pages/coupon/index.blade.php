@@ -28,38 +28,45 @@
                                                 #
                                             </th>
                                             <th>Status</th>
+                                            <th>Type de coupon</th>
+                                            <th>Nom du coupon</th>
                                             <th>Code</th>
-                                            <th>Pourcentage</th>
+                                            <th>type de remise</th>
+                                            <th>Valeur de remise</th>
+                                            <th>Montant Min</th>
+                                            <th>Montant Max</th>
+                                            <th>Nombre utilisation</th>
                                             <th>Date de debut</th>
                                             <th>Expiration</th>
                                             <th>Date de création</th>
-
-
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($coupon as $key => $item)
-                                            <tr id="row_{{$item['id']}}">
+                                            <tr id="row_{{ $item['id'] }}">
+                                                <td> {{ ++$key }} </td>
+                                                <td> {{ $item['status'] }} </td>
+                                                <td> {{ $item['type_coupon'] }} </td>
+                                                <td> {{ $item['nom'] }} </td>
+                                                <td>{{ $item['code'] }} </td>
+                                                <td> {{ $item['type_remise'] }} </td>
+                                                <td> {{ $item['valeur_remise'] }} </td>
                                                 <td>
-                                                    {{ ++$key }}
+                                                    {{ $item['montant_min'] }}
                                                 </td>
-                                                <td> {{ $item['status_coupon'] }} </td>
+                                                <td>
+                                                    {{ $item['montant_max'] }}
+                                                </td>
+                                                <td> {{ $item['utilisation_max'] }}</td>
+                                                <td>
+                                                    {{ \Carbon\Carbon::parse($item['date_debut'])->isoFormat('dddd D MMMM YYYY à HH:mm') }}
+                                                </td>
+                                                <td>
+                                                    {{ \Carbon\Carbon::parse($item['date_expiration'])->isoFormat('dddd D MMMM YYYY à HH:mm') }}
+                                                </td>
 
-
-                                                <td class="align-middle">
-                                                    {{ $item['code'] }}
-                                                </td>
-                                                <td class="align-middle">
-                                                    {{ $item['pourcentage_coupon'] }}
-                                                </td>
-                                                <td class="align-middle">
-                                                    {{ $item['date_debut_coupon'] }}
-                                                </td>
-                                                <td class="align-middle">
-                                                    {{ $item['date_fin_coupon'] }}
-                                                </td>
-                                                <td class="align-middle">
+                                                <td>
                                                     {{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}
                                                 </td>
 
@@ -72,10 +79,12 @@
                                                             {{-- <a href="#" class="dropdown-item has-icon"><i
                                                                     class="fas fa-eye"></i> Details</a> --}}
 
+                                                            <a href="{{ route('coupon.pdf', $item['id']) }}" class="dropdown-item has-icon"><i
+                                                                    class="fas fa-print"></i> Imprimer les coupons</a>
 
                                                             <a href="#" role="button" data-id="{{ $item['id'] }}"
                                                                 class="dropdown-item has-icon text-danger delete"><i
-                                                                    class="far fa-trash-alt"></i>Delete</a>
+                                                                    class="far fa-trash-alt"></i>Supprimer</a>
                                                         </div>
                                                     </div>
                                                 </td>

@@ -394,6 +394,8 @@ class CartPageController extends Controller
                             'user_id' => Auth::id(),
                             'coupon_id' => $coupon_id,
                             'use_count' => 1, // Premier usage
+                            'created_at' => now(),
+                            'updated_at' => now(),
                         ]);
                     }
                 }

@@ -25,7 +25,7 @@ class Coupon extends Model
         'valeur_remise',
         'montant_min',
         'montant_max',
-        // 'expiration',
+        'expiration',
          'date_debut',
         'date_fin',
         'status',

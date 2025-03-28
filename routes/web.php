@@ -158,6 +158,8 @@ Route::prefix('admin/coupon')->controller(CouponController::class)->group(functi
     // route::get('edit/{id}', 'edit')->name('temoignage.edit');
     // route::post('update/{id}', 'update')->name('temoignage.update');
     route::post('destroy/{id}', 'destroy')->name('coupon.destroy');
+    route::get('/{id}/pdf', 'generateCouponPdf')->name('coupon.pdf');
+
 });
 
 
