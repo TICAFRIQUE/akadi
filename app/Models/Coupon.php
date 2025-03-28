@@ -49,6 +49,9 @@ class Coupon extends Model
     }
 
 
-    // coupon_use
-    
+        // Relation avec les utilisateurs via la table pivot coupon_use
+        public function userUse()
+        {
+            return $this->belongsToMany(User::class, 'coupon_use')->withPivot('use_count')->withTimestamps();
+        }
 }

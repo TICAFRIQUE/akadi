@@ -54,7 +54,7 @@
 
                 <div class="col-sm-3">
                     <label class="col-sm-12 col-form-label">Valeur de la remise </label>
-                    <input type="number" id="valeurRemise" name="valeurRemise" class="form-control" required>
+                    <input type="number" id="valeurRemise" name="valeur_remise" class="form-control" required>
                     <div class="invalid-feedback">
                         Champs obligatoire
                     </div>
@@ -94,6 +94,8 @@
                         Champs obligatoire
                     </div>
                 </div>
+
+                <input type="text" name="type_coupon" value="groupe" hidden>
 
             </div>
             <!-- ========== End Remise ========== -->

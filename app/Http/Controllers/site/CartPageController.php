@@ -24,7 +24,7 @@ class CartPageController extends Controller
     public function panier()
     {
 
-        $product = Product::withWhereHas('coupon', fn ($q) => $q->where('status_coupon', 'en cour'))->get();
+        $product = Product::withWhereHas('coupon', fn($q) => $q->where('status', 'en_cours'))->get();
 
         // dd($product->toArray());
 
@@ -37,13 +37,13 @@ class CartPageController extends Controller
     {
 
         $product = Product::findOrFail($id);
-        // $product = Product::whereId($id)->withWhereHas('coupon', fn ($q) => $q->where('status_coupon', 'en cour'))->first();
+        // $product = Product::whereId($id)->withWhereHas('coupon', fn ($q) => $q->where('status', 'en_cours'))->first();
 
         $cart = session()->get('cart', []);
 
         //verifier si le produit a une remise
         $price = 0;
-        if ($product['montant_remise'] != null && $product['status_remise'] == 'en cour') {
+        if ($product['montant_remise'] != null && $product['status_remise'] == 'en_cours') {
             $price = $product['price'] - $product['montant_remise'];
         } else {
             $price = $product['price'];
@@ -198,7 +198,7 @@ class CartPageController extends Controller
 
         // $cart[$id]["coupon"] = $product->coupon[0]->code;
         // $cart[$id]["pourcentage_coupon"] = $product->coupon[0]->pourcentage_coupon;
-        // $cart[$id]["status_coupon"] = $product->coupon[0]->status_coupon;
+        // $cart[$id]["status"] = $product->coupon[0]->status;
         // session()->put('cart', $cart);
 
         return response()->json([
@@ -206,6 +206,67 @@ class CartPageController extends Controller
             'new_sousTotal' => $new_sousTotal,
         ]);
     }
+
+
+    //Verification du coupon entre
+    public function checkCoupon(Request $request, $code)
+    {
+        // recuperer le montant de la commande en cours
+        $subTotal = $request->sous_total;
+        $coupon = Coupon::where('code', strtoupper($code)) // Convertir le code en majuscules
+            ->where('status', 'en_cours')
+            // ->where('date_expiration', '>=', now()) // Vérifier si le coupon n'est pas expiré
+            ->first();
+        if ($coupon) {
+            // recuperer le montant min et max du coupon
+            $montant_min = $coupon->montant_min;
+            $montant_max = $coupon->montant_max;
+
+            // dd($subTotal,$montant_min, $montant_max);
+
+            // verifier si le montant de la commande respecte les montant du coupon
+            if ($subTotal < $montant_min) {
+                return response()->json([
+                    'coupon' => null,
+                    'message' => 'Le montant de la commande doit être supérieur ou égal à ' . number_format($montant_min, 0, ',', ' ') . ' FCFA pour utiliser ce coupon.',
+                ], 403);
+            }
+            if ($subTotal > $montant_max) {
+                return response()->json([
+                    'coupon' => null,
+                    'message' => 'Le montant de la commande doit être inférieur ou égal à ' . number_format($montant_max, 0, ',', ' ') . ' FCFA pour utiliser ce coupon.',
+                ], 403);
+            }
+        }
+
+        if (!$coupon) {
+            return response()->json([
+                'coupon' => null,
+                'message' => 'Coupon non trouvé ou expiré',
+            ], 404);
+        }
+
+        // Vérifier si le coupon a atteint sa limite d'utilisation
+        if ($coupon->utilisation_max > 0) {
+            $coupon_use = DB::table('coupon_use')
+                ->where('coupon_id', $coupon->id)
+                ->where('user_id', Auth::user()->id)
+                ->value('use_count');
+
+            if ($coupon_use >= $coupon->utilisation_max) {
+                return response()->json([
+                    'coupon' => null,
+                    'message' => 'Ce coupon a atteint sa limite d\'utilisation',
+                ], 403);
+            }
+        }
+
+        return response()->json([
+            'coupon' => $coupon,
+            'message' => 'Coupon valide',
+        ], 200);
+    }
+
 
     //caisse--resumé du panier
     public function checkout(Request $request)
@@ -215,13 +276,13 @@ class CartPageController extends Controller
 
         //verifier si le client a un coupon associé a u produit de son panier
         $auth_coupon = User::where('id', Auth::user()->id)->withWhereHas('coupon', function ($q) {
-            $q->where('status_coupon', 'en cour');
+            $q->where('status', 'en_cours');
             $q->where('coupon_user.nbre_utilisation', 0);
         })->first();
 
         $product_coupon = "";
         if (count(Auth::user()->coupon) > 0) {
-            $product_coupon = Product::withWhereHas('coupon', fn ($q) => $q->where('status_coupon', 'en cour')
+            $product_coupon = Product::withWhereHas('coupon', fn($q) => $q->where('status', 'en_cours')
                 ->whereCode($auth_coupon['coupon'][0]['code']))->get();
         } else {
             $product_coupon = "";
@@ -257,6 +318,10 @@ class CartPageController extends Controller
                 $type_commande = $_GET['data']['type_commande'];
                 $delivery_planned = $_GET['data']['delivery_planned'];
                 $code_promo = $_GET['data']['code_promo'];
+                $discount = $_GET['data']['remise'] ?? null; //remise
+                //Id du coupon si il y en a
+                $coupon_id = $_GET['data']['coupon_id'] ?? null;
+
 
 
 
@@ -289,7 +354,7 @@ class CartPageController extends Controller
                     'note' => $note,
                     'type_order' => $type_commande,
 
-                    // 'discount' => '',
+                    'discount' => $discount, //remise
                     'delivery_planned' => $delivery_planned, //date de livraison prevue
                     // 'delivery_date' => '', //date de livraison
                     'status' => $status,         // livré, en attente
@@ -310,6 +375,31 @@ class CartPageController extends Controller
                 }
 
 
+                //si il ya une remise une remise on met a jour la table coupon_use
+                if (!empty($coupon_id)) {
+                    $couponUse = DB::table('coupon_use')
+                        ->where('user_id', Auth::id())
+                        ->where('coupon_id', $coupon_id)
+                        ->first();
+
+                    if ($couponUse) {
+                        // Si l'utilisateur a déjà utilisé le coupon, on incrémente `count_use`
+                        DB::table('coupon_use')
+                            ->where('user_id', Auth::id())
+                            ->where('coupon_id', $coupon_id)
+                            ->increment('use_count');
+                    } else {
+                        // Sinon, on insère une nouvelle ligne avec count_use = 1
+                        DB::table('coupon_use')->insert([
+                            'user_id' => Auth::id(),
+                            'coupon_id' => $coupon_id,
+                            'use_count' => 1, // Premier usage
+                        ]);
+                    }
+                }
+
+
+
                 //function for update code promo
                 if (isset($code_promo)) {
                     $code = Coupon::whereCode($code_promo)->first();
@@ -317,7 +407,7 @@ class CartPageController extends Controller
                         DB::table('coupon_user')
                             ->where('user_id', Auth::user()->id)
                             ->where('coupon_id',  $code['id'])
-                            ->update(['nbre_utilisation'=> 1]);
+                            ->update(['nbre_utilisation' => 1]);
                     }
                 }
 
@@ -325,8 +415,9 @@ class CartPageController extends Controller
                 // function for send data to email -- envoi de email
                 $orders = Order::whereId($order['id'])
                     ->with([
-                        'user', 'products'
-                        => fn ($q) => $q->with('media')
+                        'user',
+                        'products'
+                        => fn($q) => $q->with('media')
                     ])
                     ->orderBy('created_at', 'DESC')->first();
 

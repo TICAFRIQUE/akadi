@@ -186,6 +186,7 @@ Route::delete('remove-from-cart', [CartPageController::class, 'remove'])->name('
 Route::get('finaliser-ma-commande', [CartPageController::class, 'checkout'])->name('checkout')->middleware(['auth']);
 Route::get('refresh-shipping/{id}', [CartPageController::class, 'refreshShipping'])->middleware(['auth']);
 Route::get('refresh-coupon/{id}', [CartPageController::class, 'refreshCoupon'])->middleware(['auth']);
+Route::get('check-coupon/{code}', [CartPageController::class, 'checkCoupon'])->middleware(['auth']);
 
 Route::get('save-order', [CartPageController::class, 'storeOrder'])->name('store.order')->middleware(['auth']);
 

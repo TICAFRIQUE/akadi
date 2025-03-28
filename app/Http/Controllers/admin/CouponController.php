@@ -42,17 +42,38 @@ class CouponController extends Controller
 
     public function store(Request $request)
     {
-        //    dd($request->toArray());
+        // dd($request->toArray());
+
+        // gestion validation
+        $request->validate([
+            'code' => 'required',
+            'nom' => 'required',
+            'quantite' => 'required',
+            'utilisation_max' => 'required',
+            'type_remise' => 'required',
+            'valeur_remise' => 'required',
+            'montant_min' => 'required',
+            'montant_max' => '',
+            'date_debut' => 'required',
+            'date_fin' => 'required',
+        ]);
 
         $coupon = Coupon::firstOrCreate([
             'code' => $request['code'],
-
-            // 'montant_coupon' => $request['montant_coupon'],
-            'pourcentage_coupon' => $request['pourcentage_coupon'],
-            'date_debut_coupon' => $request['date_debut_coupon'],
-            'date_fin_coupon' => $request['date_fin_coupon'],
-            'status_coupon' => '',
+            'nom' => $request['nom'],
+            'quantite' => $request['quantite'],
+            'utilisation_max' => $request['utilisation_max'],
+            'type_remise' => $request['type_remise'],
+            'valeur_remise' => $request['valeur_remise'],
+            'montant_min' => $request['montant_min'],
+            'montant_max' => $request['montant_max'] ??  $request['montant_min'],
+            'date_debut' => $request['date_debut'],
+            'date_fin' => $request['date_fin'],
+            'type_coupon' => $request['type_coupon'],
+            'expiration' => $request['date_fin'],
         ]);
+
+
 
 
 

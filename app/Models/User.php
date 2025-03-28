@@ -70,6 +70,13 @@ class User extends Authenticatable
     }
 
 
+       // Relation avec les coupons via la table pivot coupon_use
+       public function couponUse()
+       {
+           return $this->belongsToMany(Coupon::class, 'coupon_use')->withPivot('use_count')->withTimestamps();
+       }
+
+
     /**
      * The attributes that should be hidden for serialization.
      *

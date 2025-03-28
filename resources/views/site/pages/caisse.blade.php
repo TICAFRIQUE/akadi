@@ -144,6 +144,24 @@
                                     <br><span class="{{ Auth::user()->email ?? 'd-none ' }}">Email :
                                         <b> {{ Auth::user()->email }} </b></span>
                                 </div>
+
+                                <div class="pb-3">
+                                    <i class="fa fa-gift"></i>
+                                    <a href="" class="fw-bold">Avez vous un coupon ? </a>
+                                    <button class="ouiCoupon btn btn-link text-dark">Oui</button>
+                                    <button class="nonCoupon btn btn-link text-dark">Non</button>
+                                </div>
+
+
+                                <div class="mb-2 input-group divInputCoupon">
+                                    <input type="text" id="codeCoupon" name="coupon" class="form-control"
+                                        placeholder="Entrer le code du coupon">
+                                    <button class="btn btn-dark applyCoupon">Appliquer</button>
+                                </div>
+
+                                <div class="couponMessage" style="display: none;"></div>
+                                {{-- <div class="remiseDiv" style="display: none;">💰 Remise appliquée !</div> --}}
+
                                 <table class="cart_totals" cellspacing="0">
                                     <tbody>
 
@@ -153,6 +171,17 @@
                                                 <span data-subTotal="{{ $sousTotal }}" class="amount sousTotal">
                                                     <h6 class="text-danger">{{ number_format($sousTotal, 0, ',', ' ') }}
                                                         FCFA</h6>
+                                                </span>
+                                            </td>
+                                        </tr>
+
+                                        <tr class="remiseDiv">
+                                            <td>Remise
+                                                <span class=" text-danger"></span>
+                                            </td>
+                                            <td data-title="remise">
+                                                <span>
+                                                    <h6 class="text-danger remise">0 FCFA</h6>
                                                 </span>
                                             </td>
                                         </tr>
@@ -271,6 +300,8 @@
                                             </td>
                                         </tr>
                                     </tbody>
+
+
                                     <tfoot>
                                         <tr class="order-total">
 
@@ -337,6 +368,30 @@
 
 
     <script>
+        //Afficher ou cacher le input du coupon
+
+        // cacher par defaut le input
+        $('.divInputCoupon').hide();
+
+        // cacher remise total
+        $('.remiseDiv').hide();
+
+        // si on clique sur oui il ya un coupon on affiche la case
+
+        $('.ouiCoupon').click(function(e) {
+            e.preventDefault();
+            $('.divInputCoupon').show();
+            $('.remiseDiv').show();
+        })
+
+        $('.nonCoupon').click(function(e) {
+            e.preventDefault();
+            $('.divInputCoupon').hide();
+            $('.remiseDiv').hide();
+        })
+
+
+
         //variable global
         var prix_livraison = 0
         var lieu_livraison = ''
@@ -350,7 +405,108 @@
         localStorage.setItem('sousTotal', sousTotal)
 
 
-        //gestion de coupon de reduction
+        //Gestion de coupon groupe
+        // lorsque le client entre un coupon on verifie si le coupon existe et on recupere ses infos
+
+        $('.applyCoupon').click(function(e) {
+            e.preventDefault();
+            var code_coupon = $('#codeCoupon').val().trim(); // Supprime les espaces inutiles
+
+            if (code_coupon.length < 3) { // Évite les requêtes inutiles
+                $('.remiseDiv').hide();
+                $('.couponMessage').text('').hide();
+                return;
+            }
+
+            //recuperer le total de la commande
+            var sousTotal = localStorage.getItem('sousTotal');
+            var sousTotal = parseFloat(sousTotal);
+
+            $.ajax({
+                type: "GET",
+                url: "/check-coupon/" + code_coupon,
+                dataType: "json",
+                data: {
+                    sous_total: sousTotal
+                },
+                success: function(response) {
+                    if (response.coupon != null) {
+                        $('.remiseDiv').hide();
+                        $('.couponMessage')
+                            .text('⚠️ Ce coupon est invalide ou expiré.')
+                            .css({
+                                'color': 'red',
+                                'font-weight': 'bold'
+                            })
+                            .show();
+
+                        $('.remiseDiv').show();
+                        $('.couponMessage')
+                            .text('✅ Coupon appliqué avec succès !')
+                            .css({
+                                'color': 'green',
+                                'font-weight': 'bold'
+                            })
+                            .show();
+                    }
+
+
+                    //afficher le montant de remise
+                    var couponId = response.coupon.id;
+                    var codeCoupon = response.coupon.code;
+                    var typeRemise = response.coupon.type_remise;
+                    var valeurRemise = response.coupon.valeur_remise;
+                    var montantMin = response.coupon.montant_min;
+                    var montantMax = response.coupon.montant_max;
+                    var sousTotal = localStorage.getItem('sousTotal');
+                    var sousTotal = parseFloat(sousTotal);
+
+                    if (typeRemise == 'pourcentage') {
+                        var remise = (sousTotal * valeurRemise) / 100;
+                        $('.remise').html(parseInt(remise).toLocaleString() + ' FCFA');
+                    } else {
+                        var remise = valeurRemise;
+                        $('.remise').html(parseInt(remise).toLocaleString() + ' FCFA');
+                    }
+
+                    // mettre la remise en storage
+                    localStorage.setItem('remiseValue', parseInt(remise).toFixed(0));
+
+                    //mettre le coupon Id en storage
+                    localStorage.setItem('couponId', couponId);
+                    //calculer le nouveau sous total
+                    var newSousTotal = sousTotal - remise;
+                    localStorage.setItem('sousTotal', newSousTotal);
+                    // $('.sousTotal').html('<h6 class="text-danger">' + parseInt(newSousTotal).toLocaleString() +
+                    //     ' FCFA</h6>');
+                    $('.total_order').html(parseInt(newSousTotal).toLocaleString() + ' FCFA');
+
+                    // disabled le bouton de coupon
+                    $('.applyCoupon').attr('disabled', true);
+                    //cacher le bouton non
+                    $('.nonCoupon').hide();
+
+                },
+                error: function(response) {
+                    $('.remiseDiv').hide();
+                    $('.couponMessage')
+                        .text('⚠️ ' + response.responseJSON.message)
+                        .css({
+                            'color': 'red',
+                            'font-weight': 'bold'
+                        })
+                        .show();
+
+                        // detruire couponId et remiseValue en storage
+                        localStorage.removeItem('couponId');
+                        localStorage.removeItem('remiseValue');
+                }
+            });
+        });
+
+
+
+        //gestion de coupon de reduction sur chaque produit
 
         $('.applyCouponBtn').click(function(e) {
             e.preventDefault();
@@ -472,7 +628,7 @@
             //si mode_livraison == yango
             if (mode_livraison == 'yango') {
                 $('#address_yango').show(200)
-                $('.delivery_price').html('les frais sont votre charge')
+                $('.delivery_price').html('les frais sont à votre charge')
                 $('.total_order').html(parseInt(subTotal).toLocaleString() + ' FCFA');
                 $('.delivery_name').html('')
                 $('._delivery_price').show()
@@ -605,6 +761,11 @@
                 var type_commande = type_cmd // type de la commande ...precommande , normal
                 var delivery_planned = $('#date_livraison').html(); // date de livraison prevue
 
+                // recuperer la remise 
+                var remise = localStorage.getItem('remiseValue');
+                //recuperer le coupon Id
+                var coupon_id = localStorage.getItem('couponId');
+
                 var data = {
                     subTotal,
                     address,
@@ -616,7 +777,9 @@
                     note,
                     type_commande,
                     delivery_planned,
-                    code_promo,
+                    code_promo, // pour chaque produit
+                    coupon_id, // Id du code coupon groupe
+                    remise
                 }
 
                 $.ajax({
