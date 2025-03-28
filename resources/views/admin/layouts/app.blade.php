@@ -455,7 +455,7 @@
                 if (order.length > 0) {
                     setInterval(() => {
                         $('#chatAudio')[0].play();
-                    }, 5000);
+                    }, 10000);
                 }
 
                 $('#stop').click(function(e) {
@@ -467,10 +467,10 @@
             }
 
             // executer la fonction au chargement de la page
-            // newOrders();
+            newOrders();
 
             //executer la fonction chaque 5 secondes
-            setInterval(newOrders, 5000);
+            // setInterval(newOrders, 5000);
 
             setInterval(function() {
                 $.ajax({
@@ -479,7 +479,7 @@
                     success: function(data) {
                         if (data.count > 0) {
                             $('#orderNew').html(data
-                            .count); // Met à jour le nombre de commandes
+                                .count); // Met à jour le nombre de commandes
 
                             // Vider la liste et ajouter les nouvelles commandes
                             $('.dropdown-list-content').html('');
@@ -504,7 +504,7 @@
                             });
                         } else {
                             $('#orderNew').html(
-                            ''); // Efface le badge s'il n'y a plus de commandes
+                                ''); // Efface le badge s'il n'y a plus de commandes
                         }
                     }
                 });
