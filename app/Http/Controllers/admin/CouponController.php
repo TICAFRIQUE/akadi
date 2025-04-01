@@ -44,7 +44,7 @@ class CouponController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->toArray());
+        dd($request->toArray());
 
         // gestion validation
         $request->validate([

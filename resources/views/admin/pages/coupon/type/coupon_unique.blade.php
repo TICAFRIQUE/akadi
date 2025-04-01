@@ -9,7 +9,6 @@
             <div class="form-group row">
                 <p class="fw-bold fs-2 col-12" id="MsgError"></p>
 
-
                 <div class="col-sm-3">
                     <label class="col-sm-12 col-form-label">Nom du coupon</label>
                     <input type="text" id="nameCoupon" name="nom" class="form-control" required>
@@ -95,10 +94,9 @@
                     </div>
                 </div>
 
-                <div class="col-sm-6 clientDiv">
-                    <label class="col-sm-12 col-form-label">Clients (<span class="customerMsg d-none text-warning">
-                            Champs obligatoire pour creer un coupon unique pour un client
-                        </span>)</label>
+
+                <div class="col-sm-6">
+                    <label class="col-sm-12 col-form-label">Clients</label>
                     {{-- <div class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" name="customers" id="customerCheckboxAll"
                             value="customerAllChecked">
@@ -106,20 +104,18 @@
                             sélectionner</label>
                     </div> --}}
 
-                    <select style="width: 100%" name="customers[]" id="customer" class="form-control select2 "
-                        multiple>
-                        {{-- <option disabled selected> Selectionner un client</option> --}}
+                    <select style="width: 100%" name="customers[]" id="customer" class="form-control select2 " 
+                        required>
+
                         @foreach ($customer as $item)
                             <option value="{{ $item['id'] }}"> {{ $item['name'] }} </option>
                         @endforeach
 
                     </select>
 
-
-
                 </div>
 
-                {{-- <input type="text" name="type_coupon" value="groupe" hidden> --}}
+                <input type="text" name="type_coupon" value="unique" hidden>
 
             </div>
             <!-- ========== End Remise ========== -->

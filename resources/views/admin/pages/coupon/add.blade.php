@@ -220,12 +220,14 @@
                     <div class="card-body">
                         <ul class="nav nav-pills" id="myTab3" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="home-tab3" data-toggle="tab" href="#couponGroupe"
-                                    role="tab" aria-controls="home" aria-selected="true">Groupe</a>
+                                <a class="nav-link active tabCoupon" id="home-tab3" data-tag="couponGroupe"
+                                    data-toggle="tab" href="#couponGroupe" role="tab" aria-controls="home"
+                                    aria-selected="true">Groupe</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="profile-tab3" data-toggle="tab" href="#couponUnique"
-                                    role="tab" aria-controls="profile" aria-selected="false">Unique</a>
+                                <a class="nav-link tabCoupon" id="profile-tab3" data-tag="couponUnique"
+                                    data-toggle="tab" href="#couponUnique" role="tab" aria-controls="profile"
+                                    aria-selected="false">Unique</a>
                             </li>
 
                         </ul>
@@ -238,10 +240,15 @@
 
 
 
-
+                            {{-- 
                             <div class="tab-pane fade" id="couponUnique" role="tabpanel" aria-labelledby="profile-tab3">
-                                <strong>Bientôt disponible </strong>
-                            </div>
+                                <!-- ========== Start coupon groupe ========== -->
+                                @include('admin.pages.coupon.type.coupon_unique')
+                                <!-- ========== End coupon groupe ========== -->
+                            </div> --}}
+
+
+
                             {{-- <div class="tab-pane fade" id="contact3" role="tabpanel"
                                 aria-labelledby="contact-tab3">
                                 Vestibulum imperdiet odio sed neque ultricies, ut dapibus mi maximus. Proin ligula
@@ -447,6 +454,43 @@
             generateCode(); // Appel de la fonction de génération de code
             $('#codeCoupon').prop('readonly', true); // Rend le champ readonly
         });
+
+
+        // afficher la liste des clients si data-tag est coupon unique
+
+        $('.clientDiv').hide(); // Cacher la liste des clients par défaut
+        $('.clientDiv').hide(); // Cacher la liste des clients par défaut
+
+        $('a.tabCoupon').on('shown.bs.tab', function(e) {
+            let dataTag = $(this).data('tag');
+            console.log(dataTag); // Vérifier la valeur dans la console
+
+            if (dataTag === 'couponUnique') {
+                $('.clientDiv').show();
+                // le rendre obligatoire
+                $('#customer').prop('required', true);
+
+                // afficher le message d'erreur
+                $('.customerMsg').removeClass('d-none');
+
+                // cacher le message d'erreur si un client est choisi sinon le rendre obligatoire et afficher le message
+                // $('#customer').on('change', function() {
+                //     if ($(this).val() === '') {
+                //         $('.customerMsg').removeClass('d-none');
+                //         $('#customer').prop('required', true);
+                //     } else {
+                //         $('.customerMsg').addClass('d-none');
+                //         $('#customer').prop('required', false);
+                //     }
+                // })
+            } else {
+                $('.clientDiv').hide();
+                // vider la liste des clients
+                $('#customer').val('').trigger('change');// Vider le champ et déclencher l'événement change
+                $('#customer').prop('required', false);
+            }
+        });
+
 
 
         //customer checked
