@@ -43,11 +43,12 @@
             font-size: 14px;
             font-weight: bold;
             color: #ff0000;
+            text-transform: uppercase;
         }
 
         .discount {
             font-size: 18px;
-            font-weight: bold;
+            font-weight:600;
             margin: 5px 0;
         }
 
@@ -101,7 +102,10 @@
                     </div>
 
                     <div class="title"> COUPON SPÉCIAL {{ $coupon->nom }} </div>
-                    <div class="discount">{{ $coupon->valeur_remise }} {{ $coupon->type_remise == 'pourcentage' ? '%' : 'FCFA' }} de réduction</div>
+                    <div class="discount">{{ $coupon->valeur_remise }} {{ $coupon->type_remise == 'pourcentage' ? '%' : 'FCFA' }} de réduction 
+                        <span>Appliquable sur {{ $coupon->utilisation_max }} commandes</span>
+                    </div>
+
                     {{-- <div class="details">Sur : {{ $coupon->nom }}</div> --}}
                     <div class="code"><strong>CODE :</strong> {{ $coupon->code }}</div>
                     <div class="expiry">Expire le :
@@ -114,7 +118,7 @@
                     </div> --}}
 
                     <!-- Commande -->
-                    <div class="footer">Commandez sur <a href="https://www.akadi.ci"
+                    <div class="footer">Commandez sur <a href="https://www.akadi.ci" target="_blank"
                             style="color: orange; text-decoration: none;">www.akadi.ci</a></div>
                 </div>
             </td>

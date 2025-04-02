@@ -29,9 +29,9 @@
                 </div>
 
 
-                <div class="col-sm-3">
+                <div class="col-sm-3" id="quantiteDiv">
                     <label class="col-sm-12 col-form-label">Quantité à generer</label>
-                    <input type="number" name="quantite" class="form-control" required>
+                    <input type="number" id="quantite" name="quantite" class="form-control" required>
                 </div>
 
                 <div class="col-sm-3">
@@ -119,17 +119,12 @@
 
                 </div>
 
-                {{-- <input type="text" name="type_coupon" value="groupe" hidden> --}}
+                <input type="text" id="typeCoupon" name="type_coupon" value="groupe" hidden>
 
             </div>
             <!-- ========== End Remise ========== -->
 
-
-
-
-
             <hr>
-
 
 
             <!-- ========== Start customers and products ========== -->

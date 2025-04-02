@@ -44,7 +44,7 @@ class CouponController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->toArray());
+        // dd($request->toArray());
 
         // gestion validation
         $request->validate([
@@ -68,7 +68,7 @@ class CouponController extends Controller
             'type_remise' => $request['type_remise'],
             'valeur_remise' => $request['valeur_remise'],
             'montant_min' => $request['montant_min'],
-            'montant_max' => $request['montant_max'] ??  $request['montant_min'],
+            'montant_max' => $request['montant_max'] ?? 0 ,
             'date_debut' => $request['date_debut'],
             'date_fin' => $request['date_fin'],
             'type_coupon' => $request['type_coupon'],
@@ -77,11 +77,9 @@ class CouponController extends Controller
 
 
 
-
-
-        // if ($request['customers']) {
-        //     $coupon->users()->attach($request['customers']);
-        // }
+        if ($request['customers']) {
+            $coupon->users()->attach($request['customers']);
+        }
 
         // if ($request['products']) {
 

@@ -30,6 +30,7 @@
                                             <th>Status</th>
                                             <th>Type de coupon</th>
                                             <th>Nom du coupon</th>
+                                            <th>Utilisateurs</th>
                                             <th>Code</th>
                                             <th>type de remise</th>
                                             <th>Valeur de remise</th>
@@ -46,9 +47,22 @@
                                         @foreach ($coupon as $key => $item)
                                             <tr id="row_{{ $item['id'] }}">
                                                 <td> {{ ++$key }} </td>
-                                                <td> {{ $item['status'] }} </td>
+                                                <td> <span
+                                                        class="text-capitalize fw-bold badge badge-{{ $item['status'] == 'en_cours' ? 'success' : ($item['status'] == 'expirer' ? 'danger' : ($item['status'] == 'bientot' ? 'warning' : '')) }}">
+                                                        {{ $item['status'] }}
+                                                    </span>
+                                                </td>
                                                 <td> {{ $item['type_coupon'] }} </td>
                                                 <td> {{ $item['nom'] }} </td>
+                                                <td>
+                                                    @if ($item['type_coupon'] == 'unique')
+                                                        @foreach ($item['users'] as $user)
+                                                            <span>{{ $user['name'] }} </span>
+                                                        @endforeach
+                                                    @else
+                                                        <span>Tous les utilisateurs</span>
+                                                    @endif
+                                                </td>
                                                 <td>{{ $item['code'] }} </td>
                                                 <td> {{ $item['type_remise'] }} </td>
                                                 <td> {{ $item['valeur_remise'] }} </td>
@@ -79,8 +93,12 @@
                                                             {{-- <a href="#" class="dropdown-item has-icon"><i
                                                                     class="fas fa-eye"></i> Details</a> --}}
 
-                                                            <a href="{{ route('coupon.pdf', $item['id']) }}" class="dropdown-item has-icon"><i
-                                                                    class="fas fa-print"></i> Imprimer les coupons</a>
+                                                            @if ($item['status'] == 'en_cours' || $item['status'] == 'bientot')
+                                                                <a href="{{ route('coupon.pdf', $item['id']) }}"
+                                                                    class="dropdown-item has-icon"><i
+                                                                        class="fas fa-print"></i> Imprimer les coupons</a>
+                                                            @endif
+
 
                                                             <a href="#" role="button" data-id="{{ $item['id'] }}"
                                                                 class="dropdown-item has-icon text-danger delete"><i

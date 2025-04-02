@@ -103,10 +103,9 @@ class DashboardController extends Controller
         #################################### CHIFFRE AFFAIRE ###################
         // Chiffre affaire
         $ca_days = Order::orderBy('created_at', 'DESC')
-            ->where('date_order', Carbon::now()->format('Y-m-d'))
+            ->where('date_order', Carbon::today())
             ->whereStatus('livrée')
             ->sum('total');
-
 
 
         $ca_week = Order::orderBy('created_at', 'DESC')

@@ -209,35 +209,74 @@ class CartPageController extends Controller
 
 
     //Verification du coupon entre
+    // public function checkCoupon(Request $request, $code)
+    // {
+    //     // recuperer le montant de la commande en cours
+    //     $subTotal = $request->sous_total;
+    //     $coupon = Coupon::with('users')->where('code', strtoupper($code)) // Convertir le code en majuscules
+    //         ->where('status', 'en_cours')
+    //         // ->where('date_expiration', '>=', now()) // Vérifier si le coupon n'est pas expiré
+    //         ->first();
+    //     if ($coupon) {
+    //         // recuperer le montant min et max du coupon
+    //         $montant_min = $coupon->montant_min;
+    //         $montant_max = $coupon->montant_max;
+
+    //         // dd($subTotal,$montant_min, $montant_max);
+
+    //         // verifier si le montant de la commande respecte les montant du coupon
+    //         if ($subTotal < $montant_min) {
+    //             return response()->json([
+    //                 'coupon' => null,
+    //                 'message' => 'Le montant de la commande doit être supérieur ou égal à ' . number_format($montant_min, 0, ',', ' ') . ' FCFA pour utiliser ce coupon.',
+    //             ], 403);
+    //         }
+    //         if ($montant_max > 0 && $subTotal > $montant_max) {
+    //             return response()->json([
+    //                 'coupon' => null,
+    //                 'message' => 'Le montant de la commande doit être inférieur ou égal à ' . number_format($montant_max, 0, ',', ' ') . ' FCFA pour utiliser ce coupon.',
+    //             ], 403);
+    //         }
+    //     }
+
+    //     if (!$coupon) {
+    //         return response()->json([
+    //             'coupon' => null,
+    //             'message' => 'Coupon non trouvé ou expiré',
+    //         ], 404);
+    //     }
+
+    //     // Vérifier si le coupon a atteint sa limite d'utilisation
+    //     if ($coupon->utilisation_max > 0) {
+    //         $coupon_use = DB::table('coupon_use')
+    //             ->where('coupon_id', $coupon->id)
+    //             ->where('user_id', Auth::user()->id)
+    //             ->value('use_count');
+
+    //         if ($coupon_use >= $coupon->utilisation_max) {
+    //             return response()->json([
+    //                 'coupon' => null,
+    //                 'message' => 'Ce coupon a atteint sa limite d\'utilisation',
+    //             ], 403);
+    //         }
+    //     }
+
+    //     return response()->json([
+    //         'coupon' => $coupon,
+    //         'message' => 'Coupon valide',
+    //     ], 200);
+    // }
+
     public function checkCoupon(Request $request, $code)
     {
-        // recuperer le montant de la commande en cours
         $subTotal = $request->sous_total;
-        $coupon = Coupon::where('code', strtoupper($code)) // Convertir le code en majuscules
+
+        // Récupération du coupon avec les utilisateurs associés
+        $coupon = Coupon::with('users')
+            ->where('code', strtoupper($code)) // Code en majuscules
             ->where('status', 'en_cours')
             // ->where('date_expiration', '>=', now()) // Vérifier si le coupon n'est pas expiré
             ->first();
-        if ($coupon) {
-            // recuperer le montant min et max du coupon
-            $montant_min = $coupon->montant_min;
-            $montant_max = $coupon->montant_max;
-
-            // dd($subTotal,$montant_min, $montant_max);
-
-            // verifier si le montant de la commande respecte les montant du coupon
-            if ($subTotal < $montant_min) {
-                return response()->json([
-                    'coupon' => null,
-                    'message' => 'Le montant de la commande doit être supérieur ou égal à ' . number_format($montant_min, 0, ',', ' ') . ' FCFA pour utiliser ce coupon.',
-                ], 403);
-            }
-            if ($subTotal > $montant_max) {
-                return response()->json([
-                    'coupon' => null,
-                    'message' => 'Le montant de la commande doit être inférieur ou égal à ' . number_format($montant_max, 0, ',', ' ') . ' FCFA pour utiliser ce coupon.',
-                ], 403);
-            }
-        }
 
         if (!$coupon) {
             return response()->json([
@@ -246,17 +285,44 @@ class CartPageController extends Controller
             ], 404);
         }
 
+        // Vérifier le type du coupon (unique ou groupe)
+        if ($coupon->type_coupon === 'unique') {
+            $userId = Auth::id(); // Récupération de l'ID de l'utilisateur connecté
+            $isAssigned = $coupon->users->contains('id', $userId);
+
+            if (!$isAssigned) {
+                return response()->json([
+                    'coupon' => null,
+                    'message' => 'Ce coupon est réservé à un utilisateur spécifique.',
+                ], 403);
+            }
+        }
+
+        // Vérification des montants min et max
+        if ($subTotal < $coupon->montant_min) {
+            return response()->json([
+                'coupon' => null,
+                'message' => 'Le montant de la commande doit être supérieur ou égal à ' . number_format($coupon->montant_min, 0, ',', ' ') . ' FCFA pour utiliser ce coupon.',
+            ], 403);
+        }
+        if ($coupon->montant_max > 0 && $subTotal > $coupon->montant_max) {
+            return response()->json([
+                'coupon' => null,
+                'message' => 'Le montant de la commande doit être inférieur ou égal à ' . number_format($coupon->montant_max, 0, ',', ' ') . ' FCFA pour utiliser ce coupon.',
+            ], 403);
+        }
+
         // Vérifier si le coupon a atteint sa limite d'utilisation
         if ($coupon->utilisation_max > 0) {
             $coupon_use = DB::table('coupon_use')
                 ->where('coupon_id', $coupon->id)
-                ->where('user_id', Auth::user()->id)
-                ->value('use_count');
+                ->where('user_id', Auth::id())
+                ->value('use_count') ?? 0;
 
             if ($coupon_use >= $coupon->utilisation_max) {
                 return response()->json([
                     'coupon' => null,
-                    'message' => 'Ce coupon a atteint sa limite d\'utilisation',
+                    'message' => 'Ce coupon a atteint sa limite d\'utilisation.',
                 ], 403);
             }
         }
@@ -266,6 +332,7 @@ class CartPageController extends Controller
             'message' => 'Coupon valide',
         ], 200);
     }
+
 
 
     //caisse--resumé du panier

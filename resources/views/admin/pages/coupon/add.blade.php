@@ -211,8 +211,6 @@
 
 
 
-
-
                 <div class="card">
                     <div class="card-header">
                         <h4> <code>BON DE COMMANDE</code></h4>
@@ -473,21 +471,17 @@
                 // afficher le message d'erreur
                 $('.customerMsg').removeClass('d-none');
 
-                // cacher le message d'erreur si un client est choisi sinon le rendre obligatoire et afficher le message
-                // $('#customer').on('change', function() {
-                //     if ($(this).val() === '') {
-                //         $('.customerMsg').removeClass('d-none');
-                //         $('#customer').prop('required', true);
-                //     } else {
-                //         $('.customerMsg').addClass('d-none');
-                //         $('#customer').prop('required', false);
-                //     }
-                // })
+             //mettre la quantité a generer a 1
+                $('#quantite').val(1);// Mettre la quantité à 1
+
+                // passer typeCoupon en unique
+                $('#typeCoupon').val('unique');// Mettre à jour le champ typeCoupon
             } else {
                 $('.clientDiv').hide();
                 // vider la liste des clients
                 $('#customer').val('').trigger('change');// Vider le champ et déclencher l'événement change
                 $('#customer').prop('required', false);
+
             }
         });
 

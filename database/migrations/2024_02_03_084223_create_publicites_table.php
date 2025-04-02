@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('publicites', function (Blueprint $table) {
             $table->id();
-            $table->longText('texte');
+            $table->longText('texte')->nullable();
             $table->string('type')->nullable(); //banniere, publicité
             $table->string('url')->nullable();
             $table->string('button_name')->nullable();
             $table->integer('discount')->nullable();
             $table->string('status')->nullable()->default('active'); // ,
             $table->dateTime('date_debut_pub')->nullable();
-            $table->dateTime('date_debut_fin')->nullable();
+            $table->dateTime('date_fin_pub')->nullable();
             $table->string('status_pub')->nullable(); // , en cour, bientot, termine
             $table->softDeletes();
             $table->timestamps();

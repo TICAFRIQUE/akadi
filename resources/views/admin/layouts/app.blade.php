@@ -128,7 +128,7 @@
                                             confirmer</a>
                                     </div>
                                 </div>
-                                <div class="dropdown-list-content dropdown-list-message">
+                                <div class="dropdown-list-content dropdown-list-message dropdown-list-order">
                                     @foreach ($orders_new as $item)
                                         <a href="{{ route('order.show', $item['id']) }}" class="dropdown-item"> <span
                                                 class="dropdown-item-avatar
@@ -311,26 +311,7 @@
                                 </ul>
                             </li> --}}
 
-                            @role(['developpeur', 'administrateur', 'gestionnaire'])
-                                <li class="dropdown">
-                                    <a href="/admin/auth?client" class="nav-link"><i
-                                            data-feather="users"></i><span>Clients</span></a>
-                                </li>
-                                <li class="dropdown">
-                                    <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                                            data-feather="lock"></i><span>Administrateurs</span></a>
-                                    <ul class="dropdown-menu">
-                                        @foreach ($roleWithoutClient as $item)
-                                            <li><a class="nav-link" href="/admin/auth?user={{ $item['name'] }}">
-                                                    {{ $item['name'] }} </a></li>
-                                        @endforeach
 
-                                        {{-- <li><a class="nav-link" href="{{ route('user.list') }}">Liste des
-                                                utilisateurs</a></li> --}}
-                                    </ul>
-
-                                </li>
-                            @endrole
 
 
                             <li class="dropdown">
@@ -347,6 +328,28 @@
                                 <a href="{{ route('temoignage.index') }}" class="nav-link"><i
                                         data-feather="message-square"></i><span>Témoignages</span></a>
                             </li>
+
+
+                            @role(['developpeur', 'administrateur', 'gestionnaire'])
+                                <li class="dropdown">
+                                    <a href="/admin/auth?client" class="nav-link"><i
+                                            data-feather="users"></i><span>Clients</span></a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="menu-toggle nav-link has-dropdown"><i
+                                            data-feather="lock"></i><span>Administrateurs</span></a>
+                                    <ul class="dropdown-menu">
+                                        @foreach ($roleWithoutClient as $item)
+                                            <li><a class="nav-link" href="/admin/auth?user={{ $item['name'] }}">
+                                                    {{ $item['name'] }} </a></li>
+                                        @endforeach
+
+                                        {{-- <li><a class="nav-link" href="{{ route('user.list') }}">Liste des
+                                            utilisateurs</a></li> --}}
+                                    </ul>
+
+                                </li>
+                            @endrole
 
                             {{-- <li class="dropdown">
                                 <a href="#" class="menu-toggle nav-link has-dropdown"><i
@@ -482,7 +485,7 @@
                                 .count); // Met à jour le nombre de commandes
 
                             // Vider la liste et ajouter les nouvelles commandes
-                            $('.dropdown-list-content').html('');
+                            $('.dropdown-list-order').html('');
 
                             data.orders_new.forEach(function(order) {
                                 let orderHtml = `
@@ -500,7 +503,7 @@
                         </a>
                     `;
 
-                                $('.dropdown-list-content').append(orderHtml);
+                                $('.dropdown-list-order').append(orderHtml);
                             });
                         } else {
                             $('#orderNew').html(

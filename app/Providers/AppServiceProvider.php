@@ -305,7 +305,7 @@ class AppServiceProvider extends ServiceProvider
             if ($value->date_debut > Carbon::now()) {
                 $status_coupon = 'bientot';
             } elseif ($value->date_fin < Carbon::now()) {
-                $status_coupon = 'terminer';
+                $status_coupon = 'expirer';
             } else {
                 $status_coupon = 'en_cours';
             }

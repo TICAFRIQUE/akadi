@@ -24,7 +24,7 @@ return new class extends Migration
             $table->dateTime('expiration')->nullable(); // date d'expiration
             $table->dateTime('date_debut')->nullable();
             $table->dateTime('date_fin')->nullable();
-            $table->enum('status', ['en_cours', 'terminer', 'bientot'])->nullable();
+            $table->enum('status', ['en_cours', 'expirer', 'bientot'])->nullable();
             $table->enum('type_coupon', ['unique', 'groupe'])->nullable();
             $table->timestamps();
         });
