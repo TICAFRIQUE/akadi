@@ -78,7 +78,7 @@
         </div>
     </div>
 
-@include('site.sections.pub.annonce')
+{{-- @include('site.sections.pub.annonce') --}}
 
     <div class="sticky-wrapper">
         <div class="sticky-active">

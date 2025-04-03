@@ -14,14 +14,14 @@
                     </div>
                     <div class="card">
                         <div class="card-header d-flex justify-content-around">
-                            <h4>publicité {{ request('type') ?? '' }} </h4>
+                            <h4>Media {{ request('type') ?? '' }} </h4>
                             <button type="button" data-toggle="modal" data-target="#modalAddpublicite"
                                 class="btn btn-primary">Ajouter
-                                une publicite</button>
+                                un media</button>
 
                             <div class="dropdown">
                                 @php
-                                    $type = ['slider', 'popup', 'arriere-plan', 'banniere', 'small-card', 'top-promo' , 'information'];
+                                    $type = ['slider',  'top-promo' , 'annonce'];
                                 @endphp
                                 <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
                                     <i class="fa fa-filter"></i>

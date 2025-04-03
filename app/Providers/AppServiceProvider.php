@@ -251,7 +251,7 @@ class AppServiceProvider extends ServiceProvider
         DB::statement("SET lc_time_names = 'fr_FR'");
 
         /**************************** Start Publicite ********************************/
-        $publicite = Publicite::whereType('top-promo')->whereStatus('active')->first();
+        $publicite = Publicite::whereIn('type', ['top-promo' , 'pack' , 'annonce'])->whereStatus('active')->first();
 
         if ($publicite) {
             $status_pub = ''; // bientot , en cours, termine
@@ -269,7 +269,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
             // Update status in batch for all active promos
-            Publicite::whereType('top-promo')->whereStatus('active')
+            Publicite::whereIn('type', ['top-promo' , 'pack' , 'annonce'])->whereStatus('active')
                 ->update([
                     'status' => $status,
                     'status_pub' => $status_pub,
@@ -387,7 +387,7 @@ class AppServiceProvider extends ServiceProvider
         /**************************** End Orders Fetching **************************/
 
         /**************************** Publicite Information ************************/
-        $information = Publicite::with('media')->whereType('information')->whereStatus('active')->first();
+        $annonce = Publicite::with('media')->whereType('annonce')->whereStatus('active')->first();
         /**************************** End Publicite Information ********************/
 
         View::composer('*', function ($view) use (
@@ -398,12 +398,12 @@ class AppServiceProvider extends ServiceProvider
             $orders_attente,
             $orders_new,
             $roleWithoutClient,
-            $information,
+            $annonce,
             $user_upcoming_birthday,
             $user_birthday
         ) {
             $view->with([
-                'information' => $information,
+                'annonce' => $annonce,
                 'categories' => $category,
                 'subcategories' => $subcategory,
                 'roles' => $roles,

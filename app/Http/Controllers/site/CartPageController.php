@@ -281,7 +281,7 @@ class CartPageController extends Controller
         if (!$coupon) {
             return response()->json([
                 'coupon' => null,
-                'message' => 'Coupon non trouvé ou expiré',
+                'message' => 'Coupon non valide ou expiré',
             ], 404);
         }
 
@@ -293,7 +293,7 @@ class CartPageController extends Controller
             if (!$isAssigned) {
                 return response()->json([
                     'coupon' => null,
-                    'message' => 'Ce coupon est réservé à un utilisateur spécifique.',
+                    'message' => 'Coupon non valide.',
                 ], 403);
             }
         }

@@ -3,14 +3,18 @@
 @section('title', 'Accueil')
 
 @section('content')
-{{-- @includeWhen(!Auth::check(), 'site.sections.popup-register' ) --}}
+    {{-- @includeWhen(!Auth::check(), 'site.sections.popup-register' ) --}}
 
 
     <!-- ========== Start slider ========== -->
     @include('site.sections.slider')
     <!-- ========== End slider ========== -->
 
- 
+    <!-- ========== Start annonce ========== -->
+    @include('site.sections.pub.annonce')
+    <!-- ========== End annonce ========== -->
+
+
 
     {{-- @include('admin.components.validationMessage') --}}
 
@@ -29,7 +33,7 @@
     <!-- ========== End categorie-with-plats-recent ========== -->
 
     <!-- ========== Start publicite small card ========== -->
-    @include('site.sections.pub.small_card')
+    @include('site.sections.pub.pack')
     <!-- ========== End publicite small card ========== -->
 
     <!-- ========== Start A propos de akadi ========== -->

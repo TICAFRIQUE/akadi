@@ -52,17 +52,17 @@
 
                               <div class="col-sm-3">
                                   <label class="col-sm-12 col-form-label">Type de la publicite</label>
-                                  <select name="type" class="form-control selectric " required>
+                                  <select name="type" class="form-control selectric typeMedia " required>
                                       <option disabled selected value>Choisir un type</option>
                                       @php
                                           $type = [
                                               'slider',
                                               //   'popup',
-                                              'arriere-plan',
-                                              'banniere',
-                                              'small-card',
+                                              //   'arriere-plan',
+                                              //   'banniere',
+                                              //   'pack',
                                               'top-promo',
-                                              'information'
+                                              'annonce',
                                           ];
                                       @endphp
                                       @foreach ($type as $item)
@@ -77,28 +77,28 @@
 
                               </div>
 
-                              <div class="col-sm-3">
-                                  <label class="col-sm-12 col-form-label">Date Debut de la publicité</label>
+                              <div class="col-sm-3 dateStartDiv">
+                                  <label class="col-sm-12 col-form-label">Date Debut</label>
 
                                   <input type="text" id="date_start" name="date_debut_pub"
                                       class="form-control datetimepicker">
                               </div>
 
-                              <div class="col-sm-3">
-                                  <label class="col-sm-12 col-form-label">Date Fin de la publicité</label>
+                              <div class="col-sm-3 dateEndDiv">
+                                  <label class="col-sm-12 col-form-label">Date Fin </label>
 
                                   <input type="text" id="date_end" name="date_fin_pub"
                                       class="form-control datetimepicker">
                               </div>
 
-                              <div class="col-sm-3">
+                              <div class="col-sm-3 remiseDiv">
                                   <label class="col-sm-12 col-form-label">Reduction %</label>
 
                                   <input type="number" name="discount" class="form-control">
                               </div>
 
                           </div>
-                          <div class="form-group row">
+                          <div class="form-group row linkDiv">
                               <div class="col-sm-8">
                                   <label class="col-sm-3 col-form-label">Lien de redirection</label>
                                   <input type="url" name="url" class="form-control">
@@ -119,7 +119,7 @@
                                   <textarea name="texte" class="form-control summernote"></textarea>
                               </div>
 
-                              <div class="col-sm-4">
+                              <div class="col-sm-4 imageDiv">
                                   <label class="col-sm-3 col-form-label">image</label>
                                   <img id="img-preview"
                                       src="https://ami-sni.com/wp-content/themes/consultix/images/no-image-found-360x250.png"
@@ -198,5 +198,32 @@
                   $('.btn-submit').prop('disabled', false)
               }
           });
+
+
+          // cacher les champs en fonction du type media choisi
+          $('.typeMedia').on('change', function() {
+              var type_media = $(this).val();
+
+              if (type_media == 'annonce') {
+                  $('.remiseDiv').hide();
+                  $('.linkDiv').hide();
+                  $('.imageDiv').hide();
+              } else {
+                  $('.remiseDiv').show();
+                  $('.linkDiv').show();
+                  $('.imageDiv').show();
+              }
+
+
+
+              if (type_media == 'slider') {
+                  $('.remiseDiv').hide();
+
+              }
+          })
+
+
+          
+
       });
   </script>

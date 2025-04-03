@@ -23,7 +23,6 @@
             </div>
         </div>
     </div><!--==============================Product Details==============================-->
-    @include('site.sections.pub.infos')
 
     <section class="th-product-wrapper product-details space-top space-extra-bottom">
         <div class="container">

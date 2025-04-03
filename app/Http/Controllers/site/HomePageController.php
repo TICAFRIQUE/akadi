@@ -32,7 +32,7 @@ class HomePageController extends Controller
         $top_promo = Publicite::with('media')->whereType('top-promo')->whereStatus('active')->first();
 
         // recuperer les informations
-        $information = Publicite::with('media')->whereType('information')->whereStatus('active')->first();
+        $annonce = Publicite::with('media')->whereType('annonce')->whereStatus('active')->first();
 
         //recuperer la liste des temoignages
         $feedback = Temoignage::orderBy('created_at', 'DESC')->get();
@@ -41,6 +41,6 @@ class HomePageController extends Controller
 
         // }
         // dd($information->toArray());
-        return view('site.pages.accueil',  compact('sliders', 'background', 'top_promo', 'feedback', 'pack', 'information'));
+        return view('site.pages.accueil',  compact('sliders', 'background', 'top_promo', 'feedback', 'pack', 'annonce'));
     }
 }

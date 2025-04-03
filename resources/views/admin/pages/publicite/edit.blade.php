@@ -36,18 +36,17 @@
 
                                     <div class="col-sm-3">
                                         <label class="col-sm-12 col-form-label">Type de publicite</label>
-                                        <select name="type" class="form-control selectric " required>
+                                        <select name="type" class="form-control selectric typeMedia " required>
                                             <option disabled selected value>Choisir un type</option>
                                             @php
                                                 $type = [
                                                     'slider',
-                                                    // 'popup',
-                                                    'arriere-plan',
-                                                    'banniere',
-                                                    'small-card',
+                                                    // // 'popup',
+                                                    // 'arriere-plan',
+                                                    // 'banniere',
+                                                    // 'pack',
                                                     'top-promo',
-                                                    'information',
-
+                                                    'annonce',
                                                 ];
                                             @endphp
                                             @foreach ($type as $item)
@@ -63,26 +62,26 @@
 
                                     </div>
 
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-3  dateStartDiv">
                                         <label class="col-sm-12 col-form-label">Date Debut de la publicité</label>
 
                                         <input type="text" id="date_start" name="date_debut_pub"
                                             value="{{ $publicite['date_debut_pub'] }}" class="form-control datetimepicker">
                                     </div>
 
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-3 dateEndDiv">
                                         <label class="col-sm-12 col-form-label">Date Fin de la publicité</label>
 
                                         <input type="text" id="date_end" value="{{ $publicite['date_fin_pub'] }}"
                                             name="date_fin_pub" class="form-control datetimepicker">
                                     </div>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-3 remiseDiv">
                                         <label class="col-sm-12 col-form-label">Reduction %</label>
                                         <input type="number" name="discount" value="{{ $publicite['discount'] }}"
                                             class="form-control">
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row linkDiv">
                                     <div class="col-sm-8">
                                         <label class="col-sm-3 col-form-label">Lien</label>
                                         <input type="url" value="{{ $publicite['url'] }}" name="url"
@@ -108,7 +107,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row imageDiv">
                                     <label class="col-sm-3 col-form-label">Image
                                     </label>
                                     <div class="col-sm-9">
@@ -158,6 +157,55 @@
         }
 
         $(document).ready(function() {
+
+
+
+            // si par defaut le value type
+
+            var type = $('.typeMedia').val();
+
+           
+                if (type_media == 'annonce') {
+                    $('.remiseDiv').hide();
+                    $('.linkDiv').hide();
+                    $('.imageDiv').hide();
+                } else {
+                    $('.remiseDiv').show();
+                    $('.linkDiv').show();
+                    $('.imageDiv').show();
+                }
+
+
+
+                if (type_media == 'slider') {
+                    $('.remiseDiv').hide();
+
+                }
+            
+
+
+
+            $('.typeMedia').on('change', function() {
+                var type_media = $(this).val();
+
+                console.log(type_media);
+
+
+                if (type_media == 'annonce') {
+                    $('.remiseDiv').hide();
+                    $('.linkDiv').hide();
+                    $('.imageDiv').hide();
+                } else {
+                    $('.remiseDiv').show();
+                    $('.linkDiv').show();
+                    $('.imageDiv').show();
+                }
+
+                if (type_media == 'slider') {
+                    $('.remiseDiv').hide();
+
+                }
+            })
             //date discount
 
             $(".datetimepicker").each(function() {
@@ -210,6 +258,9 @@
                     $('.btn-submit').prop('disabled', false)
                 }
             });
+
+
+
         });
     </script>
 @endsection
