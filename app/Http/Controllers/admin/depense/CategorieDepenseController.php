@@ -46,8 +46,7 @@ class CategorieDepenseController extends Controller
                 'position' => $data_count + 1,
             ]);
 
-            Alert::success('Operation réussi', 'Success Message');
-            return back();
+            return back()->with('success', 'operation reussi avec success');
         } catch (\Throwable $e) {
             return $e->getMessage();
         }
@@ -89,6 +88,19 @@ class CategorieDepenseController extends Controller
 
 
 
+    public function edit(Request $request, $id)
+    {
+
+        try {
+            $categorie_depense = CategorieDepense::find($id);
+            return view('admin.pages.depense.categorie-depense.edit', compact('categorie_depense'));
+        } catch (\Throwable $e) {
+            return $e->getMessage();
+        }
+    }
+
+
+
     /**
      * Update the specified resource in storage.
      */
@@ -109,8 +121,7 @@ class CategorieDepenseController extends Controller
                 'statut' => $request['statut'],
             ]);
 
-            Alert::success('Opération réussi', 'Success Message');
-            return back();
+            return redirect()->route('categorie-depense.index')->withSuccess('Categorie modifiée avec success');
         } catch (\Throwable $e) {
             return $e->getMessage();
         }

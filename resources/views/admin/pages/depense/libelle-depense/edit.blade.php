@@ -1,63 +1,81 @@
-<!-- Default Modals -->
-<div id="myModalEdit{{ $item['id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true"
-    style="display: none;">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="myModalLabel">Modification </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-                <form class="row g-3 needs-validation" method="post"
-                    action="{{ route('libelle-depense.update', $item['id']) }}" novalidate>
-                    @csrf
+@extends('admin.layouts.app')
+@section('title', 'categorie')
+@section('sub-title', 'Modification')
 
-                    <div class="row">
-                       
+@section('content')
+    <style>
+        img {
+            max-width: 180px;
+        }
 
-                        <div class="col-md-12 mb-3">
-                            <label for="validationCustom01" class="form-label">Categorie</label>
-                            <select name="categorie_depense_id" class="form-control" required>
-                                <option disabled selected value="">Selectionner</option>
-                                @foreach ($categorie_depense as $data)
-                                    <option value="{{ $data['id'] }}"
-                                        {{ $data['id'] == $item['categorie_depense_id'] ? 'selected' : '' }}>
-                                        {{ $data['libelle'] }} </option>
-                                @endforeach
-                            </select>
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div>
-                        </div>
+        input[type=file] {
+            padding: 10px;
+            background: #eaeaea;
+        }
+    </style>
+
+    <section class="section">
+        @php
+            $msg_validation = 'Champs obligatoire';
+        @endphp
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-8 m-auto">
+                    @include('admin.components.validationMessage')
+                    <div class="card">
+                        <form class="row g-3 needs-validation m-3" method="post"
+                            action="{{ route('libelle-depense.update', $libelle_depense['id']) }}" novalidate>
+                            @csrf
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="validationCustom01" class="form-label">Categorie</label>
+                                    <select name="categorie_depense_id" class="form-control" required>
+                                        <option disabled selected value="">Selectionner</option>
+                                        @foreach ($categorie_depense as $data)
+                                            <option value="{{ $data['id'] }}"
+                                                {{ $data['id'] == $libelle_depense['categorie_depense_id'] ? 'selected' : '' }}>
+                                                {{ $data['libelle'] }} </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="valid-feedback">
+                                        Looks good!
+                                    </div>
+                                </div>
 
 
-                        <div class="col-md-12 mb-3">
-                            <label for="validationCustom01" class="form-label">Libelle</label>
-                            <input type="text" name="libelle" value="{{ $item['libelle'] }}" class="form-control"
-                                id="validationCustom01" required>
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div>
-                        </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="validationCustom01" class="form-label">Libelle</label>
+                                    <input type="text" name="libelle" value="{{ $libelle_depense['libelle'] }}"
+                                        class="form-control" id="validationCustom01" required>
+                                    <div class="valid-feedback">
+                                        Looks good!
+                                    </div>
+                                </div>
 
-                        <div class="col-md-12">
-                            <label for="validationCustom01" class="form-label">Description</label>
-                            <textarea class="form-control" name="description" id="" cols="30" rows="10">
-                                {{ $item['description'] }}
-                             </textarea>
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div>
-                        </div>
+                                <div class="col-md-12">
+                                    <label for="validationCustom01" class="form-label">Description</label>
+                                    <textarea class="form-control" name="description" id="" cols="30" rows="10">
+                                    {{ $libelle_depense['description'] }}
+                                 </textarea>
+                                    <div class="valid-feedback">
+                                        Looks good!
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3 w-100 ">Valider</button>
+                        </form>
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary ">Valider</button>
-                    </div>
-                </form>
+
+
+
+                </div>
+
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+
+        </div>
+
+        </div>
+        </div>
+    </section>
+@endsection

@@ -1,53 +1,68 @@
- <!-- Default Modals -->
- <div id="myModalEdit{{ $item['id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true"
-     style="display: none;">
-     <div class="modal-dialog">
-         <div class="modal-content">
-             <div class="modal-header">
-                 <h5 class="modal-title" id="myModalLabel">Modification </h5>
-                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                 </button>
-             </div>
-             <div class="modal-body">
+@extends('admin.layouts.app')
+@section('title', 'categorie')
+@section('sub-title', 'Modification')
 
-                 <form class="row g-3 needs-validation" method="post"
-                     action="{{ route('categorie-depense.update', $item['id']) }}" novalidate>
-                     @csrf
-                     <div class="col-md-12">
-                         <label for="validationCustom01" class="form-label">Nom de la categorie</label>
-                         <input type="text" name="libelle" value="{{ $item['libelle'] }}" class="form-control"
-                             id="validationCustom01" required>
-                         <div class="valid-feedback">
-                             Looks good!
-                         </div>
-                     </div>
+@section('content')
+    <style>
+        img {
+            max-width: 180px;
+        }
 
-                     <div class="col-md-12">
-                         <label for="validationCustom01" class="form-label">Statut</label>
-                         <select name="statut" class="form-control">
-                             <option value="active" {{ $item['statut'] == 'active' ? 'selected' : '' }}>
-                                 Activé
-                             </option>
-                             <option value="desactive" {{ $item['statut'] == 'desactive' ? 'selected' : '' }}>Desactivé
-                             </option>
-                         </select>
-                         <div class="valid-feedback">
-                             Looks good!
-                         </div>
-                     </div>
-             </div>
-             <div class="modal-footer">
-                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fermer</button>
-                 <button type="submit" class="btn btn-primary ">Modifier</button>
-             </div>
-             </form>
-         </div><!-- /.modal-content -->
-     </div><!-- /.modal-dialog -->
- </div><!-- /.modal -->
+        input[type=file] {
+            padding: 10px;
+            background: #eaeaea;
+        }
+    </style>
 
- {{-- @section('script')
-    <script src="{{ URL::asset('build/libs/prismjs/prism.js') }}"></script>
-    <script src="https://cdn.lordicon.com/libs/mssddfmo/lord-icon-2.1.0.js"></script>
-    <script src="{{ URL::asset('build/js/pages/modal.init.js') }}"></script>
-    <script src="{{ URL::asset('build/js/app.js') }}"></script>
-@endsection --}}
+    <section class="section">
+        @php
+            $msg_validation = 'Champs obligatoire';
+        @endphp
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-8 m-auto">
+                    @include('admin.components.validationMessage')
+                    <div class="card">
+                        <form class="row g-3 needs-validation m-3" method="post"
+                            action="{{ route('categorie-depense.update', $categorie_depense['id']) }}" novalidate>
+                            @csrf
+                            <div class="col-md-6">
+                                <label for="validationCustom01" class="form-label">Nom de la categorie</label>
+                                <input type="text" name="libelle" value="{{ $categorie_depense['libelle'] }}"
+                                    class="form-control" id="validationCustom01" required>
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="validationCustom01" class="form-label">Statut</label>
+                                <select name="statut" class="form-control">
+                                    <option value="active" {{ $categorie_depense['statut'] == 'active' ? 'selected' : '' }}>
+                                        Activé
+                                    </option>
+                                    <option value="desactive"
+                                        {{ $categorie_depense['statut'] == 'desactive' ? 'selected' : '' }}>
+                                        Desactivé
+                                    </option>
+                                </select>
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-4 w-100 ">Modifier</button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        </div>
+    </section>
+
+
+
+@endsection

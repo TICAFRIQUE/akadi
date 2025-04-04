@@ -19,7 +19,7 @@ class LibelleDepenseController extends Controller
             // $categorie_depense = CategorieDepense::OrderBy('libelle', 'ASC')->get();
             $categorie_depense = CategorieDepense::whereNotIn('slug', ['achats'])->get();
 
-            return view('backend.pages.depense.libelle-depense.index', compact('data_libelleDepense', 'categorie_depense'));
+            return view('admin.pages.depense.libelle-depense.index', compact('data_libelleDepense', 'categorie_depense'));
         } catch (\Throwable $th) {
             //throw $th;
             return $th->getMessage();
@@ -52,8 +52,20 @@ class LibelleDepenseController extends Controller
             }
 
 
-            Alert::success('Operation réussi', 'Success Message');
-            return back(); // Retour avec les données du nouveau libellé
+            return back()->with('success', 'operation reussi avec success');
+
+        } catch (\Throwable $e) {
+            return $e->getMessage();
+        }
+    }
+
+
+    public function edit(Request $request, $id)
+    {
+        try {
+            $categorie_depense = CategorieDepense::all();
+            $libelle_depense = LibelleDepense::find($id);
+            return view('admin.pages.depense.libelle-depense.edit', compact('categorie_depense' , 'libelle_depense'));
         } catch (\Throwable $e) {
             return $e->getMessage();
         }
@@ -65,7 +77,6 @@ class LibelleDepenseController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         try {
             //request validation ......
             $data = $request->validate([
@@ -78,8 +89,8 @@ class LibelleDepenseController extends Controller
 
             $data_LibelleDepense = LibelleDepense::find($id)->update($data, ['user_id' => Auth::id()]);
 
-            Alert::success('Opération réussi', 'Success Message');
-            return back();
+            return redirect()->route('libelle-depense.index')->withSuccess('Categorie modifiée avec success');
+
         } catch (\Throwable $e) {
             return $e->getMessage();
         }

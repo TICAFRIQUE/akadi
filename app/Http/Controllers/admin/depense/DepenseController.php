@@ -67,7 +67,7 @@ class DepenseController extends Controller
             $data_depense = $query->orderBy('created_at', 'desc')->get();
 
             // dd($categorie_depense->toArray());
-            return view('backend.pages.depense.index', compact('data_depense', 'categorie_depense', 'data_libelle_depense'));
+            return view('admin.pages.depense.index', compact('data_depense', 'categorie_depense', 'data_libelle_depense'));
         } catch (\Throwable $th) {
             //throw $th;
             return $th->getMessage();
@@ -79,10 +79,10 @@ class DepenseController extends Controller
         try {
             // $data_depense = Depense::OrderBy('created_at', 'DESC')->get();
             $data_libelle_depense = LibelleDepense::OrderBy('created_at', 'ASC')->get();
-            $categorie_depense = CategorieDepense::with('libelleDepenses')->whereNotIn('slug', ['achats'])->get();
+            $categorie_depense = CategorieDepense::with('libelleDepenses')->get();
 
             // dd($categorie_depense->toArray());
-            return view('backend.pages.depense.create', compact('categorie_depense', 'data_libelle_depense'));
+            return view('admin.pages.depense.create', compact('categorie_depense', 'data_libelle_depense'));
         } catch (\Throwable $th) {
             //throw $th;
             return $th->getMessage();
@@ -132,8 +132,9 @@ class DepenseController extends Controller
                 'user_id' => Auth::id()
             ]);
 
-            Alert::success('Operation réussi', 'Success Message');
-            return back();
+         
+            return back()->with('success', 'operation reussi avec success');
+
         } catch (\Throwable $e) {
             return $e->getMessage();
         }

@@ -167,7 +167,7 @@ Route::prefix('admin/categorie-depense')->controller(CategorieDepenseController:
     route::post('store', 'store')->name('categorie-depense.store');
     route::get('edit/{id}', 'edit')->name('categorie-depense.edit');
     route::post('update/{id}', 'update')->name('categorie-depense.update');
-    route::get('delete/{id}', 'delete')->name('categorie-depense.delete');
+    route::post('destroy/{id}', 'delete')->name('categorie-depense.delete');
     route::post('position/{id}', 'position')->name('categorie-depense.position');
 });
 
@@ -178,7 +178,7 @@ Route::prefix('admin/libelle-depense')->controller(LibelleDepenseController::cla
     route::post('store', 'store')->name('libelle-depense.store');
     route::get('edit/{id}', 'edit')->name('libelle-depense.edit');
     route::post('update/{id}', 'update')->name('libelle-depense.update');
-    route::get('delete/{id}', 'delete')->name('libelle-depense.delete');
+    route::post('destroy/{id}', 'delete')->name('libelle-depense.delete');
     route::post('position/{id}', 'position')->name('libelle-depense.position');
 });
 
@@ -188,7 +188,7 @@ Route::prefix('admin/depense')->controller(DepenseController::class)->group(func
     route::post('store', 'store')->name('depense.store');
     route::get('edit/{id}', 'edit')->name('depense.edit');
     route::post('update/{id}', 'update')->name('depense.update');
-    route::get('delete/{id}', 'delete')->name('depense.delete');
+    route::post('destroy/{id}', 'delete')->name('depense.delete');
 });
 
 
