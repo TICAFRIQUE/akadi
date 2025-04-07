@@ -23,6 +23,18 @@
             </div>
         @endif
 
+
+        @if ($message = Session::get('warning'))
+        <div class="alert alert-warning alert-dismissible text-white show fade msg" style="background-color: rgb(236, 156, 16)">
+            <div class="alert-body">
+                {{-- <button class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button> --}}
+                {{ $message }}
+            </div>
+        </div>
+    @endif
+
         {{-- 
       <div class="alert alert-primary alert-dismissible show fade">
         <div class="alert-body">

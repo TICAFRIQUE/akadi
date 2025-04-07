@@ -38,15 +38,24 @@ class CategorieDepenseController extends Controller
                 'statut' => '',
             ]);
 
-            $data_count = CategorieDepense::count();
+            // verifier si le libelle entrant existe dejà en BD
+            $lib_exist = CategorieDepense::whereLibelle($request->libelle)->exists();
 
-            $data_categorie_depense = CategorieDepense::firstOrCreate([
-                'libelle' => $request['libelle'],
-                'statut' => $request['statut'],
-                'position' => $data_count + 1,
-            ]);
+            if ($lib_exist == true) {
+                return back()->with('warning', 'Le nom de la categorie existe dejà');
+            }else{
+                $data_count = CategorieDepense::count();
 
-            return back()->with('success', 'operation reussi avec success');
+                $data_categorie_depense = CategorieDepense::firstOrCreate([
+                    'libelle' => $request['libelle'],
+                    'statut' => $request['statut'],
+                    'position' => $data_count + 1,
+                ]);
+    
+                return back()->with('success', 'operation reussi avec success');
+            }
+
+          
         } catch (\Throwable $e) {
             return $e->getMessage();
         }

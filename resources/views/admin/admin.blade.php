@@ -28,7 +28,7 @@
         </style>
 
         <div class="row ">
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <div class="card card-order">
                     <div class="card-statistic-4">
                         <div class="align-items-center justify-content-between">
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <div class="card card-product">
                     <div class="card-statistic-4">
                         <div class="align-items-center justify-content-between">
@@ -72,7 +72,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <div class="card card-user">
                     <div class="card-statistic-4">
                         <div class="align-items-center justify-content-between">
@@ -95,26 +95,28 @@
                     </div>
                 </div>
             </div>
-            {{-- <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <div class="card card-visit">
-                    <div class="card-statistic-4">
-                        <div class="align-items-center justify-content-between">
-                            <div class="row ">
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
-                                    <div class="card-content">
-                                        <h5 class="font-15">Visites</h5>
-                                        <h2 class="mb-3 font-18">500</h2>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <a href=" {{route('depense.index')}} ">
+                    <div class="card card-visit">
+                        <div class="card-statistic-4">
+                            <div class="align-items-center justify-content-between">
+                                <div class="row ">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pr-0 pt-3">
+                                        <div class="card-content">
+                                            <h5 class="font-15">Depenses (mois)</h5>
+                                            <h2 class="mb-3 font-18"> {{ number_format($depenses , 0 , ',' , ' ' ) }}  </h2>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
-                                    <div class="banner-img">
-                                    </div>
+                                    {{-- <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
+                                        <div class="banner-img">
+                                        </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div> --}}
+                </a>
+            </div>
         </div>
         <div class="row">
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
@@ -297,7 +299,7 @@
                                         </div>
                                         <div class="media-items">
                                             <div class="media-item">
-                                                <div class="media-value badge badge-info">{{count($item['orders']) }}
+                                                <div class="media-value badge badge-info">{{ count($item['orders']) }}
                                                 </div>
                                                 <div class="media-label">Commandes</div>
                                             </div>
@@ -324,31 +326,31 @@
 
 
 
-          <!-- ========== Start statistic product more buy ========== -->
-          @include('admin.pages.statistic.top_product')
-          <!-- ========== End statistic product  more buy ========== -->
+            <!-- ========== Start statistic product more buy ========== -->
+            @include('admin.pages.statistic.top_product')
+            <!-- ========== End statistic product  more buy ========== -->
 
 
             <!-- ========== Start statistic order more buy year ========== -->
             @include('admin.pages.statistic.order_by_year')
             <!-- ========== End statistic order more buy year ========== -->
 
-             <!-- ========== Start statistic order more buy month ========== -->
-             @include('admin.pages.statistic.order_by_month')
-             <!-- ========== End statistic order more buy month ========== -->
+            <!-- ========== Start statistic order more buy month ========== -->
+            @include('admin.pages.statistic.order_by_month')
+            <!-- ========== End statistic order more buy month ========== -->
 
 
-             <!-- ========== Start chiffre d'affaire buy year ========== -->
-             @include('admin.pages.statistic.revenu_by_year')
-             
-             <!-- ========== End chiffre d'affaire buy year ========== -->
+            <!-- ========== Start chiffre d'affaire buy year ========== -->
+            @include('admin.pages.statistic.revenu_by_year')
 
-               <!-- ========== Start chiffre d'affaire buy year ========== -->
-             @include('admin.pages.statistic.revenu_by_month')
-             
-             <!-- ========== End chiffre d'affaire buy year ========== -->
-             
-          
+            <!-- ========== End chiffre d'affaire buy year ========== -->
+
+            <!-- ========== Start chiffre d'affaire buy year ========== -->
+            @include('admin.pages.statistic.revenu_by_month')
+
+            <!-- ========== End chiffre d'affaire buy year ========== -->
+
+
 
         </div>
 
@@ -539,7 +541,7 @@
                         <i class="fas fa-undo"></i> Restore Default
                     </a>
 
-                     {{-- <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
+                    {{-- <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
                         <i class="fas fa-setting"></i> Mode maintenance
                     </a> --}}
                 </div>
@@ -560,58 +562,57 @@
     @endpush
 
     <script>
-       
         $(document).ready(function() {
 
 
-             // 'use strict';
-        $(function() {
-            // chart1();
-            // chart2();
-            // chart3();
-            // chart4();
-            // chart5();
-            // chart6();
-            chart7();
-            // chart8();
-        });
+            // 'use strict';
+            $(function() {
+                // chart1();
+                // chart2();
+                // chart3();
+                // chart4();
+                // chart5();
+                // chart6();
+                chart7();
+                // chart8();
+            });
 
-        //chart type client 
-        function chart7() {
-            var client_fidele = {{ Js::from($client_fidele) }}
-            var client_prospect = {{ Js::from($client_prospect) }}
+            //chart type client 
+            function chart7() {
+                var client_fidele = {{ Js::from($client_fidele) }}
+                var client_prospect = {{ Js::from($client_prospect) }}
 
-            var options = {
-                chart: {
-                    width: 400,
-                    type: 'pie',
-                },
-                labels: [ 'Client-prospect', 'Client-fidele',],
-                series: [ client_prospect, client_fidele],
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                            width: 200
-                        },
-                        legend: {
-                            position: 'bottom'
+                var options = {
+                    chart: {
+                        width: 400,
+                        type: 'pie',
+                    },
+                    labels: ['Client-prospect', 'Client-fidele', ],
+                    series: [client_prospect, client_fidele],
+                    responsive: [{
+                        breakpoint: 480,
+                        options: {
+                            chart: {
+                                width: 200
+                            },
+                            legend: {
+                                position: 'bottom'
+                            }
                         }
-                    }
-                }]
+                    }]
+                }
+
+                var chart = new ApexCharts(
+                    document.querySelector("#chart7"),
+                    options,
+                    client_fidele,
+                    client_prospect
+                );
+
+                chart.render();
             }
 
-            var chart = new ApexCharts(
-                document.querySelector("#chart7"),
-                options,
-                client_fidele,
-                client_prospect
-            );
 
-            chart.render();
-        }
-
-           
 
 
 

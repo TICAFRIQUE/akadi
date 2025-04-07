@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RapportController;
 use App\Http\Controllers\admin\OrderController;
 use App\Http\Controllers\admin\CouponController;
 use App\Http\Controllers\admin\ProductController;
@@ -192,6 +193,11 @@ Route::prefix('admin/depense')->controller(DepenseController::class)->group(func
 });
 
 
+// rapport exploitation
+Route::prefix('admin/rapport')->controller(RapportController::class)->group(function () {
+    route::get('rapport', 'exploitation')->name('rapport.exploitation');
+   
+});
 
 
 

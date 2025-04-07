@@ -262,6 +262,16 @@
                                         bord</span></a>
                             </li>
 
+                            {{-- <li class="dropdown">
+                                <a href="#" class="menu-toggle nav-link has-dropdown"><i
+                                        data-feather="settings"></i><span>Parametres</span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="nav-link" href="avatar.html">Rôles</a></li>
+                                    <li><a class="nav-link" href="card.html">Publicités</a></li>
+
+                                </ul>
+                            </li> --}}
+
                             @role(['developpeur', 'administrateur'])
                                 <li class="dropdown">
                                     <a href="{{ route('category.index') }}" class="nav-link"><i
@@ -325,7 +335,7 @@
                             </li>
 
                             <li class="dropdown">
-                                <a href="{{ route('temoignage.index') }}" class="nav-link"><i
+                                <a href="{{ route('temoignage.index') }}" cl²ass="nav-link"><i
                                         data-feather="message-square"></i><span>Témoignages</span></a>
                             </li>
 
@@ -333,42 +343,43 @@
                             <li class="dropdown">
                                 <a href="#" class="menu-toggle nav-link has-dropdown"><i
                                         data-feather="dollar-sign"></i><span>Gestions des depenses</span></a>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu {{Route::is('categorie-depense.*') || Route::is('libelle-depense.*') || Route::is('depense.*') ? 'show' : ''}}">
                                     {{-- <li><a class="nav-link" href="{{ route('categorie-depense.index') }}"> Categorie dépense</a></li>
                                     <li><a class="nav-link" href="{{ route('libelle-depense.index') }}"> Libelle  dépense</a></li>
                                     <li><a class="nav-link" href="{{ route('depense.index') }}"> Dépense</a></li> --}}
 
-                                    <li class="nav-item active">
+                                    <li class="nav-item {{ Route::is('categorie-depense.*') ? 'active' : '' }}">
                                         <a href="{{ route('categorie-depense.index') }}"
-                                            class="nav-link {{ Route::is('categorie-depense.*') ? 'active' : '' }}">Categorie
+                                            class="nav-link ">Categorie
 
                                             depenses</a>
                                     </li>
 
-                                    <li class="nav-item active">
+                                    <li class="nav-item {{ Route::is('libelle-depense.*') ? 'active' : '' }}">
                                         <a href="{{ route('libelle-depense.index') }}"
-                                            class="nav-link {{ Route::is('libelle-depense.*') ? 'active' : '' }}">Libellé
+                                            class="nav-link ">Libellé
                                             
                                             depenses</a>
                                     </li>
 
-                                    <li class="nav-item active">
+                                    <li class="nav-item {{ Route::is('depense.*') ? 'active' : '' }}">
                                         <a href="{{ route('depense.index') }}"
-                                            class="nav-link {{ Route::is('depense.*') ? 'active' : '' }}">Depenses</a>
+                                            class="nav-link ">Depenses</a>
                                     </li>
                                 </ul>
 
                             </li>
 
                             @role(['developpeur', 'administrateur', 'gestionnaire'])
-                                <li class="dropdown">
-                                    <a href="/admin/auth?client" class="nav-link"><i
-                                            data-feather="users"></i><span>Clients</span></a>
-                                </li>
+                               
                                 <li class="dropdown">
                                     <a href="#" class="menu-toggle nav-link has-dropdown"><i
                                             data-feather="lock"></i><span>Administrateurs</span></a>
                                     <ul class="dropdown-menu">
+                                        <li class="dropdown">
+                                            <a href="/admin/auth?client" class="nav-link"><i
+                                                    data-feather="users"></i><span>Clients</span></a>
+                                        </li>
                                         @foreach ($roleWithoutClient as $item)
                                             <li><a class="nav-link" href="/admin/auth?user={{ $item['name'] }}">
                                                     {{ $item['name'] }} </a></li>
@@ -380,6 +391,11 @@
 
                                 </li>
                             @endrole
+
+                            <li class="dropdown {{Route::is('rapport.exploitation') ? 'active' : ''}} ">
+                                <a href="{{ route('rapport.exploitation') }}" class="nav-link "><i
+                                        data-feather="settings"></i><span>Rapport</span></a>
+                            </li>
 
                             {{-- <li class="dropdown">
                                 <a href="#" class="menu-toggle nav-link has-dropdown"><i

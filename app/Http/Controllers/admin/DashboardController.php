@@ -5,12 +5,14 @@ namespace App\Http\Controllers\admin;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Depense;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\PHPMailer;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 
 class DashboardController extends Controller
 {
@@ -21,6 +23,7 @@ class DashboardController extends Controller
 
 
 
+       if (Config::get('app.env') == 'production') {
         $mail = new PHPMailer(true);
         // require base_path("vendor/autoload.php");
 
@@ -46,6 +49,7 @@ class DashboardController extends Controller
 
         $mail->send();
 
+       }
 
         $orders_attente = Order::orderBy('created_at', 'DESC')
             ->whereIn('status', ['attente'])
@@ -59,6 +63,7 @@ class DashboardController extends Controller
 
 
 
+
         //statistic
         //count all orders
         $orders = Order::count();
@@ -66,6 +71,8 @@ class DashboardController extends Controller
         $products = Product::count();
         //count all user  
         $users = User::count();
+        //montant des depenses
+        $depenses = Depense::sum('montant');
 
         ############################## STATISTIQUE ORDER ###########
         // statistic order
@@ -166,6 +173,7 @@ class DashboardController extends Controller
             'products',
             'users',
             'orders_new',
+            'depenses',
 
             //order
             'orders_days',

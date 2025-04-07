@@ -20,7 +20,7 @@
         @endphp
         <div class="section-body">
             <div class="row">
-                <div class="col-12 col-md-6 col-lg-8 m-auto">
+                <div class="col-12 col-md-10 col-lg-12 m-auto">
                     @include('admin.components.validationMessage')
                     <div class="card">
                         <form class="row g-3 needs-validation m-3" method="post" action="{{ route('depense.store') }}"
