@@ -394,7 +394,7 @@
 
                             <li class="dropdown {{Route::is('rapport.exploitation') ? 'active' : ''}} ">
                                 <a href="{{ route('rapport.exploitation') }}" class="nav-link "><i
-                                        data-feather="settings"></i><span>Rapport</span></a>
+                                        data-feather="activity"></i><span>Rapport</span></a>
                             </li>
 
                             {{-- <li class="dropdown">

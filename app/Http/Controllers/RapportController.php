@@ -92,12 +92,12 @@ class RapportController extends Controller
             $depensesParCategorie = $depenses->groupBy('categorie_depense.libelle');
 
             // 7. Total des orders globale 
-            
+
             ##Total des montants remise
             $totalRemise = $venteQuery->sum('discount');
 
             ##Total des montants avant remise
-            $totalVenteBrut = $venteQuery->sum('subtotal') - $totalRemise ;
+            $totalVenteBrut = $venteQuery->sum('subtotal') - $totalRemise;
 
             ##Total des montants apres remise
             $totalVenteNet = $venteQuery->sum('total');
@@ -130,6 +130,43 @@ class RapportController extends Controller
 
 
             return view('admin.pages.rapport.exploitation', compact('totalVentes', 'benefice', 'totalDepenses',  'categories_depense', 'depensesParCategorie',  'categories', 'totalVenteBrut', 'totalRemise', 'totalVenteNet'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function detail_depense(Request $request)
+    {
+        try {
+            $dateDebut = $request->input('date_debut');
+            $dateFin = $request->input('date_fin');
+            $categorieDepense = $request->input('categorie_depense');  // ID de la catégorie de depense selectionnée
+            $libelleDepense = $request->input('libelle_depense');
+
+            $produitId = $request->input('produitId'); // Id du produit pour recuperer tous les achats du produits
+
+
+            // Vérification de la catégorie de dépense
+            $categorieDepenseExiste = CategorieDepense::where('id', $categorieDepense)->first();
+
+           
+
+            // Récupération des dépenses de la catégorie sélectionnée dans la période spécifiée
+            $depenses = Depense::where('categorie_depense_id', $categorieDepense)
+                ->where('libelle_depense_id', $libelleDepense)
+                ->when($dateDebut && $dateFin, function ($query) use ($dateDebut, $dateFin) {
+                    return $query->whereBetween('date_depense', [$dateDebut, $dateFin]);
+                })
+                ->when($dateDebut && !$dateFin, function ($query) use ($dateDebut) {
+                    return $query->where('date_depense', '>=', $dateDebut);
+                })
+                ->when(!$dateDebut && $dateFin, function ($query) use ($dateFin) {
+                    return $query->where('date_depense', '<=', $dateFin);
+                })
+                ->with(['categorie_depense', 'libelle_depense'])
+                ->get();
+           
+            return view('admin.pages.rapport.detail_depense', compact('depenses', 'dateDebut', 'dateFin', 'categorieDepense'));
         } catch (\Exception $e) {
             return $e->getMessage();
         }

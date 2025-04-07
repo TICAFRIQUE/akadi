@@ -195,8 +195,9 @@ Route::prefix('admin/depense')->controller(DepenseController::class)->group(func
 
 // rapport exploitation
 Route::prefix('admin/rapport')->controller(RapportController::class)->group(function () {
-    route::get('rapport', 'exploitation')->name('rapport.exploitation');
-   
+    route::get('', 'exploitation')->name('rapport.exploitation');
+    route::get('detail-depense', 'detail_depense')->name('rapport.detail');
+
 });
 
 
