@@ -39,7 +39,7 @@
                                                 <td> {{ ++$key }} </td>
                                                 <td>{{ $item['categorie_depense']['libelle'] ?? '' }}</td>
                                                 <td> {{ $item['libelle'] }}</td>
-                                                <td> {{ $item['user']['first_name'] }}</td>
+                                                <td> {{ $item['user']['name'] }}</td>
                                                 <td> {{ $item['created_at'] }} </td>
                                                 <td>
                                                     <div class="dropdown">
