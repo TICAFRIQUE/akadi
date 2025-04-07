@@ -125,7 +125,7 @@
                                                 <td>{{ $item['libelle_depense']['libelle'] ?? $item['categorie_depense']['libelle'] }}
                                                 </td>
                                                 <td>{{ number_format($item['montant'], 0, ',', ' ') }}</td>
-                                                <td>{{ $item['user']['name'] }}</td>
+                                                <td>{{ $item['user']['name'] ?? '' }}</td>
                                                 <td>{{ $item['created_at']->format('d/m/Y H:i') }}</td>
                                                 <td>
                                                     <div class="dropdown">
