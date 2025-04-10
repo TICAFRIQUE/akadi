@@ -509,7 +509,7 @@
                                         <td>${item.user.phone}</td>
                                         <td>${item.user.email}</td>
                                         <td>${Number(item.total).toLocaleString()}</td>
-                                        <td>${moment(item.created_at).format('dddd D MMMM YYYY à HH:mm')}</td>
+                                        <td>${item.created_at}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <a href="#" data-toggle="dropdown" class="btn btn-warning dropdown-toggle">Options</a>
