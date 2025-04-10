@@ -231,7 +231,7 @@
                                             <td>
                                                 {{-- {{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}
                                                 <br> --}}
-                                                {{ \Carbon\Carbon::parse($item['date_order'])->isoFormat('dddd D MMMM YYYY') }}
+                                                {{ \Carbon\Carbon::parse($item['created_at'])->isoFormat('dddd D MMMM YYYY à HH:mm') }}
 
                                             </td>
 
@@ -290,6 +290,8 @@
     </div>
 
     <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.colVis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
+
     <script>
         $(document).ready(function() {
             var table = $('#tableExport').DataTable({
@@ -312,7 +314,7 @@
                         // text: 'Copier',
                         // className: 'btn btn-primary',
                         exportOptions: {
-                            columns: [0,1,2,3,4,5,6,7]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
                         },
 
                     },
@@ -321,7 +323,7 @@
                         extend: 'csv',
                         // text: 'Csv',
                         exportOptions: {
-                            columns: [0,1,2,3,4,5,6,7]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
                         },
 
                     },
@@ -331,7 +333,7 @@
                         extend: 'excel',
                         // text: 'Excel',
                         exportOptions: {
-                            columns: [0,1,2,3,4,5,6,7]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
                         },
 
                     },
@@ -340,7 +342,7 @@
                         extend: 'pdf',
                         // text: 'Pdf',
                         exportOptions: {
-                            columns: [0,1,2,3,4,5,6,7]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
                         },
 
                     },
@@ -349,7 +351,7 @@
                         extend: 'print',
                         // text: 'Imprimer',
                         exportOptions: {
-                            columns: [0,1,2,3,4,5,6,7]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
                         },
 
                     },
@@ -458,7 +460,100 @@
 
 
 
+
+                    
+                //executer la fonction chaque 5 secondes
+                // setInterval(newOrders, 5000);
+
+                setInterval(function() {
+                    moment.locale('fr'); // définit la langue en français
+                    $.ajax({
+                        url: "{{ route('order.checkNewOrder') }}",
+                        method: "GET",
+                        success: function(data) {
+                            console.log(data);
+                            
+                            if (data.orders && data.orders.length > 0) {
+                                data.orders.forEach(function(item, index) {
+                                    if (!document.querySelector('#row_' + item
+                                            .id)) {
+                                        let badgeClass = '';
+                                        let icon = '';
+
+                                        switch (item.status) {
+                                            case 'attente':
+                                                badgeClass = 'badge-primary';
+                                                break;
+                                            case 'livrée':
+                                                badgeClass = 'badge-success';
+                                                break;
+                                            case 'confirmée':
+                                                badgeClass = 'badge-info';
+                                                break;
+                                            case 'annulée':
+                                                badgeClass = 'badge-danger';
+                                                break;
+                                            case 'precommande':
+                                                badgeClass = 'badge-dark';
+                                                icon =
+                                                    '<i class="fa fa-clock"></i> ';
+                                                break;
+                                        }
+
+                                        const html = `
+                                    <tr id="row_${item.id}">
+                                        <td> <span class="badge badge-success text-white p-1 px-3"> Nouveau </span>  </td>
+                                        <td><span class="badge ${badgeClass} text-white p-1 px-3">${icon}${item.status}</span></td>
+                                        <td><span style="font-weight:bold">${item.code}</span></td>
+                                        <td>${item.user.name}</td>
+                                        <td>${item.user.phone}</td>
+                                        <td>${item.user.email}</td>
+                                        <td>${Number(item.total).toLocaleString()}</td>
+                                        <td>${moment(item.created_at).format('dddd D MMMM YYYY à HH:mm')}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <a href="#" data-toggle="dropdown" class="btn btn-warning dropdown-toggle">Options</a>
+                                                <div class="dropdown-menu">
+                                                    <a href="/admin/order/show/${item.id}" class="dropdown-item has-icon">
+                                                        <i class="fas fa-eye"></i> Detail
+                                                    </a>
+                                                    ${item.status !== 'livrée' && item.status !== 'annulée' ? `
+                                                                    <a href="/admin/order/changeState?cs=confirmée && id=${item.id}" class="dropdown-item has-icon">
+                                                                        <i class="fas fa-check"></i> Confirmée
+                                                                    </a>
+                                                                    <a href="/admin/order/changeState?cs=livrée && id=${item.id}" class="dropdown-item has-icon">
+                                                                        <i class="fas fa-shipping-fast"></i> Livrée
+                                                                    </a>
+                                                                    <a href="/admin/order/changeState?cs=attente && id=${item.id}" class="dropdown-item has-icon">
+                                                                        <i class="fas fa-arrow-down"></i> Attente
+                                                                    </a>
+                                                                    <a href="#" role="button" data-id="${item.id}" class="dropdown-item has-icon text-danger btnCancel">
+                                                                        <i data-feather="x-circle"></i> Annuler
+                                                                    </a>
+                                                                ` : ''}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>`;
+
+                                        $('#tableExport tbody').prepend(
+                                            html
+                                        ); // remplace #myTable par l’ID réel de ton tableau
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }, 5000);
+
                 }
+
+
+
+
+
+
+
             });
         });
     </script>

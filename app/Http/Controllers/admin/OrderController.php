@@ -18,12 +18,12 @@ class OrderController extends Controller
         // dd($request->all);
         //request('s') ## s => status ,  filter from status order
         $orders = Order::orderBy('created_at', 'DESC')
-            ->when(request('d'), fn ($q) => $q->where('date_order', Carbon::now()->format('Y-m-d')))
-            ->when(request('s'), fn ($q) => $q->whereStatus(request('s')))
+            ->when(request('d'), fn($q) => $q->where('date_order', Carbon::now()->format('Y-m-d')))
+            ->when(request('s'), fn($q) => $q->whereStatus(request('s')))
             //get orders between two dates
             ->when(
                 request('date_debut') && request('date_fin') && request('status') != 'all',
-                fn ($q) => $q->whereBetween('date_order', [request('date_debut'), request('date_fin')])->whereStatus(request('status'))
+                fn($q) => $q->whereBetween('date_order', [request('date_debut'), request('date_fin')])->whereStatus(request('status'))
             )
             ->when(request('status') == 'all') // toutes les commandes
             ->whereBetween('date_order', [request('date_debut'), request('date_fin')])
@@ -62,8 +62,9 @@ class OrderController extends Controller
     {
         $orders = Order::whereId($id)
             ->with([
-                'user', 'products'
-                => fn ($q) => $q->with('media')
+                'user',
+                'products'
+                => fn($q) => $q->with('media')
             ])
             ->orderBy('created_at', 'DESC')->first();
         // dd($orders->toArray());
@@ -83,8 +84,9 @@ class OrderController extends Controller
         //function sans verification de disponiblite
         $orders = Order::whereId($id)
             ->with([
-                'user', 'products'
-                => fn ($q) => $q->with('media')
+                'user',
+                'products'
+                => fn($q) => $q->with('media')
             ])
             ->orderBy('created_at', 'DESC')->first();
 
@@ -160,13 +162,13 @@ class OrderController extends Controller
             $mail->Body =
                 '<p style="text-align: center;>  <img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80">
       
-</p>
+                </p>
 
-<p style="text-align: center;">Hello, ' . $order->user->name . ' </p>
-<p style="text-align: center;">Votre commande de <b>#' . $order->code . '</b> a été confirmé avec success</p>
-<p style="text-align: center;">Vous serez livré dans peu de temps</p>
-<p style="text-align: center;">Merci pour votre confiance , <a href="http://Akadi.ci" target="_blank" rel="noopener noreferrer">www.akadi.ci</a></p>
-            ';
+                <p style="text-align: center;">Hello, ' . $order->user->name . ' </p>
+                <p style="text-align: center;">Votre commande de <b>#' . $order->code . '</b> a été confirmé avec success</p>
+                <p style="text-align: center;">Vous serez livré dans peu de temps</p>
+                <p style="text-align: center;">Merci pour votre confiance , <a href="http://Akadi.ci" target="_blank" rel="noopener noreferrer">www.akadi.ci</a></p>
+                            ';
             $mail->send();
         } elseif ($state == 'annulée') {
             $data = [
@@ -196,13 +198,13 @@ class OrderController extends Controller
             $mail->Body =
                 '<p style="text-align: center;>  <img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80">
       
-</p>
+                </p>
 
-<p style="text-align: center;">Hello, ' . $order->user->name . ' </p>
-<p style="text-align: center;">Votre commande de <b>#' . $order->code . '</b> a été annuléé </p>
-<p style="text-align: center;">Raison d\'annulation : ' . $order->raison_annulation_cmd . '</p>
-<p style="text-align: center;">Merci pour votre confiance , <a href="http://Akadi.ci" target="_blank" rel="noopener noreferrer">www.akadi.ci</a></p>
-            ';
+                <p style="text-align: center;">Hello, ' . $order->user->name . ' </p>
+                <p style="text-align: center;">Votre commande de <b>#' . $order->code . '</b> a été annuléé </p>
+                <p style="text-align: center;">Raison d\'annulation : ' . $order->raison_annulation_cmd . '</p>
+                <p style="text-align: center;">Merci pour votre confiance , <a href="http://Akadi.ci" target="_blank" rel="noopener noreferrer">www.akadi.ci</a></p>
+                            ';
             $mail->send();
         }
 
@@ -225,5 +227,29 @@ class OrderController extends Controller
         ]);
 
         return back()->withSuccess('Commande annulée avec success');
+    }
+
+
+    public function checkNewOrder()
+    {
+
+        $orders_new = Order::with('user')->orderBy('created_at', 'DESC')
+            ->whereIn('status', ['attente', 'precommande'])
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'orders' => $orders_new
+            // 'orders_new' => $orders_new->map(function ($order) {
+            //     return [
+            //         'id' => $order->id,
+            //         'code' => $order->code,
+            //         'status' => $order->status,
+            //         'created_at' => $order->created_at->format('Y-m-d H:i:s'),
+            //         'created_at_human' => Carbon::parse($order->created_at)->diffForHumans(),
+            //     ];
+            // }),
+            // 'count' => $orders_new->count() // Ajoute le nombre total des nouvelles commandes
+        ]);
     }
 }

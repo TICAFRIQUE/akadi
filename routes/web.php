@@ -124,6 +124,7 @@ Route::middleware(['admin'])->group(function () {
         Route::get('invoice/{id}', 'invoice')->name('order.invoice');
         Route::get('changeState', 'changeState')->name('order.changeState');
         Route::post('orderCancel', 'orderCancel')->name('order.orderCancel');
+        Route::get('checkNewOrder', 'checkNewOrder')->name('order.checkNewOrder');
     });
 
     //publicite
@@ -197,7 +198,6 @@ Route::prefix('admin/depense')->controller(DepenseController::class)->group(func
 Route::prefix('admin/rapport')->controller(RapportController::class)->group(function () {
     route::get('', 'exploitation')->name('rapport.exploitation');
     route::get('detail-depense', 'detail_depense')->name('rapport.detail');
-
 });
 
 

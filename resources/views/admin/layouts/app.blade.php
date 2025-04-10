@@ -343,35 +343,32 @@
                             <li class="dropdown">
                                 <a href="#" class="menu-toggle nav-link has-dropdown"><i
                                         data-feather="dollar-sign"></i><span>Gestions des depenses</span></a>
-                                <ul class="dropdown-menu {{Route::is('categorie-depense.*') || Route::is('libelle-depense.*') || Route::is('depense.*') ? 'show' : ''}}">
+                                <ul
+                                    class="dropdown-menu {{ Route::is('categorie-depense.*') || Route::is('libelle-depense.*') || Route::is('depense.*') ? 'show' : '' }}">
                                     {{-- <li><a class="nav-link" href="{{ route('categorie-depense.index') }}"> Categorie dépense</a></li>
                                     <li><a class="nav-link" href="{{ route('libelle-depense.index') }}"> Libelle  dépense</a></li>
                                     <li><a class="nav-link" href="{{ route('depense.index') }}"> Dépense</a></li> --}}
 
                                     <li class="nav-item {{ Route::is('categorie-depense.*') ? 'active' : '' }}">
-                                        <a href="{{ route('categorie-depense.index') }}"
-                                            class="nav-link ">Categorie
+                                        <a href="{{ route('categorie-depense.index') }}" class="nav-link ">Categorie
 
                                             depenses</a>
                                     </li>
 
                                     <li class="nav-item {{ Route::is('libelle-depense.*') ? 'active' : '' }}">
-                                        <a href="{{ route('libelle-depense.index') }}"
-                                            class="nav-link ">Libellé
-                                            
+                                        <a href="{{ route('libelle-depense.index') }}" class="nav-link ">Libellé
+
                                             depenses</a>
                                     </li>
 
                                     <li class="nav-item {{ Route::is('depense.*') ? 'active' : '' }}">
-                                        <a href="{{ route('depense.index') }}"
-                                            class="nav-link ">Depenses</a>
+                                        <a href="{{ route('depense.index') }}" class="nav-link ">Depenses</a>
                                     </li>
                                 </ul>
 
                             </li>
 
                             @role(['developpeur', 'administrateur', 'gestionnaire'])
-                               
                                 <li class="dropdown">
                                     <a href="#" class="menu-toggle nav-link has-dropdown"><i
                                             data-feather="lock"></i><span>Administrateurs</span></a>
@@ -392,7 +389,7 @@
                                 </li>
                             @endrole
 
-                            <li class="dropdown {{Route::is('rapport.exploitation') ? 'active' : ''}} ">
+                            <li class="dropdown {{ Route::is('rapport.exploitation') ? 'active' : '' }} ">
                                 <a href="{{ route('rapport.exploitation') }}" class="nav-link "><i
                                         data-feather="activity"></i><span>Rapport</span></a>
                             </li>
