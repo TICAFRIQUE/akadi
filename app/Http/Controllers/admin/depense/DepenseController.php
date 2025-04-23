@@ -24,7 +24,7 @@ class DepenseController extends Controller
         try {
             $query = Depense::OrderBy('created_at', 'DESC');
             $data_libelle_depense = LibelleDepense::OrderBy('created_at', 'ASC')->get();
-            $categorie_depense = CategorieDepense::whereNotIn('slug', ['achats'])->get();
+            $categorie_depense = CategorieDepense::get();
 
             $dateDebut = $request->input('date_debut');
             $dateFin = $request->input('date_fin');
@@ -132,12 +132,22 @@ class DepenseController extends Controller
                 'user_id' => Auth::id()
             ]);
 
-         
-            return back()->with('success', 'operation reussi avec success');
 
+            return back()->with('success', 'operation reussi avec success');
         } catch (\Throwable $e) {
             return $e->getMessage();
         }
+    }
+
+
+
+    public function edit($id)
+    {
+        $data_depense = Depense::find($id);
+        $libelle_depense = LibelleDepense::OrderBy('created_at', 'ASC')->get();
+        $categorie_depense = CategorieDepense::with('libelleDepenses')->whereNotIn('slug', ['achats'])->get();
+        // dd($categorie_depense->toArray());
+        return view('admin.pages.depense.edit', compact('data_depense', 'categorie_depense', 'libelle_depense'));
     }
 
 
@@ -151,10 +161,11 @@ class DepenseController extends Controller
             //request validation ......
             $data = $request->validate([
                 'libelle' => '',
-                'categorie' => '', // categorie depense or libelle depense
+                'categorie_depense_id' => '',
                 'montant' => 'required',
                 'description' => '',
                 'date_depense' => 'required',
+
             ]);
 
 
@@ -162,18 +173,19 @@ class DepenseController extends Controller
             $data_libelle = LibelleDepense::whereId($request->categorie)->first();
             $data_categorie = CategorieDepense::whereId($request->categorie)->first();
 
-            $libelle = '';
-            $categorie = '';
+            $libelle = ''; // libelle categorie depense
+            $categorie = ''; //categorie depense
 
-            if ($data_libelle) {
+            if (isset($data_libelle)) {
                 $libelle =  $data_libelle->id;
                 $categorie =  $data_libelle->categorie_depense_id;
-            } elseif ($data_categorie) {
+            } elseif (isset($data_categorie)) {
                 $categorie =  $data_categorie->id;
                 $libelle = null;
             }
+            // dd($request->all());
 
-         
+
             $data_depense = Depense::find($id)->update(
                 [
                     'categorie_depense_id' => $categorie,
@@ -186,12 +198,13 @@ class DepenseController extends Controller
                 ]
             );
 
-            Alert::success('Opération réussi', 'Success Message');
-            return back();
+
+            return back()->with('success', 'operation reussi avec success');
         } catch (\Throwable $e) {
             return $e->getMessage();
         }
     }
+
 
 
     public function delete($id)

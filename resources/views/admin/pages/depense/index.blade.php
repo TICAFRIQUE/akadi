@@ -134,7 +134,7 @@
                                                         <div class="dropdown-menu">
 
 
-                                                            <a href="{{ route('libelle-depense.edit', $item->id) }}"
+                                                            <a href="{{ route('depense.edit', $item->id) }}"
                                                                 class="dropdown-item has-icon"><i class="far fa-edit"></i>
                                                                 Modifier</a>
 
