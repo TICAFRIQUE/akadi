@@ -23,33 +23,32 @@ class DashboardController extends Controller
 
 
 
-       if (Config::get('app.env') == 'production') {
-        $mail = new PHPMailer(true);
-        // require base_path("vendor/autoload.php");
+        if (Config::get('app.env') == 'production') {
+            $mail = new PHPMailer(true);
+            // require base_path("vendor/autoload.php");
 
-        /* Email SMTP Settings */
-        $mail->SMTPDebug = 0;
-        $mail->isSMTP();
-        $mail->Host = 'mail.akadi.ci';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'info@akadi.ci';
-        $mail->Password = 'S$UBfu.8s(#z';
-        $mail->SMTPSecure = 'ssl';
-        $mail->Port = 465;
+            /* Email SMTP Settings */
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host = 'mail.akadi.ci';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'info@akadi.ci';
+            $mail->Password = 'S$UBfu.8s(#z';
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port = 465;
 
-        $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-        $mail->addAddress('Restaurantakadi@gmail.com');
+            $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+            $mail->addAddress('Restaurantakadi@gmail.com');
 
-        $mail->isHTML(true);
+            $mail->isHTML(true);
 
 
-        $mail->Subject = 'Anniversaire';
-        $mail->Body =
-            '<b> Bonjour Akadi, C\'est bientot l\'anniversaire de vos client  <br> Veuillez consulter les notifications sur le dashboard  <b>';
+            $mail->Subject = 'Anniversaire';
+            $mail->Body =
+                '<b> Bonjour Akadi, C\'est bientot l\'anniversaire de vos client  <br> Veuillez consulter les notifications sur le dashboard  <b>';
 
-        $mail->send();
-
-       }
+            $mail->send();
+        }
 
         $orders_attente = Order::orderBy('created_at', 'DESC')
             ->whereIn('status', ['attente'])
@@ -76,21 +75,19 @@ class DashboardController extends Controller
 
         ############################## STATISTIQUE ORDER ###########
         // statistic order
-        $orders_days = Order::orderBy('created_at', 'DESC')
-            ->where('date_order', Carbon::now()->format('Y-m-d'))
+        $orders_days = Order::where('date_order', Carbon::today())
             ->whereStatus('livrée')
             ->count();
 
         // dd($orders_days);
 
-        $orders_month = Order::orderBy('created_at', 'DESC')
-            ->whereMonth('date_order', Carbon::now()->month)
-            ->whereStatus('livrée')
+        $orders_month = Order::whereMonth('date_order', Carbon::now()->month)
+            ->whereYear('date_order', Carbon::now()->year) // Ajouté pour plus de précision
+            ->where('status', 'livrée')
             ->count();
 
-        $orders_year = Order::orderBy('created_at', 'DESC')
-            ->whereYear('date_order', Carbon::now()->year)
-            ->whereStatus('livrée')
+        $orders_year = Order::whereYear('date_order', Carbon::now()->year)
+            ->where('status', 'livrée')
             ->count();
 
         //orders semaine
@@ -100,8 +97,7 @@ class DashboardController extends Controller
 
 
 
-        $orders_week = Order::orderBy('created_at', 'DESC')
-            ->whereBetween('date_order', [$startWeek, $endWeek])
+        $orders_week = Order::whereBetween('date_order', [$startWeek, $endWeek])
             ->whereStatus('livrée')
             ->count();
 
@@ -120,13 +116,12 @@ class DashboardController extends Controller
             ->whereStatus('livrée')
             ->sum('total');
 
-        $ca_month = Order::orderBy('created_at', 'DESC')
-            ->whereMonth('date_order', Carbon::now()->month)
+        $ca_month = Order::whereMonth('date_order', Carbon::now()->month)
+            ->whereYear('date_order', Carbon::now()->year)
             ->whereStatus('livrée')
             ->sum('total');
 
-        $ca_year = Order::orderBy('created_at', 'DESC')
-            ->whereYear('date_order', Carbon::now()->year)
+        $ca_year = Order::whereYear('date_order', Carbon::now()->year)
             ->whereStatus('livrée')
             ->sum('total');
 
