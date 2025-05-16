@@ -33,60 +33,60 @@ class CartPageController extends Controller
 
 
     //Ajouter des produit au panier
-    public function addToCart($id)
-    {
+    // public function addToCart($id)
+    // {
 
-        $product = Product::findOrFail($id);
-        // $product = Product::whereId($id)->withWhereHas('coupon', fn ($q) => $q->where('status', 'en_cours'))->first();
+    //     $product = Product::findOrFail($id);
+    //     // $product = Product::whereId($id)->withWhereHas('coupon', fn ($q) => $q->where('status', 'en_cours'))->first();
 
-        $cart = session()->get('cart', []);
+    //     $cart = session()->get('cart', []);
 
-        //verifier si le produit a une remise
-        $price = 0;
-        if ($product['montant_remise'] != null && $product['status_remise'] == 'en_cours') {
-            $price = $product['price'] - $product['montant_remise'];
-        } else {
-            $price = $product['price'];
-        }
-        ##############################
+    //     //verifier si le produit a une remise
+    //     $price = 0;
+    //     if ($product['montant_remise'] != null && $product['status_remise'] == 'en_cours') {
+    //         $price = $product['price'] - $product['montant_remise'];
+    //     } else {
+    //         $price = $product['price'];
+    //     }
+    //     ##############################
 
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
-        } else {
-            $cart[$id] = [
-                "id" => $product->id,
-                "code" => $product->code,
-                "slug" => $product->slug,
-                "title" => $product->title,
-                "quantity" => 1,
-                "price" => $price,
-                "image" => $product->media[0]->getUrl(),
+    //     if (isset($cart[$id])) {
+    //         $cart[$id]['quantity']++;
+    //     } else {
+    //         $cart[$id] = [
+    //             "id" => $product->id,
+    //             "code" => $product->code,
+    //             "slug" => $product->slug,
+    //             "title" => $product->title,
+    //             "quantity" => 1,
+    //             "price" => $price,
+    //             "image" => $product->media[0]->getUrl(),
 
-            ];
-        }
+    //         ];
+    //     }
 
-        session()->put('cart', $cart);
+    //     session()->put('cart', $cart);
 
-        //recuperer la quantité total des produit du panier
-        $countCart = count((array) session('cart'));
-        $data = Session::get('cart');
-        $totalQuantity = 0;
-        foreach ($data as $id => $value) {
-            $totalQuantity += $value['quantity'];
-        }
+    //     //recuperer la quantité total des produit du panier
+    //     $countCart = count((array) session('cart'));
+    //     $data = Session::get('cart');
+    //     $totalQuantity = 0;
+    //     foreach ($data as $id => $value) {
+    //         $totalQuantity += $value['quantity'];
+    //     }
 
-        session()->put('totalQuantity', $totalQuantity);
-
-
-
-        return response()->json([
-            'countCart' => $countCart,
-            'cart' => $cart,
-            'totalQte' => $totalQuantity,
+    //     session()->put('totalQuantity', $totalQuantity);
 
 
-        ]);
-    }
+
+    //     return response()->json([
+    //         'countCart' => $countCart,
+    //         'cart' => $cart,
+    //         'totalQte' => $totalQuantity,
+
+
+    //     ]);
+    // }
 
     //modifier et mettre à jour le panier
     public function update(Request $request)
@@ -112,6 +112,46 @@ class CartPageController extends Controller
                 "sousTotal" => number_format($sousTotal),
             ]);
         }
+    }
+
+
+    public function addToCart($id)
+    {
+        $product = Product::with('media')->findOrFail($id);
+
+        // Calculer le prix avec ou sans remise
+        $hasDiscount = $product->montant_remise && $product->status_remise === 'en_cours';
+        $price = $hasDiscount ? $product->price - $product->montant_remise : $product->price;
+
+        $cart = session()->get('cart', []);
+
+        // Ajouter ou mettre à jour le produit dans le panier
+        if (isset($cart[$id])) {
+            $cart[$id]['quantity']++;
+        } else {
+            $cart[$id] = [
+                'id'       => $product->id,
+                'code'     => $product->code,
+                'slug'     => $product->slug,
+                'title'    => $product->title,
+                'quantity' => 1,
+                'price'    => $price,
+                'image'    => $product->media->first()?->getUrl() ?? 'default.jpg',
+            ];
+        }
+
+        // Mise à jour du panier en session
+        session()->put('cart', $cart);
+
+        // Calcul du total des quantités
+        $totalQuantity = collect($cart)->sum('quantity');
+        session()->put('totalQuantity', $totalQuantity);
+
+        return response()->json([
+            'countCart' => count($cart),
+            'cart'      => $cart,
+            'totalQte'  => $totalQuantity,
+        ]);
     }
 
 

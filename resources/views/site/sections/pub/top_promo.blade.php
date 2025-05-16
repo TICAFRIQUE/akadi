@@ -27,7 +27,7 @@
                             pour profitez de {{ $top_promo['discount'] }}%
                             de reduction !</span>
                     </div>
-                @elseif ($top_promo['status_pub'] == 'en cour')
+                @elseif ($top_promo['status_pub'] == 'en_cours')
                     <div class="col-12 promo-banner text-center py-2 mb-3 fs-5">
                         <span class=" text-white p-2 text-center ">Se termine dans <span class="fw-bold"
                                 id="Promo-Timer"></span>
@@ -71,7 +71,7 @@
 
 
                     </div>
-                    @if ($top_promo['status_pub']=='en cour')
+                    @if ($top_promo['status_pub']=='en_cours')
                     <div class="btn-wrap style1">
                        <a href="{{ $top_promo['url'] }}" class="th-btn m-auto" >{{ $top_promo['button_name'] }}</a>
                    </div>
@@ -95,7 +95,7 @@
 
         var status_pub = topPromo.status_pub
 
-        if (status_pub == 'en cour') {
+        if (status_pub == 'en_cours') {
             $('.promo-banner').show(300);
 
             function countDown() {

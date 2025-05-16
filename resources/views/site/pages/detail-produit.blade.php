@@ -58,7 +58,7 @@
                                 customer reviews)</a>
                         </div> --}}
                         <h4 class="product-title mb-4"> {{ $product['title'] }} </h4>
-                        @if ($product['montant_remise'] != null && $product['status_remise'] == 'en cour')
+                        @if ($product['montant_remise'] != null && $product['status_remise'] == 'en_cours')
                             @php
                                 $new_price = $product['price'] - $product['montant_remise']; //prix promo
                             @endphp
@@ -142,7 +142,7 @@
                                             alt="Product Image">
                                     </a>
 
-                                    @if ($item['status_remise'] == 'en cour')
+                                    @if ($item['status_remise'] == 'en_cours')
                                         <div class="th-menu_discount">
                                             <span class="sale"> - {{ $item['pourcentage_remise'] }} %</span>
                                         </div>
@@ -154,7 +154,7 @@
                                             style="font-size: 14px">{{ Str::limit($item['title'], 30, '...') }}</a>
                                     </span>
                                     {{-- <p class="th-menu_desc">Barbecue Italian cuisine pizza</p> --}}
-                                    @if ($item['montant_remise'] != null && $item['status_remise'] == 'en cour')
+                                    @if ($item['montant_remise'] != null && $item['status_remise'] == 'en_cours')
                                         @php
                                             $new_price = $item['price'] - $item['montant_remise']; //prix promo
                                         @endphp

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use PHPMailer\PHPMailer\PHPMailer;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -30,191 +31,151 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
+
+
     // public function boot(): void
     // {
     //     DB::statement("SET lc_time_names = 'fr_FR'");
 
-
-    //     /****************************start publicite */
-
-    //     //declenchez la promo publicitaire
-    //     $publicite = Publicite::whereType('top-promo')->whereStatus('active')->first();
+    //     /**************************** Start Publicite ********************************/
+    //     $publicite = Publicite::whereIn('type', ['top-promo' , 'pack' , 'annonce'])->whereStatus('active')->first();
 
     //     if ($publicite) {
-    //         $status_pub = ''; // bientot , en cour, termine
-    //         $status = '';  // active ,  desactive
-    //         if ($publicite['date_debut_pub'] > Carbon::now()) {
+    //         $status_pub = ''; // bientot , en cours, termine
+    //         $status = '';  // active , desactive
+
+    //         if ($publicite->date_debut_pub > Carbon::now()) {
     //             $status_pub = 'bientot';
     //             $status = 'active';
-    //         } elseif ($publicite['date_fin_pub'] < Carbon::now()) {
+    //         } elseif ($publicite->date_fin_pub < Carbon::now()) {
     //             $status_pub = 'termine';
     //             $status = 'desactive';
     //         } else {
-    //             $status_pub = 'en cour';
+    //             $status_pub = 'en_cour';
     //             $status = 'active';
     //         }
 
-
-    //         Publicite::whereType('top-promo')->whereStatus('active')
+    //         // Update status in batch for all active promos
+    //         Publicite::whereIn('type', ['top-promo' , 'pack' , 'annonce'])->whereStatus('active')
     //             ->update([
     //                 'status' => $status,
     //                 'status_pub' => $status_pub,
     //             ]);
     //     }
+    //     /**************************** End Publicite ********************************/
 
-    //     /****************************end publicite */
+    //     /**************************** Start Product Remise **************************/
+    //     $remise = Product::whereNotNull('montant_remise')->get();
 
+    //     foreach ($remise as $value) {
+    //         $status_remise = ''; // bientot , en cours, termine
 
-
-
-    //     /****************************start product remise */
-
-    //     //declenchez la promo product
-    //     $remise = Product::where('montant_remise', '!=', null)->get();
-
-    //     if ($remise) {
-    //         $status_remise = ''; // bientot , en cour, termine
-    //         $montant_remise = '';
-    //         $date_debut_remise = '';
-    //         $date_fin_remise = '';
-
-    //         foreach ($remise as $value) {
-    //             if ($value['date_debut_remise'] > Carbon::now()) {
-    //                 $status_remise = 'bientot';
-    //             } elseif ($value['date_fin_remise'] < Carbon::now()) {
-    //                 $status_remise = 'termine';
-    //             } else {
-    //                 $status_remise = 'en cour';
-    //             }
-
-    //             Product::whereId($value['id'])
-    //                 ->update([
-    //                     'status_remise' => $status_remise,
-    //                 ]);
-    //         }
-    //     }
-
-    //     /****************************end product remise */
-
-
-    //     /****************************coupon de reduction */
-    //     //declenchez le coupon de reduction
-    //     $coupon = Coupon::get();
-
-    //     if ($coupon) {
-    //         $status_coupon = ''; // bientot , en cour, termine
-    //         $date_debut_coupon = '';
-    //         $date_fin_coupon = '';
-
-    //         foreach ($coupon as $value) {
-    //             if ($value['date_debut'] > Carbon::now()) {
-    //                 $status_coupon = 'bientot';
-    //             } elseif ($value['date_fin'] < Carbon::now()) {
-    //                 $status_coupon = 'terminer';
-    //             } else {
-    //                 $status_coupon = 'en_cours';
-    //             }
-    //             // update status
-    //             Coupon::whereId($value['id'])
-    //                 ->update([
-    //                     'status' => $status_coupon,
-    //                 ]);
+    //         if ($value->date_debut_remise > Carbon::now()) {
+    //             $status_remise = 'bientot';
+    //         } elseif ($value->date_fin_remise < Carbon::now()) {
+    //             $status_remise = 'termine';
+    //         } else {
+    //             $status_remise = 'en cour';
     //         }
 
-    //         //delete coupon status ==terminé
-    //         // Coupon::where('status', 'termine')->delete();
+    //         // Update product remise status
+    //         $value->update(['status_remise' => $status_remise]);
+    //     }
+    //     /**************************** End Product Remise ****************************/
+
+    //     /**************************** Start Coupon Reduction ***********************/
+    //     $coupons = Coupon::get();
+
+    //     foreach ($coupons as $value) {
+    //         $status_coupon = ''; // bientot , en cours, termine
+
+    //         if ($value->date_debut > Carbon::now()) {
+    //             $status_coupon = 'bientot';
+    //         } elseif ($value->date_fin < Carbon::now()) {
+    //             $status_coupon = 'expirer';
+    //         } else {
+    //             $status_coupon = 'en_cours';
+    //         }
+
+    //         // Update coupon status
+    //         $value->update(['status' => $status_coupon]);
     //     }
 
+    //     // Optionally, delete expired coupons
+    //     // Coupon::where('status', 'terminer')->delete();
+    //     /**************************** End Coupon Reduction ***********************/
 
-
-    //     //update user role
-    //     //user have not order
-    //     $users = User::withCount(['roles', 'orders'])
-    //         ->whereNotIn('role', ['developpeur', 'administrateur', 'gestionnaire'])
-    //         // ->having('orders_count', '=', 1)
-    //         // ->whereHas('roles', fn ($q) => $q->where('name', '!=', 'developpeur'))
-    //         ->orderBy('created_at', 'DESC')->get();
-
-    //     // dd($users->toArray());
+    //     /**************************** Update User Role *****************************/
     //     $now = Carbon::now()->format('m');
-    //     // dd($now);
-    //     foreach ($users as $key => $value) {
 
+    //     $users = User::withCount('orders')
+    //         ->whereNotIn('role', ['developpeur', 'administrateur', 'gestionnaire'])
+    //         ->orderBy('created_at', 'DESC')
+    //         ->get();
 
-    //         if ($value['orders_count'] == 0) {
-    //             // $value->syncRoles('prospect');
-    //             User::whereId($value['id'])->update(['role' => 'prospect']);
+    //     foreach ($users as $user) {
+    //         if ($user->orders_count == 0) {
+    //             $user->update(['role' => 'prospect']);
     //         }
-    //         foreach ($value['orders'] as $key => $order) {
-    //             $order_month = Carbon::parse($order['date_order'])->format('m');
-    //             if ($value['orders_count'] > 0 && $order_month == $now) {
-    //                 User::whereId($value['id'])->update(['role' => 'fidele']);
+
+    //         foreach ($user->orders as $order) {
+    //             $order_month = Carbon::parse($order->date_order)->format('m');
+    //             if ($order_month == $now) {
+    //                 $user->update(['role' => 'fidele']);
     //             }
     //         }
     //     }
+    //     /**************************** End Update User Role ***********************/
 
-    //     ################################################  NOTIFY BIRTHDAY FUNCTION #####################
-
-    //     // notify_birthday 
+    //     /**************************** Notify Birthday ********************************/
     //     $now = Carbon::now()->endOfDay();
+    //     $users = User::all();
 
-    //     $user = User::get();
-    //     foreach ($user as $key => $value) {
-    //         $Y = date('Y');
-    //         $nex_date = $value['date_anniversaire'] . '-' . $Y;
-    //         $date_birthday = Carbon::parse($nex_date)->endOfDay();
-    //         $date_diff = $now->diffInDays($date_birthday, false);
-    //         // dd($date_diff);
-    //         //update diff date in notify birthday
-    //         User::whereId($value['id'])->update(['notify_birthday' => $date_diff]);
+    //     foreach ($users as $user) {
+    //         $next_birthday = Carbon::parse($user->date_anniversaire . '-' . date('Y'))->endOfDay();
+    //         $date_diff = $now->diffInDays($next_birthday, false);
+
+    //         $user->update(['notify_birthday' => $date_diff]);
     //     }
 
+    //     $user_upcoming_birthday = User::whereIn('notify_birthday', [2, 1])->get(); // Birthday in 2 days or 1 day
+    //     $user_birthday = User::where('notify_birthday', 0)->get(); // Birthday today
+    //     /**************************** End Notify Birthday **************************/
 
-
-    //     $user_upcoming_birthday = User::where('notify_birthday', 2)->OrWhere('notify_birthday', 1)->get(); // anniversaire a venir dans 2 jours
-    //     $user_birthday = User::where('notify_birthday', 0)->get(); // anniversaire du jour 
-
-
-
-    //     //category frontend
+    //     /**************************** Category Fetching *****************************/
     //     $category = Category::with([
-    //         'products' => fn ($q) => $q->whereDisponibilite(1)->orderBy('created_at', 'DESC')->get(), 'media', 'subcategories'
+    //         'products' => fn($q) => $q->whereDisponibilite(1)->orderByDesc('created_at'),
+    //         'media',
+    //         'subcategories',
     //     ])
     //         ->whereNotIn('name', ['Pack'])
-    //         ->orderBy('created_at', 'DESC')->get();
-    //     // dd($category->toArray());
+    //         ->orderByDesc('created_at')
+    //         ->get();
 
-    //     //category backend
     //     $category_backend = Category::with([
-    //         'products' => fn ($q) => $q->orderBy('created_at', 'DESC')->get(), 'media', 'subcategories'
+    //         'products' => fn($q) => $q->orderByDesc('created_at'),
+    //         'media',
+    //         'subcategories',
     //     ])
-    //         ->orderBy('created_at', 'DESC')->get();
-    //     // dd($category->toArray());
+    //         ->orderByDesc('created_at')
+    //         ->get();
 
     //     $subcategory = SubCategory::with(['products', 'media', 'category'])->orderBy('name', 'ASC')->get();
+    //     /**************************** End Category Fetching *************************/
 
-
-
+    //     /**************************** Roles Fetching ********************************/
     //     $roles = Role::where('name', '!=', 'developpeur')->get();
     //     $roleWithoutClient = Role::whereNotIn('name', ['developpeur', 'client', 'fidele', 'prospect'])->get();
+    //     /**************************** End Roles Fetching ****************************/
 
+    //     /**************************** Orders Fetching ******************************/
+    //     $orders_attente = Order::whereIn('status', ['attente'])->orderByDesc('created_at')->get();
+    //     $orders_new = Order::whereIn('status', ['attente', 'precommande'])->orderByDesc('created_at')->get();
+    //     /**************************** End Orders Fetching **************************/
 
-
-    //     /*********************ORDER GET */
-
-    //     $orders_attente = Order::orderBy('created_at', 'DESC')
-    //         ->whereIn('status', ['attente'])
-    //         ->get();
-
-
-    //     $orders_new = Order::orderBy('created_at', 'DESC')
-    //         ->whereIn('status', ['attente', 'precommande'])
-    //         ->get();
-
-    //     //information from publicite
-    //     // recuperer les informations publicité
-    //     $information = Publicite::with('media')->whereType('information')->whereStatus('active')->first();
-
+    //     /**************************** Publicite Information ************************/
+    //     $annonce = Publicite::with('media')->whereType('annonce')->whereStatus('active')->first();
+    //     /**************************** End Publicite Information ********************/
 
     //     View::composer('*', function ($view) use (
     //         $category,
@@ -224,184 +185,78 @@ class AppServiceProvider extends ServiceProvider
     //         $orders_attente,
     //         $orders_new,
     //         $roleWithoutClient,
-    //         $information,
+    //         $annonce,
     //         $user_upcoming_birthday,
     //         $user_birthday
     //     ) {
     //         $view->with([
-    //             'information' => $information,
+    //             'annonce' => $annonce,
     //             'categories' => $category,
     //             'subcategories' => $subcategory,
     //             'roles' => $roles,
     //             'roleWithoutClient' => $roleWithoutClient,
-
     //             'category_backend' => $category_backend,
     //             'orders_attente' => $orders_attente,
     //             'orders_new' => $orders_new,
     //             'user_upcoming_birthday' => $user_upcoming_birthday,
     //             'user_birthday' => $user_birthday,
-
-
     //         ]);
     //     });
     // }
+
+
+
+    //  public function boot(): void
+    // {
+    //     DB::statement("SET lc_time_names = 'fr_FR'");
+
+
+    // }
+
+
 
     public function boot(): void
     {
         DB::statement("SET lc_time_names = 'fr_FR'");
 
-        /**************************** Start Publicite ********************************/
-        $publicite = Publicite::whereIn('type', ['top-promo' , 'pack' , 'annonce'])->whereStatus('active')->first();
+        // Composer partagé pour les vues
+        View::composer('*', function ($view) {
+            $category = Cache::remember('categories', 3600, function () {
+                return Category::with([
+                    'products' => fn($q) => $q->whereDisponibilite(1)->latest(),
+                    'media',
+                    'subcategories',
+                ])->whereNotIn('name', ['Pack'])->latest()->get();
+            });
 
-        if ($publicite) {
-            $status_pub = ''; // bientot , en cours, termine
-            $status = '';  // active , desactive
+            $category_backend = Cache::remember('categories_backend', 3600, function () {
+                return Category::with([
+                    'products' => fn($q) => $q->latest(),
+                    'media',
+                    'subcategories',
+                ])->latest()->get();
+            });
 
-            if ($publicite->date_debut_pub > Carbon::now()) {
-                $status_pub = 'bientot';
-                $status = 'active';
-            } elseif ($publicite->date_fin_pub < Carbon::now()) {
-                $status_pub = 'termine';
-                $status = 'desactive';
-            } else {
-                $status_pub = 'en cour';
-                $status = 'active';
-            }
+            $subcategory = Cache::remember('subcategories', 3600, function () {
+                return SubCategory::with(['products', 'media', 'category'])->orderBy('name')->get();
+            });
 
-            // Update status in batch for all active promos
-            Publicite::whereIn('type', ['top-promo' , 'pack' , 'annonce'])->whereStatus('active')
-                ->update([
-                    'status' => $status,
-                    'status_pub' => $status_pub,
-                ]);
-        }
-        /**************************** End Publicite ********************************/
+            $roles = Cache::remember('roles', 3600, fn() => Role::where('name', '!=', 'developpeur')->get());
+            $roleWithoutClient = Cache::remember(
+                'roles_without_client',
+                3600,
+                fn() =>
+                Role::whereNotIn('name', ['developpeur', 'client', 'fidele', 'prospect'])->get()
+            );
 
-        /**************************** Start Product Remise **************************/
-        $remise = Product::whereNotNull('montant_remise')->get();
+            $orders_attente = Order::where('status', 'attente')->latest()->get();
+            $orders_new = Order::whereIn('status', ['attente', 'precommande'])->latest()->get();
 
-        foreach ($remise as $value) {
-            $status_remise = ''; // bientot , en cours, termine
+            $annonce = Publicite::with('media')->whereType('annonce')->whereStatus('active')->first();
 
-            if ($value->date_debut_remise > Carbon::now()) {
-                $status_remise = 'bientot';
-            } elseif ($value->date_fin_remise < Carbon::now()) {
-                $status_remise = 'termine';
-            } else {
-                $status_remise = 'en cour';
-            }
+            $user_upcoming_birthday = User::whereIn('notify_birthday', [2, 1])->get();
+            $user_birthday = User::where('notify_birthday', 0)->get();
 
-            // Update product remise status
-            $value->update(['status_remise' => $status_remise]);
-        }
-        /**************************** End Product Remise ****************************/
-
-        /**************************** Start Coupon Reduction ***********************/
-        $coupons = Coupon::get();
-
-        foreach ($coupons as $value) {
-            $status_coupon = ''; // bientot , en cours, termine
-
-            if ($value->date_debut > Carbon::now()) {
-                $status_coupon = 'bientot';
-            } elseif ($value->date_fin < Carbon::now()) {
-                $status_coupon = 'expirer';
-            } else {
-                $status_coupon = 'en_cours';
-            }
-
-            // Update coupon status
-            $value->update(['status' => $status_coupon]);
-        }
-
-        // Optionally, delete expired coupons
-        // Coupon::where('status', 'terminer')->delete();
-        /**************************** End Coupon Reduction ***********************/
-
-        /**************************** Update User Role *****************************/
-        $now = Carbon::now()->format('m');
-
-        $users = User::withCount('orders')
-            ->whereNotIn('role', ['developpeur', 'administrateur', 'gestionnaire'])
-            ->orderBy('created_at', 'DESC')
-            ->get();
-
-        foreach ($users as $user) {
-            if ($user->orders_count == 0) {
-                $user->update(['role' => 'prospect']);
-            }
-
-            foreach ($user->orders as $order) {
-                $order_month = Carbon::parse($order->date_order)->format('m');
-                if ($order_month == $now) {
-                    $user->update(['role' => 'fidele']);
-                }
-            }
-        }
-        /**************************** End Update User Role ***********************/
-
-        /**************************** Notify Birthday ********************************/
-        $now = Carbon::now()->endOfDay();
-        $users = User::all();
-
-        foreach ($users as $user) {
-            $next_birthday = Carbon::parse($user->date_anniversaire . '-' . date('Y'))->endOfDay();
-            $date_diff = $now->diffInDays($next_birthday, false);
-
-            $user->update(['notify_birthday' => $date_diff]);
-        }
-
-        $user_upcoming_birthday = User::whereIn('notify_birthday', [2, 1])->get(); // Birthday in 2 days or 1 day
-        $user_birthday = User::where('notify_birthday', 0)->get(); // Birthday today
-        /**************************** End Notify Birthday **************************/
-
-        /**************************** Category Fetching *****************************/
-        $category = Category::with([
-            'products' => fn($q) => $q->whereDisponibilite(1)->orderByDesc('created_at'),
-            'media',
-            'subcategories',
-        ])
-            ->whereNotIn('name', ['Pack'])
-            ->orderByDesc('created_at')
-            ->get();
-
-        $category_backend = Category::with([
-            'products' => fn($q) => $q->orderByDesc('created_at'),
-            'media',
-            'subcategories',
-        ])
-            ->orderByDesc('created_at')
-            ->get();
-
-        $subcategory = SubCategory::with(['products', 'media', 'category'])->orderBy('name', 'ASC')->get();
-        /**************************** End Category Fetching *************************/
-
-        /**************************** Roles Fetching ********************************/
-        $roles = Role::where('name', '!=', 'developpeur')->get();
-        $roleWithoutClient = Role::whereNotIn('name', ['developpeur', 'client', 'fidele', 'prospect'])->get();
-        /**************************** End Roles Fetching ****************************/
-
-        /**************************** Orders Fetching ******************************/
-        $orders_attente = Order::whereIn('status', ['attente'])->orderByDesc('created_at')->get();
-        $orders_new = Order::whereIn('status', ['attente', 'precommande'])->orderByDesc('created_at')->get();
-        /**************************** End Orders Fetching **************************/
-
-        /**************************** Publicite Information ************************/
-        $annonce = Publicite::with('media')->whereType('annonce')->whereStatus('active')->first();
-        /**************************** End Publicite Information ********************/
-
-        View::composer('*', function ($view) use (
-            $category,
-            $subcategory,
-            $roles,
-            $category_backend,
-            $orders_attente,
-            $orders_new,
-            $roleWithoutClient,
-            $annonce,
-            $user_upcoming_birthday,
-            $user_birthday
-        ) {
             $view->with([
                 'annonce' => $annonce,
                 'categories' => $category,

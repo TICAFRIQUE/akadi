@@ -124,7 +124,26 @@
                                                     @endforeach
                                                 </td>
                                                 {{-- <td>{{ $item['collection'] ? $item['collection']['name'] : '' }}</td> --}}
-                                                <td>{{ number_format($item['price'], 0) }} FCFA</td>
+                                                <td>
+
+                                                    <br>
+                                                    @if ($item['montant_remise'] != null && $item['status_remise'] == 'en_cours')
+                                                        @php
+                                                            $price = $item['price'] - $item['montant_remise'];
+                                                            $price = $price < 0 ? 0 : $price;
+                                                        @endphp
+                                                        <span class="fs-5 fw-medium " style="color:rgb(249, 135, 5)">
+                                                            {{ number_format($price, 0) }}
+                                                            <small>FCFA</small></span>
+
+                                                        <del class="text-dark">
+                                                            {{ number_format($item['price'], 0) }} FCFA </del>
+                                                    @else
+                                                        <span class="fs-5 fw-medium ">
+                                                            {{ number_format($item['price'], 0) }}
+                                                            <small>FCFA</small></span>
+                                                    @endif
+                                                </td>
                                                 {{-- <td>
                                                     @foreach ($item['pointures'] as $items)
                                                         {{ $items['pointure'] }}
@@ -142,7 +161,8 @@
                                                             class="btn btn-warning dropdown-toggle">Actions</a>
                                                         <div class="dropdown-menu">
                                                             <a href="{{ route('detail-produit', $item['slug']) }}"
-                                                                class="dropdown-item has-icon"><i class="fas fa-eye"></i>
+                                                                target="_blank" class="dropdown-item has-icon"><i
+                                                                    class="fas fa-eye"></i>
                                                                 Voir</a>
                                                             <a href="{{ route('product.edit', $item['id']) }}"
                                                                 class="dropdown-item has-icon"><i class="far fa-edit"></i>

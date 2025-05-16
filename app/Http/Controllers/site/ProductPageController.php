@@ -30,7 +30,7 @@ class ProductPageController extends Controller
 
                 $product = Product::whereHas(
                     'categories',
-                    fn ($q) => $q->where('category_product.category_id', $category),
+                    fn($q) => $q->where('category_product.category_id', $category),
 
                 )->with(['media', 'categories', 'subcategorie'])
                     ->orderBy('created_at', 'DESC')
@@ -74,7 +74,7 @@ class ProductPageController extends Controller
     public function detail_produit($slug)
     {
         try {
-          
+
             $product = Product::whereSlug($slug)
                 ->with(['categories', 'subcategorie', 'media'])
                 ->firstOrFail();
@@ -82,7 +82,7 @@ class ProductPageController extends Controller
 
             $product_related =
                 Product::with(['media', 'categories', 'subcategorie'])
-                ->whereHas('categories', fn ($q) => $q->where('category_product.category_id', $product['categories'][0]['id']))
+                ->whereHas('categories', fn($q) => $q->where('category_product.category_id', $product['categories'][0]['id']))
                 ->Where('sub_category_id', $product['sub_category_id'])
                 ->where('id', '!=',  $product['id'])
                 ->whereDisponibilite(1)
@@ -124,7 +124,9 @@ class ProductPageController extends Controller
 
         $search = $request['q'];
         $product = Product::with([
-            'categories', 'subcategorie', 'media'
+            'categories',
+            'subcategorie',
+            'media'
         ])
             ->where('title', 'Like', "%{$search}%")
             ->whereDisponibilite(1)

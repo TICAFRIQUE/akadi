@@ -30,7 +30,7 @@ Petite section de publicité
                             <a class="fs-4 text-dark"
                                 href="{{ route('detail-produit', $item['slug']) }}">{{ $item['title'] }} </a>
                             <br>
-                            @if ($item['montant_remise'] !=null && $item['status_remise'] == 'en cour')
+                            @if ($item['montant_remise'] !=null && $item['status_remise'] == 'en_cours')
                                 <span class="fs-5 fw-medium " style="color:rgb(249, 135, 5)">
                                     {{ number_format($item['montant_remise'], 0, ',', ' ') }} <small>FCFA</small>
                                     <del class="text-dark">

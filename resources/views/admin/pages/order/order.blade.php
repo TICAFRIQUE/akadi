@@ -461,46 +461,74 @@
 
 
 
-                    
-                //executer la fonction chaque 5 secondes
-                // setInterval(newOrders, 5000);
 
-                setInterval(function() {
-                    moment.locale('fr'); // définit la langue en français
-                    $.ajax({
-                        url: "{{ route('order.checkNewOrder') }}",
-                        method: "GET",
-                        success: function(data) {
-                            console.log(data);
-                            
-                            if (data.orders && data.orders.length > 0) {
-                                data.orders.forEach(function(item, index) {
-                                    if (!document.querySelector('#row_' + item
-                                            .id)) {
-                                        let badgeClass = '';
-                                        let icon = '';
+                    //executer la fonction chaque 5 secondes
+                    // setInterval(newOrders, 5000);
 
-                                        switch (item.status) {
-                                            case 'attente':
-                                                badgeClass = 'badge-primary';
-                                                break;
-                                            case 'livrée':
-                                                badgeClass = 'badge-success';
-                                                break;
-                                            case 'confirmée':
-                                                badgeClass = 'badge-info';
-                                                break;
-                                            case 'annulée':
-                                                badgeClass = 'badge-danger';
-                                                break;
-                                            case 'precommande':
-                                                badgeClass = 'badge-dark';
-                                                icon =
-                                                    '<i class="fa fa-clock"></i> ';
-                                                break;
-                                        }
+                    setInterval(function() {
+                        moment.locale('fr'); // définit la langue en français
+                        $.ajax({
+                            url: "{{ route('order.checkNewOrder') }}",
+                            method: "GET",
+                            success: function(data) {
+                                console.log(data);
 
-                                        const html = `
+                                if (data.orders && data.orders.length > 0) {
+
+                                    // jouer la notification
+                                    const audio = new Audio(
+                                        '/assets/sound/notification.mp3');
+                                    audio.play();
+                                    // Afficher une notification
+                                    const notification = document.createElement(
+                                        'div');
+                                    notification.className = 'notification';
+                                    notification.innerHTML = `
+                                    <div class="notification-content">
+                                        <strong>Nouvelle commande</strong>
+                                        <p>Vous avez ${data.orders.length} nouvelle(s) commande(s).</p>
+                                    </div>
+                                `;
+                                    document.body.appendChild(notification);
+                                    // Supprimer la notification après 5 secondes
+                                    setTimeout(() => {
+                                        notification.remove();
+                                    })
+
+
+                                    data.orders.forEach(function(item, index) {
+                                        if (!document.querySelector(
+                                                '#row_' + item
+                                                .id)) {
+                                            let badgeClass = '';
+                                            let icon = '';
+
+                                            switch (item.status) {
+                                                case 'attente':
+                                                    badgeClass =
+                                                        'badge-primary';
+                                                    break;
+                                                case 'livrée':
+                                                    badgeClass =
+                                                        'badge-success';
+                                                    break;
+                                                case 'confirmée':
+                                                    badgeClass =
+                                                        'badge-info';
+                                                    break;
+                                                case 'annulée':
+                                                    badgeClass =
+                                                        'badge-danger';
+                                                    break;
+                                                case 'precommande':
+                                                    badgeClass =
+                                                        'badge-dark';
+                                                    icon =
+                                                        '<i class="fa fa-clock"></i> ';
+                                                    break;
+                                            }
+
+                                            const html = `
                                     <tr id="row_${item.id}">
                                         <td> <span class="badge badge-success text-white p-1 px-3"> Nouveau </span>  </td>
                                         <td><span class="badge ${badgeClass} text-white p-1 px-3">${icon}${item.status}</span></td>
@@ -518,42 +546,35 @@
                                                         <i class="fas fa-eye"></i> Detail
                                                     </a>
                                                     ${item.status !== 'livrée' && item.status !== 'annulée' ? `
-                                                                    <a href="/admin/order/changeState?cs=confirmée && id=${item.id}" class="dropdown-item has-icon">
-                                                                        <i class="fas fa-check"></i> Confirmée
-                                                                    </a>
-                                                                    <a href="/admin/order/changeState?cs=livrée && id=${item.id}" class="dropdown-item has-icon">
-                                                                        <i class="fas fa-shipping-fast"></i> Livrée
-                                                                    </a>
-                                                                    <a href="/admin/order/changeState?cs=attente && id=${item.id}" class="dropdown-item has-icon">
-                                                                        <i class="fas fa-arrow-down"></i> Attente
-                                                                    </a>
-                                                                    <a href="#" role="button" data-id="${item.id}" class="dropdown-item has-icon text-danger btnCancel">
-                                                                        <i data-feather="x-circle"></i> Annuler
-                                                                    </a>
-                                                                ` : ''}
+                                                                        <a href="/admin/order/changeState?cs=confirmée && id=${item.id}" class="dropdown-item has-icon">
+                                                                            <i class="fas fa-check"></i> Confirmée
+                                                                        </a>
+                                                                        <a href="/admin/order/changeState?cs=livrée && id=${item.id}" class="dropdown-item has-icon">
+                                                                            <i class="fas fa-shipping-fast"></i> Livrée
+                                                                        </a>
+                                                                        <a href="/admin/order/changeState?cs=attente && id=${item.id}" class="dropdown-item has-icon">
+                                                                            <i class="fas fa-arrow-down"></i> Attente
+                                                                        </a>
+                                                                        <a href="#" role="button" data-id="${item.id}" class="dropdown-item has-icon text-danger btnCancel">
+                                                                            <i data-feather="x-circle"></i> Annuler
+                                                                        </a>
+                                                                    ` : ''}
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>`;
 
-                                        $('#tableExport tbody').prepend(
-                                            html
-                                        ); // remplace #myTable par l’ID réel de ton tableau
-                                    }
-                                });
+                                            $('#tableExport tbody').prepend(
+                                                html
+                                            ); // remplace #myTable par l’ID réel de ton tableau
+                                        }
+                                    });
+                                }
                             }
-                        }
-                    });
-                }, 5000);
+                        });
+                    }, 5000);
 
                 }
-
-
-
-
-
-
-
             });
         });
     </script>
