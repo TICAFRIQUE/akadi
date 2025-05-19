@@ -103,7 +103,7 @@
                             </div> --}}
                             <button class="th-btn addCart" data-id="{{ $product['id'] }}">Ajouter au panier</button>
 
-                            <a href="{{ $urlWhatsapp }}" target="_blank" class="bg-success th-btn addCart ">
+                            <a href="{{ $urlWhatsapp }}" target="_blank" class="bg-success th-btn ">
                                 <i class="fab fa-whatsapp fs-3"></i> Commander par whatsapp
                             </a>
                         </div>
