@@ -2,6 +2,9 @@
 
 @section('title', 'Detail-' . $product['title'])
 @section('description', $product['description'])
+@section('image', asset($product->getFirstMediaUrl('product_image')))
+
+
 
 
 @section('content')
