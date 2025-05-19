@@ -3,6 +3,10 @@
 @section('title', 'Accueil')
 
 @section('content')
+
+
+  
+
     {{-- @includeWhen(!Auth::check(), 'site.sections.popup-register' ) --}}
 
 
@@ -48,5 +52,11 @@
     <!-- ========== Start feedback ========== -->
     @include('site.sections.feedback')
     <!-- ========== End feedback ========== -->
+
+
+
+
+   
+
 
 @endsection

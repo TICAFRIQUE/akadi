@@ -1,6 +1,9 @@
 <!--==============================
 Categorie and products
 ==============================-->
+
+{{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"> --}}
+
 <section class="space bg-smoke2" data-bg-src="">
     <div class="container">
         <div class="title-area text-center">
@@ -62,7 +65,7 @@ Categorie and products
                                         @endif
                                         <p class="product-text"> {!! substr(strip_tags($product->description), 0, 50) !!}.... </p>
 
-                                        @if ($product['montant_remise'] != null && $product['status_remise'] == 'en cour')
+                                        @if ($product['montant_remise'] != null && $product['status_remise'] == 'en_cours')
                                             <span class="price">
                                                 @php
                                                     $new_price = $product['price'] - $product['montant_remise']; //prix promo
@@ -79,12 +82,32 @@ Categorie and products
 
 
                                         <div class="actions">
+
+                                            @php
+                                                $numero = '2250758838338'; // Format international sans "+"
+                                                $message =
+                                                    'Bonjour, je souhaite commander le produit *' .
+                                                    $product->title .
+                                                    "*.\nVoici le lien : " .
+                                                    route('detail-produit', $product->slug);
+                                                $urlWhatsapp =
+                                                    'https://wa.me/' . $numero . '?text=' . urlencode($message);
+                                            @endphp
+
+
+
                                             <a href="{{ route('detail-produit', $product['slug']) }}"
                                                 class="icon-btn"><i class="far fa-eye"></i></a>
-                                            <button class="icon-btn"><i class="far fa-cart-plus addCart"
+                                            <button class="icon-btn"><i class="fa fa-cart-plus addCart"
                                                     data-id="{{ $product['id'] }}"></i></button>
-                                            {{-- <a href="wishlist.html" class="icon-btn"><i class="far fa-heart"></i></a> --}}
+
+                                            <a href="{{ $urlWhatsapp }}" target="_blank" class="icon-btn bg-success">
+                                                <i class="fab fa-whatsapp"></i>
+                                            </a>
+
                                         </div>
+
+
                                     </div>
                                 </div>
                             </div>

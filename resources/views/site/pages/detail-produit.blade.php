@@ -86,6 +86,15 @@
                         </div>
 
                         <div class="actions">
+                            @php
+                                $numero = '2250758838338'; // Format international sans "+"
+                                $message =
+                                    'Bonjour, je souhaite commander le produit *' .
+                                    $product->title .
+                                    "*.\nVoici le lien : " .
+                                    route('detail-produit', $product->slug);
+                                $urlWhatsapp = 'https://wa.me/' . $numero . '?text=' . urlencode($message);
+                            @endphp
                             {{-- <div class="quantity">
                                 <input type="number" class="qty-input" step="1" min="1" max="100"
                                     name="quantity" value="1" title="Qty">
@@ -93,7 +102,10 @@
                                 <button class="quantity-minus qty-btn"><i class="far fa-chevron-down"></i></button>
                             </div> --}}
                             <button class="th-btn addCart" data-id="{{ $product['id'] }}">Ajouter au panier</button>
-                            {{-- <a class="icon-btn" href="wishlist.html"><i class="fal fa-heart"></i></a> --}}
+
+                            <a href="{{ $urlWhatsapp }}" target="_blank" class="bg-success th-btn addCart ">
+                                <i class="fab fa-whatsapp fs-3"></i> Commander par whatsapp
+                            </a>
                         </div>
 
                     </div>

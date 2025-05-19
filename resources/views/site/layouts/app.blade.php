@@ -70,7 +70,31 @@
     <!-- Theme Custom CSS -->
     <link rel="stylesheet" href="{{ asset('site/assets/css/style.css') }}">
 
+    <style>
+        .whatsapp-float {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50%;
+            padding: 16px;
+            z-index: 1000;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            font-size: 24px;
+            transition: transform 0.3s;
+        }
 
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            color: white;
+        }
+
+        .whatsapp-icon {
+            font-size: 28px;
+        }
+    </style>
 
 </head>
 
@@ -230,6 +254,17 @@
             </div>
         </div>
     </footer>
+
+
+    @php
+        $numero = '2250758838338';
+        $message = 'Bonjour, je souhaite avoir votre menu.';
+        $urlWhatsapp = 'https://wa.me/' . $numero . '?text=' . urlencode($message);
+    @endphp
+
+    <a href="{{ $urlWhatsapp }}" class="whatsapp-float" target="_blank" title="Discuter sur WhatsApp">
+        <i class="fab fa-whatsapp whatsapp-icon"></i>
+    </a>
 
 
 

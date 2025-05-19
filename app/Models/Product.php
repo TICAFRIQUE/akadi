@@ -61,10 +61,7 @@ class Product extends Model implements HasMedia
         ];
     }
 
-    public function collection()
-    {
-        return $this->belongsTo(Collection::class);
-    }
+
 
     public function subcategorie()
     {

@@ -221,33 +221,64 @@ class AppServiceProvider extends ServiceProvider
 
         // Composer partagé pour les vues
         View::composer('*', function ($view) {
-            $category = Cache::remember('categories', 3600, function () {
-                return Category::with([
-                    'products' => fn($q) => $q->whereDisponibilite(1)->latest(),
-                    'media',
-                    'subcategories',
-                ])->whereNotIn('name', ['Pack'])->latest()->get();
-            });
 
-            $category_backend = Cache::remember('categories_backend', 3600, function () {
-                return Category::with([
-                    'products' => fn($q) => $q->latest(),
-                    'media',
-                    'subcategories',
-                ])->latest()->get();
-            });
+            // element de la base de données
+            // $category = Cache::remember('categories', 3600, function () {
+            //     return Category::with([
+            //         'products' => fn($q) => $q->whereDisponibilite(1)->latest(),
+            //         'media',
+            //         'subcategories',
+            //     ])->whereNotIn('name', ['Pack'])->latest()->get();
+            // });
 
-            $subcategory = Cache::remember('subcategories', 3600, function () {
-                return SubCategory::with(['products', 'media', 'category'])->orderBy('name')->get();
-            });
+            // $category_backend = Cache::remember('categories_backend', 3600, function () {
+            //     return Category::with([
+            //         'products' => fn($q) => $q->latest(),
+            //         'media',
+            //         'subcategories',
+            //     ])->latest()->get();
+            // });
 
-            $roles = Cache::remember('roles', 3600, fn() => Role::where('name', '!=', 'developpeur')->get());
-            $roleWithoutClient = Cache::remember(
-                'roles_without_client',
-                3600,
-                fn() =>
-                Role::whereNotIn('name', ['developpeur', 'client', 'fidele', 'prospect'])->get()
-            );
+            // $subcategory = Cache::remember('subcategories', 3600, function () {
+            //     return SubCategory::with(['products', 'media', 'category'])->orderBy('name')->get();
+            // });
+
+            // $roles = Cache::remember('roles', 3600, fn() => Role::where('name', '!=', 'developpeur')->get());
+            // $roleWithoutClient = Cache::remember(
+            //     'roles_without_client',
+            //     3600,
+            //     fn() =>
+            //     Role::whereNotIn('name', ['developpeur', 'client', 'fidele', 'prospect'])->get()
+            // );
+
+
+            $category = Category::with([
+                'products' => fn($q) => $q->whereDisponibilite(1)->latest(),
+                'media',
+                'subcategories',
+            ])->whereNotIn('name', ['Pack'])->latest()->get();
+
+            $category_backend = Category::with([
+                'products' => fn($q) => $q->latest(),
+                'media',
+                'subcategories',
+            ])->latest()->get();
+
+            $subcategory = SubCategory::with([
+                'products',
+                'media',
+                'category'
+            ])->orderBy('name')->get();
+
+            $roles = Role::where('name', '!=', 'developpeur')->get();
+
+            $roleWithoutClient = Role::whereNotIn('name', [
+                'developpeur',
+                'client',
+                'fidele',
+                'prospect'
+            ])->get();
+
 
             $orders_attente = Order::where('status', 'attente')->latest()->get();
             $orders_new = Order::whereIn('status', ['attente', 'precommande'])->latest()->get();
@@ -256,6 +287,8 @@ class AppServiceProvider extends ServiceProvider
 
             $user_upcoming_birthday = User::whereIn('notify_birthday', [2, 1])->get();
             $user_birthday = User::where('notify_birthday', 0)->get();
+
+            // dd($category->toArray());
 
             $view->with([
                 'annonce' => $annonce,

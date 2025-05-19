@@ -253,8 +253,6 @@ Route::controller(AuthPageController::class)->group(function () {
 });
 
 
-
-
 //Authentification user
 Route::controller(AccountPageController::class)->group(function () {
     route::get('/mes-commandes', 'userOrder')->name('user-order')->middleware(['auth']);

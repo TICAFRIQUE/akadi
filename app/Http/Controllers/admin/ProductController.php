@@ -5,8 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Models\Taille;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\Pointure;
-use App\Models\Collection;
+
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -37,10 +36,10 @@ class ProductController extends Controller
         // $category = Category::orderBy('name', 'ASC')
         // ->whereType('principale')
         // ->get();
-        $collection = Collection::orderBy('name', 'DESC')->get();
+ 
 
 
-        return view('admin.pages.product.add', compact('collection'));
+        return view('admin.pages.product.add');
     }
 
     /**

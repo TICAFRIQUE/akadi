@@ -47,7 +47,7 @@
                                 <a href="{{ route('detail-produit', $item['slug']) }}">
                                     <img src="{{ asset($item->getFirstMediaUrl('product_image')) }}" alt="Product Image">
                                 </a>
-                                @if ($item['status_remise']== 'en_cours')
+                                @if ($item['status_remise'] == 'en_cours')
                                     <div class="th-menu_discount">
                                         <span class="sale">- {{ $item['pourcentage_remise'] }}% </span>
                                     </div>
@@ -86,7 +86,20 @@
                                     <button class="btn btn-danger addCart" data-id="{{ $item['id'] }}"><i
                                             class="fal fa-cart-plus "></i> Ajouter au panier</button>
 
-                                    {{-- <a href="wishlist.html" class="icon-btn"><i class="fal fa-heart"></i></a> --}}
+                                    @php
+                                        $numero = '2250758838338'; // Format international sans "+"
+                                        $message =
+                                            'Bonjour, je souhaite commander le produit *' .
+                                            $item->title .
+                                            "*.\nVoici le lien : " .
+                                            route('detail-produit', $item->slug);
+                                        $urlWhatsapp = 'https://wa.me/' . $numero . '?text=' . urlencode($message);
+                                    @endphp
+
+                                    <br><a href="{{ $urlWhatsapp }}" target="_blank" class="btn btn-success mt-2">
+                                        <i class="fab fa-whatsapp fs-5"></i> Commander par WhatsApp
+                                    </a>
+
                                 </div>
                             </div>
                         </div>
