@@ -101,9 +101,9 @@ Categorie and products
                                             <button class="icon-btn"><i class="fa fa-cart-plus addCart"
                                                     data-id="{{ $product['id'] }}"></i></button>
 
-                                            <a href="{{ $urlWhatsapp }}" target="_blank" class="icon-btn bg-success">
+                                            {{-- <a href="{{ $urlWhatsapp }}" target="_blank" class="icon-btn bg-success">
                                                 <i class="fab fa-whatsapp"></i>
-                                            </a>
+                                            </a> --}}
 
                                         </div>
 

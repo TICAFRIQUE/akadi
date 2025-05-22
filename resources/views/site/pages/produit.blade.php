@@ -96,9 +96,9 @@
                                         $urlWhatsapp = 'https://wa.me/' . $numero . '?text=' . urlencode($message);
                                     @endphp
 
-                                    <br><a href="{{ $urlWhatsapp }}" target="_blank" class="btn btn-success mt-2">
+                                    {{-- <br><a href="{{ $urlWhatsapp }}" target="_blank" class="btn btn-success mt-2">
                                         <i class="fab fa-whatsapp fs-5"></i> Commander par WhatsApp
-                                    </a>
+                                    </a> --}}
 
                                 </div>
                             </div>
