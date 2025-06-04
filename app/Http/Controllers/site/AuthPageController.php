@@ -36,7 +36,7 @@ class AuthPageController extends Controller
                 $request->validate([
                     'name' => 'required',
                     'phone' => 'required|unique:users',
-                    'email' => 'required',
+                    'email' => 'nullable|unique:users',
                     'password' => 'required',
                 ]);
 
@@ -65,50 +65,117 @@ class AuthPageController extends Controller
 
 
 
+                // en envoi email si le user a renseigné son email
+                // if ($request->email) {
+                //     $data = [
+                //         "email" => $request['email'],
+                //         "pwd" => $request['password'],
+                //     ];
 
-                //send message after register
-                $data = [
-                    'imagePath' => asset('site/assets/img/custom/AKADI.png'),
-                ];
-                //new send mail with phpMailer
-                $mail = new PHPMailer(true);
-                // require base_path("vendor/autoload.php");
+                //     //new send mail with phpMailer
+                //     $mail = new PHPMailer(true);
+                //     // require base_path("vendor/autoload.php");
 
-                /* Email SMTP Settings */
-                $mail->SMTPDebug = 0;
-                $mail->isSMTP();
-                $mail->Host = 'mail.akadi.ci';
-                $mail->SMTPAuth = true;
-                $mail->Username = 'info@akadi.ci';
-                $mail->Password = 'S$UBfu.8s(#z';
-                $mail->SMTPSecure = 'ssl';
-                $mail->Port = 465;
+                //     /* Email SMTP Settings */
+                //     $mail->SMTPDebug = 0;
+                //     $mail->isSMTP();
+                //     $mail->Host = 'mail.akadi.ci';
+                //     $mail->SMTPAuth = true;
+                //     $mail->Username = 'info@akadi.ci';
+                //     $mail->Password = 'S$UBfu.8s(#z';
+                //     $mail->SMTPSecure = 'ssl';
+                //     $mail->Port = 465;
 
-                $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-                $mail->addAddress($user->email);
-
-                $mail->isHTML(true);
-
-
-                $mail->Subject = 'Création de compte';
-                $mail->Body =
-                    '<p style="text-align: center;>  <img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80">
-      
-</p>
-
-<p style="text-align: center;">Hello, ' . $user->name . ' </p>
-<p style="text-align: center;">Votre compte à été crée avec success</p>
-<p style="text-align: center;">Merci pour votre confiance , <a href="http://Akadi.ci" target="_blank" rel="noopener noreferrer">www.akadi.ci</a></p>
-            ';
-                $mail->send();
+                //     $mail->setFrom('info@akadi.ci', 'Akadi');
+                //     $mail->addAddress($request['email'], $request['name']);
+                //     $mail->isHTML(true);
+                //     $mail->Subject = 'Bienvenue sur Akadi';
+                //     $mail->Body = view('site.pages.auth.email', compact('data'));
+                //     $mail->send();
+                // }
 
 
 
-                //send mail for our register
-                // Mail::send('site.pages.auth.email.email_register', ['user' => $request['name']], function ($message) use ($request) {
-                //     $message->to($request->email);
-                //     $message->subject('Création de compte');
-                // });
+
+
+                //                 //send message after register
+                //                 $data = [
+                //                     'imagePath' => asset('site/assets/img/custom/AKADI.png'),
+                //                 ];
+                //                 //new send mail with phpMailer
+                //                 $mail = new PHPMailer(true);
+                //                 // require base_path("vendor/autoload.php");
+
+                //                 /* Email SMTP Settings */
+                //                 $mail->SMTPDebug = 0;
+                //                 $mail->isSMTP();
+                //                 $mail->Host = 'mail.akadi.ci';
+                //                 $mail->SMTPAuth = true;
+                //                 $mail->Username = 'info@akadi.ci';
+                //                 $mail->Password = 'S$UBfu.8s(#z';
+                //                 $mail->SMTPSecure = 'ssl';
+                //                 $mail->Port = 465;
+
+                //                 $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+                //                 $mail->addAddress($user->email);
+
+                //                 $mail->isHTML(true);
+
+
+                //                 $mail->Subject = 'Création de compte';
+                //                 $mail->Body =
+                //                     '<p style="text-align: center;>  <img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80">
+
+                // </p>
+
+                // <p style="text-align: center;">Hello, ' . $user->name . ' </p>
+                // <p style="text-align: center;">Votre compte à été crée avec success</p>
+                // <p style="text-align: center;">Merci pour votre confiance , <a href="http://Akadi.ci" target="_blank" rel="noopener noreferrer">www.akadi.ci</a></p>
+                //             ';
+                //                 $mail->send();
+
+
+
+                if ($user->email) {
+                    try {
+                        $logo = asset('site/assets/img/custom/AKADI.png');
+
+                        $mail = new PHPMailer(true);
+
+                        // Configuration SMTP
+                        $mail->isSMTP();
+                        $mail->Host       = 'mail.akadi.ci';
+                        $mail->SMTPAuth   = true;
+                        $mail->Username   = 'info@akadi.ci';
+                        $mail->Password   = 'S$UBfu.8s(#z'; // 🔐 à stocker dans .env si possible
+                        $mail->SMTPSecure = 'ssl';
+                        $mail->Port       = 465;
+
+                        // Expéditeur et destinataire
+                        $mail->setFrom('info@akadi.ci', 'Akadi');
+                        $mail->addAddress($user->email);
+
+                        // Contenu HTML
+                        $mail->isHTML(true);
+                        $mail->Subject = 'Création de compte';
+
+                        $mail->Body = <<<HTML
+                            <div style="text-align: center;">
+                                <img src="{$logo}" alt="Akadi logo" width="80">
+                                <p>Hello, {$user->name}</p>
+                                <p>Votre compte a été créé avec succès.</p>
+                                <p>Merci pour votre confiance, <a href="http://akadi.ci" target="_blank">www.akadi.ci</a></p>
+                            </div>
+                        HTML;
+
+                        $mail->send();
+                    } catch (Exception $e) {
+                        // Log ou gestion d’erreur propre
+                        logger()->error("Erreur envoi email : " . $mail->ErrorInfo);
+                    }
+                }
+
+
 
 
                 //redirection apres connexion
@@ -206,10 +273,6 @@ class AuthPageController extends Controller
 
             ###################   EMAIL SEND ###################
 
-            // Mail::send('site.pages.auth.forgetPassword.email_send', ['token' => $token], function ($message) use ($request) {
-            //     $message->to($request->email);
-            //     $message->subject('réinitialiser son mot de passe');
-            // });
 
             $url = route('reset.password.get', 'token=' . $token);
 

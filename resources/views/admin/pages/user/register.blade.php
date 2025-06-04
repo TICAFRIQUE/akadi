@@ -69,7 +69,7 @@
                                     </div> --}}
                                     <div class="form-group col-6">
                                         <label for="email">Email</label>
-                                        <input id="email" type="email" class="form-control" name="email" required>
+                                        <input id="email" type="email" class="form-control" name="email" >
                                         <div class="invalid-feedback">
                                             Champs obligatoire
                                         </div>

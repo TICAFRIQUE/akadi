@@ -305,6 +305,11 @@
                                 <a href="{{ route('order.index') }}" class="nav-link"><i
                                         data-feather="shopping-bag"></i><span>Commandes</span></a>
                             </li>
+
+                             <li class="dropdown">
+                                <a href="/admin/auth?client" class="nav-link"><i
+                                        data-feather="users"></i><span>Clients</span></a>
+                            </li>
                             {{-- <li class="dropdown">
                                 <a href="#" class="menu-toggle nav-link has-dropdown"><i
                                         data-feather="shopping-cart"></i><span>Commandes</span></a>
@@ -335,7 +340,7 @@
                             </li>
 
                             <li class="dropdown">
-                                <a href="{{ route('temoignage.index') }}" cl²ass="nav-link"><i
+                                <a href="{{ route('temoignage.index') }}" class="nav-link"><i
                                         data-feather="message-square"></i><span>Témoignages</span></a>
                             </li>
 
@@ -373,10 +378,10 @@
                                     <a href="#" class="menu-toggle nav-link has-dropdown"><i
                                             data-feather="lock"></i><span>Administrateurs</span></a>
                                     <ul class="dropdown-menu">
-                                        <li class="dropdown">
+                                        {{-- <li class="dropdown">
                                             <a href="/admin/auth?client" class="nav-link"><i
                                                     data-feather="users"></i><span>Clients</span></a>
-                                        </li>
+                                        </li> --}}
                                         @foreach ($roleWithoutClient as $item)
                                             <li><a class="nav-link" href="/admin/auth?user={{ $item['name'] }}">
                                                     {{ $item['name'] }} </a></li>

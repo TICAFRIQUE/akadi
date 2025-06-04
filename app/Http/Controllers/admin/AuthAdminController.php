@@ -28,16 +28,16 @@ class AuthAdminController extends Controller
             ->whereNotIn('role', ['developpeur'])
 
             // ->when($role, fn ($q, $role) => $q->whereHas('roles', fn ($q) => $q->where('name', $role)))
-            ->when($role, fn ($q, $role) => $q->whereRole($role))
+            ->when($role, fn($q, $role) => $q->whereRole($role))
 
             ->when(
                 $type_client == 'prospect',
-                fn ($q) => $q->where('role', 'prospect')
+                fn($q) => $q->where('role', 'prospect')
                 // ->where('role', 'client')
             )
-            ->when($type_client == 'fidele', fn ($q) => $q->where('role', 'fidele'))
+            ->when($type_client == 'fidele', fn($q) => $q->where('role', 'fidele'))
 
-            ->when($type_client == null, fn ($q) => $q->whereIn('role', ['fidele', 'prospect']))
+            ->when($type_client == null, fn($q) => $q->whereIn('role', ['fidele', 'prospect']))
 
             ->orderBy('created_at', 'DESC')->get();
 
@@ -89,11 +89,11 @@ class AuthAdminController extends Controller
             $request->validate([
                 'name' => 'required',
                 'phone' => 'required',
-                'email' => 'required|unique:users',
+                'email' => 'nullable|unique:users',
                 // 'password' => 'required',
             ]);
 
-            $pwd_generate = Str::random('8');
+            $pwd_generate = Str::random(8);
             $user = User::firstOrCreate([
                 'name' => $request['name'],
                 'phone' => $request['phone'],
