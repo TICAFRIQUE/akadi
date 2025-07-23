@@ -31,7 +31,7 @@
                 </div>
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" name="email" class="form-control" min="10" max="10"
+                    <input type="email" name="email" class="form-control"
                         placeholder="Ex: alex@gmail.com">
                 </div>
                 <div class="form-group">

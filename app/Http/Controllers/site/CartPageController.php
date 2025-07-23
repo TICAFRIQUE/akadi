@@ -8,12 +8,15 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Coupon;
 use App\Models\Product;
+use Twilio\Rest\Client;
 use App\Models\Delivery;
 use Illuminate\Http\Request;
+use App\Services\WhatsappService;
 use Illuminate\Support\Facades\DB;
 use PHPMailer\PHPMailer\PHPMailer;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Session;
@@ -408,7 +411,7 @@ class CartPageController extends Controller
 
 
     //store order---- enregistrer la commande de l'utilisateur
-    public function storeOrder(Request $request)
+    public function storeOrder(Request $request, WhatsappService $whatsapp)
     {
         if (Auth::check()) {
 
@@ -544,6 +547,24 @@ class CartPageController extends Controller
 
 
 
+                // 2. Récupérer les infos client
+                // $client = Auth::user(); // relation client() définie sur le modèle Commande
+                // $numeroWhatsapp = 2250546244977; // ex: '2250779613593'
+                // $nomClient = $client->first_name . ' ' . $client->last_name;
+
+
+                // $this->sendWhatsappMessage();
+
+                // 3. Envoyer le message WhatsApp
+                // $whatsapp->sendTemplateMessage(
+                //     $numeroWhatsapp,
+                //     'akadi_m', // le nom du modèle que tu as créé sur Meta
+                //     'fr_FR',
+                //     [$nomClient, $order->code]
+                // );
+
+
+
                 //new send mail to admin after order
                 $mail = new PHPMailer(true);
                 // require base_path("vendor/autoload.php");
@@ -625,12 +646,59 @@ class CartPageController extends Controller
 
 
 
-
                 return response()->json([
                     'message' => 'commande enregistrée avec success',
                     'status' => 200,
                 ], 200);
             }
+        }
+    }
+
+
+
+
+
+    public function sendWhatsappMessage()
+    {
+        // $accessToken = env('WHATSAPP_TOKEN');
+        // $phoneId = env('WHATSAPP_PHONE_ID');
+
+        // $response = Http::withToken($accessToken)
+        //     ->withHeaders([
+        //         'Content-Type' => 'application/json',
+        //     ])
+        //     ->post('https://graph.facebook.com/v22.0/' . $phoneId . '/messages', [
+        //         'messaging_product' => 'whatsapp',
+        //         'to' => '2250779613593',
+        //         'type' => 'template',
+        //         'template' => [
+        //             'name' => 'hello_world',
+        //             'language' => [
+        //                 'code' => 'en_US'
+        //             ],
+        //         ],
+        //     ]);
+
+        // if ($response->successful()) {
+        //     return response()->json([
+        //         'status' => 'success',
+        //         'message' => 'Message envoyé avec succès !',
+        //         'response' => $response->json()
+        //     ]);
+        // } else {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Échec de l’envoi',
+        //         'error' => $response->json()
+        //     ], $response->status());
+        // }
+        try {
+
+            return response()->json([
+                'message' => 'message envoyé avec success',
+            ], 200);
+        } catch (\Throwable $th) {
+            return $th->getMessage();
         }
     }
 }

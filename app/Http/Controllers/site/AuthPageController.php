@@ -22,16 +22,17 @@ class AuthPageController extends Controller
         if (request()->method() == 'GET') {
             return view('site.pages.auth.register');
         } elseif (request()->method() == 'POST') {
-            // dd($request->toArray());
+            // dd($request->all());
 
             //on verifie si le nouvel utilisateur est déja dans la BD à partir du phone
-            $user_verify_phone = User::wherePhone($request['phone'])->first();
-            $user_verify_email = User::whereEmail($request['email'])->first();
+            $user_verify_phone = User::wherePhone($request->filled('phone'))->first();
+            $user_verify_email = User::whereEmail($request->filled('email'))->first();
+            if ($user_verify_phone) {
+                return back()->withError('Ce numéro de téléphone est déjà associé à un compte, veuillez en utiliser un autre.');
+            }
 
-            if ($user_verify_phone != null) {
-                return back()->withError('Ce numero de telephone est dejà associé un compte, veuillez utiliser un autre');
-            } elseif ($user_verify_email != null) {
-                return back()->withError('Ce email est dejà associé un compte, veuillez utiliser un autre');
+            if (!empty($request->email) && $user_verify_email) {
+                return back()->withError('Cet email est déjà associé à un compte, veuillez en utiliser un autre.');
             } else {
                 $request->validate([
                     'name' => 'required',

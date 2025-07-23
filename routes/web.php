@@ -235,6 +235,7 @@ Route::get('check-coupon/{code}', [CartPageController::class, 'checkCoupon'])->m
 
 Route::get('save-order', [CartPageController::class, 'storeOrder'])->name('store.order')->middleware(['auth']);
 
+Route::post('/test-whatsapp', [CartPageController::class, 'sendWhatsappMessage']);
 
 //Authentification user
 Route::controller(AuthPageController::class)->group(function () {
