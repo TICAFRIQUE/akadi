@@ -22,7 +22,7 @@
             <form action="{{ route('register') }}" method="post" class="woocommerce-form-login mb-30">
                 @csrf
                 <div class="form-group">
-                    <label>Nom et prenoms</label>
+                    <label>Nom et prenoms <span class="text-danger">*</span></label> 
                     <input type="text" name="name" class="form-control" placeholder="Ex: jhonn " required>
                 </div>
                 <div class="form-group">
@@ -30,7 +30,7 @@
                     <input type="number" name="phone" class="form-control" placeholder="Ex: 00000000" required>
                 </div>
                 <div class="form-group">
-                    <label>Email</label>
+                    <label>Email <span class="text-danger">(Facultatif)</span></label>
                     <input type="email" name="email" class="form-control"
                         placeholder="Ex: alex@gmail.com">
                 </div>

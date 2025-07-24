@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\admin;
 
+use Log;
+use Exception;
 use Carbon\Carbon;
 use App\Models\Order;
 use Illuminate\Support\Str;
@@ -133,79 +135,49 @@ class OrderController extends Controller
 
 
         //send mail if order is confirmed or cancel
-        if ($state == 'confirmée') {
-
+        if (!empty($order->user->email)) {
             $data = [
                 'imagePath' => asset('site/assets/img/custom/AKADI.png'),
             ];
-            //new send mail with phpMailer
+
             $mail = new PHPMailer(true);
-            // require base_path("vendor/autoload.php");
 
-            /* Email SMTP Settings */
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = 'mail.akadi.ci';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'info@akadi.ci';
-            $mail->Password = 'S$UBfu.8s(#z';
-            $mail->SMTPSecure = 'ssl';
-            $mail->Port = 465;
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'mail.akadi.ci';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'info@akadi.ci';
+                $mail->Password = 'S$UBfu.8s(#z';
+                $mail->SMTPSecure = 'ssl';
+                $mail->Port = 465;
 
-            $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-            $mail->addAddress($order->user->email);
+                $mail->setFrom('info@akadi.ci', 'Akadi');
+                $mail->addAddress($order->user->email);
 
-            $mail->isHTML(true);
+                $mail->isHTML(true);
 
-
-            $mail->Subject = 'Confirmation de commande';
-            $mail->Body =
-                '<p style="text-align: center;>  <img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80">
-      
-                </p>
-
+                if ($state == 'confirmée') {
+                    $mail->Subject = 'Confirmation de commande';
+                    $mail->Body = '
+                <p style="text-align: center;"><img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80"></p>
                 <p style="text-align: center;">Hello, ' . $order->user->name . ' </p>
-                <p style="text-align: center;">Votre commande de <b>#' . $order->code . '</b> a été confirmé avec success</p>
-                <p style="text-align: center;">Vous serez livré dans peu de temps</p>
-                <p style="text-align: center;">Merci pour votre confiance , <a href="http://Akadi.ci" target="_blank" rel="noopener noreferrer">www.akadi.ci</a></p>
-                            ';
-            $mail->send();
-        } elseif ($state == 'annulée') {
-            $data = [
-                'imagePath' => asset('site/assets/img/custom/AKADI.png'),
-            ];
-            //new send mail with phpMailer
-            $mail = new PHPMailer(true);
-            // require base_path("vendor/autoload.php");
-
-            /* Email SMTP Settings */
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = 'mail.akadi.ci';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'info@akadi.ci';
-            $mail->Password = 'S$UBfu.8s(#z';
-            $mail->SMTPSecure = 'ssl';
-            $mail->Port = 465;
-
-            $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-            $mail->addAddress($order->user->email);
-
-            $mail->isHTML(true);
-
-
-            $mail->Subject = 'Annulation de la commande';
-            $mail->Body =
-                '<p style="text-align: center;>  <img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80">
-      
-                </p>
-
+                <p style="text-align: center;">Votre commande <b>#' . $order->code . '</b> a été confirmée avec succès.</p>
+                <p style="text-align: center;">Vous serez livré dans peu de temps.</p>
+                <p style="text-align: center;">Merci pour votre confiance, <a href="http://Akadi.ci" target="_blank">www.akadi.ci</a></p>';
+                } elseif ($state == 'annulée') {
+                    $mail->Subject = 'Annulation de la commande';
+                    $mail->Body = '
+                <p style="text-align: center;"><img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80"></p>
                 <p style="text-align: center;">Hello, ' . $order->user->name . ' </p>
-                <p style="text-align: center;">Votre commande de <b>#' . $order->code . '</b> a été annuléé </p>
-                <p style="text-align: center;">Raison d\'annulation : ' . $order->raison_annulation_cmd . '</p>
-                <p style="text-align: center;">Merci pour votre confiance , <a href="http://Akadi.ci" target="_blank" rel="noopener noreferrer">www.akadi.ci</a></p>
-                            ';
-            $mail->send();
+                <p style="text-align: center;">Votre commande <b>#' . $order->code . '</b> a été annulée.</p>
+                <p style="text-align: center;">Raison : ' . $order->raison_annulation_cmd . '</p>
+                <p style="text-align: center;">Merci pour votre confiance, <a href="http://Akadi.ci" target="_blank">www.akadi.ci</a></p>';
+                }
+
+                $mail->send();
+            } catch (Exception $e) {
+               return back()->withError($e->getMessage());
+            }
         }
 
 

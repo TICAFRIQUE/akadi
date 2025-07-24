@@ -547,24 +547,6 @@ class CartPageController extends Controller
 
 
 
-                // 2. Récupérer les infos client
-                // $client = Auth::user(); // relation client() définie sur le modèle Commande
-                // $numeroWhatsapp = 2250546244977; // ex: '2250779613593'
-                // $nomClient = $client->first_name . ' ' . $client->last_name;
-
-
-                // $this->sendWhatsappMessage();
-
-                // 3. Envoyer le message WhatsApp
-                // $whatsapp->sendTemplateMessage(
-                //     $numeroWhatsapp,
-                //     'akadi_m', // le nom du modèle que tu as créé sur Meta
-                //     'fr_FR',
-                //     [$nomClient, $order->code]
-                // );
-
-
-
                 //new send mail to admin after order
                 $mail = new PHPMailer(true);
                 // require base_path("vendor/autoload.php");
@@ -627,17 +609,9 @@ class CartPageController extends Controller
                 
                 ';
 
-
-
-
                 // $mail->addAttachment("storage/" . $orders['id'] . ".pdf");
                 $mail->send();
 
-
-                // Mail::send('site.pages.auth.email.email_register', ['user' => Auth::user()->name], function ($message) use ($request) {
-                //     $message->to('alexkouamelan96@gmail.com');
-                //     $message->subject('Création de compte');
-                // });
 
 
                 //supprimer la session du panier
