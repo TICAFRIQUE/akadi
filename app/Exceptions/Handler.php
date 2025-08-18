@@ -32,7 +32,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (Exception $e) {
             //
             if ($e->getPrevious() instanceof TokenMismatchException) {
-               return redirect()->route('home');
+               return redirect()->route('auth.login')->with('error', 'Session Expired');
             }
         });
     }
