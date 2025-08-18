@@ -196,26 +196,7 @@ class DashboardController extends Controller
         ));
     }
 
-    public function checkNewOrder()
-    {
-
-        $orders_new = Order::orderBy('created_at', 'DESC')
-            ->whereIn('status', ['attente', 'precommande'])
-            ->get();
-
-        return response()->json([
-            'orders_new' => $orders_new->map(function ($order) {
-                return [
-                    'id' => $order->id,
-                    'code' => $order->code,
-                    'status' => $order->status,
-                    'created_at' => $order->created_at->format('Y-m-d H:i:s'),
-                    'created_at_human' => Carbon::parse($order->created_at)->diffForHumans(),
-                ];
-            }),
-            'count' => $orders_new->count() // Ajoute le nombre total des nouvelles commandes
-        ]);
-    }
+ 
 
     public function product_statistic(Request $request)
     {
@@ -334,6 +315,39 @@ class DashboardController extends Controller
             'revenu_by_year' => $revenu_by_year,
             'revenu_by_month' => $revenu_by_month,
 
+        ]);
+    }
+
+
+
+
+    /**
+     * Check for new orders.
+     *
+     * This function retrieves new orders (status 'attente' or 'precommande')
+     * and returns them as a JSON response. The response includes the orders
+     * themselves and the total count of new orders.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+       public function checkNewOrder()
+    {
+
+        $orders_new = Order::orderBy('created_at', 'DESC')
+            ->whereIn('status', ['attente', 'precommande'])
+            ->get();
+
+        return response()->json([
+            'orders_new' => $orders_new->map(function ($order) {
+                return [
+                    'id' => $order->id,
+                    'code' => $order->code,
+                    'status' => $order->status,
+                    'created_at' => $order->created_at->format('Y-m-d H:i:s'),
+                    'created_at_human' => Carbon::parse($order->created_at)->diffForHumans(),
+                ];
+            }),
+            'count' => $orders_new->count() // Ajoute le nombre total des nouvelles commandes
         ]);
     }
 }

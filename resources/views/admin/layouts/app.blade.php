@@ -306,7 +306,7 @@
                                         data-feather="shopping-bag"></i><span>Commandes</span></a>
                             </li>
 
-                             <li class="dropdown">
+                            <li class="dropdown">
                                 <a href="/admin/auth?client" class="nav-link"><i
                                         data-feather="users"></i><span>Clients</span></a>
                             </li>
@@ -495,48 +495,24 @@
 
 
 
+   
 
     <script>
-        $(document).ready(function() {
-            function newOrders() {
-                var order = {{ Js::from($orders_attente) }}
-                $('<audio id="chatAudio"><source src="{{ asset('admin/assets/audio/ring.mp3') }}" type="audio/mpeg"></audio>')
-                    .appendTo(
-                        'body');
-                if (order.length > 0) {
-                    setInterval(() => {
-                        $('#chatAudio')[0].play();
-                    }, 10000);
-                }
+        function checkNewOrders() {
+            $.ajax({
+                url: "/dashboard/check-new-order",
+                method: "GET",
+                success: function(data) {
+                    if (data.count > 0) {
+                        // Mettre à jour le badge
+                        $("#orderNew").text(data.count);
 
-                $('#stop').click(function(e) {
+                        // Vider et reconstruire la liste
+                        const listContainer = $(".dropdown-list-order");
+                        listContainer.empty();
 
-                    $('#chatAudio')[0].pause();
-                });
-
-
-            }
-
-            // executer la fonction au chargement de la page
-            newOrders();
-
-            //executer la fonction chaque 5 secondes
-            // setInterval(newOrders, 5000);
-
-            setInterval(function() {
-                $.ajax({
-                    url: "{{ route('dashboard.checkNewOrder') }}", // Remplace par ton URL correcte
-                    method: "GET",
-                    success: function(data) {
-                        if (data.count > 0) {
-                            $('#orderNew').html(data
-                                .count); // Met à jour le nombre de commandes
-
-                            // Vider la liste et ajouter les nouvelles commandes
-                            $('.dropdown-list-order').html('');
-
-                            data.orders_new.forEach(function(order) {
-                                let orderHtml = `
+                        data.orders_new.forEach(function(order) {
+                            const orderHtml = `
                         <a href="/admin/order/show/${order.id}" class="dropdown-item">
                             <span class="dropdown-item-avatar text-dark">
                                 <i data-feather="shopping-cart"></i>
@@ -550,21 +526,25 @@
                             </span>
                         </a>
                     `;
+                            listContainer.append(orderHtml);
+                        });
 
-                                $('.dropdown-list-order').append(orderHtml);
-                            });
-                        } else {
-                            $('#orderNew').html(
-                                ''); // Efface le badge s'il n'y a plus de commandes
-                        }
+                        // 🔊 Jouer le son directement
+                        const alertSound = new Audio("{{ asset('audio/notify_bell.wav') }}");
+                        alertSound.play();
+                    } else {
+                        $("#orderNew").text("");
                     }
-                });
-            }, 5000); // Vérifie toutes les 5 secondes
+                },
+                error: function(xhr) {
+                    console.error("Erreur lors de la récupération des commandes.");
+                },
+            });
+        }
 
-
-        });
+        // Vérifier les nouvelles commandes toutes les 15 secondes
+        setInterval(checkNewOrders, 5000);
     </script>
-
 
 </body>
 
