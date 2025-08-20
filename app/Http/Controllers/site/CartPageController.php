@@ -8,8 +8,9 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Coupon;
 use App\Models\Product;
-use Twilio\Http\Client;
+use Twilio\Rest\Client;
 use App\Models\Delivery;
+use Twilio\Http\CurlClient;
 use Illuminate\Http\Request;
 use App\Services\WhatsAppService;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,6 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Session;
-
 
 
 
@@ -455,56 +455,74 @@ class CartPageController extends Controller
 
 
 
-public function sendWhatsAppNotification($order)
-{
-    // Récupérer les infos du client
-    $name = Auth::user()->name;
-    $phone = '+2250779613593'; // indicatif + numéro client
 
-    // Vos identifiants Twilio (depuis .env)
-    $sid = env('TWILIO_ACCOUNT_SID');
-    $token = env('TWILIO_AUTH_TOKEN');
-    $from = env('TWILIO_WHATSAPP_FROM'); // ex: 'whatsapp:+14155238886'
 
-    // Vérification des credentials
-    if (!$sid || !$token || !$from) {
-        return response()->json(['error' => 'Les identifiants Twilio ne sont pas définis !']);
-    }
 
-    // Instancier le client Twilio
-    $client = new Client($sid, $token);
 
-    try {
-        // Envoyer le message via template WhatsApp
-        $client->messages->create(
-            "whatsapp:{$phone}",
-            [
-                "from" => $from,
-                "content" => [
-                    "type" => "template",
-                    "template" => [
-                        "name" => "order_notification", // Nom du template approuvé
-                        "language" => ["code" => "fr"], // Langue du template
-                        "components" => [
-                            [
-                                "type" => "body",
-                                "parameters" => [
-                                    // Ici tu peux ajouter des variables dynamiques si ton template en contient
-                                    ["type" => "text", "text" => $name],
-                                    ["type" => "text", "text" => $order->id],
+
+
+ public function sendWhatsAppNotification($order)
+    {
+        // Récupérer les infos du client
+        $clientName = Auth::user()->name;
+        $clientPhone = '+2250779613593'; // Numéro client avec indicatif
+
+        // Numéro administrateur (exemple)
+        $adminPhone = '+2250101010101'; 
+
+        // Identifiants Twilio depuis .env
+        $sid = env('TWILIO_ACCOUNT_SID');
+        $token = env('TWILIO_AUTH_TOKEN');
+        $from = env('TWILIO_WHATSAPP_FROM'); // ex: 'whatsapp:+15558230548'
+
+        // Vérification des identifiants
+        if (!$sid || !$token || !$from) {
+            return response()->json(['error' => 'Les identifiants Twilio ne sont pas définis !']);
+        }
+
+        // Instancier le client Twilio
+        $twilio = new \Twilio\Rest\Client($sid, $token);
+
+        // Tableau des destinataires : client + admin
+        $recipients = [
+            ['name' => $clientName, 'phone' => $clientPhone],
+            ['name' => 'Administrateur', 'phone' => $adminPhone],
+        ];
+
+        try {
+            foreach ($recipients as $recipient) {
+                $twilio->messages->create(
+                    "whatsapp:{$recipient['phone']}",
+                    [
+                        "from" => $from,
+                        "content" => [
+                            "type" => "template",
+                            "template" => [
+                                "name" => "order_notification",
+                                "language" => ["code" => "fr"],
+                                "components" => [
+                                    [
+                                        "type" => "body",
+                                        "parameters" => [
+                                            ["type" => "text", "text" => $recipient['name']],
+                                            ["type" => "text", "text" => $order->id],
+                                        ]
+                                    ]
                                 ]
                             ]
                         ]
                     ]
-                ]
-            ]
-        );
+                );
+            }
 
-        return response()->json(['message' => 'WhatsApp template envoyé avec succès']);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
+            return response()->json(['message' => 'WhatsApp template envoyé avec succès au client et à l’administrateur.']);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
     }
-}
+
+
 
 
 
