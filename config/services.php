@@ -32,8 +32,8 @@ return [
     ],
 
 
-     // socialite ... ,
-     'google' => [
+    // socialite ... ,
+    'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_CLIENT_CALLBACK')
@@ -61,9 +61,16 @@ return [
 
     // whatsapp send message
     'whatsapp' => [
-    'token' => env('WHATSAPP_TOKEN'),
-    'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
-],
+        'token' => env('WHATSAPP_TOKEN'),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+    ],
+
+    //twilio
+    'twilio' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_TOKEN'),
+        'from' => env('TWILIO_FROM'),
+    ],
 
 
 ];

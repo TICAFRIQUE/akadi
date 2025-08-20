@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b35cc764386d4f18a39800b8a1dd5c58",
+    "content-hash": "0cc7060858172f4b8e4f0b1139cf654e",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -8478,16 +8478,16 @@
         },
         {
             "name": "twilio/sdk",
-            "version": "8.6.4",
+            "version": "8.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php",
-                "reference": "d8c69844909eb73f1870a2398f6b87309ea29918"
+                "reference": "fa2c08f15c6f212de0ec007c175edf5eff7c7d7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/d8c69844909eb73f1870a2398f6b87309ea29918",
-                "reference": "d8c69844909eb73f1870a2398f6b87309ea29918",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/fa2c08f15c6f212de0ec007c175edf5eff7c7d7b",
+                "reference": "fa2c08f15c6f212de0ec007c175edf5eff7c7d7b",
                 "shasum": ""
             },
             "require": {
@@ -8524,7 +8524,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2025-07-03T09:44:09+00:00"
+            "time": "2025-08-18T09:05:26+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

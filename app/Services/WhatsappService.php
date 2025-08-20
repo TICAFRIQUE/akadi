@@ -2,41 +2,35 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
+use Twilio\Rest\Client;
 
-class WhatsappService
+class WhatsAppService
 {
-    public function sendTemplateMessage($to, $templateName, $languageCode = 'fr_FR', $params = [])
+    protected $twilio;
+
+    public function __construct()
     {
-        $token = config('services.whatsapp.token');
-        $phoneNumberId = config('services.whatsapp.phone_number_id');
+        $this->twilio = new Client(
+            config('services.twilio.sid'),
+            config('services.twilio.token')
+        );
+    }
 
-        $components = [
+    /**
+     * Envoyer un message WhatsApp
+     *
+     * @param string $to   Numéro du destinataire au format E.164 (ex: +2250700000000)
+     * @param string $message
+     * @return mixed
+     */
+    public function sendMessage(string $to, string $message)
+    {
+        return $this->twilio->messages->create(
+            "whatsapp:" . $to,
             [
-                "type" => "body",
-                "parameters" => array_map(function ($param) {
-                    return [
-                        "type" => "text",
-                        "text" => $param
-                    ];
-                }, $params)
+                "from" => config('services.twilio.from'),
+                "body" => $message,
             ]
-        ];
-
-        $payload = [
-            "messaging_product" => "whatsapp",
-            "to" => $to,
-            "type" => "template",
-            "template" => [
-                "name" => $templateName,
-                "language" => ["code" => $languageCode],
-                "components" => $components
-            ]
-        ];
-
-        $response = Http::withToken($token)
-            ->post("https://graph.facebook.com/v22.0/{$phoneNumberId}/messages", $payload);
-
-        return $response->json();
+        );
     }
 }

@@ -11,7 +11,6 @@ use App\Models\Product;
 use Twilio\Rest\Client;
 use App\Models\Delivery;
 use Illuminate\Http\Request;
-use App\Services\WhatsappService;
 use Illuminate\Support\Facades\DB;
 use PHPMailer\PHPMailer\PHPMailer;
 use App\Http\Controllers\Controller;
@@ -20,6 +19,38 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Session;
+use App\Services\WhatsAppService;
+
+class OrderController extends Controller
+{
+    public function store(Request $request, WhatsAppService $whatsapp)
+    {
+        // Exemple : création de la commande
+        $order = Order::create([
+            'user_id' => auth()->id(),
+            'produit' => $request->produit,
+            'quantite' => $request->quantite,
+        ]);
+
+        // Envoyer la notif au client
+        $whatsapp->sendMessage(
+            "+2250700000000", // Numéro du client (à récupérer depuis son profil / formulaire)
+            "✅ Bonjour {$request->name}, votre commande #{$order->id} a bien été enregistrée !"
+        );
+
+        // Envoyer la notif à l’admin
+        $whatsapp->sendMessage(
+            "+2250100000000", // Numéro de l’admin
+            "📦 Nouvelle commande reçue #{$order->id} de {$request->name}."
+        );
+
+        return response()->json([
+            'message' => 'Commande enregistrée et notifications envoyées',
+            'order' => $order,
+        ]);
+    }
+}
+
 
 class CartPageController extends Controller
 {
@@ -411,7 +442,7 @@ class CartPageController extends Controller
 
 
     //store order---- enregistrer la commande de l'utilisateur
-    public function storeOrder(Request $request, WhatsappService $whatsapp)
+    public function storeOrder(Request $request, WhatsAppService $whatsapp)
     {
         if (Auth::check()) {
 
@@ -522,6 +553,16 @@ class CartPageController extends Controller
                             ->update(['nbre_utilisation' => 1]);
                     }
                 }
+
+
+                // Envoyer la notif au client
+                $name = Auth::user()->name;
+                $phone = '2250779613593';
+
+                $whatsapp->sendMessage(
+                    $phone, // Numéro du client (à récupérer depuis son profil / formulaire)
+                    "✅ Bonjour {$name}, votre commande #{$order->id} a bien été enregistrée !"
+                );
 
 
                 // function for send data to email -- envoi de email
