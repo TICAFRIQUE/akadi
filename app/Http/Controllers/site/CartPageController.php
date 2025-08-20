@@ -26,13 +26,13 @@ use Illuminate\Support\Facades\Session;
 class CartPageController extends Controller
 {
 
-    protected $whatsapp;
+    // protected $whatsapp;
 
-    // 🔹 Constructeur
-    public function __construct(WhatsAppService $whatsapp)
-    {
-        $this->whatsapp = $whatsapp;
-    }
+    // // 🔹 Constructeur
+    // public function __construct(WhatsAppService $whatsapp)
+    // {
+    //     $this->whatsapp = $whatsapp;
+    // }
 
     //voir le panier
     public function panier()
@@ -419,10 +419,41 @@ class CartPageController extends Controller
     }
 
 
+      public function sendWhatsAppNotification($order)
+    {
+        // Récupérer les infos du client
+        $name = Auth::user()->name;
+        $phone = '+2250779613593'; // indicatif + numéro client
+
+        // Vos identifiants Twilio (depuis .env)
+        $sid = env('TWILIO_ACCOUNT_SID');
+        $token = env('TWILIO_AUTH_TOKEN');
+        $from = env('TWILIO_WHATSAPP_FROM'); // ex: 'whatsapp:+14155238886'
+
+        // Instancier le client Twilio
+        $client = new Client($sid, $token);
+
+        // Envoyer le message
+        try {
+            $client->messages->create(
+                "whatsapp:{$phone}",
+                [
+                    'from' => $from,
+                    'body' => "✅ Bonjour {$name}, votre commande #{$order->id} a bien été enregistrée !"
+                ]
+            );
+
+            return response()->json(['message' => 'WhatsApp envoyé avec succès']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
+
 
 
     //store order---- enregistrer la commande de l'utilisateur
-    public function storeOrder(Request $request, WhatsAppService $whatsapp)
+    public function storeOrder(Request $request)
     {
         if (Auth::check()) {
 
@@ -535,15 +566,8 @@ class CartPageController extends Controller
                 }
 
 
-                // Envoyer la notif au client
-
-                $name = Auth::user()->name;
-                $phone = '+2250779613593'; // indicatif + numéro client
-
-                $this->whatsapp->sendMessage(
-                    "whatsapp:" . $phone,
-                    "✅ Bonjour {$name}, votre commande #{$order->id} a bien été enregistrée !"
-                );
+                // Envoyer la notification whatsapp au client
+                $this->sendWhatsAppNotification($order);
 
 
 
