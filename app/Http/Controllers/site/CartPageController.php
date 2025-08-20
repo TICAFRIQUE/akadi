@@ -11,6 +11,7 @@ use App\Models\Product;
 use Twilio\Rest\Client;
 use App\Models\Delivery;
 use Illuminate\Http\Request;
+use App\Services\WhatsAppService;
 use Illuminate\Support\Facades\DB;
 use PHPMailer\PHPMailer\PHPMailer;
 use App\Http\Controllers\Controller;
@@ -19,7 +20,6 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Session;
-use App\Services\WhatsAppService;
 
 
 
@@ -538,13 +538,13 @@ class CartPageController extends Controller
                 // Envoyer la notif au client
 
                 $name = Auth::user()->name;
-                $phone = '2250779613593';
+                $phone = '+2250779613593'; // indicatif + numéro client
 
-
-                $whatsapp->sendMessage(
-                    $phone, // Numéro du client (à récupérer depuis son profil / formulaire)
+                $this->whatsapp->sendMessage(
+                    "whatsapp:" . $phone,
                     "✅ Bonjour {$name}, votre commande #{$order->id} a bien été enregistrée !"
                 );
+
 
 
 
