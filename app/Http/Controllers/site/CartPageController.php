@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Session;
 
 
 
+
 class CartPageController extends Controller
 {
 
@@ -419,7 +420,7 @@ class CartPageController extends Controller
     }
 
 
-      public function sendWhatsAppNotification($order)
+    public function sendWhatsAppNotification($order)
     {
         // Récupérer les infos du client
         $name = Auth::user()->name;
@@ -431,7 +432,9 @@ class CartPageController extends Controller
         $from = env('TWILIO_WHATSAPP_FROM'); // ex: 'whatsapp:+14155238886'
 
         // Instancier le client Twilio
-        $client = new Client($sid, $token);
+
+        $client = new \Twilio\Rest\Client($sid, $token);
+
 
         // Envoyer le message
         try {
