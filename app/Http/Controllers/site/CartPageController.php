@@ -461,68 +461,101 @@ class CartPageController extends Controller
 
 
 
- public function sendWhatsAppNotification($order)
+    // public function sendWhatsAppNotification($order)
+    // {
+    //     // Récupérer les infos du client
+    //     $clientName = Auth::user()->name;
+    //     $clientPhone = '+2250779613593'; // Numéro client avec indicatif
+
+    //     // Numéro administrateur (exemple)
+    //     $adminPhone = '+2250101010101';
+
+    //     // Identifiants Twilio depuis .env
+    //     $sid = env('TWILIO_ACCOUNT_SID');
+    //     $token = env('TWILIO_AUTH_TOKEN');
+    //     $from = env('TWILIO_WHATSAPP_FROM'); // ex: 'whatsapp:+15558230548'
+
+    //     // Vérification des identifiants
+    //     if (!$sid || !$token || !$from) {
+    //         return response()->json(['error' => 'Les identifiants Twilio ne sont pas définis !']);
+    //     }
+
+    //     // Instancier le client Twilio
+    //     $twilio = new \Twilio\Rest\Client($sid, $token);
+
+    //     // Tableau des destinataires : client + admin
+    //     $recipients = [
+    //         ['name' => $clientName, 'phone' => $clientPhone],
+    //         ['name' => 'Administrateur', 'phone' => $adminPhone],
+    //     ];
+
+    //     try {
+    //         foreach ($recipients as $recipient) {
+    //             $twilio->messages->create(
+    //                 "whatsapp:{$recipient['phone']}",
+    //                 [
+    //                     "from" => $from,
+    //                     "content" => [
+    //                         "type" => "template",
+    //                         "template" => [
+    //                             "name" => "order_notification",
+    //                             "language" => ["code" => "fr"],
+    //                             "components" => [
+    //                                 [
+    //                                     "type" => "body",
+    //                                     "parameters" => [
+    //                                         ["type" => "text", "text" => $recipient['name']],
+    //                                         ["type" => "text", "text" => $order->id],
+    //                                     ]
+    //                                 ]
+    //                             ]
+    //                         ]
+    //                     ]
+    //                 ]
+    //             );
+    //         }
+
+    //         return response()->json(['message' => 'WhatsApp template envoyé avec succès au client et à l’administrateur.']);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['error' => $e->getMessage()]);
+    //     }
+    // }
+
+
+    public function sendWhatsAppNotification($order)
     {
-        // Récupérer les infos du client
-        $clientName = Auth::user()->name;
-        $clientPhone = '+2250779613593'; // Numéro client avec indicatif
+        // Numéro destinataire (client et admin)
+        $clientPhone = 'whatsapp:+2250779613593';
+        $adminPhone  = 'whatsapp:+2250101010101';
 
-        // Numéro administrateur (exemple)
-        $adminPhone = '+2250101010101'; 
+        // Identifiants Twilio
+        $sid    = env('TWILIO_ACCOUNT_SID');
+        $token  = env('TWILIO_AUTH_TOKEN');
+        $mg     = env('TWILIO_MESSAGING_SERVICE_SID'); // ⚠️ Utilise un Messaging Service relié à ton sender WhatsApp
+        $contentSid = 'HX14d8763808c28ce2e1a463ca13797e06'; // ton template
 
-        // Identifiants Twilio depuis .env
-        $sid = env('TWILIO_ACCOUNT_SID');
-        $token = env('TWILIO_AUTH_TOKEN');
-        $from = env('TWILIO_WHATSAPP_FROM'); // ex: 'whatsapp:+15558230548'
-
-        // Vérification des identifiants
-        if (!$sid || !$token || !$from) {
-            return response()->json(['error' => 'Les identifiants Twilio ne sont pas définis !']);
+        if (!$sid || !$token || !$mg) {
+            return response()->json(['error' => 'Identifiants Twilio manquants !']);
         }
 
-        // Instancier le client Twilio
         $twilio = new \Twilio\Rest\Client($sid, $token);
 
-        // Tableau des destinataires : client + admin
-        $recipients = [
-            ['name' => $clientName, 'phone' => $clientPhone],
-            ['name' => 'Administrateur', 'phone' => $adminPhone],
-        ];
+        $recipients = [$clientPhone, $adminPhone];
 
         try {
-            foreach ($recipients as $recipient) {
-                $twilio->messages->create(
-                    "whatsapp:{$recipient['phone']}",
-                    [
-                        "from" => $from,
-                        "content" => [
-                            "type" => "template",
-                            "template" => [
-                                "name" => "order_notification",
-                                "language" => ["code" => "fr"],
-                                "components" => [
-                                    [
-                                        "type" => "body",
-                                        "parameters" => [
-                                            ["type" => "text", "text" => $recipient['name']],
-                                            ["type" => "text", "text" => $order->id],
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                );
+            foreach ($recipients as $to) {
+                $twilio->messages->create($to, [
+                    'messagingServiceSid' => $mg,
+                    'contentSid'          => $contentSid,
+                    // pas de contentVariables car message statique
+                ]);
             }
 
-            return response()->json(['message' => 'WhatsApp template envoyé avec succès au client et à l’administrateur.']);
-
+            return response()->json(['message' => 'Template WhatsApp envoyé avec succès ✅']);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
     }
-
-
 
 
 
