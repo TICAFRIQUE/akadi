@@ -434,6 +434,7 @@ class CartPageController extends Controller
         // Instancier le client Twilio
 
         $client = new \Twilio\Rest\Client($sid, $token);
+        // dd($sid);
 
 
         // Envoyer le message
