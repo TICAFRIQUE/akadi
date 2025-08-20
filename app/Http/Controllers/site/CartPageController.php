@@ -21,39 +21,19 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Session;
 use App\Services\WhatsAppService;
 
-class OrderController extends Controller
-{
-    public function store(Request $request, WhatsAppService $whatsapp)
-    {
-        // Exemple : création de la commande
-        $order = Order::create([
-            'user_id' => auth()->id(),
-            'produit' => $request->produit,
-            'quantite' => $request->quantite,
-        ]);
-
-        // Envoyer la notif au client
-        $whatsapp->sendMessage(
-            "+2250700000000", // Numéro du client (à récupérer depuis son profil / formulaire)
-            "✅ Bonjour {$request->name}, votre commande #{$order->id} a bien été enregistrée !"
-        );
-
-        // Envoyer la notif à l’admin
-        $whatsapp->sendMessage(
-            "+2250100000000", // Numéro de l’admin
-            "📦 Nouvelle commande reçue #{$order->id} de {$request->name}."
-        );
-
-        return response()->json([
-            'message' => 'Commande enregistrée et notifications envoyées',
-            'order' => $order,
-        ]);
-    }
-}
 
 
 class CartPageController extends Controller
 {
+
+    protected $whatsapp;
+
+    // 🔹 Constructeur
+    public function __construct(WhatsAppService $whatsapp)
+    {
+        $this->whatsapp = $whatsapp;
+    }
+
     //voir le panier
     public function panier()
     {
@@ -556,8 +536,10 @@ class CartPageController extends Controller
 
 
                 // Envoyer la notif au client
+
                 $name = Auth::user()->name;
                 $phone = '2250779613593';
+
 
                 $whatsapp->sendMessage(
                     $phone, // Numéro du client (à récupérer depuis son profil / formulaire)
@@ -565,7 +547,7 @@ class CartPageController extends Controller
                 );
 
 
-                
+
                 //supprimer la session du panier
                 Session::forget('cart');
                 Session::forget('totalQuantity');
@@ -577,54 +559,6 @@ class CartPageController extends Controller
                     'status' => 200,
                 ], 200);
             }
-        }
-    }
-
-
-
-
-
-    public function sendWhatsappMessage()
-    {
-        // $accessToken = env('WHATSAPP_TOKEN');
-        // $phoneId = env('WHATSAPP_PHONE_ID');
-
-        // $response = Http::withToken($accessToken)
-        //     ->withHeaders([
-        //         'Content-Type' => 'application/json',
-        //     ])
-        //     ->post('https://graph.facebook.com/v22.0/' . $phoneId . '/messages', [
-        //         'messaging_product' => 'whatsapp',
-        //         'to' => '2250779613593',
-        //         'type' => 'template',
-        //         'template' => [
-        //             'name' => 'hello_world',
-        //             'language' => [
-        //                 'code' => 'en_US'
-        //             ],
-        //         ],
-        //     ]);
-
-        // if ($response->successful()) {
-        //     return response()->json([
-        //         'status' => 'success',
-        //         'message' => 'Message envoyé avec succès !',
-        //         'response' => $response->json()
-        //     ]);
-        // } else {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'Échec de l’envoi',
-        //         'error' => $response->json()
-        //     ], $response->status());
-        // }
-        try {
-
-            return response()->json([
-                'message' => 'message envoyé avec success',
-            ], 200);
-        } catch (\Throwable $th) {
-            return $th->getMessage();
         }
     }
 }
