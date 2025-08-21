@@ -472,7 +472,7 @@ class CartPageController extends Controller
 
     public function sendWhatsAppNotification($order)
     {
-        $clientName  = Auth::user()->first_name . ' ' . Auth::user()->last_name;
+        $clientName  = Auth::user()->name;
         $clientPhone = $this->formatWhatsAppNumber('0779613593');
         $adminPhone  = $this->formatWhatsAppNumber('0758838338');
 
