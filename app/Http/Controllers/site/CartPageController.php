@@ -497,7 +497,7 @@ class CartPageController extends Controller
                 // Variables pour ton template : {{1}} = nom, {{2}} = commande
                 $variables = json_encode([
                     "1" => $recipient['name'],
-                    "2" => (string)$order->id
+                    "2" => (string)$order->code
                 ]);
 
                 $twilio->messages->create($recipient['phone'], [
