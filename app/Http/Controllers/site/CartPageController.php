@@ -529,8 +529,8 @@ class CartPageController extends Controller
         $adminPhone  = 'whatsapp:+2250101010101';
 
         // Identifiants Twilio
-        $sid    = env('TWILIO_ACCOUNT_SID');
-        $token  = env('TWILIO_AUTH_TOKEN');
+        $sid    = env('TWILIO_SUBACCOUNT_SID');
+        $token  = env('TWILIO_SUBACCOUNT_TOKEN');
         $mg     = env('TWILIO_MESSAGING_SERVICE_SID'); // ⚠️ Utilise un Messaging Service relié à ton sender WhatsApp
         $contentSid = 'HX14d8763808c28ce2e1a463ca13797e06'; // ton template
 

@@ -50,6 +50,7 @@ Route::middleware(['admin'])->group(function () {
         route::get('order-period', 'order_period')->name('dashboard.order-period');
         route::get('revenu-period', 'revenu_period')->name('dashboard.revenu-period'); // chiffre d'affaire
         route::get('check-new-order', 'checkNewOrder')->name('dashboard.checkNewOrder');
+        route::get('check-balance-twilio', 'checkBalanceTwilio')->name('dashboard.checkBalanceTwilio');
     });
 
     //Setting

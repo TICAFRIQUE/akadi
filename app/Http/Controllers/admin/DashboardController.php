@@ -13,6 +13,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Twilio\Rest\Client;
 
 class DashboardController extends Controller
 {
@@ -196,7 +197,7 @@ class DashboardController extends Controller
         ));
     }
 
- 
+
 
     public function product_statistic(Request $request)
     {
@@ -330,7 +331,7 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-       public function checkNewOrder()
+    public function checkNewOrder()
     {
 
         $orders_new = Order::orderBy('created_at', 'DESC')
@@ -349,5 +350,75 @@ class DashboardController extends Controller
             }),
             'count' => $orders_new->count() // Ajoute le nombre total des nouvelles commandes
         ]);
+    }
+
+    // public function checkBalanceTwilio()
+    // {
+
+    //     $sid   = env('TWILIO_ACCOUNT_SID');   // SID du compte principal
+    //     $token = env('TWILIO_AUTH_TOKEN');
+
+    //     $twilio  = new Client($sid, $token);
+    //     // 2 syntaxes possibles :
+    //     $balance = $twilio->getAccount()->balance->fetch();                          // plus simple
+    //     // $balance = $twilio->api->v2010->accounts($sid)->balance->fetch();        // équivalent si $sid = compte principal
+
+    //     return response()->json([
+    //         'balance'  => $balance->balance,
+    //         'currency' => $balance->currency,
+    //     ]);
+    // }
+
+    // public function checkBalanceTwilio()
+    // {
+    //     $sid   = env('TWILIO_ACCOUNT_SID');
+    //     $token = env('TWILIO_AUTH_TOKEN');
+
+    //     try {
+    //         $client = new \GuzzleHttp\Client();
+
+    //         $response = $client->request('GET', "https://api.twilio.com/2010-04-01/Accounts/{$sid}/Balance.json", [
+    //             'auth' => [$sid, $token]
+    //         ]);
+
+    //         $data = json_decode($response->getBody(), true);
+
+    //         return response()->json([
+    //             'balance' => $data['balance'],
+    //             'currency' => $data['currency']
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'error' => $e->getMessage()
+    //         ]);
+    //     }
+    // }
+
+
+    public function checkBalanceTwilio()
+    {
+        $sid   = env('TWILIO_ACCOUNT_SID');   
+        $token = env('TWILIO_AUTH_TOKEN');    
+
+        try {
+            $client = new \GuzzleHttp\Client();
+
+            $url = "https://api.twilio.com/2010-04-01/Accounts/{$sid}/Balance.json";
+
+            $response = $client->request('GET', $url, [
+                'auth' => [$sid, $token]
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            return response()->json([
+                'balance'  => $data['balance'],
+                'currency' => $data['currency'],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }
