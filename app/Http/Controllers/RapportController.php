@@ -258,8 +258,8 @@ class RapportController extends Controller
                 ->orderBy('date', 'asc')
                 ->get();
 
-            // 8. Liste des produits vendus sur la période (seulement top 10)
-            $listeProduitsVendus = $top10ProduitsVendus;
+            //Liste des produits vendus sur la période choisie
+            $listeProduitsVendus = $produitsVendus;
 
             return view('admin.pages.rapport.vente', compact(
                 'totalCommandes',
