@@ -171,4 +171,115 @@ class RapportController extends Controller
             return $e->getMessage();
         }
     }
+
+    public function rapportVente(Request $request)
+    {
+        try {
+            // 1. Gestion des dates
+            $dateDebut = $request->filled('date_debut') ? Carbon::parse($request->date_debut)->startOfDay() : null;
+            $dateFin = $request->filled('date_fin') ? Carbon::parse($request->date_fin)->endOfDay() : null;
+
+            // 2. Query Orders selon les dates ou toutes les ventes
+            $venteQuery = Order::query()->where('status', '!=', 'annule');
+            if ($dateDebut && $dateFin) {
+                $venteQuery->whereBetween('created_at', [$dateDebut, $dateFin]);
+            } elseif ($dateDebut) {
+                $venteQuery->where('created_at', '>=', $dateDebut);
+            } elseif ($dateFin) {
+                $venteQuery->where('created_at', '<=', $dateFin);
+            }
+            // Sinon, toutes les ventes
+
+            // 3. Produits vendus avec Eloquent
+            $produitsVendus = \App\Models\Product::whereHas('orders', function ($q) use ($dateDebut, $dateFin) {
+                    $q->where('orders.status', '!=', 'annule');
+                    if ($dateDebut && $dateFin) {
+                        $q->whereBetween('orders.created_at', [$dateDebut, $dateFin]);
+                    } elseif ($dateDebut) {
+                        $q->where('orders.created_at', '>=', $dateDebut);
+                    } elseif ($dateFin) {
+                        $q->where('orders.created_at', '<=', $dateFin);
+                    }
+                })
+                ->with(['orders' => function ($q) use ($dateDebut, $dateFin) {
+                    $q->where('orders.status', '!=', 'annule');
+                    if ($dateDebut && $dateFin) {
+                        $q->whereBetween('orders.created_at', [$dateDebut, $dateFin]);
+                    } elseif ($dateDebut) {
+                        $q->where('orders.created_at', '>=', $dateDebut);
+                    } elseif ($dateFin) {
+                        $q->where('orders.created_at', '<=', $dateFin);
+                    }
+                }])
+                ->get()
+                ->map(function ($product) {
+                    $total_quantite = $product->orders->sum(function ($order) {
+                        return $order->pivot->quantity;
+                    });
+                    $total_chiffre_affaires = $product->orders->sum(function ($order) {
+                        return $order->pivot->quantity * $order->pivot->unit_price;
+                    });
+                    return [
+                        'id' => $product->id,
+                        'title' => $product->title,
+                        'code' => $product->code,
+                        'price' => $product->price,
+                        'total_quantite' => $total_quantite,
+                        'total_chiffre_affaires' => $total_chiffre_affaires,
+                    ];
+                })
+                ->sortByDesc('total_quantite')
+                ->values();
+
+            // 4. Top 10 produits vendus
+            $top10ProduitsVendus = $produitsVendus->take(10);
+
+            // 5. Statistiques générales
+            $totalCommandes = $venteQuery->count();
+            $totalVentesBrut = $venteQuery->sum('subtotal');
+            $totalRemises = $venteQuery->sum('discount');
+            $totalVentesNet = $venteQuery->sum('total');
+            $totalLivraison = $venteQuery->sum('delivery_price');
+            $revenuNet = $totalVentesNet - $totalLivraison;
+            $panierMoyen = $totalCommandes > 0 ? $totalVentesNet / $totalCommandes : 0;
+
+            // 6. Produit le plus vendu et le moins vendu parmi le top 10
+            $produitPlusVendu = $top10ProduitsVendus->first();
+            $produitMoinsVendu = $top10ProduitsVendus->last();
+
+            // 7. Statistiques par jour
+            $ventesParJour = $venteQuery
+                ->select(
+                    DB::raw('DATE(created_at) as date'),
+                    DB::raw('COUNT(*) as nombre_commandes'),
+                    DB::raw('SUM(total) as chiffre_affaires')
+                )
+                ->groupBy(DB::raw('DATE(created_at)'))
+                ->orderBy('date', 'asc')
+                ->get();
+
+            // 8. Liste des produits vendus sur la période (seulement top 10)
+            $listeProduitsVendus = $top10ProduitsVendus;
+
+            return view('admin.pages.rapport.vente', compact(
+                'totalCommandes',
+                'totalVentesBrut',
+                'totalRemises',
+                'totalVentesNet',
+                'totalLivraison',
+                'revenuNet',
+                'produitPlusVendu',
+                'produitMoinsVendu',
+                'top10ProduitsVendus',
+                'ventesParJour',
+                'panierMoyen',
+                'dateDebut',
+                'dateFin',
+                'listeProduitsVendus'
+            ));
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Erreur lors de la génération du rapport: ' . $e->getMessage());
+        }
+    }
 }

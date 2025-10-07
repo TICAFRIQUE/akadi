@@ -202,6 +202,7 @@ Route::middleware(['admin'])->group(function () {
     Route::prefix('admin/rapport')->controller(RapportController::class)->group(function () {
         route::get('', 'exploitation')->name('rapport.exploitation');
         route::get('detail-depense', 'detail_depense')->name('rapport.detail');
+        route::get('vente', 'rapportVente')->name('rapport.vente');
     });
 });
 

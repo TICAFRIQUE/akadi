@@ -394,20 +394,20 @@
                                 </li>
                             @endrole
 
-                            <li class="dropdown {{ Route::is('rapport.exploitation') ? 'active' : '' }} ">
+                            {{-- <li class="dropdown {{ Route::is('rapport.exploitation') ? 'active' : '' }} ">
                                 <a href="{{ route('rapport.exploitation') }}" class="nav-link "><i
                                         data-feather="activity"></i><span>Rapport</span></a>
-                            </li>
+                            </li> --}}
 
-                            {{-- <li class="dropdown">
+                            <li class="dropdown {{ Route::is('rapport.exploitation') ? 'active' : '' }}">
                                 <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                                        data-feather="settings"></i><span>Parametres</span></a>
+                                        data-feather="settings"></i><span>Rapport</span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="nav-link" href="avatar.html">Rôles</a></li>
-                                    <li><a class="nav-link" href="card.html">Publicités</a></li>
+                                    <li><a href="{{ route('rapport.exploitation') }}" class="nav-link" href="avatar.html">Compte d'exploitation</a></li>
+                                    <li><a class="nav-link" href="{{ route('rapport.vente') }}">Ventes</a></li>
 
                                 </ul>
-                            </li> --}}
+                            </li>
                         </ul>
                     </aside>
                 </div>
