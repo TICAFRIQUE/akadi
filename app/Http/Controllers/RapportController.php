@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Depense;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\CategorieDepense;
 use Illuminate\Support\Facades\DB;
@@ -191,7 +192,7 @@ class RapportController extends Controller
             // Sinon, toutes les ventes
 
             // 3. Produits vendus avec Eloquent
-            $produitsVendus = \App\Models\Product::whereHas('orders', function ($q) use ($dateDebut, $dateFin) {
+            $produitsVendus = Product::whereHas('orders', function ($q) use ($dateDebut, $dateFin) {
                     $q->where('orders.status', '!=', 'annule');
                     if ($dateDebut && $dateFin) {
                         $q->whereBetween('orders.created_at', [$dateDebut, $dateFin]);
@@ -223,6 +224,7 @@ class RapportController extends Controller
                         'id' => $product->id,
                         'title' => $product->title,
                         'code' => $product->code,
+                        'categorie' => $product->subcategorie ? $product->subcategorie->name : 'N/A',
                         'price' => $product->price,
                         'total_quantite' => $total_quantite,
                         'total_chiffre_affaires' => $total_chiffre_affaires,
