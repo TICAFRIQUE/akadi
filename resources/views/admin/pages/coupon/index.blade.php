@@ -77,7 +77,7 @@
                                                     {{ \Carbon\Carbon::parse($item['date_debut'])->isoFormat('dddd D MMMM YYYY à HH:mm') }}
                                                 </td>
                                                 <td>
-                                                    {{ \Carbon\Carbon::parse($item['date_expiration'])->isoFormat('dddd D MMMM YYYY à HH:mm') }}
+                                                    {{ \Carbon\Carbon::parse($item['date_fin'])->isoFormat('dddd D MMMM YYYY à HH:mm') }}
                                                 </td>
 
                                                 <td>
