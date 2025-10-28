@@ -215,6 +215,17 @@
                     <div class="card-header">
                         <h4> <code>BON DE COMMANDE</code></h4>
                     </div>
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="card-body">
                         <ul class="nav nav-pills" id="myTab3" role="tablist">
                             <li class="nav-item">
@@ -385,8 +396,8 @@
 
         //NEW CODE avec juste le NOM entré
         function generateCode() {
-            var nom = $('#nameCoupon').val(); // Utilise 'AK' si le champ est vide
-            
+            var nom = $('#nameCoupon').val().toUpperCase(); // Utilise 'AK' si le champ est vide
+
 
 
             // Met à jour le champ du code
@@ -432,7 +443,7 @@
                 $('.clientDiv').hide();
                 // vider la liste des clients
                 $('#customer').val('').trigger(
-                'change'); // Vider le champ et déclencher l'événement change
+                    'change'); // Vider le champ et déclencher l'événement change
                 $('#customer').prop('required', false);
 
             }
