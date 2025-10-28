@@ -335,42 +335,6 @@
 
 
 
-        // $('#date_start').change(function(e) {
-        //     var date_start = $(this).val();
-        //     var date_end = $('#date_end').val();
-
-        //     if (date_start > date_end) {
-        //         $('#MsgError').html(
-        //             'La date debut de la promo ne doit pas etre superieur à la date de fin').css({
-        //             'color': 'white',
-        //             'background-color': 'red',
-        //             'font-size': '16px'
-        //         });
-        //         $('.btn-submit').prop('disabled', true)
-        //     } else {
-        //         $('#MsgError').html(' ')
-        //         $('.btn-submit').prop('disabled', false)
-        //     }
-        // });
-
-
-        // $('#date_end').change(function(e) {
-        //     var date_end = $(this).val();
-        //     var date_start = $('#date_start').val();
-
-        //     if (date_end < date_start) {
-        //         $('#MsgError').html(
-        //             'La date fin de la promo ne doit pas etre inferieur à la date de debut').css({
-        //             'color': 'white',
-        //             'background-color': 'red',
-        //             'font-size': '16px'
-        //         });
-        //         $('.btn-submit').prop('disabled', true)
-        //     } else {
-        //         $('#MsgError').html(' ')
-        //         $('.btn-submit').prop('disabled', false)
-        //     }
-        // });
 
         function validateDates() {
             var date_start = $('#date_start').val();
@@ -404,41 +368,29 @@
 
 
 
-
-        //Generate code coupon
-        // $('#codeCouponBtn').click(function(e) {
-        //     e.preventDefault();
-
-        //     // on va recuperer le nom du coupon et le concatenner avec le code genéré
+        // Fonction pour générer le code en temps réel OLD
+        // function generateCode() {
         //     var nom = $('#nameCoupon').val() || 'AK'; // Utilise 'AK' si le champ est vide
         //     var code = (nom + '-').toUpperCase(); // Mets en majuscule et ajoute le tiret
 
-        //     // abcdefghijklmnopqrstuvwxyz
+        //     // Génère une partie aléatoire du code
         //     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-        //     for (var i = 0; i < 8; i++)
+        //     for (var i = 0; i < 8; i++) {
         //         code += possible.charAt(Math.floor(Math.random() * possible.length));
+        //     }
 
-        //     $('#codeCoupon').val(code)
-        //     $('#codeCoupon').prop('readonly', true)
+        //     // Met à jour le champ du code
+        //     $('#codeCoupon').val(code);
+        // }
 
-
-        // });
-
-
-        // Fonction pour générer le code en temps réel
+        //NEW CODE avec juste le NOM entré
         function generateCode() {
-            var nom = $('#nameCoupon').val() || 'AK'; // Utilise 'AK' si le champ est vide
-            var code = (nom + '-').toUpperCase(); // Mets en majuscule et ajoute le tiret
+            var nom = $('#nameCoupon').val(); // Utilise 'AK' si le champ est vide
+            
 
-            // Génère une partie aléatoire du code
-            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            for (var i = 0; i < 8; i++) {
-                code += possible.charAt(Math.floor(Math.random() * possible.length));
-            }
 
             // Met à jour le champ du code
-            $('#codeCoupon').val(code);
+            $('#codeCoupon').val(nom);
         }
 
         // Exécute la fonction dès que le champ #nameCoupon change
@@ -471,15 +423,16 @@
                 // afficher le message d'erreur
                 $('.customerMsg').removeClass('d-none');
 
-             //mettre la quantité a generer a 1
-                $('#quantite').val(1);// Mettre la quantité à 1
+                //mettre la quantité a generer a 1
+                $('#quantite').val(1); // Mettre la quantité à 1
 
                 // passer typeCoupon en unique
-                $('#typeCoupon').val('unique');// Mettre à jour le champ typeCoupon
+                $('#typeCoupon').val('unique'); // Mettre à jour le champ typeCoupon
             } else {
                 $('.clientDiv').hide();
                 // vider la liste des clients
-                $('#customer').val('').trigger('change');// Vider le champ et déclencher l'événement change
+                $('#customer').val('').trigger(
+                'change'); // Vider le champ et déclencher l'événement change
                 $('#customer').prop('required', false);
 
             }
