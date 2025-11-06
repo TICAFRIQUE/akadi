@@ -126,6 +126,7 @@ Route::middleware(['admin'])->group(function () {
         Route::get('changeState', 'changeState')->name('order.changeState');
         Route::post('orderCancel', 'orderCancel')->name('order.orderCancel');
         Route::get('checkNewOrder', 'checkNewOrder')->name('order.checkNewOrder');
+        Route::get('sendSms', 'sendSms')->name('order.sendSms');
     });
 
     //publicite
@@ -139,10 +140,6 @@ Route::middleware(['admin'])->group(function () {
         route::get('changeState', 'changeState')->name('publicite.changeState'); // activer , desactiver une publicite
         route::post('destroy/{id}', 'destroy')->name('publicite.destroy');
     });
-
-
-
-
 
 
     /** Feedback **/

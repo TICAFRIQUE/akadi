@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\admin;
 
-use Log;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Order;
 use Illuminate\Support\Str;
+use App\Services\smsService;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\PHPMailer;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
@@ -121,6 +122,11 @@ class OrderController extends Controller
             'status' => $state
         ]);
 
+        // si state si confirmed send sms to user
+        if ($state == 'confirmée') {
+            $this->sendSms($order);
+        }
+
         if ($state == 'livrée') {
             $changeState = Order::whereId($orderId)->update([
                 'delivery_date' => carbon::now()
@@ -176,7 +182,7 @@ class OrderController extends Controller
 
                 $mail->send();
             } catch (Exception $e) {
-               return back()->withError($e->getMessage());
+                return back()->withError($e->getMessage());
             }
         }
 
@@ -222,6 +228,55 @@ class OrderController extends Controller
             //     ];
             // }),
             // 'count' => $orders_new->count() // Ajoute le nombre total des nouvelles commandes
+        ]);
+    }
+
+
+    /****SEND SMS TO CUSTOMER API function */
+    public function sendSms($order)
+    {
+        $sms = new smsService();
+
+        // On récupère la dernière commande
+
+        // Numéro du client 
+        $numero = $order->user->phone; // numéro de test
+        $numero = ltrim($numero, '0'); // retire le 0 au début
+        $numero = '225' . $numero; // ajoute l’indicatif du pays
+
+
+        if (!$numero) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Aucun numéro de téléphone fourni.'
+            ]);
+        }
+
+        // Message
+        $message = "Bonjour " . $order->user->name .
+            ",  Votre commande a été reçue et soigneusement prise en charge. Pour toute urgence, contactez notre équipe au 0758838338.";
+
+        // Envoi du SMS
+        $response = $sms->send(
+            env('SMS_API_USERNAME'),
+            env('SMS_API_PASSWORD'),
+            'AKADI',
+            $message,
+            0, // flash message : 0 = normal, 1 = message flash
+            $numero, // <= très important !
+        );
+
+        // 📝 Log pour debug (optionnel)
+            Log::info('SMS Admin envoyé', [
+                'commande_id' => $order->id,
+                'message' => $message,
+                'numero' => $numero,
+                'response' => $response
+            ]);
+
+        return response()->json([
+            'status' => 'ok',
+            'response' => $response
         ]);
     }
 }
