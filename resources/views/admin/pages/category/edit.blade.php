@@ -93,6 +93,23 @@
                                     </div>
                                 </div> --}}
 
+                                <!--Activer la categorie-->
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Activer la categorie</label>
+                                    <div class="col-sm-9">
+                                        <select name="is_active" class="form-control selectric " required>
+                                            <option disabled selected value>Choisir une option</option>
+                                            <option value="1" {{ $category['is_active'] == 1 ? 'selected' : '' }}>Oui
+                                            </option>
+                                            <option value="0" {{ $category['is_active'] == 0 ? 'selected' : '' }}>Non
+                                            </option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Champ obligatoire
+                                        </div>
+                                    </div>
+                                </div>
+
 
 
                             </div>

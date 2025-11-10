@@ -267,12 +267,60 @@ class OrderController extends Controller
         );
 
         // 📝 Log pour debug (optionnel)
-            Log::info('SMS Admin envoyé', [
-                'commande_id' => $order->id,
-                'message' => $message,
-                'numero' => $numero,
-                'response' => $response
+        Log::info('SMS Admin envoyé', [
+            'commande_id' => $order->id,
+            'message' => $message,
+            'numero' => $numero,
+            'response' => $response
+        ]);
+
+        return response()->json([
+            'status' => 'ok',
+            'response' => $response
+        ]);
+    }
+
+
+    public function sendSmsTest()
+    {
+        $sms = new smsService();
+
+        // On récupère la dernière commande
+
+        // Numéro du client 
+        $numero = '0779613593'; // numéro de test
+        $numero = '225' . $numero; // ajoute l’indicatif du pays
+
+
+        if (!$numero) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Aucun numéro de téléphone fourni.'
             ]);
+        }
+        $order = Order::with('user')->latest()->first();
+
+        // Message
+        $message = "Bonjour " . $order->user->name .
+            ",  Votre commande a été reçue et soigneusement prise en charge. Pour toute urgence, contactez notre équipe au 0758838338.";
+
+        // Envoi du SMS
+        $response = $sms->send(
+            env('SMS_API_USERNAME'),
+            env('SMS_API_PASSWORD'),
+            env('SMS_API_SENDER'),
+            $message,
+            0, // flash message : 0 = normal, 1 = message flash
+            $numero, // <= très important !
+        );
+
+        // 📝 Log pour debug (optionnel)
+        Log::info('SMS Admin envoyé', [
+            'commande_id' => $order->id,
+            'message' => $message,
+            'numero' => $numero,
+            'response' => $response
+        ]);
 
         return response()->json([
             'status' => 'ok',

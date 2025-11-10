@@ -30,7 +30,7 @@ class ProductPageController extends Controller
 
                 $product = Product::whereHas(
                     'categories',
-                    fn($q) => $q->where('category_product.category_id', $category),
+                    fn($q) => $q->where('category_product.category_id', $category)->active(),
 
                 )->with(['media', 'categories', 'subcategorie'])
                     ->orderBy('created_at', 'DESC')
@@ -45,6 +45,7 @@ class ProductPageController extends Controller
                     ->get();
             } else {
                 $product = Product::with(['media', 'categories', 'subcategorie'])->orderBy('created_at', 'DESC')
+                ->whereHas('categories', fn($q) => $q->active())
                     ->whereDisponibilite(1)
                     ->get();
             }

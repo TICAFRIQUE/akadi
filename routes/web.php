@@ -126,7 +126,7 @@ Route::middleware(['admin'])->group(function () {
         Route::get('changeState', 'changeState')->name('order.changeState');
         Route::post('orderCancel', 'orderCancel')->name('order.orderCancel');
         Route::get('checkNewOrder', 'checkNewOrder')->name('order.checkNewOrder');
-        Route::get('sendSms', 'sendSms')->name('order.sendSms');
+        Route::get('sendSms', 'sendSmsTest')->name('order.sendSms');
     });
 
     //publicite

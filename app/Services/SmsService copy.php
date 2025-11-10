@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-class SmsService
+class smsService
 {
     protected $host = "193.105.74.59";
     protected $path = "/api/sendsms/xml";

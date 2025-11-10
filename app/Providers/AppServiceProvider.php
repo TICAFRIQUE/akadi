@@ -256,7 +256,7 @@ class AppServiceProvider extends ServiceProvider
                 'products' => fn($q) => $q->whereDisponibilite(1)->latest(),
                 'media',
                 'subcategories',
-            ])->whereNotIn('name', ['Pack'])->latest()->get();
+            ])->whereNotIn('name', ['Pack'])->active()->latest()->get();
 
             $category_backend = Category::with([
                 'products' => fn($q) => $q->latest(),

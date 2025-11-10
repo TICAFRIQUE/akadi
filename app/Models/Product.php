@@ -17,11 +17,13 @@ class Product extends Model implements HasMedia
 {
     use HasFactory,
 
-        InteractsWithMedia, SoftDeletes, Sluggable;
+        InteractsWithMedia,
+        SoftDeletes,
+        Sluggable;
 
-        public $incrementing = false;
+    public $incrementing = false;
 
-     
+
 
     protected $fillable = [
         'code',
@@ -47,8 +49,8 @@ class Product extends Model implements HasMedia
     {
         parent::boot();
         self::creating(function ($model) {
-            $model->id = IdGenerator::generate(['table' => 'products', 'length' => 10, 'prefix' =>mt_rand()]);
-            $model->code = IdGenerator::generate(['table' => 'products', 'field' => 'code', 'length' => 10, 'prefix' =>'Z-'.mt_rand()]);
+            $model->id = IdGenerator::generate(['table' => 'products', 'length' => 10, 'prefix' => mt_rand()]);
+            $model->code = IdGenerator::generate(['table' => 'products', 'field' => 'code', 'length' => 10, 'prefix' => 'Z-' . mt_rand()]);
         });
     }
 
@@ -62,12 +64,11 @@ class Product extends Model implements HasMedia
     }
 
 
-
     public function subcategorie()
     {
         return $this->belongsTo(SubCategory::class, 'sub_category_id');
     }
-    
+
 
     public function user()
     {
@@ -91,7 +92,7 @@ class Product extends Model implements HasMedia
 
     public function orders(): BelongsToMany
     {
-        return $this->belongsToMany(Order::class)->withPivot(['quantity', 'unit_price', 'total','options','available'])
+        return $this->belongsToMany(Order::class)->withPivot(['quantity', 'unit_price', 'total', 'options', 'available'])
             ->withTimestamps();
     }
 

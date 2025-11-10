@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('type')->nullable();
             $table->string('type_affichage')->nullable(); //bloc , carrousel
+            // $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

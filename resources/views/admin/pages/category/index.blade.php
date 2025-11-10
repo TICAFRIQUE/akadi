@@ -30,6 +30,7 @@
                                             <th class="text-center">
                                                 #
                                             </th>
+                                            <th>Statut</th>
                                             <th>Name</th>
                                             <th>image</th>
                                             {{-- <th>banner</th> --}}
@@ -43,6 +44,7 @@
                                                 <td>
                                                     {{ ++$key }}
                                                 </td>
+                                                <td> <span class="badge badge-{{ $item['is_active'] == 1 ? 'success' : 'danger' }} text-white p-1 px-3">{{ $item['is_active']? 'Active' : 'Inactive' }}</span> </td>
                                                 <td> {{ $item['name'] }}
                                                     {{-- <br>#<small class="text-dark">{{ $item['type'] }} </small> --}}
 

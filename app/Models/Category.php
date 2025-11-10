@@ -21,6 +21,7 @@ class Category extends Model implements HasMedia
         'name',
         'type',
         'type_affichage',
+        'is_active',
         'created_at',
         'updated_at'
     ];
@@ -43,5 +44,11 @@ class Category extends Model implements HasMedia
 
     public function subcategories() : HasMany {
         return $this->hasMany(SubCategory::class);
+    }
+
+    // Scope for active categories
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
     }
 }

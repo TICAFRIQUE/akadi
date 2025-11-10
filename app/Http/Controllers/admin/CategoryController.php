@@ -107,6 +107,7 @@ class CategoryController extends Controller
             'name' => $request['name'],
             'type' => $request['type'],
             'type_affichage' => $request['type_affichage'],
+            'is_active' => $request['is_active'],
             // 'position' => $new_position,
 
         ]);

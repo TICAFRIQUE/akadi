@@ -71,6 +71,13 @@ return [
         'token' => env('TWILIO_AUTH_TOKEN'),
         'from' => env('TWILIO_WHATSAPP_FROM'),
     ],
+    // sms service
+    'sms' => [
+        'username' => env('SMS_USERNAME'),
+        'password' => env('SMS_PASSWORD'),
+        'sender' => env('SMS_SENDER'),
+        'url' => env('SMS_URL'),
+    ],
 
 
 ];
