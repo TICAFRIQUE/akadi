@@ -27,48 +27,25 @@ class MailBirthday extends Command
      */
     public function handle()
     {
-        //
-        //
-        $user_upcoming_birthday = User::where('notify_birthday', 2)->OrWhere('notify_birthday', 1)->get(); // anniversaire a venir dans 2 jours
-        $user_birthday = User::where('notify_birthday', 0)->get(); // anniversaire du jour 
+        $user_upcoming_birthday = User::where('notify_birthday', 2)->orWhere('notify_birthday', 1)->get();
+        $user_birthday = User::where('notify_birthday', 0)->get();
 
-
-        ###SEND MAIL TO ADMIN USER IF BIRTHDAY DATE ARRIVED ###
-
+        // Email pour anniversaires à venir
         if (count($user_upcoming_birthday) > 0) {
-            $mail = new PHPMailer(true);
-            // require base_path("vendor/autoload.php");
-
-            /* Email SMTP Settings */
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = 'mail.akadi.ci';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'info@akadi.ci';
-            $mail->Password = 'S$UBfu.8s(#z';
-            $mail->SMTPSecure = 'ssl';
-            $mail->Port = 465;
-
-            $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-            $mail->addAddress('Restaurantakadi@gmail.com');
-
-            $mail->isHTML(true);
-
-
-            $mail->Subject = 'Anniversaire';
-            $mail->Body =
-                '<b> Bonjour Akadi, C\'est bientot l\'anniversaire de vos client  <br> Veuillez consulter les notifications sur le dashboard  <b>';
-
-            $mail->send();
+            $this->sendNotificationEmail('C\'est bientôt l\'anniversaire d\'un de vos clients !');
         }
 
-
-        ///
-
+        // Email pour anniversaires du jour
         if (count($user_birthday) > 0) {
-            $mail = new PHPMailer(true);
-            // require base_path("vendor/autoload.php");
+            $this->sendNotificationEmail('C\'est aujourd\'hui l\'anniversaire d\'un de vos clients !');
+        }
+    }
 
+    private function sendNotificationEmail($message)
+    {
+        $mail = new PHPMailer(true);
+
+        try {
             /* Email SMTP Settings */
             $mail->SMTPDebug = 0;
             $mail->isSMTP();
@@ -79,20 +56,23 @@ class MailBirthday extends Command
             $mail->SMTPSecure = 'ssl';
             $mail->Port = 465;
 
-            $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+            $mail->setFrom('info@akadi.ci', 'AKADI Restaurant');
             $mail->addAddress('Restaurantakadi@gmail.com');
 
             $mail->isHTML(true);
+            $mail->CharSet = 'UTF-8';
+            $mail->Subject = '🎂 Anniversaire Client - AKADI';
 
-
-            $mail->Subject = 'Anniversaire';
-            $mail->Body =
-                '<b> Bonjour Akadi,Aujourd\'hui est l\'anniversaire de votre client  <br> Veuillez consulter les notifications sur le dashboard  <b>';
+            // Utiliser le template simple
+            $mail->Body = view('emails.birthday_notification', [
+                'message' => $message
+            ])->render();
 
             $mail->send();
+            $this->info('Notification d\'anniversaire envoyée !');
+
+        } catch (\Exception $e) {
+            $this->error('Erreur envoi email: ' . $e->getMessage());
         }
-
-        ######################################################### //new send mail with phpMailer
-
     }
 }

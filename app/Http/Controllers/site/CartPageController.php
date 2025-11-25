@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\site;
 
 use Arr;
+use Exception;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
@@ -514,6 +515,38 @@ class CartPageController extends Controller
     }
 
 
+    // envoyer un email a l'administrateur llorsqu'il ya une nouvelle commande
+    public function sendMailToAdmin($order)
+    {
+
+        //send mail if order is confirmed or cancel
+
+          try {
+                    $data = [
+                        'imagePath' => asset('site/assets/img/custom/AKADI.png'),
+                    ];
+
+                    $mail = new PHPMailer(true);
+                    $mail->isSMTP();
+                    $mail->Host = 'mail.akadi.ci';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'info@akadi.ci';
+                    $mail->Password = 'S$UBfu.8s(#z';
+                    $mail->SMTPSecure = 'ssl';
+                    $mail->Port = 465;
+
+                    $mail->setFrom('info@akadi.ci', 'Akadi');
+                    $mail->addAddress('Restaurantakadi@gmail.com');
+
+                    $mail->isHTML(true);
+
+                    $mail->Subject = 'Nouvelle commande ' . $order->code;
+                    $mail->Body = view('emails.new_order', compact('order', 'data'))->render();
+                    $mail->send();
+                } catch (Exception $e) {
+                    return $e->getMessage();
+                }
+    }
 
 
 
@@ -524,7 +557,7 @@ class CartPageController extends Controller
 
             if (session('cart')) {
 
-                //informations depuis le front ajax
+                //informations depuis le front ajax    
                 $subTotal = $_GET['data']['subTotal'];
                 $delivery_name = $_GET['data']['lieu_livraison'];
                 $delivery_price = $_GET['data']['prix_livraison'];
@@ -629,6 +662,11 @@ class CartPageController extends Controller
                             ->update(['nbre_utilisation' => 1]);
                     }
                 }
+
+
+                //envoyer le mail a l'administrateur que la commande est enregistrée
+             $this->sendMailToAdmin($order);
+
 
 
                 // Envoyer la notification whatsapp au client
