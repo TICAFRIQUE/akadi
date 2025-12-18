@@ -527,7 +527,7 @@ class CartPageController extends Controller
 
             // Dispatch du job pour envoi en queue
             SendEmailJob::dispatch(
-                'alexkouamelan96@gmail.com',
+                'Restaurantakadi@gmail.com',
                 'Nouvelle Commande - ' . $order->code,
                 'emails.new_order',
                 ['order' => $order, 'data' => $data],
