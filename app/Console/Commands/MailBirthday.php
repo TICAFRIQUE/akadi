@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use Illuminate\Console\Command;
-use PHPMailer\PHPMailer\PHPMailer;
+use App\Jobs\SendEmailJob;
 
 class MailBirthday extends Command
 {
@@ -30,49 +30,34 @@ class MailBirthday extends Command
         $user_upcoming_birthday = User::where('notify_birthday', 2)->orWhere('notify_birthday', 1)->get();
         $user_birthday = User::where('notify_birthday', 0)->get();
 
-        // Email pour anniversaires à venir
+        // Email pour anniversaires à venir (dispatch en queue)
         if (count($user_upcoming_birthday) > 0) {
-            $this->sendNotificationEmail('C\'est bientôt l\'anniversaire d\'un de vos clients !');
+            SendEmailJob::dispatch(
+                'Restaurantakadi@gmail.com',
+                '🎂 Anniversaire Client - AKADI',
+                'emails.birthday_notification',
+                ['message' => 'C\'est bientôt l\'anniversaire d\'un de vos clients !'],
+                'info@akadi.ci',
+                'AKADI Restaurant'
+            );
+            $this->info('Job anniversaire à venir dispatché !');
         }
 
-        // Email pour anniversaires du jour
+        // Email pour anniversaires du jour (dispatch en queue)
         if (count($user_birthday) > 0) {
-            $this->sendNotificationEmail('C\'est aujourd\'hui l\'anniversaire d\'un de vos clients !');
+            SendEmailJob::dispatch(
+                'Restaurantakadi@gmail.com',
+                '🎂 Anniversaire Client - AKADI',
+                'emails.birthday_notification',
+                ['message' => 'C\'est aujourd\'hui l\'anniversaire d\'un de vos clients !'],
+                'info@akadi.ci',
+                'AKADI Restaurant'
+            );
+            $this->info('Job anniversaire du jour dispatché !');
         }
-    }
 
-    private function sendNotificationEmail($message)
-    {
-        $mail = new PHPMailer(true);
-
-        try {
-            /* Email SMTP Settings */
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = 'mail.akadi.ci';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'info@akadi.ci';
-            $mail->Password = 'S$UBfu.8s(#z';
-            $mail->SMTPSecure = 'ssl';
-            $mail->Port = 465;
-
-            $mail->setFrom('info@akadi.ci', 'AKADI Restaurant');
-            $mail->addAddress('Restaurantakadi@gmail.com');
-
-            $mail->isHTML(true);
-            $mail->CharSet = 'UTF-8';
-            $mail->Subject = '🎂 Anniversaire Client - AKADI';
-
-            // Utiliser le template simple
-            $mail->Body = view('emails.birthday_notification', [
-                'message' => $message
-            ])->render();
-
-            $mail->send();
-            $this->info('Notification d\'anniversaire envoyée !');
-
-        } catch (\Exception $e) {
-            $this->error('Erreur envoi email: ' . $e->getMessage());
+        if (count($user_upcoming_birthday) == 0 && count($user_birthday) == 0) {
+            $this->info('Aucun anniversaire à signaler aujourd\'hui.');
         }
     }
 }

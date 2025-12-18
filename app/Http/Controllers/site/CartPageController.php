@@ -11,11 +11,13 @@ use App\Models\Coupon;
 use App\Models\Product;
 use Twilio\Rest\Client;
 use App\Models\Delivery;
+use App\Jobs\SendEmailJob;
 use Twilio\Http\CurlClient;
 use Illuminate\Http\Request;
 use App\Services\WhatsAppService;
 use Illuminate\Support\Facades\DB;
 use PHPMailer\PHPMailer\PHPMailer;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -518,34 +520,24 @@ class CartPageController extends Controller
     // envoyer un email a l'administrateur llorsqu'il ya une nouvelle commande
     public function sendMailToAdmin($order)
     {
+        try {
+            $data = [
+                'imagePath' => asset('site/assets/img/custom/AKADI.png'),
+            ];
 
-        //send mail if order is confirmed or cancel
+            // Dispatch du job pour envoi en queue
+            SendEmailJob::dispatch(
+                'alexkouamelan96@gmail.com',
+                'Nouvelle Commande - ' . $order->code,
+                'emails.new_order',
+                ['order' => $order, 'data' => $data],
+                'info@akadi.ci',
+                'AKADI Restaurant'
+            );
 
-          try {
-                    $data = [
-                        'imagePath' => asset('site/assets/img/custom/AKADI.png'),
-                    ];
-
-                    $mail = new PHPMailer(true);
-                    $mail->isSMTP();
-                    $mail->Host = 'mail.akadi.ci';
-                    $mail->SMTPAuth = true;
-                    $mail->Username = 'info@akadi.ci';
-                    $mail->Password = 'S$UBfu.8s(#z';
-                    $mail->SMTPSecure = 'ssl';
-                    $mail->Port = 465;
-
-                    $mail->setFrom('info@akadi.ci', 'Akadi');
-                    $mail->addAddress('Restaurantakadi@gmail.com');
-
-                    $mail->isHTML(true);
-
-                    $mail->Subject = 'Nouvelle commande ' . $order->code;
-                    $mail->Body = view('emails.new_order', compact('order', 'data'))->render();
-                    $mail->send();
-                } catch (Exception $e) {
-                    return $e->getMessage();
-                }
+        } catch (Exception $e) {
+            Log::error('Erreur dispatch email job: ' . $e->getMessage());
+        }
     }
 
 
