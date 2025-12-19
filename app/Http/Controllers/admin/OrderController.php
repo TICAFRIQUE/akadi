@@ -6,7 +6,8 @@ use Exception;
 use Carbon\Carbon;
 use App\Models\Order;
 use Illuminate\Support\Str;
-use App\Services\smsService;
+use App\Services\TicAfriqueService;
+use App\Jobs\SendEmailJob;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\PHPMailer;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +16,15 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class OrderController extends Controller
 {
+
+    /**
+     * Envoyer un SMS au client via l'API TIC Afrique un fois la commande confirmée
+     */
+    public function sendSms($order)
+    {
+        $smsService = new TicAfriqueService();
+        $smsService->sendOrderConfirmationSms($order);
+    }
     //get all order 
     public function getAllOrder(Request $request)
     {
@@ -116,13 +126,11 @@ class OrderController extends Controller
 
         $order = Order::with('user')->whereId($orderId)->first();
 
-
-
         $changeState = Order::whereId($orderId)->update([
             'status' => $state
         ]);
 
-        // si state si confirmed send sms to user
+        // Envoyer SMS seulement si confirmée
         if ($state == 'confirmée') {
             $this->sendSms($order);
         }
@@ -139,53 +147,33 @@ class OrderController extends Controller
             ]);
         }
 
+        // Envoyer email pour tous les changements de statut via Queue
+        if (!empty($order->user->email) && in_array($state, ['confirmée', 'annulée', 'livrée', 'en cours'])) {
+            $subject = match ($state) {
+                'confirmée' => 'Confirmation de commande',
+                'annulée' => 'Annulation de commande',
+                'livrée' => 'Commande livrée',
+                'en cours' => 'Commande en cours de traitement',
+                default => 'Mise à jour de votre commande'
+            };
 
-        //send mail if order is confirmed or cancel
-        if (!empty($order->user->email)) {
-            $data = [
+            $emailData = [
                 'imagePath' => asset('site/assets/img/custom/AKADI.png'),
+                'clientName' => $order->user->name,
+                'orderCode' => $order->code,
+                'status' => $state,
+                'raison' => $order->raison_annulation_cmd ?? null
             ];
 
-            $mail = new PHPMailer(true);
-
-            try {
-                $mail->isSMTP();
-                $mail->Host = 'mail.akadi.ci';
-                $mail->SMTPAuth = true;
-                $mail->Username = 'info@akadi.ci';
-                $mail->Password = 'S$UBfu.8s(#z';
-                $mail->SMTPSecure = 'ssl';
-                $mail->Port = 465;
-
-                $mail->setFrom('info@akadi.ci', 'Akadi');
-                $mail->addAddress($order->user->email);
-
-                $mail->isHTML(true);
-
-                if ($state == 'confirmée') {
-                    $mail->Subject = 'Confirmation de commande';
-                    $mail->Body = '
-                <p style="text-align: center;"><img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80"></p>
-                <p style="text-align: center;">Hello, ' . $order->user->name . ' </p>
-                <p style="text-align: center;">Votre commande <b>#' . $order->code . '</b> a été confirmée avec succès.</p>
-                <p style="text-align: center;">Vous serez livré dans peu de temps.</p>
-                <p style="text-align: center;">Merci pour votre confiance, <a href="http://Akadi.ci" target="_blank">www.akadi.ci</a></p>';
-                } elseif ($state == 'annulée') {
-                    $mail->Subject = 'Annulation de la commande';
-                    $mail->Body = '
-                <p style="text-align: center;"><img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80"></p>
-                <p style="text-align: center;">Hello, ' . $order->user->name . ' </p>
-                <p style="text-align: center;">Votre commande <b>#' . $order->code . '</b> a été annulée.</p>
-                <p style="text-align: center;">Raison : ' . $order->raison_annulation_cmd . '</p>
-                <p style="text-align: center;">Merci pour votre confiance, <a href="http://Akadi.ci" target="_blank">www.akadi.ci</a></p>';
-                }
-
-                $mail->send();
-            } catch (Exception $e) {
-                return back()->withError($e->getMessage());
-            }
+            SendEmailJob::dispatch(
+                $order->user->email,
+                $subject,
+                'emails.order-status',
+                $emailData,
+                'info@akadi.ci',
+                'Akadi'
+            );
         }
-
 
         return back()->withSuccess('statut changé avec success');
     }
@@ -203,6 +191,25 @@ class OrderController extends Controller
             'status' => 'annulée',
             'raison_annulation_cmd' => $motif
         ]);
+
+        //envoyer email d'annulation via queue
+        $order = Order::with('user')->whereId($request['commandeId'])->first();
+        if (!empty($order->user->email)) {
+            SendEmailJob::dispatch(
+                $order->user->email,
+                'Annulation de commande',
+                'emails.order-status',
+                [
+                    'imagePath' => asset('site/assets/img/custom/AKADI.png'),
+                    'clientName' => $order->user->name,
+                    'orderCode' => $order->code,
+                    'status' => 'annulée',
+                    'raison' => $motif
+                ],
+                'info@akadi.ci',
+                'Akadi'
+            );
+        }
 
         return back()->withSuccess('Commande annulée avec success');
     }
@@ -228,103 +235,6 @@ class OrderController extends Controller
             //     ];
             // }),
             // 'count' => $orders_new->count() // Ajoute le nombre total des nouvelles commandes
-        ]);
-    }
-
-
-    /****SEND SMS TO CUSTOMER API function */
-    public function sendSms($order)
-    {
-        $sms = new smsService();
-
-        // On récupère la dernière commande
-
-        // Numéro du client 
-        $numero = $order->user->phone; // numéro de test
-        $numero = ltrim($numero, '0'); // retire le 0 au début
-        $numero = '225' . $numero; // ajoute l’indicatif du pays
-
-
-        if (!$numero) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Aucun numéro de téléphone fourni.'
-            ]);
-        }
-
-        // Message
-        $message = "Bonjour " . $order->user->name .
-            ",  Votre commande a été reçue et soigneusement prise en charge. Pour toute urgence, contactez notre équipe au 0758838338.";
-
-        // Envoi du SMS
-        $response = $sms->send(
-            env('SMS_API_USERNAME'),
-            env('SMS_API_PASSWORD'),
-            'AKADI',
-            $message,
-            0, // flash message : 0 = normal, 1 = message flash
-            $numero, // <= très important !
-        );
-
-        // 📝 Log pour debug (optionnel)
-        Log::info('SMS Admin envoyé', [
-            'commande_id' => $order->id,
-            'message' => $message,
-            'numero' => $numero,
-            'response' => $response
-        ]);
-
-        return response()->json([
-            'status' => 'ok',
-            'response' => $response
-        ]);
-    }
-
-
-    public function sendSmsTest()
-    {
-        $sms = new smsService();
-
-        // On récupère la dernière commande
-
-        // Numéro du client 
-        $numero = '0779613593'; // numéro de test
-        $numero = '225' . $numero; // ajoute l’indicatif du pays
-
-
-        if (!$numero) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Aucun numéro de téléphone fourni.'
-            ]);
-        }
-        $order = Order::with('user')->latest()->first();
-
-        // Message
-        $message = "Bonjour " . $order->user->name .
-            ",  Votre commande a été reçue et soigneusement prise en charge. Pour toute urgence, contactez notre équipe au 0758838338.";
-
-        // Envoi du SMS
-        $response = $sms->send(
-            env('SMS_API_USERNAME'),
-            env('SMS_API_PASSWORD'),
-            env('SMS_API_SENDER'),
-            $message,
-            0, // flash message : 0 = normal, 1 = message flash
-            $numero, // <= très important !
-        );
-
-        // 📝 Log pour debug (optionnel)
-        Log::info('SMS Admin envoyé', [
-            'commande_id' => $order->id,
-            'message' => $message,
-            'numero' => $numero,
-            'response' => $response
-        ]);
-
-        return response()->json([
-            'status' => 'ok',
-            'response' => $response
         ]);
     }
 }

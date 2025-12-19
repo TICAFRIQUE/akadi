@@ -25,6 +25,12 @@ return [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
+    'ticafrique' => [
+        'api_key' => env('TICAFRIQUE_API_KEY', 'sk_a12069fbaf0a2fc394556ef9af030cbdde33c4bf4032a67c9ff2cf290e562cff'),
+        'api_url' => env('TICAFRIQUE_API_URL', 'https://sms.ticafrique.ci/api/v1/sms/send'),
+        'sender_id' => env('TICAFRIQUE_SENDER_ID', 'AKADI'),
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
