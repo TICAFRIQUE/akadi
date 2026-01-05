@@ -49,7 +49,7 @@ class TicAfriqueService
         }
 
         // Préparer le numéro (ajouter +225 si besoin)
-        $numero = '0779613593';
+        $numero = $order->user->phone;
         // $numero = ltrim($numero, '0');
         $numero = '+225' . $numero;
 
@@ -69,14 +69,5 @@ class TicAfriqueService
             'http_code' => $result['http_code'],
             'response' => $result['response']
         ]);
-
-        //response json pour api
-
-        return response()->json([
-            'commande_id' => $order->id,
-            'numero' => $numero,
-            'http_code' => $result['http_code'],
-            'response' => $result['response']
-        ], 200);
     }
 }
