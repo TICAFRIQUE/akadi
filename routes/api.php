@@ -4,6 +4,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TestApiController;
 use App\Http\Controllers\api_frontend\AuthController;
 use App\Http\Controllers\api_frontend\HomeController;
 use App\Http\Controllers\api_frontend\OrderController;
@@ -77,7 +78,10 @@ Route::prefix('v1')->group(function () {
 
 
 
-
+// API TEST
+Route::controller(TestApiController::class)->group(function () {
+    Route::get('/smsApi', 'smsApi');
+});
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

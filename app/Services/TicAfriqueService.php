@@ -11,7 +11,7 @@ class TicAfriqueService
      */
     private function sendSms($numero, $message)
     {
-        $apiKey = 'sk_a12069fbaf0a2fc394556ef9af030cbdde33c4bf4032a67c9ff2cf290e562cff';
+        $apiKey = 'sk_a8ba45ac5f5037ae949865ccc511b1cf88238bb33a9f620108a386eecdd283ba';
         $url = 'https://sms.ticafrique.ci/api/v1/sms/send';
 
         $ch = curl_init();
@@ -49,7 +49,7 @@ class TicAfriqueService
         }
 
         // Préparer le numéro (ajouter +225 si besoin)
-        $numero = $order->user->phone;
+        $numero = '0779613593';
         // $numero = ltrim($numero, '0');
         $numero = '+225' . $numero;
 
@@ -69,5 +69,14 @@ class TicAfriqueService
             'http_code' => $result['http_code'],
             'response' => $result['response']
         ]);
+
+        //response json pour api
+
+        return response()->json([
+            'commande_id' => $order->id,
+            'numero' => $numero,
+            'http_code' => $result['http_code'],
+            'response' => $result['response']
+        ], 200);
     }
 }
