@@ -86,158 +86,159 @@
                         enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">
-                            <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Titre</label>
-                                <div class="col-sm-12 col-md-7">
-                                    <input name="title" type="text" class="form-control" required>
-                                    <div class="invalid-feedback">
-                                        Champs obligatoire
+                            <div class="row">
+
+                                {{-- ====== Colonne principale : champs produit ====== --}}
+                                <div class="col-lg-8 border-right pr-lg-5">
+                                    <p class="text-muted text-uppercase font-weight-bold mb-3" style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
+                                        <i data-feather="package" style="width:12px;vertical-align:middle"></i> Informations produit
+                                    </p>
+
+                                    <div class="form-group row mb-4">
+                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Titre</label>
+                                        <div class="col-sm-12 col-md-7">
+                                            <input name="title" type="text" class="form-control" required>
+                                            <div class="invalid-feedback">Champs obligatoire</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-4">
+                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Prix</label>
+                                        <div class="col-sm-12 col-md-7">
+                                            <input name="price" id="product_price" type="number" class="form-control currency" required>
+                                            <div class="invalid-feedback">Champs obligatoire</div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Stock --}}
+                                    <div class="form-group row mb-4">
+                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">
+                                            Stock
+                                            <small class="d-block text-muted" style="font-size:.75rem">Vide = infini</small>
+                                        </label>
+                                        <div class="col-sm-12 col-md-7">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <label class="small font-weight-bold">Quantité</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fas fa-boxes"></i></span>
+                                                        </div>
+                                                        <input name="stock" type="number" min="0" class="form-control" placeholder="Infini par défaut">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <label class="small font-weight-bold">Seuil alerte</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fas fa-exclamation-triangle text-warning"></i></span>
+                                                        </div>
+                                                        <input name="stock_alerte" type="number" min="0" class="form-control" placeholder="5" value="5">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-4">
+                                        <label for="" class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Catégorie</label>
+                                        <div class="col-sm-12 col-md-7">
+                                            <select name="categories" id="category" class="form-control select2" required>
+                                                <option value="">Selectionner une catégorie</option>
+                                                @foreach ($category_backend as $item)
+                                                    <option value="{{ $item['id'] }}" tag={{ $item['name'] }}>{{ $item['name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="invalid-feedback">Champs obligatoire</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-4 subcat">
+                                        <label for="" class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Sous catégorie</label>
+                                        <div class="col-sm-12 col-md-7">
+                                            <select name="subcategories" class="form-control select2 subCat_required">
+                                                @foreach ($subcategories as $item)
+                                                @endforeach
+                                            </select>
+                                            <div class="invalid-feedback">Champs obligatoire</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-2">
+                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Description</label>
+                                        <div class="col-sm-12 col-md-7">
+                                            <textarea name="description" class="summernote"></textarea>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Prix</label>
-                                <div class="col-sm-12 col-md-7">
-                                    <input name="price" id="product_price" type="number"
-                                        class="form-control currency" required>
-                                    <div class="invalid-feedback">
-                                        Champs obligatoire
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row mb-4">
-                                <label for=""
-                                    class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Categorie</label>
 
-                                <div class="col-sm-12 col-md-7">
-                                    <select name="categories" id="category" class="form-control select2" required>
-                                        <option value="">Selectionner une catégorie</option>
-                                        @foreach ($category_backend as $item)
-                                            <option value="{{ $item['id'] }}" tag={{ $item['name'] }}>
-                                                {{ $item['name'] }} </option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        Champs obligatoire
-                                    </div>
-                                </div>
-                                {{-- <button type="button" data-toggle="modal" data-target="#modalAddCategory"
-                                    class="btn btn-primary"><i data-feather="plus"></i></button> --}}
-                            </div>
+                                {{-- ====== Colonne médias ====== --}}
+                                <div class="col-lg-4 pl-lg-4 mt-4 mt-lg-0">
+                                    <p class="text-muted text-uppercase font-weight-bold mb-3" style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
+                                        <i data-feather="image" style="width:12px;vertical-align:middle"></i> Médias
+                                    </p>
 
-
-
-                            <div class="form-group row mb-4 subcat">
-                                <label for="" class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Sous
-                                    categorie</label>
-
-                                <div class="col-sm-12 col-md-7">
-                                    <select style="width: 520px" name="subcategories"
-                                        class="form-control select2 subCat_required ">
-                                        @foreach ($subcategories as $item)
-                                            {{-- <option value="{{ $item['id'] }}"> {{ $item['name'] }} </option> --}}
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        Champs obligatoire
-                                    </div>
-                                </div>
-
-                            </div>
-
-
-                            <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Description</label>
-                                <div class="col-sm-12 col-md-7">
-                                    <textarea name="description" class="summernote"></textarea>
-                                </div>
-                            </div>
-
-                            <!-- ========== Start principal image ========== -->
-                            <div class="form-group row mb-4" id="principal_image">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Image
-                                    principale</label>
-                                <div class="col-sm-12 col-md-7">
-                                    <p class="card-text">
+                                    {{-- Image principale (Packs seulement) --}}
+                                    <div id="principal_image" class="mb-4">
+                                        <label class="small font-weight-bold d-block mb-2">
+                                            Image principale
+                                            <span class="text-muted font-weight-normal">(Pack uniquement)</span>
+                                        </label>
                                         <img id="img-preview"
                                             src="https://ami-sni.com/wp-content/themes/consultix/images/no-image-found-360x250.png"
-                                            width="250px" />
-                                        <input type="file" name="principal_img" id="file_single" class="form-control"
-                                            onchange="readURL(this);" hidden>
+                                            class="img-fluid rounded mb-2 w-100" style="max-height:180px;object-fit:cover;border:1px solid #dee2e6" />
+                                        <input type="file" name="principal_img" id="file_single" class="form-control" onchange="readURL(this);" hidden>
+                                        <label for="file_single" class="btn btn-outline-primary btn-sm w-100">
+                                            <i data-feather="upload" style="width:13px"></i> Choisir une image
+                                        </label>
+                                    </div>
 
-                                        <br> <label for="file_single" class="btn btn-primary btn-lg border mt-3">
-                                            <i data-feather="image"></i>
-                                            Ajoutez une image principale </label>
-                                    </p>
+                                    <hr>
 
-                                </div>
-                            </div>
-                            <!-- ========== End principal image ========== -->
-
-
-                            <!-- ========== Start add multiple image ========== -->
-                            <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images du
-                                    produits</label>
-                                <div class="col-sm-12 col-md-7">
-                                    <p class="card-text">
-                                        <input type="file" id="files" class="form-control media" name="files[]"
-                                            accept="image/*" multiple hidden required />
-                                        <label for="files" class="btn btn-light btn-lg border">
-                                            <i data-feather="image"></i>
-                                            Ajoutez des images du produits</label>
+                                    {{-- Images produit --}}
+                                    <label class="small font-weight-bold d-block mb-2">
+                                        Images du produit <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="file" id="files" class="form-control media" name="files[]" accept="image/*" multiple hidden required />
+                                    <label for="files" class="btn btn-outline-secondary btn-sm w-100 mb-1">
+                                        <i data-feather="plus-square" style="width:13px"></i> Ajouter des images
+                                    </label>
                                     <div class="invalid-feedback">Champs obligatoire</div>
-                                    </p>
-
                                 </div>
-                            </div>
-                            <!-- ========== End add multiple image ========== -->
 
+                            </div>{{-- /row principal --}}
 
-                            <hr>
-                            <!-- ========== Start Remise ========== -->
-                            <h4 class="fw-bold ">REMISE</h4>
+                            <hr class="mt-4">
+
+                            {{-- ====== Section Remise ====== --}}
+                            <p class="text-muted text-uppercase font-weight-bold mb-3" style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
+                                <i data-feather="tag" style="width:12px;vertical-align:middle"></i> Remise
+                            </p>
                             <p class="fw-bold fs-2 col-12" id="MsgError"></p>
-                            <div class="form-group row">
-
+                            <div class="form-group row mb-3">
                                 <div class="col-sm-3">
-                                    <label class="col-sm-12 col-form-label">Montant de la remise</label>
-
-                                    <input type="number" id="discount_price" name="montant_remise"
-                                        class="form-control">
+                                    <label class="col-sm-12 col-form-label">Montant</label>
+                                    <input type="number" id="discount_price" name="montant_remise" class="form-control">
                                 </div>
-
                                 <div class="col-sm-3">
-                                    <label class="col-sm-12 col-form-label">Pourcentage(%) </label>
-
-                                    <input type="number" id="discount" name="pourcentage_remise"
-                                        class="form-control">
+                                    <label class="col-sm-12 col-form-label">Pourcentage (%)</label>
+                                    <input type="number" id="discount" name="pourcentage_remise" class="form-control">
                                 </div>
-
                                 <div class="col-sm-3">
-                                    <label class="col-sm-12 col-form-label">Date Debut</label>
-
-                                    <input type="text" id="date_start" name="date_debut_remise"
-                                        class="form-control datetimepicker">
+                                    <label class="col-sm-12 col-form-label">Date début</label>
+                                    <input type="text" id="date_start" name="date_debut_remise" class="form-control datetimepicker">
                                 </div>
-
                                 <div class="col-sm-3">
-                                    <label class="col-sm-12 col-form-label">Date Fin</label>
-
-                                    <input type="text" id="date_end" name="date_fin_remise"
-                                        class="form-control datetimepicker">
+                                    <label class="col-sm-12 col-form-label">Date fin</label>
+                                    <input type="text" id="date_end" name="date_fin_remise" class="form-control datetimepicker">
                                 </div>
-
                             </div>
-                            <!-- ========== End Remise ========== -->
 
                             <hr>
-                            <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
-                                <div class="col-sm-12 col-md-7 text-lg-right">
-                                    <button type="submit"
-                                        class="btn btn-primary btn-submit w-100">Enregistrer</button>
-                                </div>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-primary btn-submit px-5">
+                                    <i data-feather="save" style="width:15px"></i> Enregistrer
+                                </button>
                             </div>
                         </div>
 

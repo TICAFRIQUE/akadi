@@ -4,6 +4,8 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
@@ -12,15 +14,9 @@ class RoleController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $roles = Role::withCount('permissions')->get();
+        $permissions = Permission::all();
+        return view('admin.pages.role.index', compact('roles', 'permissions'));
     }
 
     /**
@@ -28,15 +24,17 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'name' => 'required|unique:roles,name',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        $role = Role::create(['name' => $request->name, 'guard_name' => 'web']);
+
+        if ($request->has('permissions')) {
+            $role->syncPermissions($request->permissions);
+        }
+
+        return back()->with('success', 'Rôle créé avec succès');
     }
 
     /**
@@ -44,7 +42,9 @@ class RoleController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $role = Role::with('permissions')->findOrFail($id);
+        $permissions = Permission::all();
+        return view('admin.pages.role.edit', compact('role', 'permissions'));
     }
 
     /**
@@ -52,7 +52,20 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:roles,name,' . $id,
+        ]);
+
+        $role = Role::findOrFail($id);
+        $role->update(['name' => $request->name]);
+
+        if ($request->has('permissions')) {
+            $role->syncPermissions($request->permissions);
+        } else {
+            $role->syncPermissions([]);
+        }
+
+        return back()->with('success', 'Rôle modifié avec succès');
     }
 
     /**
@@ -60,6 +73,8 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $role = Role::findOrFail($id);
+        $role->delete();
+        return response()->json(['success' => true]);
     }
 }

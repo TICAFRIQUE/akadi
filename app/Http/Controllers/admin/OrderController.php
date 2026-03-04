@@ -28,21 +28,26 @@ class OrderController extends Controller
     //get all order 
     public function getAllOrder(Request $request)
     {
-        // dd($request->all);
-        //request('s') ## s => status ,  filter from status order
+        // Par défaut : mois en cours
+        $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
+        $dateFin   = $request->input('date_fin',   now()->endOfMonth()->format('Y-m-d'));
+        $status    = $request->input('status');
+
         $orders = Order::orderBy('created_at', 'DESC')
             ->when(request('d'), fn($q) => $q->where('date_order', Carbon::now()->format('Y-m-d')))
             ->when(request('s'), fn($q) => $q->whereStatus(request('s')))
-            //get orders between two dates
             ->when(
-                request('date_debut') && request('date_fin') && request('status') != 'all',
-                fn($q) => $q->whereBetween('date_order', [request('date_debut'), request('date_fin')])->whereStatus(request('status'))
+                !request('d') && !request('s'),
+                function ($q) use ($dateDebut, $dateFin, $status) {
+                    $q->whereBetween('date_order', [$dateDebut, $dateFin]);
+                    if ($status && $status !== 'all') {
+                        $q->whereStatus($status);
+                    }
+                }
             )
-            ->when(request('status') == 'all') // toutes les commandes
-            ->whereBetween('date_order', [request('date_debut'), request('date_fin')])
             ->get();
 
-        return view('admin.pages.order.order', compact(['orders']));
+        return view('admin.pages.order.order', compact('orders', 'dateDebut', 'dateFin'));
     }
 
 

@@ -40,6 +40,8 @@ class Product extends Model implements HasMedia
         'date_debut_remise',
         'date_fin_remise',
         'status_remise', // en cour, terminer , bientot
+        'stock',          // null = infini
+        'stock_alerte',   // seuil alerte stock bas
         'created_at',
         'updated_at',
         'deleted_at'

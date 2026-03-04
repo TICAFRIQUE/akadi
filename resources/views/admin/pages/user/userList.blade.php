@@ -10,39 +10,77 @@
                 <div class="col-12">
                     <div class="card">
                         @include('admin.components.validationMessage')
-                        <div class="card-header d-flex justify-content-between">
-                            @if (request('user'))
-                                <h4>Liste des utilisateurs {{ request('user') }} ({{ count($users) }}) </h4>
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            @if (request()->has('client'))
+                                <h4 class="mb-0">
+                                    @if (request('client') == 'prospect') Prospects
+                                    @elseif (request('client') == 'fidele') Clients fidèles
+                                    @else Tous les clients
+                                    @endif
+                                    <span class="badge badge-primary ml-1">{{ count($users) }}</span>
+                                </h4>
+                            @elseif (request()->has('admin'))
+                                <h4 class="mb-0">Administrateurs / Équipe
+                                    <span class="badge badge-primary ml-1">{{ count($users) }}</span>
+                                </h4>
+                            @elseif (request('user'))
+                                <h4 class="mb-0">Utilisateurs — {{ ucfirst(request('user')) }}
+                                    <span class="badge badge-primary ml-1">{{ count($users) }}</span>
+                                </h4>
+                            @else
+                                <h4 class="mb-0">Tous les utilisateurs
+                                    <span class="badge badge-primary ml-1">{{ count($users) }}</span>
+                                </h4>
                             @endif
 
-                            @if (request('client') || request('client') == null)
-                                <h4>Liste des clients {{ request('client') }} ({{ count($users) }}) </h4>
-                                {{-- @else
-                                <h4>Liste de tous les clients</h4> --}}
-                            @endif
-
-
-
-
-                            @if (request('client') || request('client') == null)
-                                <!-- ========== Start filter ========== -->
-                                <div class="dropdown d-inline">
-                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-filter"></i> Filtre par type de client
-                                    </button>
-                                    <div class="dropdown-menu fw-bold">
-                                        <a class="dropdown-item has-icon" href="/admin/auth?client=prospect">Prospects</a>
-                                        <a class="dropdown-item has-icon" href="/admin/auth?client=fidele">Fidèles</a>
-                                    </div>
-                                </div>
-                                <!-- ========== End filter ========== -->
-                            @endif
-
-
-                            <a href="{{ route('user.register') }}" class="btn btn-primary">Ajouter un
-                                utilsateur</a>
+                            <a href="{{ route('user.registerForm') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus mr-1"></i> Ajouter
+                            </a>
                         </div>
+
+                        @if (request()->has('client'))
+                        <div class="card-body border-bottom py-2 bg-light">
+                            <form method="GET" action="{{ url('/admin/auth') }}"
+                                class="d-flex align-items-center flex-wrap" style="gap: 10px;">
+                                <input type="hidden" name="client" value="{{ request('client') }}">
+
+                                {{-- Filtre type --}}
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="/admin/auth?client"
+                                        class="btn {{ !request('client') ? 'btn-primary' : 'btn-outline-primary' }}">
+                                        Tous
+                                    </a>
+                                    <a href="/admin/auth?client=prospect"
+                                        class="btn {{ request('client') == 'prospect' ? 'btn-primary' : 'btn-outline-primary' }}">
+                                        Prospects
+                                    </a>
+                                    <a href="/admin/auth?client=fidele"
+                                        class="btn {{ request('client') == 'fidele' ? 'btn-primary' : 'btn-outline-primary' }}">
+                                        Fidèles
+                                    </a>
+                                </div>
+
+                                <div class="vr mx-1" style="height:30px; border-left:1px solid #ccc;"></div>
+
+                                {{-- Filtre date --}}
+                                <div class="d-flex align-items-center" style="gap: 6px;">
+                                    <span class="text-muted small font-weight-bold">Du</span>
+                                    <input type="date" name="date_debut" class="form-control form-control-sm"
+                                        value="{{ $dateDebut }}" style="width:145px;">
+                                    <span class="text-muted small font-weight-bold">Au</span>
+                                    <input type="date" name="date_fin" class="form-control form-control-sm"
+                                        value="{{ $dateFin }}" style="width:145px;">
+                                    <button class="btn btn-sm btn-primary" type="submit">
+                                        <i class="fa fa-search mr-1"></i> Filtrer
+                                    </button>
+                                    <a href="/admin/auth?client{{ request('client') ? '='.request('client') : '' }}"
+                                        class="btn btn-sm btn-outline-secondary" title="Réinitialiser les dates">
+                                        <i class="fa fa-undo"></i>
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                        @endif
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover" id="tableExport" style="width:100%;">

@@ -72,6 +72,8 @@ class ProductController extends Controller
             'date_debut_remise' => $request['date_debut_remise'],
             'date_fin_remise' => $request['date_fin_remise'],
             'status_remise' => '',
+            'stock' => $request->input('stock') !== '' ? $request->input('stock') : null,
+            'stock_alerte' => $request->input('stock_alerte', 5),
             'user_id' => $userId
         ]);
 
@@ -198,7 +200,8 @@ class ProductController extends Controller
             'date_debut_remise' => $request['date_debut_remise'],
             'date_fin_remise' => $request['date_fin_remise'],
             'status_remise' => '',
-
+            'stock' => $request->input('stock') !== '' ? $request->input('stock') : null,
+            'stock_alerte' => $request->input('stock_alerte', 5),
         ]);
 
 

@@ -55,7 +55,7 @@ class UpdateSiteStatus extends Command
             $coupon->update(['status' => $status]);
         });
 
-        // Utilisateurs : mise à jour rôle
+        // Utilisateurs : mise à jour rôle // prospect -> pas de commande, fidèle -> commande récente dans le mois en cours
         User::withCount('orders')
             ->whereNotIn('role', ['developpeur', 'administrateur', 'gestionnaire'])
             ->get()

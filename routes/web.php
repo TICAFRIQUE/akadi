@@ -18,6 +18,7 @@ use App\Http\Controllers\admin\TemoignageController;
 use App\Http\Controllers\site\AccountPageController;
 use App\Http\Controllers\site\ProductPageController;
 use App\Http\Controllers\admin\SubCategoryController;
+use App\Http\Controllers\admin\RoleController;
 use App\Http\Controllers\admin\depense\DepenseController;
 use App\Http\Controllers\admin\depense\LibelleDepenseController;
 use App\Http\Controllers\admin\depense\CategorieDepenseController;
@@ -163,6 +164,15 @@ Route::middleware(['admin'])->group(function () {
         route::get('/{id}/pdf', 'generateCouponPdf')->name('coupon.pdf');
     });
 
+
+    /** Roles **/
+    Route::prefix('admin/role')->controller(RoleController::class)->group(function () {
+        route::get('', 'index')->name('role.index');
+        route::post('', 'store')->name('role.store');
+        route::get('edit/{id}', 'edit')->name('role.edit');
+        route::post('update/{id}', 'update')->name('role.update');
+        route::post('destroy/{id}', 'destroy')->name('role.destroy');
+    });
 
     Route::prefix('admin/categorie-depense')->controller(CategorieDepenseController::class)->group(function () {
         route::get('', 'index')->name('categorie-depense.index');

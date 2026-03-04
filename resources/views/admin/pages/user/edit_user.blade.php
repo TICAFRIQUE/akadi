@@ -73,28 +73,25 @@
                                     <div class="form-group col-6">
                                         <label for="email">Email</label>
                                         <input id="email" value="{{ $user['email'] }}" type="email"
-                                            class="form-control" name="email" >
+                                            class="form-control" name="email">
                                         <div class="invalid-feedback">
                                             Champs obligatoire
                                         </div>
                                     </div>
-                                    @role(['administrateur', 'developpeur'])
-                                        <div class="form-group col-6">
-                                            <label for="password2" class="d-block">Role</label>
-                                            <select name="role" class="form-control select2" required>
-                                                <option disabled selected value>Choisir un role</option>
-                                                {{-- @if ($user->roles->containsStrict('id', $item['id'])) @selected(true) @endif --}}
-                                                @foreach ($roles as $item)
-                                                    <option value="{{ $item['name'] }}"
-                                                        {{ $item['name'] == $user['role'] ? 'selected' : '' }}>
-                                                        {{ $item['name'] }} </option>
-                                                @endforeach
-                                            </select>
-                                            <div class="invalid-feedback">
-                                                Champs obligatoire
-                                            </div>
+                                    <div class="form-group col-6">
+                                        <label for="password2" class="d-block">Role</label>
+                                        <select name="role" class="form-control select2" required>
+                                            <option disabled selected value>Choisir un role</option>
+                                            @foreach ($roles as $item)
+                                                <option value="{{ $item['name'] }}"
+                                                    {{ $item['name'] == $user->roles->first()->name ? 'selected' : '' }}>
+                                                    {{ $item['name'] }} </option>
+                                            @endforeach
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Champs obligatoire
                                         </div>
-                                    @endrole
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
@@ -113,7 +110,8 @@
                                             <select name="jour" class="form-control">
                                                 <option disabled selected>Jour</option>
                                                 @for ($i = 1; $i < 32; $i++)
-                                                    <option value="{{str_pad($i, 2, '0', STR_PAD_LEFT) }}" {{$day==$i ? 'selected' : ''}}>
+                                                    <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}"
+                                                        {{ $day == $i ? 'selected' : '' }}>
                                                         {{ str_pad($i, 2, '0', STR_PAD_LEFT) }} </option>
                                                 @endfor
                                             </select>
@@ -142,7 +140,8 @@
                                                 <option disabled selected>Mois</option>
 
                                                 @foreach ($month as $key => $item)
-                                                    <option value="{{ str_pad(++$key, 2, '0', STR_PAD_LEFT) }}"{{$date_month==$item ? 'selected' : ''}}>
+                                                    <option
+                                                        value="{{ str_pad(++$key, 2, '0', STR_PAD_LEFT) }}"{{ $date_month == $item ? 'selected' : '' }}>
                                                         {{ $item }} </option>
                                                 @endforeach
                                             </select>

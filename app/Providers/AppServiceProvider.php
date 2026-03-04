@@ -270,7 +270,7 @@ class AppServiceProvider extends ServiceProvider
                 'category'
             ])->orderBy('name')->get();
 
-            $roles = Role::where('name', '!=', 'developpeur')->get();
+            // $roles = Role::get();
 
             $roleWithoutClient = Role::whereNotIn('name', [
                 'developpeur',
@@ -294,7 +294,7 @@ class AppServiceProvider extends ServiceProvider
                 'annonce' => $annonce,
                 'categories' => $category,
                 'subcategories' => $subcategory,
-                'roles' => $roles,
+                // 'roles' => $roles,
                 'roleWithoutClient' => $roleWithoutClient,
                 'category_backend' => $category_backend,
                 'orders_attente' => $orders_attente,

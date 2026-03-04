@@ -2,184 +2,174 @@
 @section('title', 'order')
 @section('sub-title', 'Liste des commandes')
 
+@section('css')
 <style>
-    .card-order1 {
-        background: linear-gradient(135deg, #289cf5, #84c0ec) !important;
-        color: white
+    .stat-card {
+        border-radius: 12px;
+        padding: 16px 20px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-height: 80px;
     }
+    .stat-card .stat-icon {
+        font-size: 2rem;
+        opacity: .85;
+        width: 44px;
+        text-align: center;
+    }
+    .stat-card .stat-label { font-size: .78rem; opacity: .9; margin-bottom: 2px; }
+    .stat-card .stat-value { font-size: 1.5rem; font-weight: 700; line-height: 1; }
+    .stat-card .stat-sub   { font-size: .72rem; opacity: .8; margin-top: 2px; }
 
-    .card-order {
-        background: linear-gradient(135deg, #06a278 0%, #12d298 100%) !important;
-    }
+    .bg-attente    { background: linear-gradient(135deg,#f7971e,#ffd200); }
+    .bg-confirmee  { background: linear-gradient(135deg,#11998e,#38ef7d); }
+    .bg-livree     { background: linear-gradient(135deg,#06a278,#12d298); }
+    .bg-annulee    { background: linear-gradient(135deg,#cb2d3e,#ef473a); }
+    .bg-total      { background: linear-gradient(135deg,#289cf5,#84c0ec); }
+    .bg-montant    { background: linear-gradient(135deg,#6a3093,#a044ff); }
 
-    .card-content {
-        color: white
+    .filter-bar {
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+        border-bottom: 1px solid #e9ecef;
+        padding: 12px 20px;
     }
+    .status-pills .btn { border-radius: 20px; font-size: .8rem; padding: 4px 14px; }
 </style>
+@endsection
+
 @section('content')
     <div class="section-body">
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    {{-- <h5 class="p-3">Liste des Commandes
-                        @if (request('date_debut') && request('date_fin'))
-                            du {{ \Carbon\Carbon::parse(request('date_debut'))->format('d-m-Y') }} au
-                            {{ \Carbon\Carbon::parse(request('date_fin'))->format('d-m-Y') }}
-                        @elseif (request('date_debut'))
-                            du {{ \Carbon\Carbon::parse(request('date_debut'))->format('d-m-Y') }}
-                        @elseif (request('date_fin'))
-                            du {{ \Carbon\Carbon::parse(request('date_fin'))->format('d-m-Y') }}
-                        @else
-                            {{ request('d') ? request('d') : request('s') }}
-                        @endif
-                    </h5> --}}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card card-order">
-                                <div class="card-statistic-4">
-                                    <div class="align-items-center justify-content-between">
-                                        <div class="row ">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
-                                                <div class="card-content">
-                                                    <h5 class="">Commandes
-                                                        {{ request('status') != 'all' ? request('status') : '' }}</h5>
-                                                    @if (request('date_debut') && request('date_fin'))
-                                                        du
-                                                        {{ \Carbon\Carbon::parse(request('date_debut'))->format('d-m-Y') }}
-                                                        au
-                                                        {{ \Carbon\Carbon::parse(request('date_fin'))->format('d-m-Y') }}
-                                                    @elseif (request('date_debut'))
-                                                        du
-                                                        {{ \Carbon\Carbon::parse(request('date_debut'))->format('d-m-Y') }}
-                                                    @elseif (request('date_fin'))
-                                                        du
-                                                        {{ \Carbon\Carbon::parse(request('date_fin'))->format('d-m-Y') }}
-                                                    @else
-                                                        {{ request('d') ? request('d') : request('s') }}
-                                                    @endif
-                                                    </h5>
-                                                    <h2 class="mb-3 font-18">{{ count($orders) }}</h2>
-                                                    {{-- <p class="mb-0"><span class="col-green">10%</span> Increase</p> --}}
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
-                                                <div class="banner-img">
-                                                    {{-- <img src="assets/img/banner/1.png" alt=""> --}}
-                                                </div>
-                                            </div>
-                                        </div>
+
+                    {{-- ===== STATS CARDS ===== --}}
+                    @php
+                        $countAttente   = $orders->where('status','attente')->count();
+                        $countConfirmee = $orders->where('status','confirmée')->count();
+                        $countLivree    = $orders->where('status','livrée')->count();
+                        $countAnnulee   = $orders->where('status','annulée')->count();
+                        $montantTotal   = $orders->sum('total');
+                    @endphp
+                    <div class="card-body pb-2">
+                        <div class="row g-3">
+                            <div class="col-6 col-md-4 col-xl-2">
+                                <div class="stat-card bg-total">
+                                    <div class="stat-icon"><i class="fas fa-list-ol"></i></div>
+                                    <div>
+                                        <div class="stat-label">Total</div>
+                                        <div class="stat-value">{{ count($orders) }}</div>
+                                        <div class="stat-sub">commandes</div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card card-order1">
-                                <div class="card-statistic-4">
-                                    <div class="align-items-center justify-content-between">
-                                        <div class="row ">
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
-                                                <div class="card-content">
-                                                    <h5 class="">Total</h5>
-                                                    <h2 class="mb-3 font-18">
-                                                        {{ number_format($orders->sum('total'), 0, ',', ' ') }} FCFA </h2>
-                                                    {{-- <p class="mb-0"><span class="col-green">10%</span> Increase</p> --}}
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
-                                                <div class="banner-img">
-                                                    {{-- <img src="assets/img/banner/1.png" alt=""> --}}
-                                                </div>
-                                            </div>
-                                        </div>
+                            <div class="col-6 col-md-4 col-xl-2">
+                                <div class="stat-card bg-attente">
+                                    <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+                                    <div>
+                                        <div class="stat-label">Attente</div>
+                                        <div class="stat-value">{{ $countAttente }}</div>
+                                        <div class="stat-sub">en cours</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4 col-xl-2">
+                                <div class="stat-card bg-confirmee">
+                                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                                    <div>
+                                        <div class="stat-label">Confirmées</div>
+                                        <div class="stat-value">{{ $countConfirmee }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4 col-xl-2">
+                                <div class="stat-card bg-livree">
+                                    <div class="stat-icon"><i class="fas fa-shipping-fast"></i></div>
+                                    <div>
+                                        <div class="stat-label">Livrées</div>
+                                        <div class="stat-value">{{ $countLivree }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4 col-xl-2">
+                                <div class="stat-card bg-annulee">
+                                    <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                                    <div>
+                                        <div class="stat-label">Annulées</div>
+                                        <div class="stat-value">{{ $countAnnulee }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4 col-xl-2">
+                                <div class="stat-card bg-montant">
+                                    <div class="stat-icon"><i class="fas fa-coins"></i></div>
+                                    <div>
+                                        <div class="stat-label">Montant</div>
+                                        <div class="stat-value" style="font-size:1.1rem">{{ number_format($montantTotal,0,',',' ') }}</div>
+                                        <div class="stat-sub">FCFA</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between">
-                        <hr class="w-50 bg-secondary" size="5">
-                        <h4>Filtre</h4>
-                        <hr class="w-50 bg-secondary" size="5">
-                    </div>
-                    <div class="card-header d-flex justify-content-between">
-                        <!-- ========== Start filter ========== -->
-                        <div class="dropdown d-inline">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-filter"></i> Filtre par type de commande
-                            </button>
-                            <div class="dropdown-menu fw-bold">
-                                <a class="dropdown-item has-icon" href="/admin/order?d=jour">Jour</a>
-                                <a class="dropdown-item has-icon" href="/admin/order?s=attente">Attentes</a>
-                                <a class="dropdown-item has-icon" href="/admin/order?s=confirmée">Confirmée</a>
-                                <a class="dropdown-item has-icon" href="/admin/order?s=livrée">Livrées</a>
-                                <a class="dropdown-item has-icon" href="/admin/order?s=annulée">Annulées</a>
-                                <a class="dropdown-item has-icon fw-bold" href="/admin/order?s=precommande"> <i
-                                        class="far fa-clock"></i> Précommandes</a>
-                                <a class="dropdown-item has-icon" href="{{ route('order.index') }}">Toute les commandes</a>
-                            </div>
-                        </div>
+                    {{-- ===== FILTRE BAR ===== --}}
+                    <div class="filter-bar">
+                        <form action="{{ route('order.index') }}" method="get">
+                            <div class="row align-items-end g-2">
 
-
-                        <form class="needs-validation" action="{{ route('order.index') }}" method="get" class="px-3"
-                            novalidate>
-                            @csrf
-                            <!-- date start-->
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="date">Statut</label>
-                                        <select name="status" class="form-control" required>
-                                            <option value="all">Toutes les commandes</option>
-                                            <option value="attente" {{ request('status') == 'attente' ? 'selected' : '' }}>
-                                                Attentes</option>
-                                            <option value="confirmée"
-                                                {{ request('status') == 'confirmée' ? 'selected' : '' }}>Confirmée</option>
-                                            <option value="livrée" {{ request('status') == 'livrée' ? 'selected' : '' }}>
-                                                Livrées</option>
-                                            <option value="annulée" {{ request('status') == 'annulée' ? 'selected' : '' }}>
-                                                Annulées</option>
-                                            <option value="precommande"
-                                                {{ request('status') == 'precommande' ? 'selected' : '' }}>Précommandes
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="date">Date debut</label>
-                                        <input type="date" name="date_debut" id="dateStart"
-                                            value="{{ request('date_debut') }}" class="form-control" style="padding: 20px"
-                                            required>
+                                {{-- Pills statut --}}
+                                <div class="col-12 col-lg-5">
+                                    <label class="small font-weight-bold d-block mb-1">Statut</label>
+                                    <div class="status-pills d-flex flex-wrap" style="gap:6px;">
+                                        @php
+                                            $statuts = [
+                                                'all'         => ['label' => 'Tous',         'class' => 'btn-secondary'],
+                                                'attente'     => ['label' => 'Attente',       'class' => 'btn-warning'],
+                                                'confirmée'   => ['label' => 'Confirmée',     'class' => 'btn-success'],
+                                                'livrée'      => ['label' => 'Livrée',        'class' => 'btn-info'],
+                                                'annulée'     => ['label' => 'Annulée',       'class' => 'btn-danger'],
+                                                'precommande' => ['label' => 'Précommande',   'class' => 'btn-dark'],
+                                            ];
+                                            $currentStatus = request('status', 'all');
+                                        @endphp
+                                        @foreach($statuts as $val => $opt)
+                                            <a href="{{ route('order.index') }}?status={{ $val }}&date_debut={{ $dateDebut }}&date_fin={{ $dateFin }}"
+                                               class="btn btn-sm {{ $currentStatus == $val ? $opt['class'] : 'btn-outline-'.\Str::after($opt['class'],'btn-') }}">
+                                               {{ $opt['label'] }}
+                                            </a>
+                                        @endforeach
                                     </div>
                                 </div>
 
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="date">Date fin</label>
-                                        <input type="date" name="date_fin" value="{{ request('date_fin') }}"
-                                            id="dateEnd" class="form-control" style="padding: 20px"required>
+                                {{-- Dates --}}
+                                <div class="col-5 col-lg-2">
+                                    <label class="small font-weight-bold">Du</label>
+                                    <input type="hidden" name="status" value="{{ request('status','all') }}">
+                                    <input type="date" name="date_debut" class="form-control form-control-sm"
+                                        value="{{ $dateDebut }}">
+                                </div>
+                                <div class="col-5 col-lg-2">
+                                    <label class="small font-weight-bold">Au</label>
+                                    <input type="date" name="date_fin" class="form-control form-control-sm"
+                                        value="{{ $dateFin }}">
+                                </div>
+                                <div class="col-2 col-lg-1">
+                                    <div class="d-flex" style="gap:4px">
+                                        <button type="submit" class="btn btn-sm btn-primary px-3">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                        <a href="{{ route('order.index') }}" class="btn btn-sm btn-outline-secondary" title="Réinitialiser">
+                                            <i class="fa fa-undo"></i>
+                                        </a>
                                     </div>
                                 </div>
-                                <div class="col-md-2" style="margin-top: 30px">
-                                    <div class="form-group">
-                                        <label for="date"></label>
-                                        <button type="submit" class="btn btn-primary p-2">Valider</button>
-                                    </div>
-                                </div>
-
 
                             </div>
                         </form>
-                        <!-- ========== End filter ========== -->
-
-
-                        <!-- ========== Start Statistic ========== -->
-
-                        <!-- ========== End Statistic ========== -->
-
-
                     </div>
 
                     @include('admin.components.validationMessage')

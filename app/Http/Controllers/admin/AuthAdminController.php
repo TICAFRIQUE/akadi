@@ -19,30 +19,35 @@ class AuthAdminController extends Controller
 
     public function listUser()
     {
-        $role = request('user');
-        $type_client = request('client');
+        $clientRoles = ['fidele', 'prospect'];
+        $excludedRoles = ['developpeur'];
 
+        $isClient   = request()->has('client');
+        $isAdmin    = request()->has('admin');
+        $typeClient = request('client');
+        $roleFilter = request('user');
+
+        // Filtre date : par défaut mois en cours pour la vue clients
+        $dateDebut = request('date_debut', $isClient && !request()->has('date_debut') ? now()->startOfMonth()->format('Y-m-d') : null);
+        $dateFin   = request('date_fin',   $isClient && !request()->has('date_fin')   ? now()->endOfMonth()->format('Y-m-d')   : null);
 
         $users = User::withCount(['roles', 'orders'])
-            // ->whereHas('roles', fn ($q) => $q->where('name', '!=', 'developpeur'))
-            ->whereNotIn('role', ['developpeur'])
+            ->whereNotIn('role', $excludedRoles)
+            ->when($isClient, function ($q) use ($clientRoles, $typeClient) {
+                if ($typeClient) {
+                    $q->where('role', $typeClient);
+                } else {
+                    $q->whereIn('role', $clientRoles);
+                }
+            })
+            ->when($isAdmin, fn($q) => $q->whereNotIn('role', array_merge($clientRoles, $excludedRoles)))
+            ->when($roleFilter, fn($q, $r) => $q->where('role', $r))
+            ->when($isClient && $dateDebut, fn($q) => $q->whereDate('created_at', '>=', $dateDebut))
+            ->when($isClient && $dateFin,   fn($q) => $q->whereDate('created_at', '<=', $dateFin))
+            ->orderBy('created_at', 'DESC')
+            ->get();
 
-            // ->when($role, fn ($q, $role) => $q->whereHas('roles', fn ($q) => $q->where('name', $role)))
-            ->when($role, fn($q, $role) => $q->whereRole($role))
-
-            ->when(
-                $type_client == 'prospect',
-                fn($q) => $q->where('role', 'prospect')
-                // ->where('role', 'client')
-            )
-            ->when($type_client == 'fidele', fn($q) => $q->where('role', 'fidele'))
-
-            ->when($type_client == null, fn($q) => $q->whereIn('role', ['fidele', 'prospect']))
-
-            ->orderBy('created_at', 'DESC')->get();
-
-        // dd($users->toArray());
-        return view('admin.pages.user.userList', compact('users'));
+        return view('admin.pages.user.userList', compact('users', 'dateDebut', 'dateFin'));
     }
 
 
@@ -69,7 +74,18 @@ class AuthAdminController extends Controller
 
     public function registerForm(Request $request)
     {
-        $roles = Role::get();
+        //si le user connecté est autre que developpeur ou administrateur, on affiche que les roles clients
+
+        $user = User::find(Auth::id());
+        //si le user connecté est un gestionnaire, on affiche que les roles clients
+       if ($user->hasRole('gestionnaire') ) {
+            $roles = Role::whereIn('name', ['client'])->get();
+
+        } 
+        //si le user connecté est un developpeur ou administrateur, on affiche tous les roles
+         elseif ($user->hasRole('developpeur') || $user->hasRole('administrateur')) {
+            $roles = Role::get();
+        }
         return view('admin.pages.user.register', compact('roles'));
     }
 
@@ -93,7 +109,14 @@ class AuthAdminController extends Controller
                 // 'password' => 'required',
             ]);
 
-            $pwd_generate = Str::random(8);
+            $date_anniv = '';
+            if ($request->jour && $request->mois) {
+                $date_anniv = $request->jour . '-' . $request->mois;
+            }
+
+            $pwd_generate = $request->filled('password') ? null : Str::random(8);
+            $password = $request->filled('password') ? $request->password : $pwd_generate;
+
             $user = User::firstOrCreate([
                 'name' => $request['name'],
                 'phone' => $request['phone'],
@@ -101,7 +124,8 @@ class AuthAdminController extends Controller
                 'shop_name' => $request->shop_name,
                 'role' => $request->role,
                 'localisation' => $request->localisation,
-                'password' => Hash::make($pwd_generate),
+                'date_anniversaire' => $date_anniv,
+                'password' => Hash::make($password),
             ]);
             if ($request->has('role')) {
                 $user->assignRole([$request['role']]);
@@ -109,7 +133,7 @@ class AuthAdminController extends Controller
 
             $data = [
                 "email" => $request['email'],
-                "pwd" => $pwd_generate,
+                "pwd" => $pwd_generate ?? '(mot de passe défini manuellement)',
             ];
             $auth_user_details = Session::put('user_auth', $data);
 
@@ -121,8 +145,19 @@ class AuthAdminController extends Controller
 
     public function edit($id)
     {
-        $user = User::with('roles')->whereId($id)->first();
-        return view('admin.pages.user.edit_user', compact('user'));
+        $user = User::find($id);
+        $authUser = User::find(Auth::id());
+
+        // Selon le rôle du user connecté, on limite les rôles disponibles
+        if ($authUser->hasRole('gestionnaire')) {
+            $roles = Role::whereIn('name', ['client', 'fidele', 'prospect'])->get();
+        } elseif ($authUser->hasRole(['developpeur', 'administrateur'])) {
+            $roles = Role::get();
+        } else {
+            $roles = collect(); // aucun rôle disponible par défaut
+        }
+
+        return view('admin.pages.user.edit_user', compact('user', 'roles'));
     }
 
     public function update(Request $request, $id)
