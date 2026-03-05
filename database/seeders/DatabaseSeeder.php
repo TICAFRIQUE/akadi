@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RolesTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(ModelHasRolesTableSeeder::class);
+        $this->call(PaymentMethodSeeder::class);
+        $this->call(CaisseSeeder::class);
     }
 }

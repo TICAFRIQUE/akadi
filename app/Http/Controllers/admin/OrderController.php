@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Order;
+use App\Models\PaymentMethod;
 use Illuminate\Support\Str;
 use App\Services\TicAfriqueService;
 use App\Jobs\SendEmailJob;
@@ -32,10 +33,13 @@ class OrderController extends Controller
         $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
         $dateFin   = $request->input('date_fin',   now()->endOfMonth()->format('Y-m-d'));
         $status    = $request->input('status');
+        $source    = $request->input('source');
 
-        $orders = Order::orderBy('created_at', 'DESC')
+        $orders = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
+            ->orderBy('created_at', 'DESC')
             ->when(request('d'), fn($q) => $q->where('date_order', Carbon::now()->format('Y-m-d')))
             ->when(request('s'), fn($q) => $q->whereStatus(request('s')))
+            ->when($source, fn($q) => $q->where('source', $source))
             ->when(
                 !request('d') && !request('s'),
                 function ($q) use ($dateDebut, $dateFin, $status) {
@@ -47,7 +51,10 @@ class OrderController extends Controller
             )
             ->get();
 
-        return view('admin.pages.order.order', compact('orders', 'dateDebut', 'dateFin'));
+        $statuts = Order::$statuts;
+        $sources = Order::$sources;
+
+        return view('admin.pages.order.order', compact('orders', 'dateDebut', 'dateFin', 'statuts', 'sources'));
     }
 
 
@@ -81,12 +88,18 @@ class OrderController extends Controller
         $orders = Order::whereId($id)
             ->with([
                 'user',
-                'products'
-                => fn($q) => $q->with('media')
+                'paymentMethod',
+                'caisse',
+                'createdBy',
+                'products' => fn($q) => $q->with('media')
             ])
             ->orderBy('created_at', 'DESC')->first();
-        // dd($orders->toArray());
-        return view('admin.pages.order.order_show', compact('orders'));
+
+        $statuts        = Order::$statuts;
+        $sources        = Order::$sources;
+        $paymentMethods = PaymentMethod::actif()->get();
+
+        return view('admin.pages.order.order_show', compact('orders', 'statuts', 'sources', 'paymentMethods'));
     }
 
     public function invoice($id)
@@ -126,48 +139,46 @@ class OrderController extends Controller
     //changer le status de la commande
     public function changeState(Request $request)
     {
-        $state = request('cs'); // cs => change state 
+        $state   = request('cs'); // cs => change state
         $orderId = request('id');
+
+        $allowedStatuses = array_keys(Order::$statuts);
 
         $order = Order::with('user')->whereId($orderId)->first();
 
-        $changeState = Order::whereId($orderId)->update([
-            'status' => $state
-        ]);
+        Order::whereId($orderId)->update(['status' => $state]);
 
         // Envoyer SMS seulement si confirmée
-        if ($state == 'confirmée') {
+        if ($state === Order::STATUS_CONFIRMEE) {
             $this->sendSms($order);
         }
 
-        if ($state == 'livrée') {
-            $changeState = Order::whereId($orderId)->update([
-                'delivery_date' => carbon::now()
-            ]);
+        if ($state === Order::STATUS_LIVREE) {
+            Order::whereId($orderId)->update(['delivery_date' => Carbon::now()]);
         }
 
-        if ($state == 'all') {
-            $changeState = Order::whereStatus("attente")->update([
-                'status' => 'confirmée'
-            ]);
+        if ($state === 'all') {
+            Order::whereStatus(Order::STATUS_ATTENTE)->update(['status' => Order::STATUS_CONFIRMEE]);
         }
 
-        // Envoyer email pour tous les changements de statut via Queue
-        if (!empty($order->user->email) && in_array($state, ['confirmée', 'annulée', 'livrée', 'en cours'])) {
+        // Envoyer email pour les changements de statut importants
+        $notifyStatuses = [Order::STATUS_CONFIRMEE, Order::STATUS_ANNULEE, Order::STATUS_LIVREE, Order::STATUS_EN_CUISINE, Order::STATUS_CUISINE_TERMINEE];
+        if (!empty($order->user?->email) && in_array($state, $notifyStatuses)) {
             $subject = match ($state) {
-                'confirmée' => 'Confirmation de commande',
-                'annulée' => 'Annulation de commande',
-                'livrée' => 'Commande livrée',
-                'en cours' => 'Commande en cours de traitement',
-                default => 'Mise à jour de votre commande'
+                Order::STATUS_CONFIRMEE        => 'Confirmation de commande',
+                Order::STATUS_ANNULEE          => 'Annulation de commande',
+                Order::STATUS_LIVREE           => 'Commande livrée',
+                Order::STATUS_EN_CUISINE       => 'Commande en préparation',
+                Order::STATUS_CUISINE_TERMINEE => 'Commande prête',
+                default                        => 'Mise à jour de votre commande'
             };
 
             $emailData = [
-                'imagePath' => asset('site/assets/img/custom/AKADI.png'),
+                'imagePath'  => asset('site/assets/img/custom/AKADI.png'),
                 'clientName' => $order->user->name,
-                'orderCode' => $order->code,
-                'status' => $state,
-                'raison' => $order->raison_annulation_cmd ?? null
+                'orderCode'  => $order->code,
+                'status'     => $state,
+                'raison'     => $order->raison_annulation_cmd ?? null
             ];
 
             SendEmailJob::dispatch(
@@ -180,7 +191,7 @@ class OrderController extends Controller
             );
         }
 
-        return back()->withSuccess('statut changé avec success');
+        return back()->withSuccess('Statut changé avec succès');
     }
 
 

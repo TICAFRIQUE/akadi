@@ -90,12 +90,15 @@
 
                                 {{-- ====== Colonne principale : champs produit ====== --}}
                                 <div class="col-lg-8 border-right pr-lg-5">
-                                    <p class="text-muted text-uppercase font-weight-bold mb-3" style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
-                                        <i data-feather="package" style="width:12px;vertical-align:middle"></i> Informations produit
+                                    <p class="text-muted text-uppercase font-weight-bold mb-3"
+                                        style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
+                                        <i data-feather="package" style="width:12px;vertical-align:middle"></i>
+                                        Informations produit
                                     </p>
 
                                     <div class="form-group row mb-4">
-                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Titre</label>
+                                        <label
+                                            class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Titre</label>
                                         <div class="col-sm-12 col-md-7">
                                             <input name="title" type="text" class="form-control" required>
                                             <div class="invalid-feedback">Champs obligatoire</div>
@@ -103,9 +106,11 @@
                                     </div>
 
                                     <div class="form-group row mb-4">
-                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Prix</label>
+                                        <label
+                                            class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Prix</label>
                                         <div class="col-sm-12 col-md-7">
-                                            <input name="price" id="product_price" type="number" class="form-control currency" required>
+                                            <input name="price" id="product_price" type="number"
+                                                class="form-control currency" required>
                                             <div class="invalid-feedback">Champs obligatoire</div>
                                         </div>
                                     </div>
@@ -114,7 +119,8 @@
                                     <div class="form-group row mb-4">
                                         <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">
                                             Stock
-                                            <small class="d-block text-muted" style="font-size:.75rem">Vide = infini</small>
+                                            <small class="d-block text-muted" style="font-size:.75rem">Vide =
+                                                infini</small>
                                         </label>
                                         <div class="col-sm-12 col-md-7">
                                             <div class="row">
@@ -122,18 +128,22 @@
                                                     <label class="small font-weight-bold">Quantité</label>
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
-                                                            <span class="input-group-text"><i class="fas fa-boxes"></i></span>
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-boxes"></i></span>
                                                         </div>
-                                                        <input name="stock" type="number" min="0" class="form-control" placeholder="Infini par défaut">
+                                                        <input name="stock" type="number" min="0"
+                                                            class="form-control" placeholder="Infini par défaut">
                                                     </div>
                                                 </div>
                                                 <div class="col-6">
                                                     <label class="small font-weight-bold">Seuil alerte</label>
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
-                                                            <span class="input-group-text"><i class="fas fa-exclamation-triangle text-warning"></i></span>
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-exclamation-triangle text-warning"></i></span>
                                                         </div>
-                                                        <input name="stock_alerte" type="number" min="0" class="form-control" placeholder="5" value="5">
+                                                        <input name="stock_alerte" type="number" min="0"
+                                                            class="form-control" placeholder="5" value="5">
                                                     </div>
                                                 </div>
                                             </div>
@@ -141,12 +151,15 @@
                                     </div>
 
                                     <div class="form-group row mb-4">
-                                        <label for="" class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Catégorie</label>
+                                        <label for=""
+                                            class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Catégorie</label>
                                         <div class="col-sm-12 col-md-7">
-                                            <select name="categories" id="category" class="form-control select2" required>
+                                            <select name="categories" id="category" class="form-control select2"
+                                                required>
                                                 <option value="">Selectionner une catégorie</option>
                                                 @foreach ($category_backend as $item)
-                                                    <option value="{{ $item['id'] }}" tag={{ $item['name'] }}>{{ $item['name'] }}</option>
+                                                    <option value="{{ $item['id'] }}" tag={{ $item['name'] }}>
+                                                        {{ $item['name'] }}</option>
                                                 @endforeach
                                             </select>
                                             <div class="invalid-feedback">Champs obligatoire</div>
@@ -154,7 +167,9 @@
                                     </div>
 
                                     <div class="form-group row mb-4 subcat">
-                                        <label for="" class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Sous catégorie</label>
+                                        <label for=""
+                                            class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Sous
+                                            catégorie</label>
                                         <div class="col-sm-12 col-md-7">
                                             <select name="subcategories" class="form-control select2 subCat_required">
                                                 @foreach ($subcategories as $item)
@@ -165,7 +180,8 @@
                                     </div>
 
                                     <div class="form-group row mb-2">
-                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Description</label>
+                                        <label
+                                            class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Description</label>
                                         <div class="col-sm-12 col-md-7">
                                             <textarea name="description" class="summernote"></textarea>
                                         </div>
@@ -174,7 +190,8 @@
 
                                 {{-- ====== Colonne médias ====== --}}
                                 <div class="col-lg-4 pl-lg-4 mt-4 mt-lg-0">
-                                    <p class="text-muted text-uppercase font-weight-bold mb-3" style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
+                                    <p class="text-muted text-uppercase font-weight-bold mb-3"
+                                        style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
                                         <i data-feather="image" style="width:12px;vertical-align:middle"></i> Médias
                                     </p>
 
@@ -186,8 +203,10 @@
                                         </label>
                                         <img id="img-preview"
                                             src="https://ami-sni.com/wp-content/themes/consultix/images/no-image-found-360x250.png"
-                                            class="img-fluid rounded mb-2 w-100" style="max-height:180px;object-fit:cover;border:1px solid #dee2e6" />
-                                        <input type="file" name="principal_img" id="file_single" class="form-control" onchange="readURL(this);" hidden>
+                                            class="img-fluid rounded mb-2 w-100"
+                                            style="max-height:180px;object-fit:cover;border:1px solid #dee2e6" />
+                                        <input type="file" name="principal_img" id="file_single"
+                                            class="form-control" onchange="readURL(this);" hidden>
                                         <label for="file_single" class="btn btn-outline-primary btn-sm w-100">
                                             <i data-feather="upload" style="width:13px"></i> Choisir une image
                                         </label>
@@ -199,7 +218,8 @@
                                     <label class="small font-weight-bold d-block mb-2">
                                         Images du produit <span class="text-danger">*</span>
                                     </label>
-                                    <input type="file" id="files" class="form-control media" name="files[]" accept="image/*" multiple hidden required />
+                                    <input type="file" id="files" class="form-control media" name="files[]"
+                                        accept="image/*" multiple hidden required />
                                     <label for="files" class="btn btn-outline-secondary btn-sm w-100 mb-1">
                                         <i data-feather="plus-square" style="width:13px"></i> Ajouter des images
                                     </label>
@@ -211,26 +231,31 @@
                             <hr class="mt-4">
 
                             {{-- ====== Section Remise ====== --}}
-                            <p class="text-muted text-uppercase font-weight-bold mb-3" style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
+                            <p class="text-muted text-uppercase font-weight-bold mb-3"
+                                style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
                                 <i data-feather="tag" style="width:12px;vertical-align:middle"></i> Remise
                             </p>
                             <p class="fw-bold fs-2 col-12" id="MsgError"></p>
                             <div class="form-group row mb-3">
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Montant</label>
-                                    <input type="number" id="discount_price" name="montant_remise" class="form-control">
+                                    <input type="number" id="discount_price" name="montant_remise"
+                                        class="form-control">
                                 </div>
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Pourcentage (%)</label>
-                                    <input type="number" id="discount" name="pourcentage_remise" class="form-control">
+                                    <input type="number" id="discount" name="pourcentage_remise"
+                                        class="form-control">
                                 </div>
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Date début</label>
-                                    <input type="text" id="date_start" name="date_debut_remise" class="form-control datetimepicker">
+                                    <input type="text" id="date_start" name="date_debut_remise"
+                                        class="form-control datetimepicker">
                                 </div>
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Date fin</label>
-                                    <input type="text" id="date_end" name="date_fin_remise" class="form-control datetimepicker">
+                                    <input type="text" id="date_end" name="date_fin_remise"
+                                        class="form-control datetimepicker">
                                 </div>
                             </div>
 

@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\admin\CaisseController;
+use App\Http\Controllers\admin\PaymentMethodController;
+use App\Http\Controllers\admin\PosController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\admin\OrderController;
 use App\Http\Controllers\admin\CouponController;
@@ -210,6 +213,40 @@ Route::middleware(['admin'])->group(function () {
         route::get('', 'exploitation')->name('rapport.exploitation');
         route::get('detail-depense', 'detail_depense')->name('rapport.detail');
         route::get('vente', 'rapportVente')->name('rapport.vente');
+    });
+
+    /** Caisses **/
+    Route::prefix('admin/caisse')->controller(CaisseController::class)->group(function () {
+        route::get('', 'index')->name('caisse.index');
+        route::post('store', 'store')->name('caisse.store');
+        route::get('edit/{id}', 'edit')->name('caisse.edit');
+        route::post('update/{id}', 'update')->name('caisse.update');
+        route::post('destroy/{id}', 'destroy')->name('caisse.destroy');
+        route::get('change-state', 'changeState')->name('caisse.changeState');
+        route::get('liberer', 'liberer')->name('caisse.liberer');
+    });
+
+    /** Sélection de caisse (après login) **/
+    Route::get('admin/caisse-selection', [CaisseController::class, 'selection'])->name('caisse.selection');
+    Route::post('admin/caisse-prendre', [CaisseController::class, 'prendreEnCharge'])->name('caisse.prendreEnCharge');
+
+    /** POS – Vente / commande backoffice **/
+    Route::prefix('admin/pos')->controller(PosController::class)->group(function () {
+        route::get('create', 'create')->name('pos.create');
+        route::post('store', 'store')->name('pos.store');
+        route::get('edit/{id}', 'edit')->name('pos.edit');
+        route::post('update/{id}', 'update')->name('pos.update');
+        route::post('acompte/{id}', 'addAcompte')->name('pos.addAcompte');
+        route::get('search-client', 'searchClient')->name('pos.searchClient');
+    });
+
+    /** Moyens de paiement **/
+    Route::prefix('admin/payment-method')->controller(PaymentMethodController::class)->group(function () {
+        route::get('', 'index')->name('payment-method.index');
+        route::post('store', 'store')->name('payment-method.store');
+        route::post('update/{id}', 'update')->name('payment-method.update');
+        route::get('change-state', 'changeState')->name('payment-method.changeState');
+        route::post('destroy/{id}', 'destroy')->name('payment-method.destroy');
     });
 });
 

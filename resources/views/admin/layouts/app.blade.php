@@ -265,6 +265,13 @@
                                 </a>
                             </li>
 
+                            {{-- Produits (accès rapide) --}}
+                            <li class="{{ Route::is('product.*') ? 'active' : '' }}">
+                                <a href="{{ route('product.index') }}" class="nav-link">
+                                    <i data-feather="box"></i><span>Produits</span>
+                                </a>
+                            </li>
+
                             {{-- Catalogue : Catégories, Sous-catégories, Produits --}}
                             <li class="dropdown">
                                 <a href="#" class="menu-toggle nav-link has-dropdown
@@ -289,10 +296,13 @@
                             {{-- Ventes : Commandes, Clients, Coupons, Livraisons --}}
                             <li class="dropdown">
                                 <a href="#" class="menu-toggle nav-link has-dropdown
-                                    {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') ? 'active' : '' }}">
+                                    {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') ? 'active' : '' }}">
                                     <i data-feather="shopping-cart"></i><span>Ventes</span>
                                 </a>
-                                <ul class="dropdown-menu {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') ? 'show' : '' }}">
+                                <ul class="dropdown-menu {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') ? 'show' : '' }}">
+                                    <li class="nav-item {{ Route::is('pos.create') ? 'active' : '' }}">
+                                        <a href="{{ route('pos.create') }}" class="nav-link"><i class="fas fa-plus-circle mr-1 text-success"></i> Nouvelle vente</a>
+                                    </li>
                                     <li class="nav-item {{ Route::is('order.*') ? 'active' : '' }}">
                                         <a href="{{ route('order.index') }}" class="nav-link">Commandes</a>
                                     </li>
@@ -307,6 +317,24 @@
                                     </li>
                                 </ul>
                             </li>
+
+                            {{-- Caisse --}}
+                            @role(['developpeur', 'administrateur'])
+                            <li class="dropdown">
+                                <a href="#" class="menu-toggle nav-link has-dropdown
+                                    {{ Route::is('caisse.*') || Route::is('payment-method.*') ? 'active' : '' }}">
+                                    <i data-feather="credit-card"></i><span>Caisse</span>
+                                </a>
+                                <ul class="dropdown-menu {{ Route::is('caisse.*') || Route::is('payment-method.*') ? 'show' : '' }}">
+                                    <li class="nav-item {{ Route::is('caisse.*') ? 'active' : '' }}">
+                                        <a href="{{ route('caisse.index') }}" class="nav-link">Gestion des caisses</a>
+                                    </li>
+                                    <li class="nav-item {{ Route::is('payment-method.*') ? 'active' : '' }}">
+                                        <a href="{{ route('payment-method.index') }}" class="nav-link">Moyens de paiement</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            @endrole
 
                             {{-- Contenu : Médias, Témoignages --}}
                             <li class="dropdown">
