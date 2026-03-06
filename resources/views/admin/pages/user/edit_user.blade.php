@@ -73,7 +73,7 @@
                                     <div class="form-group col-6">
                                         <label for="email">Email</label>
                                         <input id="email" value="{{ $user['email'] }}" type="email"
-                                            class="form-control" name="email">
+                                            class="form-control" name="email" required>
                                         <div class="invalid-feedback">
                                             Champs obligatoire
                                         </div>

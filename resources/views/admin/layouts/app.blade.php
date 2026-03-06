@@ -266,25 +266,28 @@
                             </li>
 
                             {{-- Produits (accès rapide) --}}
-                            <li class="{{ Route::is('product.*') ? 'active' : '' }}">
+                            {{-- <li class="{{ Route::is('product.*') ? 'active' : '' }}">
                                 <a href="{{ route('product.index') }}" class="nav-link">
                                     <i data-feather="box"></i><span>Produits</span>
                                 </a>
-                            </li>
+                            </li> --}}
 
                             {{-- Catalogue : Catégories, Sous-catégories, Produits --}}
                             <li class="dropdown">
-                                <a href="#" class="menu-toggle nav-link has-dropdown
+                                <a href="#"
+                                    class="menu-toggle nav-link has-dropdown
                                     {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') ? 'active' : '' }}">
                                     <i data-feather="package"></i><span>Catalogue</span>
                                 </a>
-                                <ul class="dropdown-menu {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') ? 'show' : '' }}">
+                                <ul
+                                    class="dropdown-menu {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') ? 'show' : '' }}">
                                     @role(['developpeur', 'administrateur'])
                                         <li class="nav-item {{ Route::is('category.*') ? 'active' : '' }}">
                                             <a href="{{ route('category.index') }}" class="nav-link">Catégories</a>
                                         </li>
                                         <li class="nav-item {{ Route::is('sub-category.*') ? 'active' : '' }}">
-                                            <a href="{{ route('sub-category.index') }}" class="nav-link">Sous-catégories</a>
+                                            <a href="{{ route('sub-category.index') }}"
+                                                class="nav-link">Sous-catégories</a>
                                         </li>
                                     @endrole
                                     <li class="nav-item {{ Route::is('product.*') ? 'active' : '' }}">
@@ -295,22 +298,26 @@
 
                             {{-- Ventes : Commandes, Clients, Coupons, Livraisons --}}
                             <li class="dropdown">
-                                <a href="#" class="menu-toggle nav-link has-dropdown
-                                    {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') ? 'active' : '' }}">
+                                <a href="#"
+                                    class="menu-toggle nav-link has-dropdown
+                                    {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') || Route::is('client.*') ? 'active' : '' }}">
                                     <i data-feather="shopping-cart"></i><span>Ventes</span>
                                 </a>
-                                <ul class="dropdown-menu {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') ? 'show' : '' }}">
+                                <ul
+                                    class="dropdown-menu {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') || Route::is('client.*') ? 'show' : '' }}">
                                     <li class="nav-item {{ Route::is('pos.create') ? 'active' : '' }}">
-                                        <a href="{{ route('pos.create') }}" class="nav-link"><i class="fas fa-plus-circle mr-1 text-success"></i> Nouvelle vente</a>
+                                        <a href="{{ route('pos.create') }}" class="nav-link"><i
+                                                class="fas fa-plus-circle mr-1 text-success"></i> Nouvelle vente</a>
                                     </li>
                                     <li class="nav-item {{ Route::is('order.*') ? 'active' : '' }}">
                                         <a href="{{ route('order.index') }}" class="nav-link">Commandes</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a href="/admin/auth?client" class="nav-link">Clients</a>
+                                    <li class="nav-item {{ Route::is('client.*') ? 'active' : '' }}">
+                                        <a href="{{ route('client.list') }}" class="nav-link">Clients</a>
                                     </li>
                                     <li class="nav-item {{ Route::is('coupon.*') ? 'active' : '' }}">
-                                        <a href="{{ route('coupon.index') }}" class="nav-link">Coupons de réduction</a>
+                                        <a href="{{ route('coupon.index') }}" class="nav-link">Coupons de
+                                            réduction</a>
                                     </li>
                                     <li class="nav-item {{ Route::is('delivery.*') ? 'active' : '' }}">
                                         <a href="{{ route('delivery.index') }}" class="nav-link">Livraisons</a>
@@ -320,31 +327,38 @@
 
                             {{-- Caisse --}}
                             @role(['developpeur', 'administrateur'])
-                            <li class="dropdown">
-                                <a href="#" class="menu-toggle nav-link has-dropdown
+                                <li class="dropdown">
+                                    <a href="#"
+                                        class="menu-toggle nav-link has-dropdown
                                     {{ Route::is('caisse.*') || Route::is('payment-method.*') ? 'active' : '' }}">
-                                    <i data-feather="credit-card"></i><span>Caisse</span>
-                                </a>
-                                <ul class="dropdown-menu {{ Route::is('caisse.*') || Route::is('payment-method.*') ? 'show' : '' }}">
-                                    <li class="nav-item {{ Route::is('caisse.*') ? 'active' : '' }}">
-                                        <a href="{{ route('caisse.index') }}" class="nav-link">Gestion des caisses</a>
-                                    </li>
-                                    <li class="nav-item {{ Route::is('payment-method.*') ? 'active' : '' }}">
-                                        <a href="{{ route('payment-method.index') }}" class="nav-link">Moyens de paiement</a>
-                                    </li>
-                                </ul>
-                            </li>
+                                        <i data-feather="credit-card"></i><span>Caisse</span>
+                                    </a>
+                                    <ul
+                                        class="dropdown-menu {{ Route::is('caisse.*') || Route::is('payment-method.*') ? 'show' : '' }}">
+                                        <li class="nav-item {{ Route::is('caisse.*') ? 'active' : '' }}">
+                                            <a href="{{ route('caisse.index') }}" class="nav-link">Gestion des
+                                                caisses</a>
+                                        </li>
+                                        <li class="nav-item {{ Route::is('payment-method.*') ? 'active' : '' }}">
+                                            <a href="{{ route('payment-method.index') }}" class="nav-link">Moyens de
+                                                paiement</a>
+                                        </li>
+                                    </ul>
+                                </li>
                             @endrole
 
                             {{-- Contenu : Médias, Témoignages --}}
                             <li class="dropdown">
-                                <a href="#" class="menu-toggle nav-link has-dropdown
+                                <a href="#"
+                                    class="menu-toggle nav-link has-dropdown
                                     {{ Route::is('publicite.*') || Route::is('temoignage.*') ? 'active' : '' }}">
                                     <i data-feather="image"></i><span>Contenu</span>
                                 </a>
-                                <ul class="dropdown-menu {{ Route::is('publicite.*') || Route::is('temoignage.*') ? 'show' : '' }}">
+                                <ul
+                                    class="dropdown-menu {{ Route::is('publicite.*') || Route::is('temoignage.*') ? 'show' : '' }}">
                                     <li class="nav-item {{ Route::is('publicite.*') ? 'active' : '' }}">
-                                        <a href="{{ route('publicite.index') }}" class="nav-link">Médias / Publicités</a>
+                                        <a href="{{ route('publicite.index') }}" class="nav-link">Médias /
+                                            Publicités</a>
                                     </li>
                                     <li class="nav-item {{ Route::is('temoignage.*') ? 'active' : '' }}">
                                         <a href="{{ route('temoignage.index') }}" class="nav-link">Témoignages</a>
@@ -354,13 +368,16 @@
 
                             {{-- Dépenses --}}
                             <li class="dropdown">
-                                <a href="#" class="menu-toggle nav-link has-dropdown
+                                <a href="#"
+                                    class="menu-toggle nav-link has-dropdown
                                     {{ Route::is('categorie-depense.*') || Route::is('libelle-depense.*') || Route::is('depense.*') ? 'active' : '' }}">
                                     <i data-feather="dollar-sign"></i><span>Dépenses</span>
                                 </a>
-                                <ul class="dropdown-menu {{ Route::is('categorie-depense.*') || Route::is('libelle-depense.*') || Route::is('depense.*') ? 'show' : '' }}">
+                                <ul
+                                    class="dropdown-menu {{ Route::is('categorie-depense.*') || Route::is('libelle-depense.*') || Route::is('depense.*') ? 'show' : '' }}">
                                     <li class="nav-item {{ Route::is('categorie-depense.*') ? 'active' : '' }}">
-                                        <a href="{{ route('categorie-depense.index') }}" class="nav-link">Catégories</a>
+                                        <a href="{{ route('categorie-depense.index') }}"
+                                            class="nav-link">Catégories</a>
                                     </li>
                                     <li class="nav-item {{ Route::is('libelle-depense.*') ? 'active' : '' }}">
                                         <a href="{{ route('libelle-depense.index') }}" class="nav-link">Libellés</a>
@@ -373,13 +390,15 @@
 
                             {{-- Rapport --}}
                             <li class="dropdown">
-                                <a href="#" class="menu-toggle nav-link has-dropdown
+                                <a href="#"
+                                    class="menu-toggle nav-link has-dropdown
                                     {{ Route::is('rapport.*') ? 'active' : '' }}">
                                     <i data-feather="activity"></i><span>Rapports</span>
                                 </a>
                                 <ul class="dropdown-menu {{ Route::is('rapport.*') ? 'show' : '' }}">
                                     <li class="nav-item {{ Route::is('rapport.exploitation') ? 'active' : '' }}">
-                                        <a href="{{ route('rapport.exploitation') }}" class="nav-link">Compte d'exploitation</a>
+                                        <a href="{{ route('rapport.exploitation') }}" class="nav-link">Compte
+                                            d'exploitation</a>
                                     </li>
                                     <li class="nav-item {{ Route::is('rapport.vente') ? 'active' : '' }}">
                                         <a href="{{ route('rapport.vente') }}" class="nav-link">Ventes</a>
@@ -388,15 +407,17 @@
                             </li>
 
                             {{-- Administrateurs --}}
-                            @role(['developpeur', 'administrateur'])
+                            @role(['developpeur', 'administrateur', 'gestionnaire'])
                                 <li class="dropdown">
-                                    <a href="#" class="menu-toggle nav-link has-dropdown
+                                    <a href="#"
+                                        class="menu-toggle nav-link has-dropdown
                                         {{ Route::is('user.*') || Route::is('role.*') ? 'active' : '' }}">
                                         <i data-feather="lock"></i><span>Administration</span>
                                     </a>
-                                    <ul class="dropdown-menu {{ Route::is('user.*') || Route::is('role.*') ? 'show' : '' }}">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="/admin/auth?admin">Équipe / Admins</a>
+                                    <ul
+                                        class="dropdown-menu {{ Route::is('user.*') || Route::is('role.*') ? 'show' : '' }}">
+                                        <li class="nav-item {{ Route::is('user.*') ? 'active' : '' }}">
+                                            <a class="nav-link" href="{{ route('user.list') }}">Équipe / Admins</a>
                                         </li>
                                         @role(['developpeur', 'administrateur'])
                                             <li class="nav-item {{ Route::is('role.*') ? 'active' : '' }}">
@@ -494,7 +515,7 @@
 
 
 
-   
+
 
     <script>
         function checkNewOrders() {

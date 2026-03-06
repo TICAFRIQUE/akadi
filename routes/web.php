@@ -15,6 +15,7 @@ use App\Http\Controllers\site\HomePageController;
 use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\DeliveryController;
 use App\Http\Controllers\admin\AuthAdminController;
+use App\Http\Controllers\admin\ClientController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\PubliciteController;
 use App\Http\Controllers\admin\TemoignageController;
@@ -67,15 +68,23 @@ Route::middleware(['admin'])->group(function () {
     Route::prefix('admin/auth')->controller(AuthAdminController::class)->group(function () {
         route::get('', 'listUser')->name('user.list');
         route::get('detail/{id}', 'userDetail')->name('user.detail');
-
-        // route::get('typeClient', 'typeClient')->name('user.typeClient');
-
         route::get('register', 'registerForm')->name('user.registerForm');
         route::post('register', 'register')->name('user.register');
         route::get('edit/{id}', 'edit')->name('user.edit');
         route::post('update/{id}', 'update')->name('user.update');
         route::post('destroy/{id}', 'destroy')->name('user.destroy');
         route::get('logout', 'logout')->name('user.logout');
+    });
+
+    //Clients
+    Route::prefix('admin/clients')->controller(ClientController::class)->group(function () {
+        Route::get('', 'listClient')->name('client.list');
+        Route::get('detail/{id}', 'detail')->name('client.detail');
+        Route::get('create', 'create')->name('client.createForm');
+        Route::post('create', 'store')->name('client.store');
+        Route::get('edit/{id}', 'edit')->name('client.edit');
+        Route::post('update/{id}', 'update')->name('client.update');
+        Route::post('destroy/{id}', 'destroy')->name('client.destroy');
     });
 
 

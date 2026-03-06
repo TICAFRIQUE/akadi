@@ -236,6 +236,7 @@ class OrderController extends Controller
 
         $orders_new = Order::with('user')->orderBy('created_at', 'DESC')
             ->whereIn('status', ['attente', 'precommande'])
+            ->where('source', 'web')
             ->get();
 
         return response()->json([

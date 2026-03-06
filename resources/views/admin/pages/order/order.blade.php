@@ -3,102 +3,243 @@
 @section('sub-title', 'Liste des commandes')
 
 @section('css')
-<style>
-    /* ─── Stat cards ─────────────────────────────────────────── */
-    .stat-card {
-        border-radius: 10px;
-        padding: 12px 16px;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        min-height: 72px;
-        box-shadow: 0 2px 8px rgba(0,0,0,.12);
-        transition: transform .15s;
-    }
-    .stat-card:hover { transform: translateY(-2px); }
-    .stat-card .stat-icon { font-size: 1.6rem; opacity: .85; width: 36px; text-align: center; flex-shrink:0; }
-    .stat-card .stat-label { font-size: .72rem; opacity: .9; margin-bottom: 1px; text-transform:uppercase; letter-spacing:.4px; }
-    .stat-card .stat-value { font-size: 1.35rem; font-weight: 800; line-height: 1.1; }
-    .stat-card .stat-sub   { font-size: .68rem; opacity: .8; margin-top: 2px; }
+    <style>
+        /* ─── Stat cards ─────────────────────────────────────────── */
+        .stat-card {
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 72px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+            transition: transform .15s;
+        }
 
-    .bg-attente   { background: linear-gradient(135deg,#f7971e,#ffd200); }
-    .bg-confirmee { background: linear-gradient(135deg,#11998e,#38ef7d); }
-    .bg-livree    { background: linear-gradient(135deg,#06a278,#12d298); }
-    .bg-annulee   { background: linear-gradient(135deg,#cb2d3e,#ef473a); }
-    .bg-total     { background: linear-gradient(135deg,#289cf5,#84c0ec); }
-    .bg-montant   { background: linear-gradient(135deg,#6a3093,#a044ff); }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
 
-    /* ─── Filter bar ──────────────────────────────────────────── */
-    .filter-bar {
-        background: #f8f9fc;
-        border-top: 1px solid #e3e6f0;
-        border-bottom: 1px solid #e3e6f0;
-        padding: 14px 20px;
-    }
-    .filter-section-label {
-        font-size: .7rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .6px;
-        color: #6c757d;
-        margin-bottom: 6px;
-    }
+        .stat-card .stat-icon {
+            font-size: 1.6rem;
+            opacity: .85;
+            width: 36px;
+            text-align: center;
+            flex-shrink: 0;
+        }
 
-    /* ─── Status pills ────────────────────────────────────────── */
-    .status-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: .78rem;
-        font-weight: 600;
-        cursor: pointer;
-        text-decoration: none;
-        border: 2px solid transparent;
-        transition: all .15s;
-        white-space: nowrap;
-        color: #495057;
-        background: #fff;
-        border-color: #dee2e6;
-    }
-    .status-pill:hover { text-decoration: none; filter: brightness(.95); }
-    .status-pill .pill-count {
-        background: rgba(0,0,0,.12);
-        color: inherit;
-        border-radius: 10px;
-        padding: 0 6px;
-        font-size: .7rem;
-        font-weight: 700;
-        min-width: 18px;
-        text-align: center;
-    }
-    /* couleurs actif */
-    .pill-all.active       { background:#6c757d; border-color:#6c757d; color:#fff; }
-    .pill-attente.active   { background:#ffc107; border-color:#ffc107; color:#212529; }
-    .pill-acompte.active   { background:#fd7e14; border-color:#fd7e14; color:#fff; }
-    .pill-confirmee.active { background:#28a745; border-color:#28a745; color:#fff; }
-    .pill-cuisine.active   { background:#17a2b8; border-color:#17a2b8; color:#fff; }
-    .pill-cuisinetm.active { background:#007bff; border-color:#007bff; color:#fff; }
-    .pill-livraison.active { background:#6c757d; border-color:#6c757d; color:#fff; }
-    .pill-livree.active    { background:#20c997; border-color:#20c997; color:#fff; }
-    .pill-annulee.active   { background:#dc3545; border-color:#dc3545; color:#fff; }
-    .pill-precommande.active { background:#6f42c1; border-color:#6f42c1; color:#fff; }
+        .stat-card .stat-label {
+            font-size: .72rem;
+            opacity: .9;
+            margin-bottom: 1px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
 
-    /* couleurs hover */
-    .pill-attente:hover   { border-color:#ffc107; color:#856404; }
-    .pill-acompte:hover   { border-color:#fd7e14; color:#7a3e00; }
-    .pill-confirmee:hover { border-color:#28a745; color:#155724; }
-    .pill-cuisine:hover   { border-color:#17a2b8; color:#0c5460; }
-    .pill-cuisinetm:hover { border-color:#007bff; color:#004085; }
-    .pill-livraison:hover { border-color:#6c757d; }
-    .pill-livree:hover    { border-color:#20c997; color:#0a6a4a; }
-    .pill-annulee:hover   { border-color:#dc3545; color:#721c24; }
-    .pill-precommande:hover { border-color:#6f42c1; color:#3d0d6e; }
+        .stat-card .stat-value {
+            font-size: 1.35rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
 
-    .badge-source { font-size:.7rem; padding:2px 7px; border-radius:12px; font-weight:600; background:#f0f4ff; color:#4e73df; }
-</style>
+        .stat-card .stat-sub {
+            font-size: .68rem;
+            opacity: .8;
+            margin-top: 2px;
+        }
+
+        .bg-attente {
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+        }
+
+        .bg-confirmee {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+        }
+
+        .bg-livree {
+            background: linear-gradient(135deg, #06a278, #12d298);
+        }
+
+        .bg-annulee {
+            background: linear-gradient(135deg, #cb2d3e, #ef473a);
+        }
+
+        .bg-total {
+            background: linear-gradient(135deg, #289cf5, #84c0ec);
+        }
+
+        .bg-montant {
+            background: linear-gradient(135deg, #6a3093, #a044ff);
+        }
+
+        /* ─── Filter bar ──────────────────────────────────────────── */
+        .filter-bar {
+            background: #f8f9fc;
+            border-top: 1px solid #e3e6f0;
+            border-bottom: 1px solid #e3e6f0;
+            padding: 14px 20px;
+        }
+
+        .filter-section-label {
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            color: #6c757d;
+            margin-bottom: 6px;
+        }
+
+        /* ─── Status pills ────────────────────────────────────────── */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            border: 2px solid transparent;
+            transition: all .15s;
+            white-space: nowrap;
+            color: #495057;
+            background: #fff;
+            border-color: #dee2e6;
+        }
+
+        .status-pill:hover {
+            text-decoration: none;
+            filter: brightness(.95);
+        }
+
+        .status-pill .pill-count {
+            background: rgba(0, 0, 0, .12);
+            color: inherit;
+            border-radius: 10px;
+            padding: 0 6px;
+            font-size: .7rem;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* couleurs actif */
+        .pill-all.active {
+            background: #6c757d;
+            border-color: #6c757d;
+            color: #fff;
+        }
+
+        .pill-attente.active {
+            background: #ffc107;
+            border-color: #ffc107;
+            color: #212529;
+        }
+
+        .pill-acompte.active {
+            background: #fd7e14;
+            border-color: #fd7e14;
+            color: #fff;
+        }
+
+        .pill-confirmee.active {
+            background: #28a745;
+            border-color: #28a745;
+            color: #fff;
+        }
+
+        .pill-cuisine.active {
+            background: #17a2b8;
+            border-color: #17a2b8;
+            color: #fff;
+        }
+
+        .pill-cuisinetm.active {
+            background: #007bff;
+            border-color: #007bff;
+            color: #fff;
+        }
+
+        .pill-livraison.active {
+            background: #6c757d;
+            border-color: #6c757d;
+            color: #fff;
+        }
+
+        .pill-livree.active {
+            background: #20c997;
+            border-color: #20c997;
+            color: #fff;
+        }
+
+        .pill-annulee.active {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+        }
+
+        .pill-precommande.active {
+            background: #6f42c1;
+            border-color: #6f42c1;
+            color: #fff;
+        }
+
+        /* couleurs hover */
+        .pill-attente:hover {
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .pill-acompte:hover {
+            border-color: #fd7e14;
+            color: #7a3e00;
+        }
+
+        .pill-confirmee:hover {
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .pill-cuisine:hover {
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .pill-cuisinetm:hover {
+            border-color: #007bff;
+            color: #004085;
+        }
+
+        .pill-livraison:hover {
+            border-color: #6c757d;
+        }
+
+        .pill-livree:hover {
+            border-color: #20c997;
+            color: #0a6a4a;
+        }
+
+        .pill-annulee:hover {
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .pill-precommande:hover {
+            border-color: #6f42c1;
+            color: #3d0d6e;
+        }
+
+        .badge-source {
+            font-size: .7rem;
+            padding: 2px 7px;
+            border-radius: 12px;
+            font-weight: 600;
+            background: #f0f4ff;
+            color: #4e73df;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -117,17 +258,17 @@
 
                     {{-- ===== STATS CARDS ===== --}}
                     @php
-                        $countAttente        = $orders->where('status','attente')->count();
-                        $countAttenteAcompte = $orders->where('status','en_attente_acompte')->count();
-                        $countPrecommande    = $orders->where('status','precommande')->count();
-                        $countConfirmee      = $orders->where('status','confirmée')->count();
-                        $countCuisine        = $orders->where('status','en_cuisine')->count();
-                        $countCuisineTm      = $orders->where('status','cuisine_terminee')->count();
-                        $countLivraison      = $orders->where('status','en_livraison')->count();
-                        $countLivree         = $orders->where('status','livrée')->count();
-                        $countAnnulee        = $orders->where('status','annulée')->count();
-                        $montantTotal        = $orders->sum('total');
-                        $montantSolde        = $orders->sum('solde_restant');
+                        $countAttente = $orders->where('status', 'attente')->count();
+                        $countAttenteAcompte = $orders->where('status', 'en_attente_acompte')->count();
+                        $countPrecommande = $orders->where('status', 'precommande')->count();
+                        $countConfirmee = $orders->where('status', 'confirmée')->count();
+                        $countCuisine = $orders->where('status', 'en_cuisine')->count();
+                        $countCuisineTm = $orders->where('status', 'cuisine_terminee')->count();
+                        $countLivraison = $orders->where('status', 'en_livraison')->count();
+                        $countLivree = $orders->where('status', 'livrée')->count();
+                        $countAnnulee = $orders->where('status', 'annulée')->count();
+                        $montantTotal = $orders->sum('total');
+                        $montantSolde = $orders->sum('solde_restant');
                     @endphp
                     <div class="card-body pb-0 pt-3">
                         <div class="row" style="row-gap:10px">
@@ -147,7 +288,8 @@
                                     <div>
                                         <div class="stat-label">Attente</div>
                                         <div class="stat-value">{{ $countAttente + $countAttenteAcompte }}</div>
-                                        <div class="stat-sub">{{ $countAttenteAcompte }} acompte &bull; {{ $countPrecommande }} précmd</div>
+                                        <div class="stat-sub">{{ $countAttenteAcompte }} acompte &bull;
+                                            {{ $countPrecommande }} précmd</div>
                                     </div>
                                 </div>
                             </div>
@@ -185,8 +327,9 @@
                                     <div class="stat-icon"><i class="fas fa-coins"></i></div>
                                     <div>
                                         <div class="stat-label">CA Total</div>
-                                        <div class="stat-value" style="font-size:.9rem">{{ number_format($montantTotal,0,',',' ') }}</div>
-                                        <div class="stat-sub">Solde: {{ number_format($montantSolde,0,',',' ') }} F</div>
+                                        <div class="stat-value" style="font-size:.9rem">
+                                            {{ number_format($montantTotal, 0, ',', ' ') }}</div>
+                                        <div class="stat-sub">Solde: {{ number_format($montantSolde, 0, ',', ' ') }} F</div>
                                     </div>
                                 </div>
                             </div>
@@ -197,30 +340,30 @@
                     <div class="filter-bar">
                         @php
                             $currentStatus = request('status', 'all');
-                            $currentSource = request('source','');
+                            $currentSource = request('source', '');
                             $statusCountMap = [
-                                'all'                => count($orders),
-                                'attente'            => $countAttente,
+                                'all' => count($orders),
+                                'attente' => $countAttente,
                                 'en_attente_acompte' => $countAttenteAcompte,
-                                'precommande'        => $countPrecommande,
-                                'confirmée'          => $countConfirmee,
-                                'en_cuisine'         => $countCuisine,
-                                'cuisine_terminee'   => $countCuisineTm,
-                                'en_livraison'       => $countLivraison,
-                                'livrée'             => $countLivree,
-                                'annulée'            => $countAnnulee,
+                                'precommande' => $countPrecommande,
+                                'confirmée' => $countConfirmee,
+                                'en_cuisine' => $countCuisine,
+                                'cuisine_terminee' => $countCuisineTm,
+                                'en_livraison' => $countLivraison,
+                                'livrée' => $countLivree,
+                                'annulée' => $countAnnulee,
                             ];
                             $pillList = [
-                                'all'                => ['label'=>'Tous',            'cls'=>'pill-all'],
-                                'attente'            => ['label'=>'Attente',          'cls'=>'pill-attente'],
-                                'en_attente_acompte' => ['label'=>'Att. acompte',     'cls'=>'pill-acompte'],
-                                'precommande'        => ['label'=>'Précommande',      'cls'=>'pill-precommande'],
-                                'confirmée'          => ['label'=>'Confirmée',        'cls'=>'pill-confirmee'],
-                                'en_cuisine'         => ['label'=>'En cuisine',       'cls'=>'pill-cuisine'],
-                                'cuisine_terminee'   => ['label'=>'Cuisine termin.',  'cls'=>'pill-cuisinetm'],
-                                'en_livraison'       => ['label'=>'En livraison',     'cls'=>'pill-livraison'],
-                                'livrée'             => ['label'=>'Livrée',           'cls'=>'pill-livree'],
-                                'annulée'            => ['label'=>'Annulée',          'cls'=>'pill-annulee'],
+                                'all' => ['label' => 'Tous', 'cls' => 'pill-all'],
+                                'attente' => ['label' => 'Attente', 'cls' => 'pill-attente'],
+                                'en_attente_acompte' => ['label' => 'Att. acompte', 'cls' => 'pill-acompte'],
+                                'precommande' => ['label' => 'Précommande', 'cls' => 'pill-precommande'],
+                                'confirmée' => ['label' => 'Confirmée', 'cls' => 'pill-confirmee'],
+                                'en_cuisine' => ['label' => 'En cuisine', 'cls' => 'pill-cuisine'],
+                                'cuisine_terminee' => ['label' => 'Cuisine termin.', 'cls' => 'pill-cuisinetm'],
+                                'en_livraison' => ['label' => 'En livraison', 'cls' => 'pill-livraison'],
+                                'livrée' => ['label' => 'Livrée', 'cls' => 'pill-livree'],
+                                'annulée' => ['label' => 'Annulée', 'cls' => 'pill-annulee'],
                             ];
                         @endphp
 
@@ -228,12 +371,12 @@
                         <div class="mb-3">
                             <div class="filter-section-label"><i class="fas fa-filter mr-1"></i>Statut</div>
                             <div class="d-flex flex-wrap" style="gap:6px">
-                                @foreach($pillList as $val => $opt)
-                                <a href="{{ route('order.index') }}?status={{ $val }}&date_debut={{ $dateDebut }}&date_fin={{ $dateFin }}&source={{ $currentSource }}"
-                                   class="status-pill {{ $opt['cls'] }} {{ $currentStatus == $val ? 'active' : '' }}">
-                                   {{ $opt['label'] }}
-                                   <span class="pill-count">{{ $statusCountMap[$val] ?? 0 }}</span>
-                                </a>
+                                @foreach ($pillList as $val => $opt)
+                                    <a href="{{ route('order.index') }}?status={{ $val }}&date_debut={{ $dateDebut }}&date_fin={{ $dateFin }}&source={{ $currentSource }}"
+                                        class="status-pill {{ $opt['cls'] }} {{ $currentStatus == $val ? 'active' : '' }}">
+                                        {{ $opt['label'] }}
+                                        <span class="pill-count">{{ $statusCountMap[$val] ?? 0 }}</span>
+                                    </a>
                                 @endforeach
                             </div>
                         </div>
@@ -245,30 +388,35 @@
                                 <div class="filter-section-label"><i class="fas fa-globe mr-1"></i>Provenance</div>
                                 <div class="d-flex flex-wrap" style="gap:5px">
                                     <a href="{{ route('order.index') }}?status={{ $currentStatus }}&date_debut={{ $dateDebut }}&date_fin={{ $dateFin }}"
-                                        class="status-pill pill-all {{ !$currentSource ? 'active':'' }}">Toutes</a>
-                                    @foreach($sources as $srcKey => $src)
-                                    <a href="{{ route('order.index') }}?status={{ $currentStatus }}&date_debut={{ $dateDebut }}&date_fin={{ $dateFin }}&source={{ $srcKey }}"
-                                        class="status-pill pill-confirmee {{ $currentSource==$srcKey ? 'active':'' }}">
-                                        <i class="fab {{ $src['icon'] }}"></i> {{ $src['label'] }}
-                                    </a>
+                                        class="status-pill pill-all {{ !$currentSource ? 'active' : '' }}">Toutes</a>
+                                    @foreach ($sources as $srcKey => $src)
+                                        <a href="{{ route('order.index') }}?status={{ $currentStatus }}&date_debut={{ $dateDebut }}&date_fin={{ $dateFin }}&source={{ $srcKey }}"
+                                            class="status-pill pill-confirmee {{ $currentSource == $srcKey ? 'active' : '' }}">
+                                            <i class="fab {{ $src['icon'] }}"></i> {{ $src['label'] }}
+                                        </a>
                                     @endforeach
                                 </div>
                             </div>
 
-                            <form action="{{ route('order.index') }}" method="get" class="d-flex align-items-end" style="gap:8px;flex-shrink:0">
+                            <form action="{{ route('order.index') }}" method="get" class="d-flex align-items-end"
+                                style="gap:8px;flex-shrink:0">
                                 <input type="hidden" name="status" value="{{ $currentStatus }}">
                                 <input type="hidden" name="source" value="{{ $currentSource }}">
                                 <div>
                                     <div class="filter-section-label">Du</div>
-                                    <input type="date" name="date_debut" class="form-control form-control-sm" value="{{ $dateDebut }}" style="width:138px">
+                                    <input type="date" name="date_debut" class="form-control form-control-sm"
+                                        value="{{ $dateDebut }}" style="width:138px">
                                 </div>
                                 <div>
                                     <div class="filter-section-label">Au</div>
-                                    <input type="date" name="date_fin" class="form-control form-control-sm" value="{{ $dateFin }}" style="width:138px">
+                                    <input type="date" name="date_fin" class="form-control form-control-sm"
+                                        value="{{ $dateFin }}" style="width:138px">
                                 </div>
                                 <div class="d-flex" style="gap:4px;margin-bottom:1px">
-                                    <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i></button>
-                                    <a href="{{ route('order.index') }}" class="btn btn-sm btn-outline-secondary" title="Réinitialiser"><i class="fa fa-undo"></i></a>
+                                    <button type="submit" class="btn btn-sm btn-primary"><i
+                                            class="fa fa-search"></i></button>
+                                    <a href="{{ route('order.index') }}" class="btn btn-sm btn-outline-secondary"
+                                        title="Réinitialiser"><i class="fa fa-undo"></i></a>
                                 </div>
                             </form>
 
@@ -305,34 +453,38 @@
                                     @foreach ($orders as $key => $item)
                                         @php
                                             $statusColors = [
-                                                'attente'            => 'warning',
+                                                'attente' => 'warning',
                                                 'en_attente_acompte' => 'warning',
-                                                'confirmée'          => 'success',
-                                                'en_cuisine'         => 'info',
-                                                'cuisine_terminee'   => 'primary',
-                                                'en_livraison'       => 'secondary',
-                                                'livrée'             => 'success',
-                                                'annulée'            => 'danger',
+                                                'confirmée' => 'success',
+                                                'en_cuisine' => 'info',
+                                                'cuisine_terminee' => 'primary',
+                                                'en_livraison' => 'secondary',
+                                                'livrée' => 'success',
+                                                'annulée' => 'danger',
                                             ];
                                             $statusLabels = [
-                                                'attente'            => 'En attente',
+                                                'attente' => 'En attente',
                                                 'en_attente_acompte' => 'Attente acompte',
-                                                'confirmée'          => 'Confirmée',
-                                                'en_cuisine'         => 'En cuisine',
-                                                'cuisine_terminee'   => 'Cuisine terminée',
-                                                'en_livraison'       => 'En livraison',
-                                                'livrée'             => 'Livrée',
-                                                'annulée'            => 'Annulée',
+                                                'confirmée' => 'Confirmée',
+                                                'en_cuisine' => 'En cuisine',
+                                                'cuisine_terminee' => 'Cuisine terminée',
+                                                'en_livraison' => 'En livraison',
+                                                'livrée' => 'Livrée',
+                                                'annulée' => 'Annulée',
                                             ];
-                                            $sc     = $statusColors[$item->status] ?? 'secondary';
-                                            $sl     = $statusLabels[$item->status] ?? $item->status;
-                                            $srcIcon  = \App\Models\Order::$sources[$item->source]['icon'] ?? 'fa-question';
-                                            $srcLabel = \App\Models\Order::$sources[$item->source]['label'] ?? ($item->source ?? '—');
+                                            $sc = $statusColors[$item->status] ?? 'secondary';
+                                            $sl = $statusLabels[$item->status] ?? $item->status;
+                                            $srcIcon =
+                                                \App\Models\Order::$sources[$item->source]['icon'] ?? 'fa-question';
+                                            $srcLabel =
+                                                \App\Models\Order::$sources[$item->source]['label'] ??
+                                                ($item->source ?? '—');
                                         @endphp
                                         <tr id="row_{{ $item->id }}">
                                             <td>{{ ++$key }}</td>
                                             <td>
-                                                <span class="badge badge-{{ $sc }} text-white p-1 px-2" style="white-space:nowrap;font-size:.75rem">
+                                                <span class="badge badge-{{ $sc }} text-white p-1 px-2"
+                                                    style="white-space:nowrap;font-size:.75rem">
                                                     {{ $sl }}
                                                 </span>
                                             </td>
@@ -344,9 +496,12 @@
                                             <td><strong>{{ $item->code }}</strong></td>
                                             <td>{{ $item->nom_client }}</td>
                                             <td>{{ $item->tel_client }}</td>
-                                            <td class="text-right font-weight-bold">{{ number_format($item->total ?? 0, 0, '', ' ') }} FCFA</td>
-                                            <td class="text-right text-success small">{{ number_format($item->acompte ?? 0, 0, '', ' ') }}</td>
-                                            <td class="text-right small {{ ($item->solde_restant ?? 0) > 0 ? 'text-danger' : 'text-muted' }}">
+                                            <td class="text-right font-weight-bold">
+                                                {{ number_format($item->total ?? 0, 0, '', ' ') }} FCFA</td>
+                                            <td class="text-right text-success small">
+                                                {{ number_format($item->acompte ?? 0, 0, '', ' ') }}</td>
+                                            <td
+                                                class="text-right small {{ ($item->solde_restant ?? 0) > 0 ? 'text-danger' : 'text-muted' }}">
                                                 {{ number_format($item->solde_restant ?? 0, 0, '', ' ') }}
                                             </td>
                                             <td style="white-space:nowrap;font-size:.82rem">
@@ -358,25 +513,28 @@
                                                         class="btn btn-sm btn-warning dropdown-toggle">Options</a>
                                                     <div class="dropdown-menu dropdown-menu-right">
                                                         <a href="{{ route('order.show', $item->id) }}"
-                                                            class="dropdown-item has-icon"><i class="fas fa-eye"></i> Détail</a>
+                                                            class="dropdown-item has-icon"><i class="fas fa-eye"></i>
+                                                            Détail</a>
                                                         <a href="{{ route('pos.edit', $item->id) }}"
-                                                            class="dropdown-item has-icon"><i class="fas fa-edit"></i> Modifier</a>
-                                                        @if(!in_array($item->status, ['livrée','annulée']))
-                                                        <div class="dropdown-divider"></div>
-                                                        @foreach($statuts as $stKey => $st)
-                                                            @if($stKey !== $item->status)
-                                                            <a href="{{ route('order.changeState') }}?cs={{ $stKey }}&id={{ $item->id }}"
-                                                                class="dropdown-item has-icon {{ $stKey==='annulée' ? 'text-danger':'' }}">
-                                                                {{ $st['label'] }}
+                                                            class="dropdown-item has-icon"><i class="fas fa-edit"></i>
+                                                            Modifier</a>
+                                                        {{-- @if (!in_array($item->status, ['livrée', 'annulée']))
+                                                            <div class="dropdown-divider"></div>
+                                                            @foreach ($statuts as $stKey => $st)
+                                                                @if ($stKey !== $item->status)
+                                                                    <a href="{{ route('order.changeState') }}?cs={{ $stKey }}&id={{ $item->id }}"
+                                                                        class="dropdown-item has-icon {{ $stKey === 'annulée' ? 'text-danger' : '' }}">
+                                                                        {{ $st['label'] }}
+                                                                    </a>
+                                                                @endif
+                                                            @endforeach
+                                                            <div class="dropdown-divider"></div>
+                                                            <a href="#" role="button"
+                                                                data-id="{{ $item->id }}"
+                                                                class="dropdown-item has-icon text-danger btnCancel">
+                                                                <i data-feather="x-circle"></i> Annuler
                                                             </a>
-                                                            @endif
-                                                        @endforeach
-                                                        <div class="dropdown-divider"></div>
-                                                        <a href="#" role="button" data-id="{{ $item->id }}"
-                                                            class="dropdown-item has-icon text-danger btnCancel">
-                                                            <i data-feather="x-circle"></i> Annuler
-                                                        </a>
-                                                        @endif
+                                                        @endif --}}
                                                     </div>
                                                 </div>
                                             </td>
@@ -513,52 +671,27 @@
 
                     // motif d'annulation 
 
-                    $('.motif_autre').hide(); //textarea autre_motif
-                    $('#motif_annulation').hide(); // div form
+                    $('.motif_autre').hide();
 
-                    //si on appuie sur annuler une commande
-                    $('.btnCancel').click(function(e) {
+                    $('.btnCancel').on('click', function(e) {
                         e.preventDefault();
-                        //on recupere ID de la commande
                         var cmdId = $(this).attr('data-id');
-
                         $('#commandeId').val(cmdId);
-
-                        //scroller jusqu'au formulaire motif annulation
-                        $('html, body').animate({
-                            scrollTop: $("#motif_annulation").offset().top - 90
-                        }, 500);
-
-                        //afficher le formulaire
-                        $('#motif_annulation').show(); // div form
-
-
-                        //choisir le motif
-                        $('#motif_selected').change(function(e) {
-                            e.preventDefault();
-                            var motif_select = $(this).val()
-
-                            if (motif_select == 'autre') {
-                                $('.motif_autre').show();
-                                $('#_motif_autre').prop('required', true);
-
-                            } else {
-                                $('.motif_autre').hide();
-                                $('#_motif_autre').prop('required', false);
-
-                            }
-
-                        });
+                        $('#motif_selected').val('');
+                        $('#_motif_autre').val('');
+                        $('.motif_autre').hide();
+                        $('#_motif_autre').prop('required', false);
+                        $('#modalMotifAnnulation').modal('show');
                     });
 
-
-                    //fermer le formulaire motif annulation
-                    $('.btn-close').click(function(e) {
-                        e.preventDefault();
-                        $('#motif_selected').val('')
-                        $('#_motif_autre').val('')
-                        $('#motif_annulation').hide(); // div form
-                        $('.motif_autre').hide(); //textarea autre_motif
+                    $('#motif_selected').on('change', function() {
+                        if ($(this).val() === 'autre') {
+                            $('.motif_autre').show();
+                            $('#_motif_autre').prop('required', true);
+                        } else {
+                            $('.motif_autre').hide();
+                            $('#_motif_autre').prop('required', false);
+                        }
                     });
 
 
@@ -649,19 +782,19 @@
                                                         <i class="fas fa-eye"></i> Detail
                                                     </a>
                                                     ${item.status !== 'livrée' && item.status !== 'annulée' ? `
-                                                                        <a href="/admin/order/changeState?cs=confirmée && id=${item.id}" class="dropdown-item has-icon">
-                                                                            <i class="fas fa-check"></i> Confirmée
-                                                                        </a>
-                                                                        <a href="/admin/order/changeState?cs=livrée && id=${item.id}" class="dropdown-item has-icon">
-                                                                            <i class="fas fa-shipping-fast"></i> Livrée
-                                                                        </a>
-                                                                        <a href="/admin/order/changeState?cs=attente && id=${item.id}" class="dropdown-item has-icon">
-                                                                            <i class="fas fa-arrow-down"></i> Attente
-                                                                        </a>
-                                                                        <a href="#" role="button" data-id="${item.id}" class="dropdown-item has-icon text-danger btnCancel">
-                                                                            <i data-feather="x-circle"></i> Annuler
-                                                                        </a>
-                                                                    ` : ''}
+                                                                            <a href="/admin/order/changeState?cs=confirmée && id=${item.id}" class="dropdown-item has-icon">
+                                                                                <i class="fas fa-check"></i> Confirmée
+                                                                            </a>
+                                                                            <a href="/admin/order/changeState?cs=livrée && id=${item.id}" class="dropdown-item has-icon">
+                                                                                <i class="fas fa-shipping-fast"></i> Livrée
+                                                                            </a>
+                                                                            <a href="/admin/order/changeState?cs=attente && id=${item.id}" class="dropdown-item has-icon">
+                                                                                <i class="fas fa-arrow-down"></i> Attente
+                                                                            </a>
+                                                                            <a href="#" role="button" data-id="${item.id}" class="dropdown-item has-icon text-danger btnCancel">
+                                                                                <i data-feather="x-circle"></i> Annuler
+                                                                            </a>
+                                                                        ` : ''}
                                                 </div>
                                             </div>
                                         </td>

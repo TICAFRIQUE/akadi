@@ -1,0 +1,134 @@
+<?php
+
+namespace App\Http\Controllers\admin;
+
+use App\Models\User;
+use App\Models\Order;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+
+class ClientController extends Controller
+{
+    private array $typeClientOptions = ['prospect', 'fidele'];
+
+    public function listClient()
+    {
+        $typeClient = request('type');
+
+        $dateDebut = request('date_debut', !request()->has('date_debut') ? now()->startOfMonth()->format('Y-m-d') : null);
+        $dateFin   = request('date_fin',   !request()->has('date_fin')   ? now()->endOfMonth()->format('Y-m-d')   : null);
+
+        $users = User::withCount(['orders'])
+            ->where('role', 'client')
+            ->when($typeClient, fn($q) => $q->where('type_client', $typeClient))
+            ->when($dateDebut, fn($q) => $q->whereDate('created_at', '>=', $dateDebut))
+            ->when($dateFin,   fn($q) => $q->whereDate('created_at', '<=', $dateFin))
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        return view('admin.pages.client.clientList', compact('users', 'dateDebut', 'dateFin'));
+    }
+
+    public function detail($id)
+    {
+        $user = User::withCount(['orders'])
+            ->with(['roles', 'orders'])
+            ->whereId($id)->first();
+
+        $orders_annule = Order::where('user_id', $id)->whereStatus('annulée')->count();
+        $orders_livre  = Order::where('user_id', $id)->whereStatus('livrée')->count();
+
+        return view('admin.pages.client.detail', compact('user', 'orders_annule', 'orders_livre'));
+    }
+
+    public function create()
+    {
+        return view('admin.pages.client.create');
+    }
+
+    public function store(Request $request)
+    {
+        $user_verify_phone = User::wherePhone($request['phone'])->first();
+
+        if ($user_verify_phone != null) {
+            return back()->withError('Ce numéro de téléphone est déjà associé à un compte, veuillez utiliser un autre');
+        }
+
+        if ($request->filled('email') && User::whereEmail($request['email'])->exists()) {
+            return back()->withError('Cet email est déjà associé à un compte, veuillez utiliser un autre');
+        }
+
+        $request->validate([
+            'name'  => 'required',
+            'phone' => 'required',
+            'email' => 'nullable|email',
+        ]);
+
+        $date_anniv = '';
+        if ($request->jour && $request->mois) {
+            $date_anniv = $request->jour . '-' . $request->mois;
+        }
+
+        $pwd_generate = $request->filled('password') ? null : 'password';
+        $password     = $request->filled('password') ? $request->password : $pwd_generate;
+
+        $user = User::create([
+            'name'              => $request['name'],
+            'phone'             => $request['phone'],
+            'email'             => $request->filled('email') ? $request->email : null,
+            'shop_name'         => $request->shop_name,
+            'role'              => 'client',
+            'type_client'       => 'prospect',
+            'localisation'      => $request->localisation,
+            'date_anniversaire' => $date_anniv,
+            'password'          => Hash::make($password),
+        ]);
+
+        $user->assignRole('client');
+
+        return back()->with('success', 'Client ajouté avec succès');
+    }
+
+    public function edit($id)
+    {
+        $user              = User::find($id);
+        $typeClientOptions = $this->typeClientOptions;
+        return view('admin.pages.client.edit_client', compact('user', 'typeClientOptions'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $date_anniv = '';
+        if ($request->jour && $request->mois) {
+            $date_anniv = $request->jour . '-' . $request->mois;
+        }
+
+        $updateData = [
+            'name'              => $request['name'],
+            'phone'             => $request['phone'],
+            'email'             => $request->email,
+            'role'              => 'client',
+            'type_client'       => $request->type_client,
+            'date_anniversaire' => $date_anniv,
+            'localisation'      => $request->localisation,
+        ];
+
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request['password']);
+        }
+
+        tap(User::find($id))->update($updateData);
+
+        return back()->with('success', 'Client modifié avec succès');
+    }
+
+    public function destroy($id)
+    {
+        Order::where('user_id', $id)->delete();
+        User::whereId($id)->delete();
+
+        return response()->json(['status' => 200]);
+    }
+}

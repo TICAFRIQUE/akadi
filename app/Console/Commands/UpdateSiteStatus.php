@@ -55,21 +55,21 @@ class UpdateSiteStatus extends Command
             $coupon->update(['status' => $status]);
         });
 
-        // Utilisateurs : mise à jour rôle // prospect -> pas de commande, fidèle -> commande récente dans le mois en cours
-        User::withCount('orders')
-            ->whereNotIn('role', ['developpeur', 'administrateur', 'gestionnaire'])
+        // Clients : mise à jour type_client // prospect -> aucune commande, fidele -> commande dans le mois en cours
+        User::withCount('orders')->with('orders')
+            ->where('role', 'client')
             ->get()
             ->each(function ($user) use ($now) {
-                if ($user->orders_count == 0) {
-                    $user->update(['role' => 'prospect']);
-                }
+                $type = 'prospect';
 
                 foreach ($user->orders as $order) {
                     if (Carbon::parse($order->date_order)->format('m') == $now->format('m')) {
-                        $user->update(['role' => 'fidele']);
+                        $type = 'fidele';
                         break;
                     }
                 }
+
+                $user->update(['type_client' => $type]);
             });
 
         // Anniversaires

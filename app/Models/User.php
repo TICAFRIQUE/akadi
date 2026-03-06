@@ -32,11 +32,11 @@ class User extends Authenticatable
         'password',
         'avatar',
         'role',
+        'type_client', // prospect | fidele | autre
         'shop_name',
         'localisation',
         'date_anniversaire',
-        'notify_birthday'
-
+        'notify_birthday',
     ];
 
     public static function boot()

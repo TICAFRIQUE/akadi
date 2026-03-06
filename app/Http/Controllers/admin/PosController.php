@@ -22,9 +22,9 @@ class PosController extends Controller
      */
     public function create()
     {
-        if (!session('caisse_id')) {
-            return redirect()->route('caisse.selection')->with('error', 'Veuillez d\'abord sélectionner une caisse.');
-        }
+        // if (!session('caisse_id')) {
+        //     return redirect()->route('caisse.selection')->with('error', 'Veuillez d\'abord sélectionner une caisse.');
+        // }
 
         $products       = Product::with('media')->where('disponibilite', '!=', 'indisponible')->orWhereNull('disponibilite')->orderBy('title')->get();
         $paymentMethods = PaymentMethod::actif()->get();
@@ -35,7 +35,12 @@ class PosController extends Controller
         $caisse         = $caisse_id ? Caisse::find($caisse_id) : null;
 
         return view('admin.pages.pos.create', compact(
-            'products', 'paymentMethods', 'deliveries', 'sources', 'statuts', 'caisse'
+            'products',
+            'paymentMethods',
+            'deliveries',
+            'sources',
+            'statuts',
+            'caisse'
         ));
     }
 
@@ -58,9 +63,9 @@ class PosController extends Controller
      */
     public function store(Request $request)
     {
-        if (!session('caisse_id')) {
-            return redirect()->route('caisse.selection')->with('error', 'Veuillez d\'abord sélectionner une caisse.');
-        }
+        // if (!session('caisse_id')) {
+        //     return redirect()->route('caisse.selection')->with('error', 'Veuillez d\'abord sélectionner une caisse.');
+        // }
 
         $status = $request->input('status', Order::STATUS_ATTENTE);
         $isAttente = in_array($status, [Order::STATUS_ATTENTE, Order::STATUS_PRECOMMANDE, Order::STATUS_ATTENTE_ACOMPTE]);
@@ -233,9 +238,9 @@ class PosController extends Controller
      */
     public function edit($id)
     {
-        if (!session('caisse_id')) {
-            return redirect()->route('caisse.selection')->with('error', 'Veuillez d\'abord sélectionner une caisse.');
-        }
+        // if (!session('caisse_id')) {
+        //     return redirect()->route('caisse.selection')->with('error', 'Veuillez d\'abord sélectionner une caisse.');
+        // }
 
         $order          = Order::with(['products', 'user', 'paymentMethod', 'caisse'])->findOrFail($id);
         $products       = Product::with('media')->orderBy('title')->get();
@@ -245,7 +250,12 @@ class PosController extends Controller
         $statuts        = Order::$statuts;
 
         return view('admin.pages.pos.edit', compact(
-            'order', 'products', 'paymentMethods', 'deliveries', 'sources', 'statuts'
+            'order',
+            'products',
+            'paymentMethods',
+            'deliveries',
+            'sources',
+            'statuts'
         ));
     }
 
@@ -254,9 +264,9 @@ class PosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (!session('caisse_id')) {
-            return redirect()->route('caisse.selection')->with('error', 'Veuillez d\'abord sélectionner une caisse.');
-        }
+        // if (!session('caisse_id')) {
+        //     return redirect()->route('caisse.selection')->with('error', 'Veuillez d\'abord sélectionner une caisse.');
+        // }
 
         $order = Order::findOrFail($id);
 

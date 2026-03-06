@@ -48,9 +48,14 @@
                         <span class="dropdown-item text-success font-weight-bold" style="cursor:default;background:#f0fff4">
                             <i class="fas fa-check-circle mr-1"></i>{{ $st['label'] }}
                         </span>
+                        @elseif($stKey === 'annulée')
+                        <a href="#" data-id="{{ $orders->id }}" data-toggle="modal" data-target="#modalMotifAnnulation"
+                            class="dropdown-item text-danger btnCancel">
+                            <i class="fas fa-ban mr-1"></i>{{ $st['label'] }}
+                        </a>
                         @else
                         <a href="{{ route('order.changeState') }}?cs={{ $stKey }}&id={{ $orders->id }}"
-                            class="dropdown-item {{ $stKey==='annulée' ? 'text-danger' : '' }}">
+                            class="dropdown-item">
                             {{ $st['label'] }}
                         </a>
                         @endif
@@ -245,9 +250,14 @@
                         <span class="btn btn-sm btn-success font-weight-bold" style="cursor:default;opacity:1">
                             <i class="fas fa-check-circle mr-1"></i>{{ $st['label'] }}
                         </span>
+                        @elseif($stKey === 'annul\u00e9e')
+                        <a href="#" data-id="{{ $orders->id }}" data-toggle="modal" data-target="#modalMotifAnnulation"
+                            class="btn btn-sm btn-outline-danger btnCancel">
+                            <i class="fas fa-ban mr-1"></i>{{ $st['label'] }}
+                        </a>
                         @else
                         <a href="{{ route('order.changeState') }}?cs={{ $stKey }}&id={{ $orders->id }}"
-                            class="btn btn-sm btn-outline-{{ ['annulée'=>'danger'][$stKey] ?? 'secondary' }}">
+                            class="btn btn-sm btn-outline-secondary">
                             {{ $st['label'] }}
                         </a>
                         @endif
@@ -284,21 +294,23 @@ document.getElementById('form-acompte')?.addEventListener('submit', function(e) 
 @endif
 
 $('.motif_autre').hide();
-$('#motif_annulation').hide();
-$('.btnCancel').click(function(e) {
+$('.btnCancel').on('click', function(e) {
     e.preventDefault();
-    $('#commandeId').val($(this).attr('data-id'));
-    $('html,body').animate({ scrollTop: $("#motif_annulation").offset().top - 90 }, 500);
-    $('#motif_annulation').show();
-    $('#motif_selected').change(function() {
-        if ($(this).val() === 'autre') { $('.motif_autre').show(); $('#_motif_autre').prop('required', true); }
-        else { $('.motif_autre').hide(); $('#_motif_autre').prop('required', false); }
-    });
+    $('#commandeId').val($(this).data('id'));
+    $('#motif_selected').val('');
+    $('#_motif_autre').val('');
+    $('.motif_autre').hide();
+    $('#_motif_autre').prop('required', false);
+    $('#modalMotifAnnulation').modal('show');
 });
-$('.btn-close').click(function(e) {
-    e.preventDefault();
-    $('#motif_selected').val(''); $('#_motif_autre').val('');
-    $('#motif_annulation').hide(); $('.motif_autre').hide();
+$('#motif_selected').on('change', function() {
+    if ($(this).val() === 'autre') {
+        $('.motif_autre').show();
+        $('#_motif_autre').prop('required', true);
+    } else {
+        $('.motif_autre').hide();
+        $('#_motif_autre').prop('required', false);
+    }
 });
 </script>
 @endsection
