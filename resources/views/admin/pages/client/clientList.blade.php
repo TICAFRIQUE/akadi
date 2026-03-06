@@ -79,7 +79,8 @@
                                             <th>Email</th>
                                             <th>Date anniversaire</th>
                                             <th>Type</th>
-                                            <th>Commandes</th>
+                                            <th>Total cmdes</th>
+                                            <th>Ce mois</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -114,7 +115,16 @@
                                                         {{ ucfirst($item['type_client'] ?? 'prospect') }}
                                                     </span>
                                                 </td>
-                                                <td>{{ $item->orders_count }}</td>
+                                                <td>
+                                                    <span class="badge badge-{{ $item->orders_count > 0 ? 'dark' : 'secondary' }}">
+                                                        {{ $item->orders_count }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-{{ $item->orders_month_count > 0 ? 'info' : 'light text-muted' }}">
+                                                        {{ $item->orders_month_count }}
+                                                    </span>
+                                                </td>
                                                 <td>
                                                     <div class="dropdown">
                                                         <a href="#" data-toggle="dropdown"
@@ -152,11 +162,11 @@
             var table = $('#tableExport').DataTable({
                 dom: 'Bfrtip',
                 buttons: [
-                    { extend: 'copy',  exportOptions: { columns: [0,1,2,3,4,5,6,7] } },
-                    { extend: 'csv',   exportOptions: { columns: [0,1,2,3,4,5,6,7] } },
-                    { extend: 'excel', exportOptions: { columns: [0,1,2,3,4,5,6,7] } },
-                    { extend: 'pdf',   exportOptions: { columns: [0,1,2,3,4,5,6,7] } },
-                    { extend: 'print', exportOptions: { columns: [0,1,2,3,4,5,6,7] } },
+                    { extend: 'copy',  exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
+                    { extend: 'csv',   exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
+                    { extend: 'excel', exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
+                    { extend: 'pdf',   exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
+                    { extend: 'print', exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
                 ],
                 drawCallback: function(settings) {
                     $('.delete').on("click", function(e) {
