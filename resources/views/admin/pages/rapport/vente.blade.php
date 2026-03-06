@@ -141,7 +141,7 @@
                                                 <th>Categorie</th>
                                                 <th>Prix Unitaire</th>
                                                 <th>Quantité Vendue</th>
-                                                <th>Chiffre d'Affaires</th>
+                                                <th>Total</th>
                                             </tr>
                                         </thead>
                                         <tbody>

@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\admin;
 
-use Exception;
-use Carbon\Carbon;
+use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailJob;
 use App\Models\Order;
 use App\Models\PaymentMethod;
-use Illuminate\Support\Str;
 use App\Services\TicAfriqueService;
-use App\Jobs\SendEmailJob;
-use Illuminate\Http\Request;
-use PHPMailer\PHPMailer\PHPMailer;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class OrderController extends Controller
 {
@@ -146,7 +147,7 @@ class OrderController extends Controller
 
         $order = Order::with('user')->whereId($orderId)->first();
 
-        Order::whereId($orderId)->update(['status' => $state]);
+        Order::whereId($orderId)->update(['status' => $state , 'created_by' => Auth::id()]);
 
         // Envoyer SMS seulement si confirmée
         if ($state === Order::STATUS_CONFIRMEE) {
