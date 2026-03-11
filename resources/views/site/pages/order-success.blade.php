@@ -89,7 +89,20 @@
                             </div>
                             <div class="timeline-content">
                                 <h6>Livraison</h6>
-                                <small>{{ \Carbon\Carbon::parse($order->delivery_planned)->format('d/m/Y') }}</small>
+                                <small>
+                                    @php
+                                        try {
+                                            // Vérifier si c'est une vraie date
+                                            if (preg_match('/^\d{4}-\d{2}-\d{2}/', $order->delivery_planned)) {
+                                                echo \Carbon\Carbon::parse($order->delivery_planned)->format('d/m/Y');
+                                            } else {
+                                                echo $order->delivery_planned;
+                                            }
+                                        } catch (\Exception $e) {
+                                            echo $order->delivery_planned ?? 'À définir';
+                                        }
+                                    @endphp
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -115,7 +128,20 @@
                                             <i class="fas fa-truck"></i>
                                             Livraison prévue
                                         </div>
-                                        <div class="info-value">{{ \Carbon\Carbon::parse($order->delivery_planned)->format('d/m/Y') }}</div>
+                                        <div class="info-value">
+                                            @php
+                                                try {
+                                                    // Vérifier si c'est une vraie date
+                                                    if (preg_match('/^\d{4}-\d{2}-\d{2}/', $order->delivery_planned)) {
+                                                        echo \Carbon\Carbon::parse($order->delivery_planned)->format('d/m/Y');
+                                                    } else {
+                                                        echo $order->delivery_planned;
+                                                    }
+                                                } catch (\Exception $e) {
+                                                    echo $order->delivery_planned ?? 'À définir';
+                                                }
+                                            @endphp
+                                        </div>
                                     </div>
                                     <div class="info-row">
                                         <div class="info-label">
