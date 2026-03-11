@@ -329,7 +329,8 @@
                                         <div class="stat-label">CA Total</div>
                                         <div class="stat-value" style="font-size:.9rem">
                                             {{ number_format($montantTotal, 0, ',', ' ') }}</div>
-                                        <div class="stat-sub">Solde: {{ number_format($montantSolde, 0, ',', ' ') }} F</div>
+                                        <div class="stat-sub">Solde: {{ number_format($montantSolde, 0, ',', ' ') }} F
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -444,7 +445,7 @@
                                         <th>Contact</th>
                                         <th>Total</th>
                                         <th>Acompte</th>
-                                        <th>Solde</th>
+                                        <th>Solde restant</th>
                                         <th>Date</th>
                                         <th>Action</th>
                                     </tr>
@@ -558,6 +559,7 @@
             var table = $('#tableExport').DataTable({
                 // destroy: true,
                 dom: 'Bfrtip',
+                order: [[9, 'desc']], // tri par défaut : Date décroissante (colonne index 9)
                 buttons: [
 
                     // {
@@ -698,120 +700,113 @@
 
 
 
-                    //executer la fonction chaque 5 secondes
-                    // setInterval(newOrders, 5000);
-
-                    setInterval(function() {
-                        moment.locale('fr'); // définit la langue en français
-                        $.ajax({
-                            url: "{{ route('order.checkNewOrder') }}",
-                            method: "GET",
-                            success: function(data) {
-                                console.log(data);
-
-                                if (data.orders && data.orders.length > 0) {
-
-                                    // jouer la notification
-                                    const audio = new Audio(
-                                        '/assets/sound/notification.mp3');
-                                    audio.play();
-                                    // Afficher une notification
-                                    const notification = document.createElement(
-                                        'div');
-                                    notification.className = 'notification';
-                                    notification.innerHTML = `
-                                    <div class="notification-content">
-                                        <strong>Nouvelle commande</strong>
-                                        <p>Vous avez ${data.orders.length} nouvelle(s) commande(s).</p>
-                                    </div>
-                                `;
-                                    document.body.appendChild(notification);
-                                    // Supprimer la notification après 5 secondes
-                                    setTimeout(() => {
-                                        notification.remove();
-                                    })
+                }   // fin drawCallback
+            });    // fin DataTable
 
 
-                                    data.orders.forEach(function(item, index) {
-                                        if (!document.querySelector(
-                                                '#row_' + item
-                                                .id)) {
-                                            let badgeClass = '';
-                                            let icon = '';
+          // URLs injectées par Blade (évite les \' dans interpolations qui causent une erreur PHP)
+            var _orderShowUrl = '{{ url("admin/order/show") }}';
+            var _orderEditUrl = '{{ url("admin/pos") }}';
 
-                                            switch (item.status) {
-                                                case 'attente':
-                                                    badgeClass =
-                                                        'badge-primary';
-                                                    break;
-                                                case 'livrée':
-                                                    badgeClass =
-                                                        'badge-success';
-                                                    break;
-                                                case 'confirmée':
-                                                    badgeClass =
-                                                        'badge-info';
-                                                    break;
-                                                case 'annulée':
-                                                    badgeClass =
-                                                        'badge-danger';
-                                                    break;
-                                                case 'precommande':
-                                                    badgeClass =
-                                                        'badge-dark';
-                                                    icon =
-                                                        '<i class="fa fa-clock"></i> ';
-                                                    break;
-                                            }
+            // ── Polling nouvelles commandes ──────────────────────────────────────────
+            // IMPORTANT : lancé UNE SEULE FOIS ici (hors drawCallback pour éviter
+            // la multiplication des intervalles à chaque redraw DataTables)
+            (function initOrderPolling() {
+                let lastSeenId = 0;
+                // Set JS pour la déduplication : fiable même quand DataTables
+                // pagine les lignes hors du DOM visible
+                const knownIds = new Set();
 
-                                            const html = `
-                                    <tr id="row_${item.id}">
-                                        <td> <span class="badge badge-success text-white p-1 px-3"> Nouveau </span>  </td>
-                                        <td><span class="badge ${badgeClass} text-white p-1 px-3">${icon}${item.status}</span></td>
-                                        <td><span style="font-weight:bold">${item.code}</span></td>
-                                        <td>${item.user.name}</td>
-                                        <td>${item.user.phone}</td>
-                                        <td>${item.user.email}</td>
-                                        <td>${Number(item.total).toLocaleString()}</td>
-                                        <td>${item.created_at}</td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <a href="#" data-toggle="dropdown" class="btn btn-warning dropdown-toggle">Options</a>
-                                                <div class="dropdown-menu">
-                                                    <a href="/admin/order/show/${item.id}" class="dropdown-item has-icon">
-                                                        <i class="fas fa-eye"></i> Detail
-                                                    </a>
-                                                    ${item.status !== 'livrée' && item.status !== 'annulée' ? `
-                                                                            <a href="/admin/order/changeState?cs=confirmée && id=${item.id}" class="dropdown-item has-icon">
-                                                                                <i class="fas fa-check"></i> Confirmée
-                                                                            </a>
-                                                                            <a href="/admin/order/changeState?cs=livrée && id=${item.id}" class="dropdown-item has-icon">
-                                                                                <i class="fas fa-shipping-fast"></i> Livrée
-                                                                            </a>
-                                                                            <a href="/admin/order/changeState?cs=attente && id=${item.id}" class="dropdown-item has-icon">
-                                                                                <i class="fas fa-arrow-down"></i> Attente
-                                                                            </a>
-                                                                            <a href="#" role="button" data-id="${item.id}" class="dropdown-item has-icon text-danger btnCancel">
-                                                                                <i data-feather="x-circle"></i> Annuler
-                                                                            </a>
-                                                                        ` : ''}
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>`;
+                // Initialiser depuis les lignes déjà présentes dans le tableau
+                $('#tableExport tbody tr[id^="row_"]').each(function() {
+                    const id = parseInt(this.id.replace('row_', ''), 10);
+                    knownIds.add(id);
+                    if (id > lastSeenId) lastSeenId = id;
+                });
 
-                                            $('#tableExport tbody').prepend(
-                                                html
-                                            ); // remplace #myTable par l’ID réel de ton tableau
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }, 5000);
+                function pollNewOrders() {
+                    $.ajax({
+                        url: "{{ route('order.checkNewOrder') }}",
+                        method: "GET",
+                        data: { since_id: lastSeenId },
+                        success: function(data) {
+                            if (!data.orders || data.orders.length === 0) return;
 
+                            // Avancer le curseur immédiatement (évite les doublons si re-poll rapide)
+                            const maxId = Math.max.apply(null, data.orders.map(function(o) { return o.id; }));
+                            if (maxId > lastSeenId) lastSeenId = maxId;
+
+                            let inserted = 0;
+
+                            // Inverser : les ordres arrivent du + récent au + ancien
+                            data.orders.slice().reverse().forEach(function(item) {
+                                if (knownIds.has(item.id)) return; // déjà connu, même si hors DOM
+                                knownIds.add(item.id);
+
+                                const soldeClass = item.solde_restant > 0 ? 'text-danger' : 'text-muted';
+                                const rowHtml = '<tr id="row_' + item.id + '" class="table-warning">' +
+                                    '<td><span class="badge badge-warning text-dark p-1 px-2" style="white-space:nowrap;font-size:.75rem">&#11088; Nouveau</span></td>' +
+                                    '<td><span class="badge badge-' + item.status_color + ' text-white p-1 px-2" style="white-space:nowrap;font-size:.75rem">' + item.status_label + '</span></td>' +
+                                    '<td><span class="badge-source"><i class="fab ' + item.source_icon + ' mr-1"></i>' + item.source_label + '</span></td>' +
+                                    '<td><strong>' + item.code + '</strong></td>' +
+                                    '<td>' + item.nom_client + '</td>' +
+                                    '<td>' + item.tel_client + '</td>' +
+                                    '<td class="text-right font-weight-bold">' + Number(item.total).toLocaleString('fr-FR') + ' FCFA</td>' +
+                                    '<td class="text-right text-success small">' + Number(item.acompte).toLocaleString('fr-FR') + '</td>' +
+                                    '<td class="text-right small ' + soldeClass + '">' + Number(item.solde_restant).toLocaleString('fr-FR') + '</td>' +
+                                    '<td style="white-space:nowrap;font-size:.82rem">' + item.created_at + '</td>' +
+                                    '<td>' +
+                                        '<div class="dropdown">' +
+                                            '<a href="#" data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle">Options</a>' +
+                                            '<div class="dropdown-menu dropdown-menu-right">' +
+                                                '<a href="' + _orderShowUrl + '/' + item.id + '" class="dropdown-item has-icon"><i class="fas fa-eye"></i> Détail</a>' +
+                                                '<a href="' + _orderEditUrl + '/' + item.id + '/edit" class="dropdown-item has-icon"><i class="fas fa-edit"></i> Modifier</a>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</td>' +
+                                '</tr>';
+
+                                // Utiliser l'API DataTables (tri, pagination, recherche restent cohérents)
+                                // draw() sans argument → va à la page 1 pour montrer la nouvelle ligne
+                                table.row.add($(rowHtml)[0]).draw();
+                                inserted++;
+                            });
+
+                            if (inserted === 0) return;
+
+                            // Son de notification
+                            try { new Audio('/audio/notification.mp3').play(); } catch (e) {}
+
+                            // Alert div fixée en haut à droite
+                            var alertDiv = $('<div>')
+                                .text('🛒 ' + inserted + ' nouvelle(s) commande(s) reçue(s)')
+                                .css({
+                                    position: 'fixed',
+                                    top: '20px',
+                                    right: '20px',
+                                    zIndex: 99999,
+                                    padding: '14px 20px',
+                                    background: '#28a745',
+                                    color: '#fff',
+                                    borderRadius: '6px',
+                                    fontWeight: 'bold',
+                                    fontSize: '14px',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,.25)',
+                                    opacity: 0
+                                });
+                            $('body').append(alertDiv);
+                            alertDiv.animate({ opacity: 1 }, 300);
+                            setTimeout(function() {
+                                alertDiv.animate({ opacity: 0 }, 400, function() {
+                                    alertDiv.remove();
+                                });
+                            }, 30000); // 30 secondes
+                        }
+                    });
                 }
-            });
+
+                setInterval(pollNewOrders, 15000); // toutes les 15 secondes
+            })();
         });
     </script>
 @endsection

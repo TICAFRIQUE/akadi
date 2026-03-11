@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <!-- index.html  21 Nov 2019 03:44:50 GMT -->
 
@@ -259,74 +259,92 @@
                         <ul class="sidebar-menu">
 
                             {{-- Tableau de bord --}}
-                            <li class="dropdown {{ Route::is('dashboard.*') ? 'active' : '' }}">
-                                <a href="{{ route('dashboard.index') }}" class="nav-link">
-                                    <i data-feather="monitor"></i><span>Tableau de bord</span>
-                                </a>
-                            </li>
+                            @can('dashboard.voir')
+                                <li class="dropdown {{ Route::is('dashboard.*') ? 'active' : '' }}">
+                                    <a href="{{ route('dashboard.index') }}" class="nav-link">
+                                        <i data-feather="monitor"></i><span>Tableau de bord</span>
+                                    </a>
+                                </li>
+                            @endcan
 
-                            {{-- Produits (accès rapide) --}}
-                            {{-- <li class="{{ Route::is('product.*') ? 'active' : '' }}">
-                                <a href="{{ route('product.index') }}" class="nav-link">
-                                    <i data-feather="box"></i><span>Produits</span>
-                                </a>
-                            </li> --}}
-
-                            {{-- Catalogue : Catégories, Sous-catégories, Produits --}}
-                            <li class="dropdown">
-                                <a href="#"
-                                    class="menu-toggle nav-link has-dropdown
+                            {{-- Catalogue --}}
+                            @canany(['catalogue.voir', 'catalogue.categories', 'catalogue.sous-categories',
+                                'catalogue.produits'])
+                                <li class="dropdown">
+                                    <a href="#"
+                                        class="menu-toggle nav-link has-dropdown
                                     {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') ? 'active' : '' }}">
-                                    <i data-feather="package"></i><span>Catalogue</span>
-                                </a>
-                                <ul
-                                    class="dropdown-menu {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') ? 'show' : '' }}">
-                                    @role(['developpeur', 'administrateur'])
-                                        <li class="nav-item {{ Route::is('category.*') ? 'active' : '' }}">
-                                            <a href="{{ route('category.index') }}" class="nav-link">Catégories</a>
-                                        </li>
-                                        <li class="nav-item {{ Route::is('sub-category.*') ? 'active' : '' }}">
-                                            <a href="{{ route('sub-category.index') }}"
-                                                class="nav-link">Sous-catégories</a>
-                                        </li>
-                                    @endrole
-                                    <li class="nav-item {{ Route::is('product.*') ? 'active' : '' }}">
-                                        <a href="{{ route('product.index') }}" class="nav-link">Produits</a>
-                                    </li>
-                                </ul>
-                            </li>
+                                        <i data-feather="package"></i><span>Catalogue</span>
+                                    </a>
+                                    <ul
+                                        class="dropdown-menu {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') ? 'show' : '' }}">
+                                        @canany(['catalogue.categories', 'catalogue.sous-categories'])
+                                            @can('catalogue.categories')
+                                                <li class="nav-item {{ Route::is('category.*') ? 'active' : '' }}">
+                                                    <a href="{{ route('category.index') }}" class="nav-link">Catégories</a>
+                                                </li>
+                                            @endcan
+                                            @can('catalogue.sous-categories')
+                                                <li class="nav-item {{ Route::is('sub-category.*') ? 'active' : '' }}">
+                                                    <a href="{{ route('sub-category.index') }}"
+                                                        class="nav-link">Sous-catégories</a>
+                                                </li>
+                                            @endcan
+                                        @endcanany
+                                        @can('catalogue.produits')
+                                            <li class="nav-item {{ Route::is('product.*') ? 'active' : '' }}">
+                                                <a href="{{ route('product.index') }}" class="nav-link">Produits</a>
+                                            </li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endcanany
 
-                            {{-- Ventes : Commandes, Clients, Coupons, Livraisons --}}
-                            <li class="dropdown">
-                                <a href="#"
-                                    class="menu-toggle nav-link has-dropdown
+                            {{-- Ventes --}}
+                            @canany(['ventes.voir', 'ventes.pos', 'ventes.commandes', 'ventes.clients',
+                                'ventes.coupons', 'ventes.livraisons', 'p-confirmation', 'p-cuisine', 'p-livraison'])
+                                <li class="dropdown">
+                                    <a href="#"
+                                        class="menu-toggle nav-link has-dropdown
                                     {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') || Route::is('client.*') ? 'active' : '' }}">
-                                    <i data-feather="shopping-cart"></i><span>Ventes</span>
-                                </a>
-                                <ul
-                                    class="dropdown-menu {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') || Route::is('client.*') ? 'show' : '' }}">
-                                    <li class="nav-item {{ Route::is('pos.create') ? 'active' : '' }}">
-                                        <a href="{{ route('pos.create') }}" class="nav-link"><i
-                                                class="fas fa-plus-circle mr-1 text-success"></i> Nouvelle vente</a>
-                                    </li>
-                                    <li class="nav-item {{ Route::is('order.*') ? 'active' : '' }}">
-                                        <a href="{{ route('order.index') }}" class="nav-link">Commandes</a>
-                                    </li>
-                                    <li class="nav-item {{ Route::is('client.*') ? 'active' : '' }}">
-                                        <a href="{{ route('client.list') }}" class="nav-link">Clients</a>
-                                    </li>
-                                    <li class="nav-item {{ Route::is('coupon.*') ? 'active' : '' }}">
-                                        <a href="{{ route('coupon.index') }}" class="nav-link">Coupons de
-                                            réduction</a>
-                                    </li>
-                                    <li class="nav-item {{ Route::is('delivery.*') ? 'active' : '' }}">
-                                        <a href="{{ route('delivery.index') }}" class="nav-link">Livraisons</a>
-                                    </li>
-                                </ul>
-                            </li>
+                                        <i data-feather="shopping-cart"></i><span>Ventes</span>
+                                    </a>
+                                    <ul
+                                        class="dropdown-menu {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') || Route::is('client.*') ? 'show' : '' }}">
+                                        @canany(['ventes.pos', 'p-confirmation'])
+                                            <li class="nav-item {{ Route::is('pos.create') ? 'active' : '' }}">
+                                                <a href="{{ route('pos.create') }}" class="nav-link">
+                                                    <i class="fas fa-plus-circle mr-1 text-success"></i> Nouvelle vente
+                                                </a>
+                                            </li>
+                                        @endcanany
+                                        @canany(['ventes.commandes', 'p-confirmation', 'p-cuisine', 'p-livraison'])
+                                            <li class="nav-item {{ Route::is('order.*') ? 'active' : '' }}">
+                                                <a href="{{ route('order.index') }}" class="nav-link">Commandes</a>
+                                            </li>
+                                        @endcanany
+                                        @can('ventes.clients')
+                                            <li class="nav-item {{ Route::is('client.*') ? 'active' : '' }}">
+                                                <a href="{{ route('client.list') }}" class="nav-link">Clients</a>
+                                            </li>
+                                        @endcan
+                                        @can('ventes.coupons')
+                                            <li class="nav-item {{ Route::is('coupon.*') ? 'active' : '' }}">
+                                                <a href="{{ route('coupon.index') }}" class="nav-link">Coupons de
+                                                    réduction</a>
+                                            </li>
+                                        @endcan
+                                        @can('ventes.livraisons')
+                                            <li class="nav-item {{ Route::is('delivery.*') ? 'active' : '' }}">
+                                                <a href="{{ route('delivery.index') }}" class="nav-link">Livraisons</a>
+                                            </li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endcanany
 
                             {{-- Caisse --}}
-                            @role(['developpeur', 'administrateur'])
+                            @canany(['caisse.voir', 'caisse.caisses', 'caisse.moyens-paiement'])
                                 <li class="dropdown">
                                     <a href="#"
                                         class="menu-toggle nav-link has-dropdown
@@ -335,98 +353,130 @@
                                     </a>
                                     <ul
                                         class="dropdown-menu {{ Route::is('caisse.*') || Route::is('payment-method.*') ? 'show' : '' }}">
-                                        <li class="nav-item {{ Route::is('caisse.*') ? 'active' : '' }}">
-                                            <a href="{{ route('caisse.index') }}" class="nav-link">Gestion des
-                                                caisses</a>
-                                        </li>
-                                        <li class="nav-item {{ Route::is('payment-method.*') ? 'active' : '' }}">
-                                            <a href="{{ route('payment-method.index') }}" class="nav-link">Moyens de
-                                                paiement</a>
-                                        </li>
+                                        @can('caisse.caisses')
+                                            <li class="nav-item {{ Route::is('caisse.*') ? 'active' : '' }}">
+                                                <a href="{{ route('caisse.index') }}" class="nav-link">Gestion des
+                                                    caisses</a>
+                                            </li>
+                                        @endcan
+                                        @can('caisse.moyens-paiement')
+                                            <li class="nav-item {{ Route::is('payment-method.*') ? 'active' : '' }}">
+                                                <a href="{{ route('payment-method.index') }}" class="nav-link">Moyens de
+                                                    paiement</a>
+                                            </li>
+                                        @endcan
                                     </ul>
                                 </li>
-                            @endrole
+                            @endcanany
 
-                            {{-- Contenu : Médias, Témoignages --}}
-                            <li class="dropdown">
-                                <a href="#"
-                                    class="menu-toggle nav-link has-dropdown
-                                    {{ Route::is('publicite.*') || Route::is('temoignage.*') ? 'active' : '' }}">
-                                    <i data-feather="image"></i><span>Contenu</span>
-                                </a>
-                                <ul
-                                    class="dropdown-menu {{ Route::is('publicite.*') || Route::is('temoignage.*') ? 'show' : '' }}">
-                                    <li class="nav-item {{ Route::is('publicite.*') ? 'active' : '' }}">
-                                        <a href="{{ route('publicite.index') }}" class="nav-link">Médias /
-                                            Publicités</a>
-                                    </li>
-                                    <li class="nav-item {{ Route::is('temoignage.*') ? 'active' : '' }}">
-                                        <a href="{{ route('temoignage.index') }}" class="nav-link">Témoignages</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            {{-- Dépenses --}}
-                            <li class="dropdown">
-                                <a href="#"
-                                    class="menu-toggle nav-link has-dropdown
-                                    {{ Route::is('categorie-depense.*') || Route::is('libelle-depense.*') || Route::is('depense.*') ? 'active' : '' }}">
-                                    <i data-feather="dollar-sign"></i><span>Dépenses</span>
-                                </a>
-                                <ul
-                                    class="dropdown-menu {{ Route::is('categorie-depense.*') || Route::is('libelle-depense.*') || Route::is('depense.*') ? 'show' : '' }}">
-                                    <li class="nav-item {{ Route::is('categorie-depense.*') ? 'active' : '' }}">
-                                        <a href="{{ route('categorie-depense.index') }}"
-                                            class="nav-link">Catégories</a>
-                                    </li>
-                                    <li class="nav-item {{ Route::is('libelle-depense.*') ? 'active' : '' }}">
-                                        <a href="{{ route('libelle-depense.index') }}" class="nav-link">Libellés</a>
-                                    </li>
-                                    <li class="nav-item {{ Route::is('depense.*') ? 'active' : '' }}">
-                                        <a href="{{ route('depense.index') }}" class="nav-link">Dépenses</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            {{-- Rapport --}}
-                            <li class="dropdown">
-                                <a href="#"
-                                    class="menu-toggle nav-link has-dropdown
-                                    {{ Route::is('rapport.*') ? 'active' : '' }}">
-                                    <i data-feather="activity"></i><span>Rapports</span>
-                                </a>
-                                <ul class="dropdown-menu {{ Route::is('rapport.*') ? 'show' : '' }}">
-                                    <li class="nav-item {{ Route::is('rapport.exploitation') ? 'active' : '' }}">
-                                        <a href="{{ route('rapport.exploitation') }}" class="nav-link">Compte
-                                            d'exploitation</a>
-                                    </li>
-                                    <li class="nav-item {{ Route::is('rapport.vente') ? 'active' : '' }}">
-                                        <a href="{{ route('rapport.vente') }}" class="nav-link">Ventes</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            {{-- Administrateurs --}}
-                            @role(['developpeur', 'administrateur', 'gestionnaire'])
+                            {{-- Contenu --}}
+                            @canany(['contenu.voir', 'contenu.medias', 'contenu.temoignages'])
                                 <li class="dropdown">
                                     <a href="#"
                                         class="menu-toggle nav-link has-dropdown
-                                        {{ Route::is('user.*') || Route::is('role.*') ? 'active' : '' }}">
+                                    {{ Route::is('publicite.*') || Route::is('temoignage.*') ? 'active' : '' }}">
+                                        <i data-feather="image"></i><span>Contenu</span>
+                                    </a>
+                                    <ul
+                                        class="dropdown-menu {{ Route::is('publicite.*') || Route::is('temoignage.*') ? 'show' : '' }}">
+                                        @can('contenu.medias')
+                                            <li class="nav-item {{ Route::is('publicite.*') ? 'active' : '' }}">
+                                                <a href="{{ route('publicite.index') }}" class="nav-link">Médias /
+                                                    Publicités</a>
+                                            </li>
+                                        @endcan
+                                        @can('contenu.temoignages')
+                                            <li class="nav-item {{ Route::is('temoignage.*') ? 'active' : '' }}">
+                                                <a href="{{ route('temoignage.index') }}" class="nav-link">Témoignages</a>
+                                            </li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endcanany
+
+                            {{-- Dépenses --}}
+                            @canany(['depenses.voir', 'depenses.categories', 'depenses.libelles', 'depenses.saisir'])
+                                <li class="dropdown">
+                                    <a href="#"
+                                        class="menu-toggle nav-link has-dropdown
+                                    {{ Route::is('categorie-depense.*') || Route::is('libelle-depense.*') || Route::is('depense.*') ? 'active' : '' }}">
+                                        <i data-feather="dollar-sign"></i><span>Dépenses</span>
+                                    </a>
+                                    <ul
+                                        class="dropdown-menu {{ Route::is('categorie-depense.*') || Route::is('libelle-depense.*') || Route::is('depense.*') ? 'show' : '' }}">
+                                        @can('depenses.categories')
+                                            <li class="nav-item {{ Route::is('categorie-depense.*') ? 'active' : '' }}">
+                                                <a href="{{ route('categorie-depense.index') }}"
+                                                    class="nav-link">Catégories</a>
+                                            </li>
+                                        @endcan
+                                        @can('depenses.libelles')
+                                            <li class="nav-item {{ Route::is('libelle-depense.*') ? 'active' : '' }}">
+                                                <a href="{{ route('libelle-depense.index') }}" class="nav-link">Libellés</a>
+                                            </li>
+                                        @endcan
+                                        @can('depenses.saisir')
+                                            <li class="nav-item {{ Route::is('depense.*') ? 'active' : '' }}">
+                                                <a href="{{ route('depense.index') }}" class="nav-link">Dépenses</a>
+                                            </li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endcanany
+
+                            {{-- Rapports --}}
+                            @canany(['rapports.voir', 'rapports.exploitation', 'rapports.vente'])
+                                <li class="dropdown">
+                                    <a href="#"
+                                        class="menu-toggle nav-link has-dropdown
+                                    {{ Route::is('rapport.*') ? 'active' : '' }}">
+                                        <i data-feather="activity"></i><span>Rapports</span>
+                                    </a>
+                                    <ul class="dropdown-menu {{ Route::is('rapport.*') ? 'show' : '' }}">
+                                        @can('rapports.exploitation')
+                                            <li class="nav-item {{ Route::is('rapport.exploitation') ? 'active' : '' }}">
+                                                <a href="{{ route('rapport.exploitation') }}" class="nav-link">Compte
+                                                    d'exploitation</a>
+                                            </li>
+                                        @endcan
+                                        @can('rapports.vente')
+                                            <li class="nav-item {{ Route::is('rapport.vente') ? 'active' : '' }}">
+                                                <a href="{{ route('rapport.vente') }}" class="nav-link">Ventes</a>
+                                            </li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endcanany
+
+                            {{-- Administration --}}
+                            @canany(['administration.voir', 'administration.users', 'administration.roles',
+                                'administration.permissions'])
+                                <li class="dropdown">
+                                    <a href="#"
+                                        class="menu-toggle nav-link has-dropdown
+                                    {{ Route::is('user.*') || Route::is('role.*') || Route::is('permission.*') ? 'active' : '' }}">
                                         <i data-feather="lock"></i><span>Administration</span>
                                     </a>
                                     <ul
-                                        class="dropdown-menu {{ Route::is('user.*') || Route::is('role.*') ? 'show' : '' }}">
-                                        <li class="nav-item {{ Route::is('user.*') ? 'active' : '' }}">
-                                            <a class="nav-link" href="{{ route('user.list') }}">Équipe / Admins</a>
-                                        </li>
-                                        @role(['developpeur', 'administrateur'])
+                                        class="dropdown-menu {{ Route::is('user.*') || Route::is('role.*') || Route::is('permission.*') ? 'show' : '' }}">
+                                        @can('administration.users')
+                                            <li class="nav-item {{ Route::is('user.*') ? 'active' : '' }}">
+                                                <a class="nav-link" href="{{ route('user.list') }}">Équipe / Admins</a>
+                                            </li>
+                                        @endcan
+                                        @can('administration.roles')
                                             <li class="nav-item {{ Route::is('role.*') ? 'active' : '' }}">
                                                 <a class="nav-link" href="{{ route('role.index') }}">Rôles</a>
                                             </li>
-                                        @endrole
+                                        @endcan
+                                        @can('administration.permissions')
+                                            <li class="nav-item {{ Route::is('permission.*') ? 'active' : '' }}">
+                                                <a class="nav-link" href="{{ route('permission.index') }}">Permissions</a>
+                                            </li>
+                                        @endcan
                                     </ul>
                                 </li>
-                            @endrole
+                            @endcanany
 
                         </ul>
                     </aside>
@@ -563,7 +613,7 @@
         }
 
         // Vérifier les nouvelles commandes toutes les 15 secondes
-        setInterval(checkNewOrders, 5000);
+        setInterval(checkNewOrders, 15000);
     </script>
 
 </body>

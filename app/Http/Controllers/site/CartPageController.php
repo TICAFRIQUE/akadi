@@ -564,118 +564,27 @@ class CartPageController extends Controller
                 //Id du coupon si il y en a
                 $coupon_id = $_GET['data']['coupon_id'] ?? null;
 
-
-
-
-                //calculer le total TTC
-                $totalOrder =
-                    $subTotal + $delivery_price;
-
-                //quantité des produit au panier
-                $quantity_product = count((array) session('cart'));
-
-                //status commande
-                $status = "";
-                if ($type_commande == 'cmd_precommande') {
-                    $status = "precommande";
-                } else {
-                    $status = "attente";
-                }
-
-                //enregistrer la commande
-                $order = Order::firstOrCreate([
-                    "user_id" => Auth::user()->id,
-                    'quantity_product' => $quantity_product,
-                    'subtotal' => $subTotal,
-                    'total' => $totalOrder,
-                    'delivery_name' =>   $delivery_name,
-                    'delivery_price' => $delivery_price,
+                // Stocker les informations de livraison dans la session
+                Session::put('delivery_info', [
+                    'subTotal' => $subTotal,
+                    'name' => $delivery_name,
+                    'price' => $delivery_price,
+                    'mode' => $delivery_mode,
                     'address' => $address,
                     'address_yango' => $address_yango,
-                    'mode_livraison' => $delivery_mode,
                     'note' => $note,
-                    'type_order' => $type_commande,
-
-                    'discount' => $discount, //remise
-                    'delivery_planned' => $delivery_planned, //date de livraison prevue
-                    // 'delivery_date' => '', //date de livraison
-                    'status' => $status,         // livré, en attente
-                    // 'available_product' =>  '' //disponibilite
-                    'payment method' => 'paiement à la livraison',
-                    'date_order' => Carbon::now()->format('Y-m-d')
+                    'type_commande' => $type_commande,
+                    'delivery_planned' => $delivery_planned,
+                    'code_promo' => $code_promo,
+                    'discount' => $discount,
+                    'coupon_id' => $coupon_id,
                 ]);
 
-
-                //insert data in pivot order_product
-
-                foreach (session('cart') as $key => $value) {
-                    $order->products()->attach($key, [
-                        'quantity' => $value['quantity'],
-                        'unit_price' => $value['price'],
-                        'total' => $value['price'] * $value['quantity'],
-                    ]);
-                }
-
-
-                //si il ya une remise une remise on met a jour la table coupon_use
-                if (!empty($coupon_id)) {
-                    $couponUse = DB::table('coupon_use')
-                        ->where('user_id', Auth::id())
-                        ->where('coupon_id', $coupon_id)
-                        ->first();
-
-                    if ($couponUse) {
-                        // Si l'utilisateur a déjà utilisé le coupon, on incrémente `count_use`
-                        DB::table('coupon_use')
-                            ->where('user_id', Auth::id())
-                            ->where('coupon_id', $coupon_id)
-                            ->increment('use_count');
-                    } else {
-                        // Sinon, on insère une nouvelle ligne avec count_use = 1
-                        DB::table('coupon_use')->insert([
-                            'user_id' => Auth::id(),
-                            'coupon_id' => $coupon_id,
-                            'use_count' => 1, // Premier usage
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]);
-                    }
-                }
-
-
-
-                //function for update code promo
-                if (isset($code_promo)) {
-                    $code = Coupon::whereCode($code_promo)->first();
-                    if ($code) {
-                        DB::table('coupon_user')
-                            ->where('user_id', Auth::user()->id)
-                            ->where('coupon_id',  $code['id'])
-                            ->update(['nbre_utilisation' => 1]);
-                    }
-                }
-
-
-                //envoyer le mail a l'administrateur que la commande est enregistrée
-             $this->sendMailToAdmin($order);
-
-
-
-                // Envoyer la notification whatsapp au client
-                $this->sendWhatsAppNotification($order);
-
-
-
-
-                //supprimer la session du panier
-                Session::forget('cart');
-                Session::forget('totalQuantity');
-
-
-
+                // Rediriger vers la page de sélection de paiement
                 return response()->json([
-                    'message' => 'commande enregistrée avec success',
+                    'message' => 'Informations enregistrées',
                     'status' => 200,
+                    'redirect' => route('payment.select')
                 ], 200);
             }
         }

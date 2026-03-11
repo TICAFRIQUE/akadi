@@ -27,7 +27,7 @@
                                         <tr>
                                             <th class="text-center">#</th>
                                             <th>Nom du rôle</th>
-                                            <th>Nombre de permissions</th>
+                                            <th>Utilisateurs</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -40,7 +40,11 @@
                                                         {{ $item->name }}
                                                     </span>
                                                 </td>
-                                                <td>{{ $item->permissions_count }}</td>
+                                                <td>
+                                                    <span class="badge badge-secondary px-2 py-1">
+                                                        <i class="fas fa-users mr-1"></i>{{ $item->users_count }}
+                                                    </span>
+                                                </td>
                                                 <td>
                                                     <div class="dropdown">
                                                         <a href="#" data-toggle="dropdown"

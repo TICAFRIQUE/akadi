@@ -5,7 +5,6 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
@@ -14,9 +13,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::withCount('permissions')->get();
-        $permissions = Permission::all();
-        return view('admin.pages.role.index', compact('roles', 'permissions'));
+        $roles = Role::withCount('users')->get();
+        return view('admin.pages.role.index', compact('roles'));
     }
 
     /**
@@ -30,10 +28,6 @@ class RoleController extends Controller
 
         $role = Role::create(['name' => $request->name, 'guard_name' => 'web']);
 
-        if ($request->has('permissions')) {
-            $role->syncPermissions($request->permissions);
-        }
-
         return back()->with('success', 'Rôle créé avec succès');
     }
 
@@ -42,9 +36,8 @@ class RoleController extends Controller
      */
     public function edit(string $id)
     {
-        $role = Role::with('permissions')->findOrFail($id);
-        $permissions = Permission::all();
-        return view('admin.pages.role.edit', compact('role', 'permissions'));
+        $role = Role::findOrFail($id);
+        return view('admin.pages.role.edit', compact('role'));
     }
 
     /**
@@ -58,12 +51,6 @@ class RoleController extends Controller
 
         $role = Role::findOrFail($id);
         $role->update(['name' => $request->name]);
-
-        if ($request->has('permissions')) {
-            $role->syncPermissions($request->permissions);
-        } else {
-            $role->syncPermissions([]);
-        }
 
         return back()->with('success', 'Rôle modifié avec succès');
     }

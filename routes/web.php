@@ -12,6 +12,7 @@ use App\Http\Controllers\admin\SettingController;
 use App\Http\Controllers\site\AuthPageController;
 use App\Http\Controllers\site\CartPageController;
 use App\Http\Controllers\site\HomePageController;
+use App\Http\Controllers\site\PaymentController;
 use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\DeliveryController;
 use App\Http\Controllers\admin\AuthAdminController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\site\AccountPageController;
 use App\Http\Controllers\site\ProductPageController;
 use App\Http\Controllers\admin\SubCategoryController;
 use App\Http\Controllers\admin\RoleController;
+use App\Http\Controllers\admin\PermissionController;
 use App\Http\Controllers\admin\depense\DepenseController;
 use App\Http\Controllers\admin\depense\LibelleDepenseController;
 use App\Http\Controllers\admin\depense\CategorieDepenseController;
@@ -49,7 +51,7 @@ Route::controller(AuthAdminController::class)->group(function () {
 Route::middleware(['admin'])->group(function () {
 
     //Dashboard
-    Route::prefix('dashboard')->controller(DashboardController::class)->group(function () {
+    Route::prefix('dashboard')->middleware('can:dashboard.voir')->controller(DashboardController::class)->group(function () {
         route::get('', 'index')->name('dashboard.index');
         route::get('product-statistic', 'product_statistic')->name('dashboard.product-statistic');
         route::get('order-period', 'order_period')->name('dashboard.order-period');
@@ -74,10 +76,11 @@ Route::middleware(['admin'])->group(function () {
         route::post('update/{id}', 'update')->name('user.update');
         route::post('destroy/{id}', 'destroy')->name('user.destroy');
         route::get('logout', 'logout')->name('user.logout');
+        route::post('permissions/{id}/sync', 'syncPermissions')->name('user.permissions.sync');
     });
 
     //Clients
-    Route::prefix('admin/clients')->controller(ClientController::class)->group(function () {
+    Route::prefix('admin/clients')->middleware('can:ventes.clients')->controller(ClientController::class)->group(function () {
         Route::get('', 'listClient')->name('client.list');
         Route::get('detail/{id}', 'detail')->name('client.detail');
         Route::get('create', 'create')->name('client.createForm');
@@ -89,7 +92,7 @@ Route::middleware(['admin'])->group(function () {
 
 
     /** Category **/
-    Route::prefix('admin/categorie')->controller(CategoryController::class)->group(function () {
+    Route::prefix('admin/categorie')->middleware('can:catalogue.categories')->controller(CategoryController::class)->group(function () {
         route::get('', 'index')->name('category.index');
         route::post('', 'store')->name('category.store');
         route::get('edit/{id}', 'edit')->name('category.edit');
@@ -98,7 +101,7 @@ Route::middleware(['admin'])->group(function () {
     });
 
     /***Sous category */
-    Route::prefix('admin/sous-categorie')->controller(SubCategoryController::class)->group(function () {
+    Route::prefix('admin/sous-categorie')->middleware('can:catalogue.sous-categories')->controller(SubCategoryController::class)->group(function () {
         route::get('', 'index')->name('sub-category.index');
         route::post('', 'store')->name('sub-category.store');
         route::get('edit/{id}', 'edit')->name('sub-category.edit');
@@ -109,7 +112,7 @@ Route::middleware(['admin'])->group(function () {
 
 
     /** Delivery **/
-    Route::prefix('admin/livraison')->controller(DeliveryController::class)->group(function () {
+    Route::prefix('admin/livraison')->middleware('can:ventes.livraisons')->controller(DeliveryController::class)->group(function () {
         route::get('', 'index')->name('delivery.index');
         route::post('', 'store')->name('delivery.store');
         route::get('edit/{id}', 'edit')->name('delivery.edit');
@@ -118,7 +121,7 @@ Route::middleware(['admin'])->group(function () {
     });
 
     /** Product **/
-    Route::prefix('admin/produit')->controller(ProductController::class)->group(function () {
+    Route::prefix('admin/produit')->middleware('can:catalogue.produits')->controller(ProductController::class)->group(function () {
         route::get('', 'index')->name('product.index');
         route::get('add', 'create')->name('product.create');
         route::post('add', 'store')->name('product.store');
@@ -178,7 +181,7 @@ Route::middleware(['admin'])->group(function () {
 
 
     /** Roles **/
-    Route::prefix('admin/role')->controller(RoleController::class)->group(function () {
+    Route::prefix('admin/role')->middleware('can:administration.roles')->controller(RoleController::class)->group(function () {
         route::get('', 'index')->name('role.index');
         route::post('', 'store')->name('role.store');
         route::get('edit/{id}', 'edit')->name('role.edit');
@@ -186,7 +189,16 @@ Route::middleware(['admin'])->group(function () {
         route::post('destroy/{id}', 'destroy')->name('role.destroy');
     });
 
-    Route::prefix('admin/categorie-depense')->controller(CategorieDepenseController::class)->group(function () {
+    /** Permissions **/
+    Route::prefix('admin/permission')->middleware('can:administration.permissions')->controller(PermissionController::class)->group(function () {
+        Route::get('', 'index')->name('permission.index');
+        Route::post('', 'store')->name('permission.store');
+        Route::get('edit/{id}', 'edit')->name('permission.edit');
+        Route::post('update/{id}', 'update')->name('permission.update');
+        Route::post('destroy/{id}', 'destroy')->name('permission.destroy');
+    });
+
+    Route::prefix('admin/categorie-depense')->middleware('can:depenses.categories')->controller(CategorieDepenseController::class)->group(function () {
         route::get('', 'index')->name('categorie-depense.index');
         route::get('create', 'create')->name('categorie-depense.create');
         route::post('store', 'store')->name('categorie-depense.store');
@@ -197,7 +209,7 @@ Route::middleware(['admin'])->group(function () {
     });
 
 
-    Route::prefix('admin/libelle-depense')->controller(LibelleDepenseController::class)->group(function () {
+    Route::prefix('admin/libelle-depense')->middleware('can:depenses.libelles')->controller(LibelleDepenseController::class)->group(function () {
         route::get('', 'index')->name('libelle-depense.index');
         route::get('create', 'create')->name('libelle-depense.create');
         route::post('store', 'store')->name('libelle-depense.store');
@@ -207,7 +219,7 @@ Route::middleware(['admin'])->group(function () {
         route::post('position/{id}', 'position')->name('libelle-depense.position');
     });
 
-    Route::prefix('admin/depense')->controller(DepenseController::class)->group(function () {
+    Route::prefix('admin/depense')->middleware('can:depenses.saisir')->controller(DepenseController::class)->group(function () {
         route::get('', 'index')->name('depense.index');
         route::get('create', 'create')->name('depense.create');
         route::post('store', 'store')->name('depense.store');
@@ -218,14 +230,14 @@ Route::middleware(['admin'])->group(function () {
 
 
     // rapport exploitation
-    Route::prefix('admin/rapport')->controller(RapportController::class)->group(function () {
+    Route::prefix('admin/rapport')->middleware('can:rapports.voir')->controller(RapportController::class)->group(function () {
         route::get('', 'exploitation')->name('rapport.exploitation');
         route::get('detail-depense', 'detail_depense')->name('rapport.detail');
         route::get('vente', 'rapportVente')->name('rapport.vente');
     });
 
     /** Caisses **/
-    Route::prefix('admin/caisse')->controller(CaisseController::class)->group(function () {
+    Route::prefix('admin/caisse')->middleware('can:caisse.caisses')->controller(CaisseController::class)->group(function () {
         route::get('', 'index')->name('caisse.index');
         route::post('store', 'store')->name('caisse.store');
         route::get('edit/{id}', 'edit')->name('caisse.edit');
@@ -289,6 +301,18 @@ Route::get('refresh-coupon/{id}', [CartPageController::class, 'refreshCoupon'])-
 Route::get('check-coupon/{code}', [CartPageController::class, 'checkCoupon'])->middleware(['auth']);
 
 Route::get('save-order', [CartPageController::class, 'storeOrder'])->name('store.order')->middleware(['auth']);
+
+// Payment routes
+Route::middleware(['auth'])->controller(PaymentController::class)->group(function () {
+    Route::get('paiement/selection', 'selectPaymentMethod')->name('payment.select');
+    Route::post('paiement/traiter', 'processPayment')->name('payment.process');
+    Route::get('payment/wave/success', 'waveSuccess')->name('payment.wave.success');
+    Route::get('payment/wave/error', 'waveError')->name('payment.wave.error');
+    Route::get('commande/succes/{orderId}', 'orderSuccess')->name('order.success');
+});
+
+// Webhook Wave (sans authentification ni CSRF)
+Route::post('webhook/wave', [PaymentController::class, 'waveWebhook'])->name('webhook.wave');
 
 Route::get('/test-whatsapp', [CartPageController::class, 'sendWhatsAppNotification']);
 

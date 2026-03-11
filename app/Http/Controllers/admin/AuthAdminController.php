@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -45,21 +47,52 @@ class AuthAdminController extends Controller
 
     public function userDetail($id)
     {
-        $user = User::withCount(['roles', 'orders'])
-            ->with(['roles', 'orders'])
-            ->whereId($id)->first();
+        $user = User::withCount(['orders'])
+            ->with(['roles', 'permissions'])
+            ->whereId($id)->firstOrFail();
 
-        $orders_annule = Order::where('user_id', $id)
-            ->whereStatus('annulée')->count();
+        $dateDebut = request('date_debut');
+        $dateFin   = request('date_fin');
 
-        $orders_livre = Order::where('user_id', $id)
-            ->whereStatus('livrée')->count();
+        $baseQuery = Order::where('user_id', $id);
 
+        $orders_livre    = (clone $baseQuery)->whereStatus('livrée')->count(); //
+        $orders_annule   = (clone $baseQuery)->whereStatus('annulée')->count();
+        $orders_en_cours = (clone $baseQuery)->whereNotIn('status', ['livrée', 'annulée'])->count();
+        $ca_total        = (clone $baseQuery)->where('status', '!=', 'annulée')->sum('total');
+        $orders_mois     = (clone $baseQuery)
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+        $ca_mois = (clone $baseQuery)
+            ->where('status', '!=', 'annulée')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('total');
+
+        $orders = (clone $baseQuery)
+            ->when($dateDebut, fn($q) => $q->whereDate('created_at', '>=', $dateDebut))
+            ->when($dateFin,   fn($q) => $q->whereDate('created_at', '<=', $dateFin))
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        $permissions     = Permission::orderBy('name')->get();
+        $userPermissions = $user->permissions->pluck('name')->toArray();
+
+        // dd($userPermissions);
         return view('admin.pages.user.userDetail', compact(
-            'user',
-            'orders_annule',
-            'orders_livre'
+            'user', 'orders', 'orders_livre', 'orders_annule',
+            'orders_en_cours', 'ca_total', 'ca_mois', 'orders_mois',
+            'dateDebut', 'dateFin', 'permissions', 'userPermissions'
         ));
+    }
+
+    public function syncPermissions(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $permissions = $request->input('permissions', []);
+        $user->syncPermissions($permissions);
+        return back()->with('success', 'Permissions de l\'utilisateur mises à jour.');
     }
 
 
@@ -114,6 +147,8 @@ class AuthAdminController extends Controller
             ]);
             if ($request->has('role')) {
                 $user->assignRole([$request['role']]);
+                syncPrivilegedPermissions($user);
+                app()[PermissionRegistrar::class]->forgetCachedPermissions();
             }
 
 
@@ -164,6 +199,8 @@ class AuthAdminController extends Controller
 
         if ($request->has('role')) {
             $user->syncRoles($request['role']);
+            syncPrivilegedPermissions($user);
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
         }
         return back()->with([
             'success' => "Utilisateur modifié avec success",

@@ -90,6 +90,76 @@
             color: #4e73df;
         }
 
+        /* Boutons type remise */
+        .btn-xs {
+            padding: 2px 7px;
+            font-size: .75rem;
+            line-height: 1.4;
+            border-radius: 3px;
+        }
+
+        .type-disc-btn {
+            height: 31px;
+            /* aligne avec .form-control-sm */
+            padding: 0 8px;
+            font-size: .75rem;
+            font-weight: 600;
+            line-height: 29px;
+            border-radius: 0;
+            border: 1px solid #ced4da !important;
+            background: #f8f9fa !important;
+            color: #495057 !important;
+            box-shadow: none !important;
+            transition: background .15s, color .15s, border-color .15s;
+        }
+
+        .type-disc-btn:first-child {
+            border-radius: 0;
+        }
+
+        .type-disc-btn:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* État actif % → bleu */
+        .type-disc-btn.active-pct,
+        .type-disc-btn.active-pct:focus,
+        .type-disc-btn.active-pct:active {
+            background: #4e73df !important;
+            border-color: #4e73df !important;
+            color: #fff !important;
+            box-shadow: none !important;
+        }
+
+        /* État actif FCFA → orange */
+        .type-disc-btn.active-fixed,
+        .type-disc-btn.active-fixed:focus,
+        .type-disc-btn.active-fixed:active {
+            background: #fd7e14 !important;
+            border-color: #fd7e14 !important;
+            color: #fff !important;
+            box-shadow: none !important;
+        }
+
+        /* Boutons globaux remise */
+        .global-disc-btn {
+            font-size: .75rem;
+            font-weight: 600;
+            padding: 2px 8px;
+        }
+
+        .global-disc-btn.active-pct {
+            background: #4e73df !important;
+            border-color: #4e73df !important;
+            color: #fff !important;
+        }
+
+        .global-disc-btn.active-fixed {
+            background: #fd7e14 !important;
+            border-color: #fd7e14 !important;
+            color: #fff !important;
+        }
+
         /* Client card */
         .client-found {
             border: 2px solid #28a745;
@@ -160,10 +230,10 @@
                                         <tr>
                                             <th>Prod</th>
                                             <th class="text-center">Stock</th>
-                                            <th>P.U</th>
-                                            <th>Qté</th>
-                                            <th>Remise (%)</th>
-                                            <th>Total</th>
+                                            <th class="text-center">P.U</th>
+                                            <th class="text-center">Qté</th>
+                                            <th class="text-center">Remise <small class="text-muted">(% ou FCFA)</small></th>
+                                            <th class="text-center">Total</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -296,10 +366,24 @@
                                     <strong id="display-subtotal">0 FCFA</strong>
                                 </div>
                                 <div class="recap-line align-items-center">
-                                    <span>Remise globale (FCFA)</span>
-                                    <input type="number" name="discount" id="discount"
-                                        class="form-control form-control-sm text-right" style="width:140px"
-                                        value="{{ old('discount', 0) }}" min="0" step="any">
+                                    <span>Remise globale
+                                        <span class="btn-group btn-group-sm ml-1" role="group">
+                                            <button type="button" class="btn btn-xs global-disc-btn active-pct"
+                                                id="global-disc-pct" onclick="setGlobalDiscountType('percent', this)"
+                                                title="En pourcentage">%</button>
+                                            <button type="button" class="btn btn-xs global-disc-btn"
+                                                id="global-disc-fixed" onclick="setGlobalDiscountType('fixed', this)"
+                                                title="Montant fixe FCFA">FCFA</button>
+                                        </span>
+                                    </span>
+                                    <div class="d-flex align-items-center">
+                                        <input type="number" name="discount" id="discount"
+                                            class="form-control form-control-sm text-right" style="width:110px"
+                                            value="{{ old('discount', 0) }}" min="0" step="any">
+                                        <span id="global-disc-unit" class="ml-1 small text-muted">%</span>
+                                    </div>
+                                    <input type="hidden" name="type_discount" id="type_discount"
+                                        value="{{ old('type_discount', 'percent') }}">
                                 </div>
                                 <div class="recap-line align-items-center">
                                     <span>Frais de livraison</span>
@@ -423,7 +507,8 @@
     </div>
 
     <script>
-        let cartItems = {};
+        let cartItems    = {};
+        let currentTotal = 0;
 
         $(document).ready(function() {
 
@@ -477,37 +562,38 @@
                 ${p.stock !== null ? p.stock : '∞'}
             </span>
         </td>
-        <td>
+        <td style="width:110px">
             <input type="number" name="products[${p.id}][unit_price]"
-                class="form-control form-control-sm unit-price-input bg-light"
-                value="${p.price}" readonly>
+                class="form-control form-control-sm unit-price-input bg-light text-center"
+                style="width:100px" value="${p.price}" readonly>
         </td>
-        <td>
-            <div class="input-group">
+        <td style="width:100px ; padding-left:20px">
+            <div class="input-group input-group-sm" style="width:96px;flex-wrap:nowrap">
                 <div class="input-group-prepend">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="changeQty('${p.id}', -1)">−</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-1" onclick="changeQty('${p.id}', -1)">−</button>
                 </div>
                 <input type="number" name="products[${p.id}][quantity]"
                     class="form-control form-control-sm qty-input text-center"
+                    style="min-width:56px"
                     value="1" min="1" ${p.stock !== null ? 'max="'+p.stock+'"' : ''}
                     onchange="recalcRow('${p.id}')">
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="changeQty('${p.id}', 1)">+</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-1" onclick="changeQty('${p.id}', 1)">+</button>
                 </div>
             </div>
         </td>
-        <td>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="changeDiscount('${p.id}', -1)">&minus;</button>
-                </div>
+        <td style="width:150px; padding-left:35px">
+            <div class="input-group input-group-sm" style="width:140px;flex-wrap:nowrap">
                 <input type="number" name="products[${p.id}][discount]"
                     class="form-control form-control-sm discount-input text-center"
+                    style="min-width:100px"
                     value="0" min="0" max="100" step="1"
                     onchange="recalcRow('${p.id}')">
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="changeDiscount('${p.id}', 1)">+</button>
+                    <button type="button" class="btn type-disc-btn type-disc-pct active-pct" onclick="setDiscountType('${p.id}', 'percent', this)" title="En pourcentage">%</button>
+                    <button type="button" class="btn type-disc-btn type-disc-fixed" onclick="setDiscountType('${p.id}', 'fixed', this)" title="Montant fixe">FCFA</button>
                 </div>
+                <input type="hidden" name="products[${p.id}][type_discount]" class="type-discount-input" value="percent">
             </div>
         </td>
         <td class="text-right">
@@ -537,14 +623,45 @@
             recalcRow(pid);
         }
 
-        // ── Changer remise via boutons ──────────────────────────────────────────────
-        function changeDiscount(pid, delta) {
+        // ── Changer type de remise par ligne (% ou fixe FCFA) ────────────────────
+        function setDiscountType(pid, type, btn) {
             const row = document.getElementById('row-' + pid);
-            const input = row.querySelector('.discount-input');
-            let val = parseInt(input.value) || 0;
-            val = Math.min(100, Math.max(0, val + delta));
-            input.value = val;
+            const discountInput = row.querySelector('.discount-input');
+            const typeInput = row.querySelector('.type-discount-input');
+
+            row.querySelectorAll('.type-disc-btn').forEach(b => {
+                b.classList.remove('active-pct', 'active-fixed');
+            });
+            if (type === 'percent') {
+                row.querySelector('.type-disc-pct').classList.add('active-pct');
+                discountInput.max = 100;
+                discountInput.placeholder = '0–100';
+            } else {
+                row.querySelector('.type-disc-fixed').classList.add('active-fixed');
+                const unitPrice = parseFloat(row.querySelector('.unit-price-input').value) || 0;
+                discountInput.max = unitPrice;
+                discountInput.placeholder = '0';
+            }
+            typeInput.value = type;
+            discountInput.value = 0;
             recalcRow(pid);
+        }
+
+        // ── Changer type de remise globale ────────────────────────────────────────
+        function setGlobalDiscountType(type, btn) {
+            document.querySelectorAll('.global-disc-btn').forEach(b => b.classList.remove('active-pct', 'active-fixed'));
+            if (type === 'percent') {
+                document.getElementById('global-disc-pct').classList.add('active-pct');
+                document.getElementById('global-disc-unit').textContent = '%';
+                document.getElementById('discount').max = 100;
+            } else {
+                document.getElementById('global-disc-fixed').classList.add('active-fixed');
+                document.getElementById('global-disc-unit').textContent = 'FCFA';
+                document.getElementById('discount').removeAttribute('max');
+            }
+            document.getElementById('type_discount').value = type;
+            document.getElementById('discount').value = 0;
+            recalcTotals();
         }
 
         // ── Recalcul ligne ──────────────────────────────────────────────────────────
@@ -552,17 +669,21 @@
             const row = document.getElementById('row-' + pid);
             const qty = parseInt(row.querySelector('.qty-input').value) || 1;
             const unitPrice = parseFloat(row.querySelector('.unit-price-input').value) || 0;
-            let discountPct = parseFloat(row.querySelector('.discount-input').value) || 0;
+            let discountVal = parseFloat(row.querySelector('.discount-input').value) || 0;
+            const typeDiscount = row.querySelector('.type-discount-input').value || 'percent';
             const stock = cartItems[pid].stock;
 
-            // Vérif max 100%
-            if (discountPct > 100) {
-                discountPct = 100;
+            if (discountVal < 0) {
+                discountVal = 0;
+                row.querySelector('.discount-input').value = 0;
+            }
+            if (typeDiscount === 'percent' && discountVal > 100) {
+                discountVal = 100;
                 row.querySelector('.discount-input').value = 100;
             }
-            if (discountPct < 0) {
-                discountPct = 0;
-                row.querySelector('.discount-input').value = 0;
+            if (typeDiscount === 'fixed' && discountVal > unitPrice) {
+                discountVal = unitPrice;
+                row.querySelector('.discount-input').value = unitPrice;
             }
 
             // Vérif stock
@@ -579,7 +700,12 @@
                 return;
             }
 
-            const prixApres = unitPrice * (1 - discountPct / 100);
+            let prixApres;
+            if (typeDiscount === 'percent') {
+                prixApres = unitPrice * (1 - discountVal / 100);
+            } else {
+                prixApres = unitPrice - discountVal;
+            }
             const total = Math.max(0, prixApres) * qty;
             document.getElementById('total-' + pid).textContent = formatMoney(total) + ' FCFA';
             recalcTotals();
@@ -609,16 +735,32 @@
                 if (!row) return;
                 const qty = parseInt(row.querySelector('.qty-input').value) || 1;
                 const unitPrice = parseFloat(row.querySelector('.unit-price-input').value) || 0;
-                const discountPct = parseFloat(row.querySelector('.discount-input').value) || 0;
-                subtotal += Math.max(0, unitPrice * (1 - discountPct / 100)) * qty;
+                const discountVal = parseFloat(row.querySelector('.discount-input').value) || 0;
+                const typeDiscount = row.querySelector('.type-discount-input').value || 'percent';
+                let prixApres;
+                if (typeDiscount === 'percent') {
+                    prixApres = unitPrice * (1 - discountVal / 100);
+                } else {
+                    prixApres = unitPrice - discountVal;
+                }
+                subtotal += Math.max(0, prixApres) * qty;
             });
 
-            const globalDiscount = parseFloat(document.getElementById('discount').value) || 0;
+            const globalDiscountVal = parseFloat(document.getElementById('discount').value) || 0;
+            const globalDiscountType = document.getElementById('type_discount').value || 'percent';
+            let globalDiscountAmount;
+            if (globalDiscountType === 'percent') {
+                globalDiscountAmount = subtotal * globalDiscountVal / 100;
+            } else {
+                globalDiscountAmount = globalDiscountVal;
+            }
+
             const delivery = parseFloat(document.getElementById('delivery_price').value) || 0;
             const acompte = parseFloat(document.getElementById('acompte').value) || 0;
-            const total = Math.max(0, subtotal - globalDiscount + delivery);
+            const total = Math.max(0, subtotal - globalDiscountAmount + delivery);
             const solde = Math.max(0, total - acompte);
 
+            currentTotal = total;
             document.getElementById('display-subtotal').textContent = formatMoney(subtotal) + ' FCFA';
             document.getElementById('display-total').textContent = formatMoney(total) + ' FCFA';
             document.getElementById('display-solde').textContent = formatMoney(solde) + ' FCFA';
@@ -697,9 +839,9 @@
             e.preventDefault();
 
             const errors = [];
-            const status = document.querySelector('[name="status"]').value;
-            // attente / précommande / en_attente_acompte → acompte = 0 autorisé
-            const isAttente = (status === 'attente' || status === 'precommande' || status === 'en_attente_acompte');
+            const status     = document.querySelector('[name="status"]').value;
+            const isAttente  = ['attente', 'precommande', 'en_attente_acompte', 'annulée'].includes(status);
+            const isLivree   = status === 'livrée';
 
             // 1. Panier non vide
             if (!Object.keys(cartItems).length) {
@@ -716,7 +858,11 @@
             // 3. Champs requis hors "en attente"
             if (!isAttente) {
                 const acompte = parseFloat(document.getElementById('acompte').value) || 0;
-                if (acompte <= 0) {
+                if (isLivree) {
+                    if (Math.round(acompte) !== Math.round(currentTotal)) {
+                        errors.push(`Pour une commande livrée, l'acompte (${formatMoney(acompte)} FCFA) doit être égal au total (${formatMoney(currentTotal)} FCFA).`);
+                    }
+                } else if (acompte <= 0) {
                     errors.push('L\'acompte doit être supérieur à 0 pour ce statut.');
                 }
                 const paiement = document.querySelector('[name="payment_method_id"]').value;

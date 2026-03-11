@@ -43,6 +43,14 @@ class RolesTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
+                3 => 
+            array (
+                'id' => 4,
+                'name' => 'gestionnaire',
+                'guard_name' => 'web',
+                'created_at' => NULL,
+                'updated_at' => NULL,
+            )
         ));
         
         

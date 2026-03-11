@@ -130,18 +130,24 @@ class DashboardController extends Controller
         //meilleur client
         $top_user_order = User::withCount('orders')
             ->with('orders', fn($q) => $q->whereStatus('livrée'))
+            ->whereHas('roles', fn($q)=>$q->where('name' , 'client'))
             ->having('orders_count', '>', 0)
             ->orderBy('orders_count', 'DESC')->take(5)->get();
 
 
+            // dd($top_user_order->toArray());
         ####################### TYPE DE CLIENT#####################
         //client fidele
         $client_fidele = User::withCount('orders')
-            ->where('role', 'fidele')->get()->count();
+            ->whereHas('roles', fn($q) => $q->where('name', 'client'))
+            ->where('type_client', 'fidele')
+            ->count();
 
-        //client fidele
+        //client prospect
         $client_prospect = User::withCount('orders')
-            ->where('role', 'prospect')->count();
+            ->whereHas('roles', fn($q) => $q->where('name', 'client'))
+            ->where('type_client', 'prospect')
+            ->count();
 
         // dd($top_user_order->toArray());
 
@@ -331,9 +337,8 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function checkNewOrder()
+    public function checkNewOrder(Request $request)
     {
-
         $orders_new = Order::orderBy('created_at', 'DESC')
             ->whereIn('status', ['attente', 'precommande'])
             ->where('source', 'web')
@@ -342,14 +347,14 @@ class DashboardController extends Controller
         return response()->json([
             'orders_new' => $orders_new->map(function ($order) {
                 return [
-                    'id' => $order->id,
-                    'code' => $order->code,
-                    'status' => $order->status,
-                    'created_at' => $order->created_at->format('Y-m-d H:i:s'),
+                    'id'               => $order->id,
+                    'code'             => $order->code,
+                    'status'           => $order->status,
+                    'created_at'       => $order->created_at->format('Y-m-d H:i:s'),
                     'created_at_human' => Carbon::parse($order->created_at)->diffForHumans(),
                 ];
             }),
-            'count' => $orders_new->count() // Ajoute le nombre total des nouvelles commandes
+            'count' => $orders_new->count(),
         ]);
     }
 

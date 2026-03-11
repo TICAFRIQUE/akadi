@@ -26,26 +26,10 @@
                                     <div class="invalid-feedback">Champs obligatoire</div>
                                 </div>
 
-                                @if ($permissions->count())
-                                    <div class="form-group">
-                                        <label>Permissions</label>
-                                        <div class="row">
-                                            @foreach ($permissions as $perm)
-                                                <div class="col-6">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            name="permissions[]" value="{{ $perm->name }}"
-                                                            id="perm_{{ $perm->id }}"
-                                                            {{ $role->permissions->contains('name', $perm->name) ? 'checked' : '' }}>
-                                                        <label class="form-check-label" for="perm_{{ $perm->id }}">
-                                                            {{ $perm->name }}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endif
+                                <div class="alert alert-info py-2 small">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Les permissions sont gérées directement sur chaque utilisateur.
+                                </div>
 
                                 <div class="form-group mt-3">
                                     <button type="submit" class="btn btn-primary btn-lg btn-block">

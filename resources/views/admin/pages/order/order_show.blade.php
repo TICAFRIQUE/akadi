@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+﻿@extends('admin.layouts.app')
 @section('title', 'Détail commande')
 @section('sub-title', 'Détail de la commande #' . $orders->code)
 
@@ -25,8 +25,6 @@
 @section('content')
 <div class="section-body">
     @include('admin.components.validationMessage')
-    @if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
-    @if(session('error'))   <div class="alert alert-danger">{{ session('error') }}</div>   @endif
 
     {{-- ── Barre d'action ── --}}
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap" style="gap:8px">
@@ -55,7 +53,8 @@
                         </a>
                         @else
                         <a href="{{ route('order.changeState') }}?cs={{ $stKey }}&id={{ $orders->id }}"
-                            class="dropdown-item">
+                            class="dropdown-item btn-change-status-top"
+                            data-status="{{ $stKey }}">
                             {{ $st['label'] }}
                         </a>
                         @endif
@@ -132,7 +131,8 @@
                                     &nbsp;·&nbsp; PU&nbsp;: {{ number_format($pivot->unit_price, 0, '', ' ') }} FCFA
                                     @if(($pivot->discount ?? 0) > 0)
                                     <br>
-                                    <span class="text-danger">Remise&nbsp;: –{{ number_format($pivot->discount, 0, '', ' ') }} %</span>
+                                    @php $typeDisc = $pivot->type_discount ?? 'percent'; @endphp
+                                    <span class="text-danger">Remise&nbsp;: –{{ number_format($pivot->discount, 0, '', ' ') }} {{ $typeDisc === 'percent' ? '%' : 'FCFA' }}</span>
                                     &nbsp;·&nbsp; Net&nbsp;: {{ number_format($netPrice, 0, '', ' ') }} FCFA
                                     @endif
                                 </div>
@@ -201,7 +201,8 @@
                 <div class="total-recap">
                     <div class="line"><span>Sous-total</span><span>{{ number_format($orders->subtotal ?? 0, 0, '', ' ') }} FCFA</span></div>
                     @if(($orders->discount ?? 0) > 0)
-                    <div class="line text-warning"><span>Remise</span><span>– {{ number_format($orders->discount, 0, '', ' ') }} %</span></div>
+                    @php $globalTypeDisc = $orders->type_discount ?? 'fixed'; @endphp
+                    <div class="line text-warning"><span>Remise</span><span>– {{ number_format($orders->discount, 0, '', ' ') }} {{ $globalTypeDisc === 'percent' ? '%' : 'FCFA' }}</span></div>
                     @endif
                     @if(($orders->delivery_price ?? 0) > 0)
                     <div class="line"><span>Livraison</span><span>{{ number_format($orders->delivery_price, 0, '', ' ') }} FCFA</span></div>
@@ -257,7 +258,8 @@
                         </a>
                         @else
                         <a href="{{ route('order.changeState') }}?cs={{ $stKey }}&id={{ $orders->id }}"
-                            class="btn btn-sm btn-outline-secondary">
+                            class="btn btn-sm btn-outline-secondary btn-change-status"
+                            data-status="{{ $stKey }}">
                             {{ $st['label'] }}
                         </a>
                         @endif
@@ -275,6 +277,55 @@
 
 @section('script')
 <script>
+const ORDER_ACOMPTE = {{ (float)($orders->acompte ?? 0) }};
+const ORDER_TOTAL   = {{ (float)($orders->total   ?? 0) }};
+
+@if(session('success'))
+Swal.fire({ icon: 'success', title: 'Succès', text: @json(session('success')), timer: 2500, showConfirmButton: false });
+@endif
+@if(session('error'))
+Swal.fire({ icon: 'error', title: 'Erreur', html: @json(session('error')), confirmButtonText: 'Compris', confirmButtonColor: '#e74a3b' });
+@endif
+
+const STATUS_ATTENTE_LIST = ['attente', 'precommande', 'en_attente_acompte', 'annulée'];
+
+function validateStatusChange(e, newStatus) {
+    if (STATUS_ATTENTE_LIST.includes(newStatus)) return true;
+    if (newStatus === 'livrée') {
+        if (Math.round(ORDER_ACOMPTE) !== Math.round(ORDER_TOTAL)) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Acompte insuffisant',
+                html: `Pour passer en <strong>Livrée</strong>, l'acompte doit être égal au total.<br><br>
+                       Acompte&nbsp;: <strong>${Math.round(ORDER_ACOMPTE).toLocaleString('fr-FR')} FCFA</strong><br>
+                       Total&nbsp;&nbsp;&nbsp;: <strong>${Math.round(ORDER_TOTAL).toLocaleString('fr-FR')} FCFA</strong>`,
+                confirmButtonText: 'Compris',
+                confirmButtonColor: '#e74a3b'
+            });
+            return false;
+        }
+        return true;
+    }
+    if (ORDER_ACOMPTE <= 0) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'warning',
+            title: 'Acompte requis',
+            text: `Un acompte est obligatoire avant de passer à ce statut.`,
+            confirmButtonText: 'Compris',
+            confirmButtonColor: '#f6c23e'
+        });
+        return false;
+    }
+    return true;
+}
+
+document.querySelectorAll('.btn-change-status, .btn-change-status-top').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        validateStatusChange(e, this.dataset.status);
+    });
+});
 @if(($orders->solde_restant ?? 0) > 0 && !in_array($orders->status, ['annulée','livrée']))
 document.getElementById('form-acompte')?.addEventListener('submit', function(e) {
     e.preventDefault();

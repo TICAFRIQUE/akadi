@@ -62,6 +62,7 @@ class Order extends Model
         'address',
         'address_yango',
         'discount',
+        'type_discount',       // percent ou fixed
         'total',
         'delivery_planned',
         'delivery_date',
@@ -69,6 +70,10 @@ class Order extends Model
         'raison_annulation_cmd',
         'payment method',        // ancien champ conservé
         'payment_method_id',     // nouveau FK
+        'wave_session_id',       // ID de session Wave
+        'wave_payment_id',       // ID de paiement Wave
+        'payment_status',        // pending, completed, failed, cancelled
+        'payment_completed_at',  // Date de complétion du paiement
         'mode_livraison', //[livraison, retrait_sur_place, domicile]
         'available_product',
         'user_id',
@@ -126,7 +131,7 @@ class Order extends Model
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class)
-            ->withPivot(['quantity', 'unit_price', 'discount', 'prix_apres_remise', 'total', 'options', 'available'])
+            ->withPivot(['quantity', 'unit_price', 'discount', 'type_discount', 'prix_apres_remise', 'total', 'options', 'available'])
             ->withTimestamps();
     }
 

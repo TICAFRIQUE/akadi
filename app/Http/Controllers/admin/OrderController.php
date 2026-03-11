@@ -36,8 +36,17 @@ class OrderController extends Controller
         $status    = $request->input('status');
         $source    = $request->input('source');
 
+        // Restriction selon permission (p-cuisine, p-livraison, p-confirmation)
+        $allowedStatuses = orderStatusesAllowed();
+
+        // Si tableau vide → aucun statut autorisé, retour accès refusé
+        if (is_array($allowedStatuses) && count($allowedStatuses) === 0) {
+            abort(403, 'Accès non autorisé.');
+        }
+
         $orders = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
             ->orderBy('created_at', 'DESC')
+            ->when($allowedStatuses !== null, fn($q) => $q->whereIn('status', $allowedStatuses))
             ->when(request('d'), fn($q) => $q->where('date_order', Carbon::now()->format('Y-m-d')))
             ->when(request('s'), fn($q) => $q->whereStatus(request('s')))
             ->when($source, fn($q) => $q->where('source', $source))
@@ -52,7 +61,10 @@ class OrderController extends Controller
             )
             ->get();
 
-        $statuts = Order::$statuts;
+        // Limiter le sélecteur de statuts aux statuts autorisés
+        $statuts = $allowedStatuses !== null
+            ? array_intersect_key(Order::$statuts, array_flip($allowedStatuses))
+            : Order::$statuts;
         $sources = Order::$sources;
 
         return view('admin.pages.order.order', compact('orders', 'dateDebut', 'dateFin', 'statuts', 'sources'));
@@ -147,7 +159,40 @@ class OrderController extends Controller
 
         $order = Order::with('user')->whereId($orderId)->first();
 
-        Order::whereId($orderId)->update(['status' => $state , 'created_by' => Auth::id()]);
+        if (!$order) {
+            return back()->with('error', 'Commande introuvable.');
+        }
+
+        // ── Contrôle des permissions de transition ────────────────────────────────
+        if (!canChangeOrderStatus($state)) {
+            return back()->with('error', 'Vous n\'avez pas la permission d\'effectuer ce changement de statut.');
+        }
+
+        // ── Règles métier sur l'acompte ──────────────────────────────────────────
+        $acompteOptionnel = in_array($state, [
+            Order::STATUS_ATTENTE,
+            Order::STATUS_PRECOMMANDE,
+            Order::STATUS_ATTENTE_ACOMPTE,
+            Order::STATUS_ANNULEE,
+        ]);
+
+        if (!$acompteOptionnel) {
+            if ($state === Order::STATUS_LIVREE) {
+                if (round((float) $order->acompte, 2) !== round((float) $order->total, 2)) {
+                    return back()->with(
+                        'error',
+                        "Pour passer en « Livrée », l'acompte (" . number_format($order->acompte, 0, ',', ' ') . " FCFA) doit être égal au total (" . number_format($order->total, 0, ',', ' ') . " FCFA)."
+                    );
+                }
+            } elseif ((float) $order->acompte <= 0) {
+                return back()->with(
+                    'error',
+                    "Un acompte est obligatoire avant de passer au statut « {$state} »."
+                );
+            }
+        }
+
+        Order::whereId($orderId)->update(['status' => $state, 'created_by' => Auth::id()]);
 
         // Envoyer SMS seulement si confirmée
         if ($state === Order::STATUS_CONFIRMEE) {
@@ -232,27 +277,39 @@ class OrderController extends Controller
     }
 
 
-    public function checkNewOrder()
+    public function checkNewOrder(Request $request)
     {
+        // Ne retourner que les commandes postérieures au dernier ID connu côté client
+        $sinceId = (int) $request->input('since_id', 0);
 
-        $orders_new = Order::with('user')->orderBy('created_at', 'DESC')
-            ->whereIn('status', ['attente', 'precommande'])
+        $orders_new = Order::with('user')
+            ->whereIn('status', [Order::STATUS_ATTENTE, Order::STATUS_PRECOMMANDE])
             ->where('source', 'web')
-            ->get();
+            ->when($sinceId > 0, fn($q) => $q->where('id', '>', $sinceId))
+            ->orderBy('id', 'DESC')
+            ->limit(20)
+            ->get()
+            ->map(fn($order) => [
+                'id'           => $order->id,
+                'code'         => $order->code,
+                'status'       => $order->status,
+                'status_label' => Order::$statuts[$order->status]['label'] ?? $order->status,
+                'status_color' => Order::$statuts[$order->status]['color'] ?? 'secondary',
+                'source'       => $order->source,
+                'source_label' => Order::$sources[$order->source]['label'] ?? $order->source,
+                'source_icon'  => Order::$sources[$order->source]['icon'] ?? 'fa-question',
+                'nom_client'   => $order->nom_client,
+                'tel_client'   => $order->tel_client,
+                'total'        => (float) $order->total,
+                'acompte'      => (float) $order->acompte,
+                'solde_restant'=> (float) $order->solde_restant,
+                'created_at'   => $order->created_at->format('d/m/Y H:i'),
+            ]);
 
         return response()->json([
             'status' => 'success',
-            'orders' => $orders_new
-            // 'orders_new' => $orders_new->map(function ($order) {
-            //     return [
-            //         'id' => $order->id,
-            //         'code' => $order->code,
-            //         'status' => $order->status,
-            //         'created_at' => $order->created_at->format('Y-m-d H:i:s'),
-            //         'created_at_human' => Carbon::parse($order->created_at)->diffForHumans(),
-            //     ];
-            // }),
-            // 'count' => $orders_new->count() // Ajoute le nombre total des nouvelles commandes
+            'orders' => $orders_new,
+            'count'  => $orders_new->count(),
         ]);
     }
 }

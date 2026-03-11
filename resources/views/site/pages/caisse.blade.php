@@ -796,39 +796,24 @@
 
                             let timerInterval
                             Swal.fire({
-                                title: 'Enregistrement de la commande',
-                                html: 'Veuillez patienter dans <b></b> Secondes.',
+                                title: 'Enregistrement des informations',
+                                html: 'Redirection vers le paiement dans <b></b> secondes.',
                                 timer: 2000,
                                 timerProgressBar: true,
                                 didOpen: () => {
                                     Swal.showLoading()
                                     const b = Swal.getHtmlContainer().querySelector('b')
                                     timerInterval = setInterval(() => {
-                                        b.textContent = Swal.getTimerLeft()
+                                        b.textContent = Math.ceil(Swal.getTimerLeft() / 1000)
                                     }, 100)
                                 },
                                 willClose: () => {
                                     clearInterval(timerInterval)
                                 }
                             }).then((result) => {
-                                /* Read more about handling dismissals below */
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    Swal.fire({
-                                        toast: true,
-                                        icon: 'success',
-                                        title: 'Commande enregistré avec success',
-                                        width: '100%',
-                                        animation: false,
-                                        position: 'top',
-                                        background: '#3da108e0',
-                                        iconColor: '#fff',
-                                        color: '#fff',
-                                        showConfirmButton: false,
-                                        timer: 2000,
-                                        timerProgressBar: true,
-                                    });
-
-                                    window.location.href = "{{ route('user-order') }}";
+                                // Rediriger vers la page de sélection de paiement
+                                if (response.redirect) {
+                                    window.location.href = response.redirect;
                                 }
                             })
 

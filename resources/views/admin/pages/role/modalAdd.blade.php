@@ -19,26 +19,6 @@
                             Champs obligatoire
                         </div>
                     </div>
-
-                    @if ($permissions->count())
-                    <div class="form-group">
-                        <label>Permissions</label>
-                        <div class="row">
-                            @foreach ($permissions as $perm)
-                                <div class="col-6">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox"
-                                            name="permissions[]" value="{{ $perm->name }}"
-                                            id="perm_add_{{ $perm->id }}">
-                                        <label class="form-check-label" for="perm_add_{{ $perm->id }}">
-                                            {{ $perm->name }}
-                                        </label>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>

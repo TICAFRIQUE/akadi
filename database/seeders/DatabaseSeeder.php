@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ModelHasRolesTableSeeder::class);
         $this->call(PaymentMethodSeeder::class);
         $this->call(CaisseSeeder::class);
+        $this->call(PermissionSeeder::class);
     }
 }
