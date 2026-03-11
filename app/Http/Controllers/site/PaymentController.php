@@ -168,8 +168,26 @@ class PaymentController extends Controller
     protected function processWavePayment(Request $request)
     {
         try {
+            // VÉRIFIER QUE L'UTILISATEUR EST BIEN CONNECTÉ
+            if (!Auth::check()) {
+                Log::error('Wave Payment - User not authenticated', [
+                    'session_id' => Session::getId(),
+                    'has_session' => Session::has('cart')
+                ]);
+                return redirect()->route('login')
+                    ->with('error', 'Vous devez être connecté pour passer commande')
+                    ->with('intended', route('payment.select'));
+            }
+
+            $userId = Auth::id();
             $cart = Session::get('cart', []);
             $deliveryInfo = Session::get('delivery_info');
+
+            Log::info('Wave Payment Start', [
+                'user_id' => $userId,
+                'cart_items' => count($cart),
+                'has_delivery_info' => !empty($deliveryInfo)
+            ]);
 
             if (empty($cart)) {
                 return redirect()->route('panier')->with('error', 'Votre panier est vide');
@@ -191,8 +209,14 @@ class PaymentController extends Controller
                 : Order::STATUS_ATTENTE;
 
             // CRÉER LA COMMANDE IMMÉDIATEMENT (comme avant)
+            Log::info('Creating Wave Order', [
+                'user_id' => $userId,
+                'total' => $total,
+                'payment_method_id' => $request->payment_method_id
+            ]);
+
             $order = Order::create([
-                'user_id' => Auth::id(),
+                'user_id' => $userId,
                 'quantity_product' => $quantityTotal,
                 'subtotal' => $subtotal,
                 'total' => $total,
@@ -210,6 +234,11 @@ class PaymentController extends Controller
                 'payment_method_id' => $request->payment_method_id,
                 'payment_status' => 'pending', // En attente de confirmation Wave
                 'date_order' => now()->format('Y-m-d'),
+            ]);
+
+            Log::info('Wave Order Created Successfully', [
+                'order_id' => $order->id,
+                'user_id' => $userId
             ]);
 
             // Attacher les produits à la commande
