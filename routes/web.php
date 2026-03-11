@@ -308,6 +308,7 @@ Route::middleware(['auth'])->controller(PaymentController::class)->group(functio
     Route::post('paiement/traiter', 'processPayment')->name('payment.process');
     Route::get('payment/wave/success', 'waveSuccess')->name('payment.wave.success');
     Route::get('payment/wave/error', 'waveError')->name('payment.wave.error');
+    Route::get('payment/wave/check-status', 'checkTransactionStatus')->name('wave.check-status');
     Route::get('commande/succes/{orderId}', 'orderSuccess')->name('order.success');
 });
 

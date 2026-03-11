@@ -5,6 +5,7 @@ namespace App\Http\Controllers\site;
 use Exception;
 use App\Models\Order;
 use App\Models\PaymentMethod;
+use App\Models\WaveTransaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\WavePaymentService;
@@ -173,30 +174,35 @@ class PaymentController extends Controller
             $total = $subtotal + $deliveryPrice;
 
             // Générer un identifiant unique pour cette transaction
-            $transactionRef = 'TXN_' . Auth::id() . '_' . time();
-
-            // Stocker les infos complètes pour le webhook (inclut payment_method_id et cart)
-            Session::put('wave_transaction_' . $transactionRef, [
-                'cart' => $cart,
-                'delivery_info' => $deliveryInfo,
-                'payment_method_id' => $request->payment_method_id,
-                'user_id' => Auth::id(),
-            ]);
+            $transactionRef = 'TXN_' . Auth::id() . '_' . time() . '_' . uniqid();
 
             // Créer une session de paiement Wave SANS créer la commande
             $waveResponse = $this->waveService->createCheckoutSession(
                 $total,
                 'XOF',
-                $transactionRef  // Utiliser la référence au lieu de l'order_id
+                $transactionRef
             );
 
             if (!$waveResponse['success']) {
-                Session::forget('wave_transaction_' . $transactionRef);
                 return back()->with('error', 'Impossible d\'initialiser le paiement Wave');
             }
 
-            // Stocker la référence de transaction avec le session_id Wave
-            Session::put('wave_session_mapping_' . $waveResponse['session_id'], $transactionRef);
+            // Stocker la transaction en base de données (accessible par webhook)
+            WaveTransaction::create([
+                'transaction_ref' => $transactionRef,
+                'wave_session_id' => $waveResponse['session_id'],
+                'user_id' => Auth::id(),
+                'payment_method_id' => $request->payment_method_id,
+                'cart_data' => $cart,
+                'delivery_info' => $deliveryInfo,
+                'status' => WaveTransaction::STATUS_PENDING,
+            ]);
+
+            Log::info('Wave Transaction Created', [
+                'transaction_ref' => $transactionRef,
+                'wave_session_id' => $waveResponse['session_id'],
+                'user_id' => Auth::id()
+            ]);
 
             // Rediriger vers Wave
             return redirect()->away($waveResponse['wave_launch_url']);
@@ -231,34 +237,19 @@ class PaymentController extends Controller
             $sessionId = $payload['id'];
             $status = $payload['status'];
 
-            // Trouver la commande correspondante
-            $order = Order::where('wave_session_id', $sessionId)->first();
+            // Chercher la transaction Wave par session_id
+            $waveTransaction = WaveTransaction::where('wave_session_id', $sessionId)->first();
 
-            if (!$order) {
-                Log::warning('Wave Webhook - commande introuvable', ['session_id' => $sessionId]);
-                return response()->json(['error' => 'Order not found'], 404);
-            }
-
-            // Récupérer la référence de transaction
-            $transactionRef = Session::get('wave_session_mapping_' . $sessionId);
-            
-            if (!$transactionRef) {
-                // Ancien flux : commande existe déjà, mise à jour
+            if (!$waveTransaction) {
+                // Vérifier si c'est une ancienne commande (rétrocompatibilité)
+                $order = Order::where('wave_session_id', $sessionId)->first();
                 if ($order) {
                     $this->updateExistingOrder($order, $status, $payload, $sessionId);
+                    return response()->json(['status' => 'success'], 200);
                 }
-                return response()->json(['status' => 'success'], 200);
-            }
-
-            // Nouveau flux : créer la commande seulement si paiement completed
-            $transactionData = Session::get('wave_transaction_' . $transactionRef);
-            
-            if (!$transactionData) {
-                Log::error('Wave Webhook - données de transaction introuvables', [
-                    'transaction_ref' => $transactionRef,
-                    'session_id' => $sessionId
-                ]);
-                return response()->json(['error' => 'Transaction data not found'], 404);
+                
+                Log::error('Wave Webhook - transaction introuvable', ['session_id' => $sessionId]);
+                return response()->json(['error' => 'Transaction not found'], 404);
             }
 
             // Traiter selon le statut
@@ -266,46 +257,45 @@ class PaymentController extends Controller
                 case 'complete':
                 case 'completed':
                     // CRÉER la commande maintenant que le paiement est confirmé
-                    $order = $this->createOrderFromTransaction($transactionData, $sessionId, $payload);
+                    $order = $this->createOrderFromWaveTransaction($waveTransaction, $payload);
+                    
+                    // Mettre à jour la transaction
+                    $waveTransaction->update([
+                        'status' => WaveTransaction::STATUS_COMPLETED,
+                        'order_id' => $order->id,
+                    ]);
                     
                     Log::info('Wave Payment Completed - Order Created', [
                         'order_id' => $order->id,
+                        'transaction_ref' => $waveTransaction->transaction_ref,
                         'session_id' => $sessionId,
-                        'amount_paid' => $order->total,
-                        'transaction_ref' => $transactionRef
+                        'amount_paid' => $order->total
                     ]);
 
                     // Envoyer les notifications
                     $this->sendOrderNotifications($order);
-                    
-                    // Nettoyer les sessions
-                    Session::forget('wave_transaction_' . $transactionRef);
-                    Session::forget('wave_session_mapping_' . $sessionId);
-                    Session::forget('cart');
-                    Session::forget('delivery_info');
-                    Session::forget('totalQuantity');
                     break;
 
                 case 'failed':
                 case 'cancelled':
-                    // Paiement échoué/annulé : ne pas créer de commande, juste nettoyer
-                    Log::info('Wave Payment Failed/Cancelled - No Order Created', [
-                        'session_id' => $sessionId,
-                        'status' => $status,
-                        'transaction_ref' => $transactionRef
+                    // Mettre à jour le statut de la transaction
+                    $waveTransaction->update([
+                        'status' => $status === 'failed' 
+                            ? WaveTransaction::STATUS_FAILED 
+                            : WaveTransaction::STATUS_CANCELLED
                     ]);
                     
-                    // Nettoyer les sessions mais garder cart et delivery_info 
-                    // pour que l'utilisateur puisse réessayer
-                    Session::forget('wave_transaction_' . $transactionRef);
-                    Session::forget('wave_session_mapping_' . $sessionId);
+                    Log::info('Wave Payment Failed/Cancelled', [
+                        'transaction_ref' => $waveTransaction->transaction_ref,
+                        'session_id' => $sessionId,
+                        'status' => $status
+                    ]);
                     break;
 
                 default:
                     Log::warning('Wave Webhook - statut inconnu', [
                         'status' => $status,
-                        'session_id' => $sessionId,
-                        'transaction_ref' => $transactionRef
+                        'session_id' => $sessionId
                     ]);
             }
 
@@ -322,12 +312,12 @@ class PaymentController extends Controller
     }
 
     /**
-     * Créer une commande à partir des données de transaction (nouveau flux)
+     * Créer une commande à partir d'une WaveTransaction
      */
-    protected function createOrderFromTransaction($transactionData, $sessionId, $payload)
+    protected function createOrderFromWaveTransaction(WaveTransaction $waveTransaction, $payload)
     {
-        $cart = $transactionData['cart'];
-        $deliveryInfo = $transactionData['delivery_info'];
+        $cart = $waveTransaction->cart_data;
+        $deliveryInfo = $waveTransaction->delivery_info;
         
         // Calculer les totaux
         $subtotal = $deliveryInfo['subTotal'];
@@ -346,7 +336,7 @@ class PaymentController extends Controller
         
         // Créer la commande
         $order = Order::create([
-            'user_id' => $transactionData['user_id'],
+            'user_id' => $waveTransaction->user_id,
             'quantity_product' => $quantityTotal,
             'subtotal' => $subtotal,
             'total' => $total,
@@ -360,10 +350,10 @@ class PaymentController extends Controller
             'discount' => $deliveryInfo['discount'],
             'delivery_planned' => $deliveryInfo['delivery_planned'],
             'status' => $status,
-            'payment_method_id' => $transactionData['payment_method_id'],
+            'payment_method_id' => $waveTransaction->payment_method_id,
             'payment_status' => 'completed',
             'payment_completed_at' => now(),
-            'wave_session_id' => $sessionId,
+            'wave_session_id' => $waveTransaction->wave_session_id,
             'wave_payment_id' => $payload['wave_payment_id'] ?? null,
             'acompte' => $acompteAmount,
             'solde_restant' => $soldeRestant,
@@ -502,28 +492,43 @@ class PaymentController extends Controller
 
         // Vérifier si la référence correspond à une transaction (nouveau flux)
         if (str_starts_with($ref, 'TXN_')) {
-            // Attendre quelques secondes que le webhook soit traité
-            sleep(3);
+            // Chercher la transaction Wave
+            $waveTransaction = WaveTransaction::where('transaction_ref', $ref)->first();
             
-            // Chercher si la commande a été créée
-            $order = Order::where('user_id', Auth::id())
-                ->where('payment_status', 'completed')
-                ->latest()
-                ->first();
+            if (!$waveTransaction) {
+                Log::error('Wave Success - transaction introuvable', ['ref' => $ref]);
+                return redirect()->route('home')->with('error', 'Transaction introuvable');
+            }
             
-            if ($order) {
-                // La commande a été créée par le webhook
+            // Si la commande est déjà créée, rediriger
+            if ($waveTransaction->order_id) {
                 Session::forget('cart');
                 Session::forget('delivery_info');
                 Session::forget('totalQuantity');
                 
-                return redirect()->route('order.success', $order->id)
+                return redirect()->route('order.success', $waveTransaction->order_id)
                     ->with('success', 'Votre paiement a été effectué avec succès');
             }
             
-            // Le webhook n'a pas encore été reçu
+            // Attendre que le webhook crée la commande
+            for ($i = 0; $i < 5; $i++) {
+                sleep(2);
+                $waveTransaction->refresh();
+                
+                if ($waveTransaction->order_id) {
+                    Session::forget('cart');
+                    Session::forget('delivery_info');
+                    Session::forget('totalQuantity');
+                    
+                    return redirect()->route('order.success', $waveTransaction->order_id)
+                        ->with('success', 'Votre paiement a été effectué avec succès');
+                }
+            }
+            
+            // Le webhook n'a pas encore été reçu après 10 secondes
             return view('site.pages.payment-pending')
-                ->with('message', 'Votre paiement est en cours de vérification. Veuillez patienter...');
+                ->with('message', 'Votre paiement est en cours de vérification. Veuillez patienter...')
+                ->with('transaction_ref', $ref);
         }
         
         // Ancien flux : ref est un order_id
@@ -555,9 +560,14 @@ class PaymentController extends Controller
     {
         $ref = $request->query('ref');
 
-        // Si c'est le nouveau flux (transaction), ne rien faire
-        // Si c'est l'ancien flux avec un order_id, marquer la commande comme annulée
-        if ($ref && !str_starts_with($ref, 'TXN_')) {
+        // Si c'est le nouveau flux (transaction), mettre à jour le statut
+        if ($ref && str_starts_with($ref, 'TXN_')) {
+            $waveTransaction = WaveTransaction::where('transaction_ref', $ref)->first();
+            if ($waveTransaction) {
+                $waveTransaction->update(['status' => WaveTransaction::STATUS_CANCELLED]);
+            }
+        } else if ($ref) {
+            // Ancien flux avec un order_id
             $order = Order::find($ref);
             if ($order) {
                 $order->update([
@@ -569,6 +579,29 @@ class PaymentController extends Controller
 
         return redirect()->route('payment.select')
             ->with('error', 'Le paiement a échoué ou a été annulé. Veuillez réessayer.');
+    }
+
+    /**
+     * Vérifier le statut d'une transaction Wave (via AJAX)
+     */
+    public function checkTransactionStatus(Request $request)
+    {
+        $ref = $request->query('ref');
+        
+        if (!$ref || !str_starts_with($ref, 'TXN_')) {
+            return response()->json(['error' => 'Invalid reference'], 400);
+        }
+        
+        $waveTransaction = WaveTransaction::where('transaction_ref', $ref)->first();
+        
+        if (!$waveTransaction) {
+            return response()->json(['error' => 'Transaction not found'], 404);
+        }
+        
+        return response()->json([
+            'status' => $waveTransaction->status,
+            'order_id' => $waveTransaction->order_id,
+        ]);
     }
 
     /**

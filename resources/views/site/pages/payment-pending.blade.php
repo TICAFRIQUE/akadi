@@ -92,6 +92,43 @@
     </style>
 
     <script>
+        @if(isset($transaction_ref))
+        // Vérifier périodiquement si la commande a été créée
+        let checkCount = 0;
+        const maxChecks = 24; // 2 minutes (5 secondes × 24)
+        
+        const checkInterval = setInterval(function() {
+            checkCount++;
+            
+            // Faire une requête AJAX pour vérifier le statut
+            fetch('{{ route("wave.check-status") }}?ref={{ $transaction_ref }}', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'completed' && data.order_id) {
+                    clearInterval(checkInterval);
+                    window.location.href = '{{ url("/order/success") }}/' + data.order_id;
+                } else if (data.status === 'failed' || data.status === 'cancelled') {
+                    clearInterval(checkInterval);
+                    window.location.href = '{{ route("payment.select") }}';
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la vérification:', error);
+            });
+            
+            // Arrêter après maxChecks tentatives
+            if (checkCount >= maxChecks) {
+                clearInterval(checkInterval);
+                window.location.href = "{{ route('user-order') }}";
+            }
+        }, 5000);
+        @else
         // Rafraîchir la page après 5 secondes pour vérifier si le webhook a été traité
         setTimeout(function() {
             window.location.reload();
@@ -101,5 +138,6 @@
         setTimeout(function() {
             window.location.href = "{{ route('user-order') }}";
         }, 120000);
+        @endif
     </script>
 @endsection
