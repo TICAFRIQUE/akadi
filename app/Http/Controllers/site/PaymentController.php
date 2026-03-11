@@ -271,46 +271,108 @@ class PaymentController extends Controller
     public function waveWebhook(Request $request)
     {
         try {
+            // TOUJOURS logger ce qui est reçu (pour déboguer)
             Log::info('Wave Webhook Received', [
+                'method' => $request->method(),
                 'headers' => $request->headers->all(),
-                'payload' => $request->all()
+                'raw_body' => $request->getContent(),
+                'parsed_payload' => $request->all(),
+                'query_params' => $request->query(),
             ]);
 
             // Récupérer les données du webhook
             $payload = $request->all();
-
-            // Vérifier que le payload contient les données nécessaires
-            if (!isset($payload['id']) || !isset($payload['status'])) {
-                Log::warning('Wave Webhook - données manquantes', ['payload' => $payload]);
-                return response()->json(['error' => 'Invalid payload'], 400);
+            
+            // Wave peut envoyer les données de différentes manières
+            // Format 1: {"id": "xxx", "status": "completed"}
+            // Format 2: {"data": {"id": "xxx", "status": "completed"}}
+            // Format 3: {"event": "checkout.completed", "data": {...}}
+            
+            $sessionId = null;
+            $status = null;
+            
+            // Essayer d'extraire l'ID et le statut
+            if (isset($payload['id'])) {
+                $sessionId = $payload['id'];
+            } elseif (isset($payload['data']['id'])) {
+                $sessionId = $payload['data']['id'];
+            } elseif (isset($payload['checkout_session_id'])) {
+                $sessionId = $payload['checkout_session_id'];
+            }
+            
+            if (isset($payload['status'])) {
+                $status = $payload['status'];
+            } elseif (isset($payload['data']['status'])) {
+                $status = $payload['data']['status'];
+            } elseif (isset($payload['event'])) {
+                // Déduire le statut depuis l'event
+                if (strpos($payload['event'], 'completed') !== false) {
+                    $status = 'completed';
+                } elseif (strpos($payload['event'], 'failed') !== false) {
+                    $status = 'failed';
+                } elseif (strpos($payload['event'], 'cancelled') !== false) {
+                    $status = 'cancelled';
+                }
+            }
+            
+            // Si on n'a toujours pas les données nécessaires
+            if (!$sessionId || !$status) {
+                Log::warning('Wave Webhook - données manquantes ou format inconnu', [
+                    'payload' => $payload,
+                    'session_id_found' => $sessionId,
+                    'status_found' => $status
+                ]);
+                
+                // Retourner 200 pour éviter que Wave réessaie en boucle
+                // mais logger qu'on n'a pas pu traiter
+                return response()->json([
+                    'status' => 'received',
+                    'message' => 'Webhook received but could not process'
+                ], 200);
             }
 
-            $sessionId = $payload['id'];
-            $status = $payload['status'];
+            Log::info('Wave Webhook Processing', [
+                'session_id' => $sessionId,
+                'status' => $status
+            ]);
 
             // Chercher la commande par wave_session_id
             $order = Order::where('wave_session_id', $sessionId)->first();
 
             if (!$order) {
-                Log::error('Wave Webhook - commande introuvable', ['session_id' => $sessionId]);
-                return response()->json(['error' => 'Order not found'], 404);
+                Log::error('Wave Webhook - commande introuvable', [
+                    'session_id' => $sessionId,
+                    'searched_in_db' => true
+                ]);
+                
+                // Retourner 200 même si commande introuvée (éviter les retry infinis)
+                return response()->json([
+                    'status' => 'received',
+                    'message' => 'Order not found but webhook acknowledged'
+                ], 200);
             }
 
             // Traiter selon le statut
-            switch ($status) {
+            switch (strtolower($status)) {
                 case 'complete':
                 case 'completed':
-                    // METTRE À JOUR la commande existante (ne pas en créer une nouvelle)
+                case 'success':
+                case 'succeeded':
+                    // METTRE À JOUR la commande existante
                     $order->update([
                         'payment_status' => 'completed',
-                        'acompte' => $order->total, // Paiement complet
+                        'acompte' => $order->total,
                         'solde_restant' => 0,
+                        'status' => Order::STATUS_ATTENTE, // Changer de "attente" à "confirmée" si nécessaire
+                        'payment_completed_at' => now(),
                     ]);
                     
                     Log::info('Wave Payment Completed - Order Updated', [
                         'order_id' => $order->id,
+                        'order_code' => $order->code,
                         'session_id' => $sessionId,
-                        'amount_paid' => $order->total
+                        'amount_paid' => $order->total,
+                        'user_id' => $order->user_id
                     ]);
 
                     // Envoyer les notifications
@@ -318,36 +380,60 @@ class PaymentController extends Controller
                     break;
 
                 case 'failed':
-                case 'cancelled':
-                    // Marquer la commande comme annulée
+                case 'failure':
                     $order->update([
-                        'payment_status' => $status === 'failed' ? 'failed' : 'cancelled',
+                        'payment_status' => 'failed',
                         'status' => Order::STATUS_ANNULEE
                     ]);
                     
-                    Log::info('Wave Payment Failed/Cancelled', [
+                    Log::info('Wave Payment Failed', [
                         'order_id' => $order->id,
-                        'session_id' => $sessionId,
-                        'status' => $status
+                        'session_id' => $sessionId
+                    ]);
+                    break;
+                    
+                case 'cancelled':
+                case 'canceled':
+                    $order->update([
+                        'payment_status' => 'cancelled',
+                        'status' => Order::STATUS_ANNULEE
+                    ]);
+                    
+                    Log::info('Wave Payment Cancelled', [
+                        'order_id' => $order->id,
+                        'session_id' => $sessionId
                     ]);
                     break;
 
                 default:
                     Log::warning('Wave Webhook - statut inconnu', [
                         'status' => $status,
-                        'session_id' => $sessionId
+                        'session_id' => $sessionId,
+                        'order_id' => $order->id
                     ]);
             }
 
-            // Répondre à Wave pour confirmer la réception
-            return response()->json(['status' => 'success'], 200);
+            // TOUJOURS retourner 200 pour confirmer la réception
+            return response()->json([
+                'status' => 'success',
+                'order_id' => $order->id,
+                'message' => 'Webhook processed successfully'
+            ], 200);
 
         } catch (Exception $e) {
-            Log::error('Wave Webhook Error', [
+            Log::error('Wave Webhook Exception', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+                'request_body' => $request->getContent()
             ]);
-            return response()->json(['error' => 'Internal server error'], 500);
+            
+            // Même en cas d'erreur, retourner 200 pour éviter les retry infinis
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Webhook received but processing failed'
+            ], 200);
         }
     }
 
