@@ -291,26 +291,31 @@ class PaymentController extends Controller
             $sessionId = null;
             $status = null;
             
-            // Essayer d'extraire l'ID et le statut
-            if (isset($payload['id'])) {
-                $sessionId = $payload['id'];
-            } elseif (isset($payload['data']['id'])) {
+            // Format Wave standard: {"id": "event_id", "type": "checkout.session.completed", "data": {...}}
+            // Le session_id est dans data.id, pas dans id (qui est l'event_id)
+            if (isset($payload['data']['id'])) {
                 $sessionId = $payload['data']['id'];
+            } elseif (isset($payload['id']) && str_starts_with($payload['id'], 'cos-')) {
+                // Fallback si l'id commence par "cos-" (checkout session)
+                $sessionId = $payload['id'];
             } elseif (isset($payload['checkout_session_id'])) {
                 $sessionId = $payload['checkout_session_id'];
             }
             
-            if (isset($payload['status'])) {
+            // Le statut peut être dans data.checkout_status ou data.payment_status
+            if (isset($payload['data']['checkout_status'])) {
+                $status = $payload['data']['checkout_status'];
+            } elseif (isset($payload['data']['payment_status'])) {
+                $status = $payload['data']['payment_status'];
+            } elseif (isset($payload['status'])) {
                 $status = $payload['status'];
-            } elseif (isset($payload['data']['status'])) {
-                $status = $payload['data']['status'];
-            } elseif (isset($payload['event'])) {
-                // Déduire le statut depuis l'event
-                if (strpos($payload['event'], 'completed') !== false) {
+            } elseif (isset($payload['type'])) {
+                // Déduire le statut depuis le type d'événement
+                if (strpos($payload['type'], 'completed') !== false) {
                     $status = 'completed';
-                } elseif (strpos($payload['event'], 'failed') !== false) {
+                } elseif (strpos($payload['type'], 'failed') !== false) {
                     $status = 'failed';
-                } elseif (strpos($payload['event'], 'cancelled') !== false) {
+                } elseif (strpos($payload['type'], 'cancelled') !== false) {
                     $status = 'cancelled';
                 }
             }
@@ -363,7 +368,7 @@ class PaymentController extends Controller
                         'payment_status' => 'completed',
                         'acompte' => $order->total,
                         'solde_restant' => 0,
-                        'status' => Order::STATUS_ATTENTE, // Changer de "attente" à "confirmée" si nécessaire
+                        'status' => Order::STATUS_ATTENTE,
                         'payment_completed_at' => now(),
                     ]);
                     
@@ -372,7 +377,8 @@ class PaymentController extends Controller
                         'order_code' => $order->code,
                         'session_id' => $sessionId,
                         'amount_paid' => $order->total,
-                        'user_id' => $order->user_id
+                        'user_id' => $order->user_id,
+                        'transaction_id' => $payload['data']['transaction_id'] ?? null
                     ]);
 
                     // Envoyer les notifications
