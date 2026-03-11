@@ -206,6 +206,7 @@ class PaymentController extends Controller
                 'discount' => $deliveryInfo['discount'],
                 'delivery_planned' => $deliveryInfo['delivery_planned'],
                 'status' => $status,
+                'source' => 'web', // Important pour checkNewOrder
                 'payment_method_id' => $request->payment_method_id,
                 'payment_status' => 'pending', // En attente de confirmation Wave
                 'date_order' => now()->format('Y-m-d'),
@@ -243,8 +244,8 @@ class PaymentController extends Controller
                 'wave_session_id' => $waveResponse['session_id']
             ]);
 
-            // Vider le panier
-            Session::forget(['cart', 'delivery_info']);
+            // NE PAS vider le panier ici - le webhook le fera après confirmation
+            // Session::forget(['cart', 'delivery_info']);
 
             Log::info('Wave Payment Initiated', [
                 'order_id' => $order->id,
@@ -371,6 +372,10 @@ class PaymentController extends Controller
                         'status' => Order::STATUS_ATTENTE,
                         'payment_completed_at' => now(),
                     ]);
+                    
+                    // Vider le panier de l'utilisateur (si c'est sa session)
+                    // Note: Le webhook n'a pas accès à la session utilisateur,
+                    // donc le panier sera vidé dans waveSuccess() après confirmation
                     
                     Log::info('Wave Payment Completed - Order Updated', [
                         'order_id' => $order->id,
@@ -522,6 +527,9 @@ class PaymentController extends Controller
         
         // Si le paiement est déjà confirmé, rediriger vers la page de succès
         if ($order->payment_status === 'completed') {
+            // Vider le panier maintenant que le paiement est confirmé
+            Session::forget(['cart', 'delivery_info', 'totalQuantity']);
+            
             return redirect()->route('order.success', $order->id)
                 ->with('success', 'Votre paiement a été effectué avec succès');
         }
@@ -532,6 +540,9 @@ class PaymentController extends Controller
             $order->refresh();
             
             if ($order->payment_status === 'completed') {
+                // Vider le panier maintenant que le paiement est confirmé
+                Session::forget(['cart', 'delivery_info', 'totalQuantity']);
+                
                 return redirect()->route('order.success', $order->id)
                     ->with('success', 'Votre paiement a été effectué avec succès');
             }
@@ -595,11 +606,34 @@ class PaymentController extends Controller
      */
     public function orderSuccess($orderId)
     {
-        $order = Order::with(['products', 'paymentMethod'])
-            ->where('id', $orderId)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+        try {
+            $order = Order::with(['products', 'paymentMethod'])
+                ->where('id', $orderId)
+                ->where('user_id', Auth::id())
+                ->first();
 
-        return view('site.pages.order-success', compact('order'));
+            if (!$order) {
+                Log::warning('Order Success - commande introuvable', [
+                    'order_id' => $orderId,
+                    'user_id' => Auth::id()
+                ]);
+                return redirect()->route('home')->with('error', 'Commande introuvable');
+            }
+
+            // Vider le panier si ce n'est pas déjà fait (sécurité)
+            Session::forget(['cart', 'delivery_info', 'totalQuantity']);
+
+            return view('site.pages.order-success', compact('order'));
+            
+        } catch (Exception $e) {
+            Log::error('Order Success Error', [
+                'order_id' => $orderId,
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->route('home')->with('error', 'Une erreur est survenue lors de l\'affichage de votre commande.');
+        }
     }
 }
