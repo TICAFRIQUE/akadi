@@ -113,9 +113,12 @@
                                                     <label>Position</label>
                                                     <input type="number" name="position" class="form-control" value="{{ $pm->position }}" min="0">
                                                 </div>
-                                                <div class="custom-control custom-switch">
-                                                    <input type="checkbox" class="custom-control-input" id="actif_{{ $pm->id }}" name="actif" value="1" {{ $pm->actif ? 'checked' : '' }}>
-                                                    <label class="custom-control-label" for="actif_{{ $pm->id }}">Actif</label>
+                                                <div class="form-group">
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="hidden" name="actif" value="0">
+                                                        <input type="checkbox" class="custom-control-input" id="actif_{{ $pm->id }}" name="actif" value="1" {{ $pm->actif ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="actif_{{ $pm->id }}">Actif</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -142,9 +145,44 @@
 <script>
 document.querySelectorAll('.toggle-pm').forEach(function(el) {
     el.addEventListener('change', function() {
-        fetch('{{ route('payment-method.changeState') }}?id=' + this.dataset.id)
-            .then(r => r.json())
-            .then(data => { if (!data.success) this.checked = !this.checked; });
+        const checkbox = this;
+        const previousState = !checkbox.checked;
+        
+        fetch('{{ route('payment-method.changeState') }}?id=' + this.dataset.id, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur réseau');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data.success) {
+                checkbox.checked = previousState;
+                alert('Erreur lors du changement d\'état');
+            } else {
+                // Notification de succès
+                const toast = document.createElement('div');
+                toast.className = 'alert alert-success alert-dismissible fade show position-fixed';
+                toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+                toast.innerHTML = `
+                    <strong>Succès!</strong> Statut mis à jour.
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                `;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            checkbox.checked = previousState;
+            alert('Erreur lors du changement d\'état. Veuillez réessayer.');
+        });
     });
 });
 </script>

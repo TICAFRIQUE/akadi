@@ -29,22 +29,46 @@ class PaymentMethodController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate(['nom' => 'required|string|max:100']);
-        PaymentMethod::findOrFail($id)->update([
+        $request->validate([
+            'nom' => 'required|string|max:100',
+            'code' => 'nullable|string|max:50',
+            'icone' => 'nullable|string|max:100',
+            'position' => 'nullable|integer|min:0',
+            'actif' => 'required|in:0,1'
+        ]);
+        
+        $pm = PaymentMethod::findOrFail($id);
+        $pm->update([
             'nom'      => $request->nom,
             'code'     => $request->code,
             'icone'    => $request->icone,
             'position' => $request->position ?? 0,
-            'actif'    => $request->boolean('actif', true),
+            'actif'    => $request->actif == '1',
         ]);
+        
         return redirect()->back()->with('success', 'Moyen de paiement mis à jour.');
     }
 
     public function changeState(Request $request)
     {
-        $pm = PaymentMethod::findOrFail($request->id);
-        $pm->update(['actif' => !$pm->actif]);
-        return response()->json(['success' => true, 'actif' => $pm->actif]);
+        try {
+            $request->validate(['id' => 'required|exists:payment_methods,id']);
+            
+            $pm = PaymentMethod::findOrFail($request->id);
+            $newState = !$pm->actif;
+            $pm->update(['actif' => $newState]);
+            
+            return response()->json([
+                'success' => true, 
+                'actif' => $newState,
+                'message' => 'Statut mis à jour avec succès'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Erreur lors de la mise à jour: ' . $e->getMessage()
+            ], 400);
+        }
     }
 
     public function destroy($id)

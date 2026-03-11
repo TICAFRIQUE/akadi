@@ -329,8 +329,7 @@
                                 <div class="wc-proceed-to-checkout mb-30">
                                     @auth
 
-                                        <button href="#" class="th-btn rounded-2 confirmOrder w-100">Confirmer la
-                                            commande
+                                        <button href="#" class="th-btn rounded-2 confirmOrder w-100">Passer au paiement
 
                                         </button>
 

@@ -26,16 +26,16 @@ class WavePaymentService
      * 
      * @param float $amount Montant à payer
      * @param string $currency Devise (par défaut XOF)
-     * @param string|null $orderId ID de la commande pour tracking
+     * @param string|null $reference Référence de transaction pour tracking
      * @return array
      * @throws Exception
      */
-    public function createCheckoutSession($amount, $currency = 'XOF', $orderId = null)
+    public function createCheckoutSession($amount, $currency = 'XOF', $reference = null)
     {
         try {
-            // Construire les URLs avec l'ID de commande si fourni
-            $successUrl = $this->successUrl . ($orderId ? "?order_id={$orderId}" : '');
-            $errorUrl = $this->errorUrl . ($orderId ? "?order_id={$orderId}" : '');
+            // Construire les URLs avec la référence si fournie
+            $successUrl = $this->successUrl . ($reference ? "?ref={$reference}" : '');
+            $errorUrl = $this->errorUrl . ($reference ? "?ref={$reference}" : '');
 
             $checkoutParams = [
                 'amount' => (string) $amount,
@@ -47,7 +47,7 @@ class WavePaymentService
             // Log de la requête pour debugging
             Log::info('Wave Payment Request', [
                 'params' => $checkoutParams,
-                'order_id' => $orderId
+                'reference' => $reference
             ]);
 
             // Faire l'appel à l'API Wave
@@ -77,7 +77,7 @@ class WavePaymentService
 
             // Log du succès
             Log::info('Wave Payment Session Created', [
-                'order_id' => $orderId,
+                'reference' => $reference,
                 'session_id' => $checkoutSession['id'] ?? null
             ]);
 
@@ -91,7 +91,7 @@ class WavePaymentService
         } catch (Exception $e) {
             Log::error('Wave Payment Exception', [
                 'message' => $e->getMessage(),
-                'order_id' => $orderId
+                'reference' => $reference
             ]);
 
             return [

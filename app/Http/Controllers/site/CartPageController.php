@@ -58,62 +58,7 @@ class CartPageController extends Controller
     }
 
 
-    //Ajouter des produit au panier
-    // public function addToCart($id)
-    // {
-
-    //     $product = Product::findOrFail($id);
-    //     // $product = Product::whereId($id)->withWhereHas('coupon', fn ($q) => $q->where('status', 'en_cours'))->first();
-
-    //     $cart = session()->get('cart', []);
-
-    //     //verifier si le produit a une remise
-    //     $price = 0;
-    //     if ($product['montant_remise'] != null && $product['status_remise'] == 'en_cours') {
-    //         $price = $product['price'] - $product['montant_remise'];
-    //     } else {
-    //         $price = $product['price'];
-    //     }
-    //     ##############################
-
-    //     if (isset($cart[$id])) {
-    //         $cart[$id]['quantity']++;
-    //     } else {
-    //         $cart[$id] = [
-    //             "id" => $product->id,
-    //             "code" => $product->code,
-    //             "slug" => $product->slug,
-    //             "title" => $product->title,
-    //             "quantity" => 1,
-    //             "price" => $price,
-    //             "image" => $product->media[0]->getUrl(),
-
-    //         ];
-    //     }
-
-    //     session()->put('cart', $cart);
-
-    //     //recuperer la quantité total des produit du panier
-    //     $countCart = count((array) session('cart'));
-    //     $data = Session::get('cart');
-    //     $totalQuantity = 0;
-    //     foreach ($data as $id => $value) {
-    //         $totalQuantity += $value['quantity'];
-    //     }
-
-    //     session()->put('totalQuantity', $totalQuantity);
-
-
-
-    //     return response()->json([
-    //         'countCart' => $countCart,
-    //         'cart' => $cart,
-    //         'totalQte' => $totalQuantity,
-
-
-    //     ]);
-    // }
-
+   
     //modifier et mettre à jour le panier
     public function update(Request $request)
     {
@@ -274,64 +219,7 @@ class CartPageController extends Controller
     }
 
 
-    //Verification du coupon entre
-    // public function checkCoupon(Request $request, $code)
-    // {
-    //     // recuperer le montant de la commande en cours
-    //     $subTotal = $request->sous_total;
-    //     $coupon = Coupon::with('users')->where('code', strtoupper($code)) // Convertir le code en majuscules
-    //         ->where('status', 'en_cours')
-    //         // ->where('date_expiration', '>=', now()) // Vérifier si le coupon n'est pas expiré
-    //         ->first();
-    //     if ($coupon) {
-    //         // recuperer le montant min et max du coupon
-    //         $montant_min = $coupon->montant_min;
-    //         $montant_max = $coupon->montant_max;
-
-    //         // dd($subTotal,$montant_min, $montant_max);
-
-    //         // verifier si le montant de la commande respecte les montant du coupon
-    //         if ($subTotal < $montant_min) {
-    //             return response()->json([
-    //                 'coupon' => null,
-    //                 'message' => 'Le montant de la commande doit être supérieur ou égal à ' . number_format($montant_min, 0, ',', ' ') . ' FCFA pour utiliser ce coupon.',
-    //             ], 403);
-    //         }
-    //         if ($montant_max > 0 && $subTotal > $montant_max) {
-    //             return response()->json([
-    //                 'coupon' => null,
-    //                 'message' => 'Le montant de la commande doit être inférieur ou égal à ' . number_format($montant_max, 0, ',', ' ') . ' FCFA pour utiliser ce coupon.',
-    //             ], 403);
-    //         }
-    //     }
-
-    //     if (!$coupon) {
-    //         return response()->json([
-    //             'coupon' => null,
-    //             'message' => 'Coupon non trouvé ou expiré',
-    //         ], 404);
-    //     }
-
-    //     // Vérifier si le coupon a atteint sa limite d'utilisation
-    //     if ($coupon->utilisation_max > 0) {
-    //         $coupon_use = DB::table('coupon_use')
-    //             ->where('coupon_id', $coupon->id)
-    //             ->where('user_id', Auth::user()->id)
-    //             ->value('use_count');
-
-    //         if ($coupon_use >= $coupon->utilisation_max) {
-    //             return response()->json([
-    //                 'coupon' => null,
-    //                 'message' => 'Ce coupon a atteint sa limite d\'utilisation',
-    //             ], 403);
-    //         }
-    //     }
-
-    //     return response()->json([
-    //         'coupon' => $coupon,
-    //         'message' => 'Coupon valide',
-    //     ], 200);
-    // }
+   
 
     public function checkCoupon(Request $request, $code)
     {
