@@ -350,7 +350,9 @@
                                             <label for="payment_{{ $method->id }}" class="payment-method-label">
                                                 <div class="payment-method-content">
                                                     <div class="payment-method-icon">
-                                                        @if ($method->icone)
+                                                        @if ($method->code === 'wave')
+                                                            <img src="{{ asset('admin/assets/img/wave.png') }}" alt="Wave" style="width: 48px; height: 48px; object-fit: contain;">
+                                                        @elseif ($method->icone)
                                                             <i class="{{ $method->icone }}"></i>
                                                         @else
                                                             <i class="fas fa-wallet"></i>

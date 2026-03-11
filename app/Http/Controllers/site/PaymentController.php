@@ -119,8 +119,8 @@ class PaymentController extends Controller
             $user = Auth::user();
             $order = Order::create([
                 'user_id' => $user->id,
-                'nom_client' => $user->name,
-                'tel_client' => $user->phone ?? '',
+                'client_name' => $user->name,
+                'client_phone' => $user->phone ?? '',
                 'quantity_product' => $quantityTotal,
                 'subtotal' => $subtotal,
                 'total' => $total,
@@ -222,8 +222,8 @@ class PaymentController extends Controller
             $user = Auth::user();
             $order = Order::create([
                 'user_id' => $userId,
-                'nom_client' => $user->name,
-                'tel_client' => $user->phone ?? '',
+                'client_name' => $user->name,
+                'client_phone' => $user->phone ?? '',
                 'quantity_product' => $quantityTotal,
                 'subtotal' => $subtotal,
                 'total' => $total,
