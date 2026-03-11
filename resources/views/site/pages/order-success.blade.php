@@ -89,15 +89,7 @@
                             </div>
                             <div class="timeline-content">
                                 <h6>Livraison</h6>
-                                <small>
-                                    @php
-                                        try {
-                                            echo \Carbon\Carbon::parse($order->delivery_planned)->format('d/m/Y');
-                                        } catch (\Exception $e) {
-                                            echo $order->delivery_planned;
-                                        }
-                                    @endphp
-                                </small>
+                                <small>{{ \Carbon\Carbon::parse($order->delivery_planned)->format('d/m/Y') }}</small>
                             </div>
                         </div>
                     </div>
@@ -123,15 +115,7 @@
                                             <i class="fas fa-truck"></i>
                                             Livraison prévue
                                         </div>
-                                        <div class="info-value">
-                                            @php
-                                                try {
-                                                    echo \Carbon\Carbon::parse($order->delivery_planned)->format('d/m/Y');
-                                                } catch (\Exception $e) {
-                                                    echo $order->delivery_planned;
-                                                }
-                                            @endphp
-                                        </div>
+                                        <div class="info-value">{{ \Carbon\Carbon::parse($order->delivery_planned)->format('d/m/Y') }}</div>
                                     </div>
                                     <div class="info-row">
                                         <div class="info-label">
