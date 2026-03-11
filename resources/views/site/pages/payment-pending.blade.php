@@ -92,8 +92,8 @@
     </style>
 
     <script>
-        @if(isset($transaction_ref))
-        // Vérifier périodiquement si la commande a été créée
+        @if(isset($order_id))
+        // Vérifier périodiquement si le paiement a été confirmé
         let checkCount = 0;
         const maxChecks = 24; // 2 minutes (5 secondes × 24)
         
@@ -101,7 +101,7 @@
             checkCount++;
             
             // Faire une requête AJAX pour vérifier le statut
-            fetch('{{ route("wave.check-status") }}?ref={{ $transaction_ref }}', {
+            fetch('{{ route("wave.check-status") }}?order_id={{ $order_id }}', {
                 method: 'GET',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
@@ -110,7 +110,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.status === 'completed' && data.order_id) {
+                if (data.completed) {
                     clearInterval(checkInterval);
                     window.location.href = '{{ url("/order/success") }}/' + data.order_id;
                 } else if (data.status === 'failed' || data.status === 'cancelled') {
