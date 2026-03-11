@@ -19,6 +19,20 @@ class WavePaymentService
         $this->apiUrl = config('services.wave.api_url');
         $this->successUrl = config('services.wave.success_url');
         $this->errorUrl = config('services.wave.error_url');
+        
+        // Valider la configuration
+        if (empty($this->apiKey)) {
+            Log::error('Wave API Key manquante');
+        }
+        if (empty($this->apiUrl)) {
+            Log::error('Wave API URL manquante');
+        }
+        if (empty($this->successUrl) || empty($this->errorUrl)) {
+            Log::warning('Wave callback URLs non configurées correctement', [
+                'success_url' => $this->successUrl,
+                'error_url' => $this->errorUrl
+            ]);
+        }
     }
 
     /**
@@ -60,11 +74,30 @@ class WavePaymentService
 
             // Vérifier si la requête a réussi
             if ($response->failed()) {
-                Log::error('Wave Payment Error', [
-                    'status' => $response->status(),
-                    'body' => $response->body()
+                $errorBody = $response->body();
+                $statusCode = $response->status();
+                
+                Log::error('Wave Payment API Error', [
+                    'status' => $statusCode,
+                    'body' => $errorBody,
+                    'headers' => $response->headers(),
+                    'reference' => $reference
                 ]);
-                throw new Exception('Erreur lors de la création de la session de paiement Wave');
+                
+                // Essayer de parser le message d'erreur de Wave
+                $errorMessage = 'Erreur lors de la création de la session de paiement Wave';
+                try {
+                    $errorData = $response->json();
+                    if (isset($errorData['message'])) {
+                        $errorMessage .= ': ' . $errorData['message'];
+                    } else if (isset($errorData['error'])) {
+                        $errorMessage .= ': ' . $errorData['error'];
+                    }
+                } catch (Exception $e) {
+                    $errorMessage .= ' (Code: ' . $statusCode . ')';
+                }
+                
+                throw new Exception($errorMessage);
             }
 
             $checkoutSession = $response->json();

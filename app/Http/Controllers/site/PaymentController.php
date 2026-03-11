@@ -85,12 +85,24 @@ class PaymentController extends Controller
             $cart = Session::get('cart', []);
             $deliveryInfo = Session::get('delivery_info');
 
+            Log::info('Processing Cash Payment', [
+                'user_id' => Auth::id(),
+                'has_cart' => !empty($cart),
+                'has_delivery_info' => !empty($deliveryInfo),
+                'cart_count' => count($cart)
+            ]);
+
             if (empty($cart)) {
+                Log::warning('Cash Payment - Empty Cart', ['user_id' => Auth::id()]);
                 return redirect()->route('panier')->with('error', 'Votre panier est vide');
             }
 
             if (empty($deliveryInfo)) {
-                return redirect()->route('checkout')->with('error', 'Informations de livraison manquantes');
+                Log::warning('Cash Payment - Missing Delivery Info', [
+                    'user_id' => Auth::id(),
+                    'session_keys' => array_keys(Session::all())
+                ]);
+                return redirect()->route('checkout')->with('error', 'Veuillez remplir les informations de livraison');
             }
 
             // Calculer les totaux
@@ -160,12 +172,26 @@ class PaymentController extends Controller
             $cart = Session::get('cart', []);
             $deliveryInfo = Session::get('delivery_info');
 
+            Log::info('Processing Wave Payment', [
+                'user_id' => Auth::id(),
+                'has_cart' => !empty($cart),
+                'has_delivery_info' => !empty($deliveryInfo),
+                'cart_count' => count($cart),
+                'delivery_info_keys' => !empty($deliveryInfo) ? array_keys($deliveryInfo) : []
+            ]);
+
             if (empty($cart)) {
+                Log::warning('Wave Payment - Empty Cart', ['user_id' => Auth::id()]);
                 return redirect()->route('panier')->with('error', 'Votre panier est vide');
             }
 
             if (empty($deliveryInfo)) {
-                return redirect()->route('checkout')->with('error', 'Informations de livraison manquantes');
+                Log::error('Wave Payment - Missing Delivery Info', [
+                    'user_id' => Auth::id(),
+                    'session_keys' => array_keys(Session::all()),
+                    'all_session' => Session::all()
+                ]);
+                return redirect()->route('checkout')->with('error', 'Veuillez remplir les informations de livraison avant de procéder au paiement');
             }
 
             // Calculer les totaux
@@ -184,7 +210,14 @@ class PaymentController extends Controller
             );
 
             if (!$waveResponse['success']) {
-                return back()->with('error', 'Impossible d\'initialiser le paiement Wave');
+                $errorMessage = $waveResponse['error'] ?? 'Erreur inconnue';
+                Log::error('Wave Payment Init Failed', [
+                    'user_id' => Auth::id(),
+                    'error' => $errorMessage,
+                    'transaction_ref' => $transactionRef
+                ]);
+                
+                return back()->with('error', 'Impossible d\'initialiser le paiement Wave. Veuillez réessayer ou choisir un autre moyen de paiement. Erreur: ' . $errorMessage);
             }
 
             // Stocker la transaction en base de données (accessible par webhook)
@@ -208,8 +241,12 @@ class PaymentController extends Controller
             return redirect()->away($waveResponse['wave_launch_url']);
 
         } catch (Exception $e) {
-            Log::error('Wave Payment Error', ['error' => $e->getMessage()]);
-            return back()->with('error', 'Une erreur est survenue lors de l\'initialisation du paiement');
+            Log::error('Wave Payment Error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'user_id' => Auth::id()
+            ]);
+            return back()->with('error', 'Une erreur est survenue lors de l\'initialisation du paiement: ' . $e->getMessage());
         }
     }
 
