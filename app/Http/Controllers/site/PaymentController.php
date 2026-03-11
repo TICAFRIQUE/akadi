@@ -116,8 +116,11 @@ class PaymentController extends Controller
                 : Order::STATUS_ATTENTE;
 
             // Créer la commande
+            $user = Auth::user();
             $order = Order::create([
-                'user_id' => Auth::id(),
+                'user_id' => $user->id,
+                'nom_client' => $user->name,
+                'tel_client' => $user->phone ?? '',
                 'quantity_product' => $quantityTotal,
                 'subtotal' => $subtotal,
                 'total' => $total,
@@ -131,6 +134,7 @@ class PaymentController extends Controller
                 'discount' => $deliveryInfo['discount'],
                 'delivery_planned' => $deliveryInfo['delivery_planned'],
                 'status' => $status,
+                'source' => 'web', // Important pour checkNewOrder
                 'payment_method_id' => $request->payment_method_id,
                 'payment_status' => 'completed',
                 'date_order' => now()->format('Y-m-d'),
@@ -215,8 +219,11 @@ class PaymentController extends Controller
                 'payment_method_id' => $request->payment_method_id
             ]);
 
+            $user = Auth::user();
             $order = Order::create([
                 'user_id' => $userId,
+                'nom_client' => $user->name,
+                'tel_client' => $user->phone ?? '',
                 'quantity_product' => $quantityTotal,
                 'subtotal' => $subtotal,
                 'total' => $total,
@@ -394,13 +401,20 @@ class PaymentController extends Controller
                 case 'success':
                 case 'succeeded':
                     // METTRE À JOUR la commande existante
-                    $order->update([
+                    // Ne pas changer le statut s'il s'agit d'une pré-commande
+                    $updateData = [
                         'payment_status' => 'completed',
                         'acompte' => $order->total,
                         'solde_restant' => 0,
-                        'status' => Order::STATUS_ATTENTE,
                         'payment_completed_at' => now(),
-                    ]);
+                    ];
+                    
+                    // Si ce n'est pas une pré-commande, mettre en attente
+                    if ($order->status !== Order::STATUS_PRECOMMANDE) {
+                        $updateData['status'] = Order::STATUS_ATTENTE;
+                    }
+                    
+                    $order->update($updateData);
                     
                     // Vider le panier de l'utilisateur (si c'est sa session)
                     // Note: Le webhook n'a pas accès à la session utilisateur,
