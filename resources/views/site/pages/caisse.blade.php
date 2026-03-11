@@ -759,7 +759,7 @@
 
                 var total_order = parseFloat(subTotal) + parseFloat(prix_livraison)
                 var type_commande = type_cmd // type de la commande ...precommande , normal
-                var delivery_planned = $('#date_livraison').html(); // date de livraison prevue
+                var delivery_planned = $('#date_livraison').data('date'); // date de livraison prevue
 
                 // recuperer la remise 
                 var remise = localStorage.getItem('remiseValue') || 0;
@@ -850,10 +850,12 @@
                 if (hours >= 17 || hours <= 9) {
                     dt.setDate(dt.getDate() + 1);
                     $('#date_livraison').html('Livraison prévu le ' + dt.toLocaleDateString() + ' à 10h30m');
+                    $('#date_livraison').data('date', dt.toISOString().split('T')[0] + ' 10:30:00');
                     dlp = dt.toLocaleDateString()
                 } else if (hours >= 8) {
                     dt.setMinutes(dt.getMinutes() + 90);
                     $('#date_livraison').html(dt.toLocaleString("fr-FR"))
+                    $('#date_livraison').data('date', dt.toISOString().replace('T', ' ').split('.')[0]);
                     dlp = dt.toLocaleDateString()
 
                 }
@@ -901,11 +903,13 @@
         if (hours >= 17 || hours <= 9) {
             dt.setDate(dt.getDate() + 1);
             $('#date_livraison').html('Livraison prévu le ' + dt.toLocaleDateString() + ' à 10h30m');
+            $('#date_livraison').data('date', dt.toISOString().split('T')[0] + ' 10:30:00');
             dlp = dt.toLocaleDateString()
 
         } else if (hours >= 8) {
             dt.setMinutes(dt.getMinutes() + 90);
             $('#date_livraison').html(dt.toLocaleString("fr-FR"))
+            $('#date_livraison').data('date', dt.toISOString().replace('T', ' ').split('.')[0]);
             dlp = dt.toLocaleDateString()
 
         }
@@ -932,9 +936,11 @@
                 // dt.setMinutes(dt.getMinutes() + 1080);     
                 $('#date_livraison').html('Livraison prévu le ' + dt.toLocaleDateString() +
                     ' à 10h30m');
+                $('#date_livraison').data('date', dt.toISOString().split('T')[0] + ' 10:30:00');
             } else if (hours >= 8) {
                 // dt.setMinutes(dt.getMinutes() + 90);
                 $('#date_livraison').html(dt.toLocaleString("fr-FR"))
+                $('#date_livraison').data('date', dt.toISOString().replace('T', ' ').split('.')[0]);
             }
 
         });
