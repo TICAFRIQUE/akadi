@@ -584,7 +584,7 @@ class PaymentController extends Controller
 
         if (!$order) {
             Log::error('Wave Success - commande introuvable', ['ref' => $ref]);
-            return redirect()->route('home')->with('error', 'Commande introuvable');
+            return redirect()->route('page-acceuil')->with('error', 'Commande introuvable');
         }
 
         // Si le paiement est déjà confirmé, rediriger vers la page de succès
@@ -679,7 +679,7 @@ class PaymentController extends Controller
                     'order_id' => $orderId,
                     'user_id' => Auth::id()
                 ]);
-                return redirect()->route('home')->with('error', 'Commande introuvable');
+                return redirect()->route('page-acceuil')->with('error', 'Commande introuvable');
             }
 
             // Vider le panier si ce n'est pas déjà fait (sécurité)
@@ -694,7 +694,7 @@ class PaymentController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return redirect()->route('home')->with('error', 'Une erreur est survenue lors de l\'affichage de votre commande.');
+            return redirect()->route('page-acceuil')->with('error', 'Une erreur est survenue lors de l\'affichage de votre commande.');
         }
     }
 }
