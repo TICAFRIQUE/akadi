@@ -112,7 +112,7 @@
             .then(data => {
                 if (data.completed) {
                     clearInterval(checkInterval);
-                    window.location.href = '{{ url("/order/success") }}/' + data.order_id;
+                    window.location.href = '{{ route("order.success", "") }}/' + data.order_id;
                 } else if (data.status === 'failed' || data.status === 'cancelled') {
                     clearInterval(checkInterval);
                     window.location.href = '{{ route("payment.select") }}';
