@@ -111,8 +111,8 @@ class PaymentController extends Controller
             $total = $subtotal + $deliveryPrice;
 
             // Déterminer le statut
-            $status = $deliveryInfo['type_commande'] == 'cmd_precommande' 
-                ? Order::STATUS_PRECOMMANDE 
+            $status = $deliveryInfo['type_commande'] == 'cmd_precommande'
+                ? Order::STATUS_PRECOMMANDE
                 : Order::STATUS_ATTENTE;
 
             // Créer la commande
@@ -159,7 +159,6 @@ class PaymentController extends Controller
 
             return redirect()->route('order.success', $order->id)
                 ->with('success', 'Votre commande a été enregistrée avec succès');
-
         } catch (Exception $e) {
             Log::error('Cash Payment Error', ['error' => $e->getMessage()]);
             return back()->with('error', 'Une erreur est survenue lors de la création de la commande');
@@ -208,8 +207,8 @@ class PaymentController extends Controller
             $total = $subtotal + $deliveryPrice;
 
             // Déterminer le statut
-            $status = $deliveryInfo['type_commande'] == 'cmd_precommande' 
-                ? Order::STATUS_PRECOMMANDE 
+            $status = $deliveryInfo['type_commande'] == 'cmd_precommande'
+                ? Order::STATUS_PRECOMMANDE
                 : Order::STATUS_ATTENTE;
 
             // CRÉER LA COMMANDE IMMÉDIATEMENT (comme avant)
@@ -270,7 +269,7 @@ class PaymentController extends Controller
             if (!$waveResponse['success']) {
                 // Supprimer la commande en cas d'erreur
                 $order->delete();
-                
+
                 $errorMessage = $waveResponse['error'] ?? 'Erreur inconnue';
                 return back()->with('error', 'Impossible d\'initialiser le paiement Wave: ' . $errorMessage);
             }
@@ -291,7 +290,6 @@ class PaymentController extends Controller
 
             // Rediriger vers Wave
             return redirect()->away($waveResponse['wave_launch_url']);
-
         } catch (Exception $e) {
             Log::error('Wave Payment Error', [
                 'error' => $e->getMessage(),
@@ -319,15 +317,15 @@ class PaymentController extends Controller
 
             // Récupérer les données du webhook
             $payload = $request->all();
-            
+
             // Wave peut envoyer les données de différentes manières
             // Format 1: {"id": "xxx", "status": "completed"}
             // Format 2: {"data": {"id": "xxx", "status": "completed"}}
             // Format 3: {"event": "checkout.completed", "data": {...}}
-            
+
             $sessionId = null;
             $status = null;
-            
+
             // Format Wave standard: {"id": "event_id", "type": "checkout.session.completed", "data": {...}}
             // Le session_id est dans data.id, pas dans id (qui est l'event_id)
             if (isset($payload['data']['id'])) {
@@ -338,7 +336,7 @@ class PaymentController extends Controller
             } elseif (isset($payload['checkout_session_id'])) {
                 $sessionId = $payload['checkout_session_id'];
             }
-            
+
             // Le statut peut être dans data.checkout_status ou data.payment_status
             if (isset($payload['data']['checkout_status'])) {
                 $status = $payload['data']['checkout_status'];
@@ -356,7 +354,7 @@ class PaymentController extends Controller
                     $status = 'cancelled';
                 }
             }
-            
+
             // Si on n'a toujours pas les données nécessaires
             if (!$sessionId || !$status) {
                 Log::warning('Wave Webhook - données manquantes ou format inconnu', [
@@ -364,7 +362,7 @@ class PaymentController extends Controller
                     'session_id_found' => $sessionId,
                     'status_found' => $status
                 ]);
-                
+
                 // Retourner 200 pour éviter que Wave réessaie en boucle
                 // mais logger qu'on n'a pas pu traiter
                 return response()->json([
@@ -386,7 +384,7 @@ class PaymentController extends Controller
                     'session_id' => $sessionId,
                     'searched_in_db' => true
                 ]);
-                
+
                 // Retourner 200 même si commande introuvée (éviter les retry infinis)
                 return response()->json([
                     'status' => 'received',
@@ -408,18 +406,18 @@ class PaymentController extends Controller
                         'solde_restant' => 0,
                         'payment_completed_at' => now(),
                     ];
-                    
+
                     // Si ce n'est pas une pré-commande, mettre en attente
                     if ($order->status !== Order::STATUS_PRECOMMANDE) {
                         $updateData['status'] = Order::STATUS_ATTENTE;
                     }
-                    
+
                     $order->update($updateData);
-                    
+
                     // Vider le panier de l'utilisateur (si c'est sa session)
                     // Note: Le webhook n'a pas accès à la session utilisateur,
                     // donc le panier sera vidé dans waveSuccess() après confirmation
-                    
+
                     Log::info('Wave Payment Completed - Order Updated', [
                         'order_id' => $order->id,
                         'order_code' => $order->code,
@@ -439,20 +437,20 @@ class PaymentController extends Controller
                         'payment_status' => 'failed',
                         'status' => Order::STATUS_ANNULEE
                     ]);
-                    
+
                     Log::info('Wave Payment Failed', [
                         'order_id' => $order->id,
                         'session_id' => $sessionId
                     ]);
                     break;
-                    
+
                 case 'cancelled':
                 case 'canceled':
                     $order->update([
                         'payment_status' => 'cancelled',
                         'status' => Order::STATUS_ANNULEE
                     ]);
-                    
+
                     Log::info('Wave Payment Cancelled', [
                         'order_id' => $order->id,
                         'session_id' => $sessionId
@@ -473,7 +471,6 @@ class PaymentController extends Controller
                 'order_id' => $order->id,
                 'message' => 'Webhook processed successfully'
             ], 200);
-
         } catch (Exception $e) {
             Log::error('Wave Webhook Exception', [
                 'error' => $e->getMessage(),
@@ -482,7 +479,7 @@ class PaymentController extends Controller
                 'trace' => $e->getTraceAsString(),
                 'request_body' => $request->getContent()
             ]);
-            
+
             // Même en cas d'erreur, retourner 200 pour éviter les retry infinis
             return response()->json([
                 'status' => 'error',
@@ -499,7 +496,7 @@ class PaymentController extends Controller
         try {
             // TODO: Envoyer email à l'admin
             // TODO: Envoyer WhatsApp au client
-            
+
             Log::info('Order notifications sent', ['order_id' => $order->id]);
         } catch (Exception $e) {
             Log::error('Error sending notifications', [
@@ -514,36 +511,58 @@ class PaymentController extends Controller
      */
     protected function handleCoupon($deliveryInfo)
     {
-        if (!empty($deliveryInfo['coupon_id'])) {
-            $couponUse = DB::table('coupon_use')
-                ->where('user_id', Auth::id())
-                ->where('coupon_id', $deliveryInfo['coupon_id'])
-                ->first();
+        try {
+            if (!empty($deliveryInfo['coupon_id'])) {
+                // Vérifier d'abord que le coupon existe
+                $couponExists = DB::table('coupons')
+                    ->where('id', $deliveryInfo['coupon_id'])
+                    ->exists();
 
-            if ($couponUse) {
-                DB::table('coupon_use')
+                if (!$couponExists) {
+                    Log::warning('Coupon inexistant référencé dans delivery_info', [
+                        'coupon_id' => $deliveryInfo['coupon_id'],
+                        'user_id' => Auth::id()
+                    ]);
+                    return;
+                }
+
+                $couponUse = DB::table('coupon_use')
                     ->where('user_id', Auth::id())
                     ->where('coupon_id', $deliveryInfo['coupon_id'])
-                    ->increment('use_count');
-            } else {
-                DB::table('coupon_use')->insert([
-                    'user_id' => Auth::id(),
-                    'coupon_id' => $deliveryInfo['coupon_id'],
-                    'use_count' => 1,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-        }
+                    ->first();
 
-        if (!empty($deliveryInfo['code_promo'])) {
-            $code = \App\Models\Coupon::whereCode($deliveryInfo['code_promo'])->first();
-            if ($code) {
-                DB::table('coupon_user')
-                    ->where('user_id', Auth::id())
-                    ->where('coupon_id', $code->id)
-                    ->update(['nbre_utilisation' => 1]);
+                if ($couponUse) {
+                    DB::table('coupon_use')
+                        ->where('user_id', Auth::id())
+                        ->where('coupon_id', $deliveryInfo['coupon_id'])
+                        ->increment('use_count');
+                } else {
+                    DB::table('coupon_use')->insert([
+                        'user_id' => Auth::id(),
+                        'coupon_id' => $deliveryInfo['coupon_id'],
+                        'use_count' => 1,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
             }
+
+            if (!empty($deliveryInfo['code_promo'])) {
+                $code = \App\Models\Coupon::whereCode($deliveryInfo['code_promo'])->first();
+                if ($code) {
+                    DB::table('coupon_user')
+                        ->where('user_id', Auth::id())
+                        ->where('coupon_id', $code->id)
+                        ->update(['nbre_utilisation' => 1]);
+                }
+            }
+        } catch (\Exception $e) {
+            // Ne pas bloquer la commande si le coupon pose problème
+            Log::error('Coupon Handle Error', [
+                'error' => $e->getMessage(),
+                'delivery_info' => $deliveryInfo,
+                'user_id' => Auth::id()
+            ]);
         }
     }
 
@@ -562,35 +581,35 @@ class PaymentController extends Controller
         // Extraire l'ID de la commande depuis la référence (ORDER_123)
         $orderId = str_replace('ORDER_', '', $ref);
         $order = Order::find($orderId);
-        
+
         if (!$order) {
             Log::error('Wave Success - commande introuvable', ['ref' => $ref]);
             return redirect()->route('home')->with('error', 'Commande introuvable');
         }
-        
+
         // Si le paiement est déjà confirmé, rediriger vers la page de succès
         if ($order->payment_status === 'completed') {
             // Vider le panier maintenant que le paiement est confirmé
             Session::forget(['cart', 'delivery_info', 'totalQuantity']);
-            
+
             return redirect()->route('order.success', $order->id)
                 ->with('success', 'Votre paiement a été effectué avec succès');
         }
-        
+
         // Attendre que le webhook confirme le paiement (max 10 secondes)
         for ($i = 0; $i < 5; $i++) {
             sleep(2);
             $order->refresh();
-            
+
             if ($order->payment_status === 'completed') {
                 // Vider le panier maintenant que le paiement est confirmé
                 Session::forget(['cart', 'delivery_info', 'totalQuantity']);
-                
+
                 return redirect()->route('order.success', $order->id)
                     ->with('success', 'Votre paiement a été effectué avec succès');
             }
         }
-        
+
         // Le webhook n'a pas encore été reçu
         return view('site.pages.payment-pending')
             ->with('message', 'Votre paiement est en cours de vérification. Veuillez patienter...')
@@ -607,7 +626,7 @@ class PaymentController extends Controller
         if ($ref) {
             $orderId = str_replace('ORDER_', '', $ref);
             $order = Order::find($orderId);
-            
+
             if ($order) {
                 $order->update([
                     'payment_status' => 'cancelled',
@@ -626,17 +645,17 @@ class PaymentController extends Controller
     public function checkTransactionStatus(Request $request)
     {
         $orderId = $request->query('order_id');
-        
+
         if (!$orderId) {
             return response()->json(['error' => 'Missing order_id'], 400);
         }
-        
+
         $order = Order::find($orderId);
-        
+
         if (!$order) {
             return response()->json(['error' => 'Order not found'], 404);
         }
-        
+
         return response()->json([
             'status' => $order->payment_status,
             'order_id' => $order->id,
@@ -667,7 +686,6 @@ class PaymentController extends Controller
             Session::forget(['cart', 'delivery_info', 'totalQuantity']);
 
             return view('site.pages.order-success', compact('order'));
-            
         } catch (Exception $e) {
             Log::error('Order Success Error', [
                 'order_id' => $orderId,
@@ -675,7 +693,7 @@ class PaymentController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             return redirect()->route('home')->with('error', 'Une erreur est survenue lors de l\'affichage de votre commande.');
         }
     }
