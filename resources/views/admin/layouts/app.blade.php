@@ -171,7 +171,7 @@
                                     @if (count($user_birthday) > 0)
                                         <h6>Anniversaire du jour </h6>
                                         @foreach ($user_birthday as $item)
-                                            <a href="{{ route('user.detail', $item['id']) }}" class="dropdown-item"
+                                            <a href="{{ route('client.detail', $item['id']) }}" class="dropdown-item"
                                                 style="">
                                                 <span class="dropdown-item-avatar text-dark"> <i
                                                         data-feather="user"></i>
@@ -190,7 +190,7 @@
 
                                         @foreach ($user_upcoming_birthday as $item)
                                             <p>
-                                                <a href="{{ route('user.detail', $item['id']) }}"
+                                                <a href="{{ route('client.detail', $item['id']) }}"
                                                     class="dropdown-item"
                                                     style="background-color: rgb(255, 249, 249)">
                                                     <span class="dropdown-item-avatar text-dark"><i

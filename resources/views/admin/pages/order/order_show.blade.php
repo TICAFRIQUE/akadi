@@ -90,9 +90,11 @@
                         <small class="text-muted">
                             Créée le {{ $orders->created_at->format('d/m/Y à H:i') }}
                             @if($orders->createdBy)
-                                &nbsp;·&nbsp; par <strong>{{ $orders->createdBy->name }}</strong>
+                                <br>Mise en <span class="text-{{ $statusColors[$orders->status] ?? 'secondary' }}">{{ $orders->status }}</span> par <strong>{{ $orders->createdBy->name }}</strong>
                             @endif
                         </small>
+
+                        
                     </div>
                     <div class="d-flex" style="gap:6px;flex-wrap:wrap">
                         @php

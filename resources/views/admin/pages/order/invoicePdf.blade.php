@@ -7,14 +7,14 @@
 
     <style>
         .invoice-box {
-            max-width: 800px;
+            max-width: 600px;
             margin: auto;
-            padding: 5px;
+            padding: 3px;
             border: 1px solid #ececec;
             /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); */
-            font-size: 12px;
-            line-height: 15px;
-            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            font-size: 9px;
+            line-height: 11px;
+            font-family: 'Courier New', Courier, monospace;
             color: #000000;
         }
 
@@ -25,7 +25,7 @@
         }
 
         .invoice-box table td {
-            padding: 1px;
+            padding: 0.5px;
             vertical-align: top;
         }
 
@@ -38,13 +38,13 @@
         }
 
         .invoice-box table tr.top table td.title {
-            font-size: 12px;
-            line-height: 15px;
+            font-size: 9px;
+            line-height: 11px;
             color: #333;
         }
 
         .invoice-box table tr.information table td {
-            padding-bottom: 10px;
+            padding-bottom: 5px;
         }
 
         .invoice-box table tr.heading td {
@@ -117,7 +117,7 @@
                             <tr>
                                 <td class="title">
                                     {{-- https://akadi.ci/wp-content/uploads/2023/10/cropped-logo-site-ak.png --}}
-                                    <img src="https://akadi.ci/site/assets/img/custom/logo.png" width="50" />
+                                    <img src="https://akadi.ci/site/assets/img/custom/logo.png" width="35" />
                                 </td>
 
                                 <td>
@@ -181,24 +181,24 @@
                     </tr>
                 @endforeach
                 <tr class="total" style="text-align:right;">
-                    <td colspan="4" style="padding-right:40px; padding-top:10px"> <b>Sous-total</b>:
+                    <td colspan="4" style="padding-right:20px; padding-top:5px"> <b>Sous-total</b>:
                         {{ number_format($orders['subtotal']) }} FCFA</td>
                 </tr>
 
                 <tr class="total" style="text-align:right;">
-                    <td colspan="4" style="padding-right:40px;"> <b>Livraison</b>:
+                    <td colspan="4" style="padding-right:20px;"> <b>Livraison</b>:
                         {{ number_format($orders['delivery_price']) }} FCFA</td>
 
 
                 </tr>
 
                 <tr class="total" style="text-align:right;">
-                    <td colspan="4" style="padding-right:40px;"> <b>TOTAL</b>:
+                    <td colspan="4" style="padding-right:20px;"> <b>TOTAL</b>:
                         {{ number_format($orders['total']) }} FCFA</td>
                 </tr>
             </table>
         </div>
-        <small style="text-align:center">Reçu imprimé le
+        <small style="text-align:center ; font-size:10px ;" >Reçu imprimé le
             {{ \Carbon\Carbon::now()->format('d/m/Y') }} </small>
 
         <hr style="border : 1px dotted rgb(0, 0, 0)">
