@@ -223,7 +223,7 @@
                                     <div class="dropdown-title">{{ Auth::user()->name }}
                                         <span>{{ Auth::user()->role }} </span>
                                     </div>
-                                    @can('profil-modifier')
+                                    @can('profil.modifier')
                                         <a href="{{ route('user.edit', Auth::user()->id) }}" class="dropdown-item has-icon">
                                         <i class="far
                               fa-user"></i> Profile

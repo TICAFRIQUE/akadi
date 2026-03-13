@@ -32,7 +32,7 @@
                                     <input type="text" id="permName" name="name"
                                         value="{{ old('name', $permission->name) }}"
                                         class="form-control @error('name') is-invalid @enderror" required>
-                                    <small class="form-text text-muted">Ex : <code>voir-commandes</code>, <code>modifier-produits</code></small>
+                                    <small class="form-text text-muted">Ex : <code>voir-commandes</code>, <code>modifie.produits</code>  </small>
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

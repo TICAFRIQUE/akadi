@@ -627,7 +627,7 @@
             //si mode_livraison == yango
             if (mode_livraison == 'yango') {
                 $('#address_yango').show(200)
-                $('.delivery_price').html('les frais sont à votre charge')
+                $('.delivery_price').html('les frais sont à votre charge').css('color', 'red').css('font-weight', 'bold');
                 $('.total_order').html(parseInt(subTotal).toLocaleString() + ' FCFA');
                 $('.delivery_name').html('')
                 $('._delivery_price').show()

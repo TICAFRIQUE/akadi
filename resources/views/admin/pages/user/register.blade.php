@@ -124,9 +124,7 @@
 
                                 <div class="row">
                                     <div class="form-group col-8">
-                                        <label for="password" class="d-block">Mot de passe (<small
-                                                class="text-danger">Laisser vide pour un mot de passe généré
-                                                automatiquement</small>)</label>
+                                        <label for="password" class="d-block">Mot de passe </label>
                                         <input id="password" type="password" class="form-control" name="password"
                                             aria-autocomplete="none" autocomplete="off">
                                     </div>
