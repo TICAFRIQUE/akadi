@@ -342,6 +342,7 @@ class DashboardController extends Controller
         $orders_new = Order::orderBy('created_at', 'DESC')
             ->whereIn('status', ['attente', 'precommande'])
             ->where('source', 'web')
+            ->where('payment_status', 'completed')
             ->get();
 
         return response()->json([

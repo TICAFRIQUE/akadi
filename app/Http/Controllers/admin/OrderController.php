@@ -285,6 +285,7 @@ class OrderController extends Controller
         $orders_new = Order::with('user')
             ->whereIn('status', [Order::STATUS_ATTENTE, Order::STATUS_PRECOMMANDE])
             ->where('source', 'web')
+            ->where('payment_status', 'completed')
             ->when($sinceId > 0, fn($q) => $q->where('id', '>', $sinceId))
             ->orderBy('id', 'DESC')
             ->limit(20)
@@ -302,7 +303,7 @@ class OrderController extends Controller
                 'tel_client'   => $order->tel_client,
                 'total'        => (float) $order->total,
                 'acompte'      => (float) $order->acompte,
-                'solde_restant'=> (float) $order->solde_restant,
+                'solde_restant' => (float) $order->solde_restant,
                 'created_at'   => $order->created_at->format('d/m/Y H:i'),
             ]);
 
