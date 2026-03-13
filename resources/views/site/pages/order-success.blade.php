@@ -767,6 +767,12 @@
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 console.log('{{ session("success") }}');
+                
+                // Nettoyer le localStorage pour éviter les données résiduelles (coupons, etc.)
+                localStorage.removeItem('sousTotal');
+                localStorage.removeItem('code-promo');
+                localStorage.removeItem('remiseValue');
+                localStorage.removeItem('couponId');
             });
         </script>
     @endif

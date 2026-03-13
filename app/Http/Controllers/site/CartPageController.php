@@ -452,6 +452,24 @@ class CartPageController extends Controller
                 //Id du coupon si il y en a
                 $coupon_id = $_GET['data']['coupon_id'] ?? null;
 
+                // Valider le coupon s'il est fourni
+                if (!empty($coupon_id)) {
+                    $couponExists = DB::table('coupons')
+                        ->where('id', $coupon_id)
+                        ->exists();
+                    
+                    if (!$couponExists) {
+                        Log::warning('Tentative d\'utilisation d\'un coupon inexistant - valeur annulée', [
+                            'coupon_id' => $coupon_id,
+                            'user_id' => Auth::id()
+                        ]);
+                        // Annuler le coupon inexistant
+                        $coupon_id = null;
+                        $discount = 0;
+                        $code_promo = 0;
+                    }
+                }
+
                 // Stocker les informations de livraison dans la session
                 Session::put('delivery_info', [
                     'subTotal' => $subTotal,
