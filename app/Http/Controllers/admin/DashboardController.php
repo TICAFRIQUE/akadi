@@ -17,14 +17,27 @@ use Twilio\Rest\Client;
 
 class DashboardController extends Controller
 {
+
     //home dashboard
     public function index()
     {
+        $user = User::findOrFail(Auth::id());
+        // Vérifier si l'utilisateur a la permission dashboard-voir
+        if (!$user->can('dashboard-voir')) {
+            return view('admin.admin-no-permission');
+        }
+
         // get user birthday 
 
 
 
         if (Config::get('app.env') == 'production') {
+
+            // si le user n'a pas de permis
+
+
+
+
             $mail = new PHPMailer(true);
             // require base_path("vendor/autoload.php");
 

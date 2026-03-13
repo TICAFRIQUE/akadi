@@ -223,10 +223,12 @@
                                     <div class="dropdown-title">{{ Auth::user()->name }}
                                         <span>{{ Auth::user()->role }} </span>
                                     </div>
-                                    <a href="{{ route('user.edit', Auth::user()->id) }}" class="dropdown-item has-icon">
+                                    @can('profil-modifier')
+                                        <a href="{{ route('user.edit', Auth::user()->id) }}" class="dropdown-item has-icon">
                                         <i class="far
                               fa-user"></i> Profile
                                     </a>
+                                    @endcan
 
                                     {{-- <a href="{{route('setting.index')}}" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
                             Parametres
@@ -461,7 +463,7 @@
                                         class="dropdown-menu {{ Route::is('user.*') || Route::is('role.*') || Route::is('permission.*') ? 'show' : '' }}">
                                         @can('administration.users')
                                             <li class="nav-item {{ Route::is('user.*') ? 'active' : '' }}">
-                                                <a class="nav-link" href="{{ route('user.list') }}">Équipe / Admins</a>
+                                                <a class="nav-link" href="{{ route('user.list') }}">Utilisateurs / Admins</a>
                                             </li>
                                         @endcan
                                         @can('administration.roles')
