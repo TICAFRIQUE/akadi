@@ -50,7 +50,7 @@
                             <span>&times;</span>
                         </button>
                         <i class="fas fa-exclamation-triangle mr-2"></i>
-                        <strong>Accès Refusé !</strong> Vous n'avez pas la permission d'accéder au dashboard complet.
+                        Vous n'avez pas la permission d'accéder au dashboard complet.
                     </div>
                 </div>
             </div>

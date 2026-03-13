@@ -21,12 +21,6 @@ class DashboardController extends Controller
     //home dashboard
     public function index()
     {
-        $user = User::findOrFail(Auth::id());
-        // Vérifier si l'utilisateur a la permission dashboard-voir
-        if (!$user->can('dashboard.voir')) {
-            return view('admin.admin-no-permission');
-        }
-
         // get user birthday 
 
 

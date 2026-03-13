@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Exception;
 use Throwable;
+use Illuminate\Http\Request;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -30,10 +32,31 @@ class Handler extends ExceptionHandler
         // });
 
         $this->renderable(function (Exception $e) {
-            //
+            // Redirection pour les erreurs de token CSRF expiré
             if ($e->getPrevious() instanceof TokenMismatchException) {
                return redirect()->route('auth.login')->with('error', 'Session Expired');
             }
         });
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     */
+    public function render($request, Throwable $exception)
+    {
+        // Redirection pour les erreurs d'autorisation (403)
+        if ($exception instanceof AuthorizationException) {
+            // Vérifier si c'est une requête web (pas API)
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Vous n\'avez pas la permission d\'accéder à cette ressource.'
+                ], 403);
+            }
+            
+            return redirect()->route('admin-no-permission')
+                ->with('error', 'Vous n\'avez pas la permission d\'accéder à cette ressource.');
+        }
+
+        return parent::render($request, $exception);
     }
 }

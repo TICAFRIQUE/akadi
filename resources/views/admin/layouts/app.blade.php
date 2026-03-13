@@ -225,9 +225,9 @@
                                     </div>
                                     @can('profil.modifier')
                                         <a href="{{ route('user.edit', Auth::user()->id) }}" class="dropdown-item has-icon">
-                                        <i class="far
+                                            <i class="far
                               fa-user"></i> Profile
-                                    </a>
+                                        </a>
                                     @endcan
 
                                     {{-- <a href="{{route('setting.index')}}" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>

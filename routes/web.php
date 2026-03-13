@@ -50,8 +50,13 @@ Route::controller(AuthAdminController::class)->group(function () {
 
 Route::middleware(['admin'])->group(function () {
 
+    // Page pour utilisateurs sans permission dashboard
+    Route::get('admin/no-p', function () {
+        return view('admin.admin-no-permission');
+    })->name('admin-no-permission');
+
     //Dashboard
-    Route::prefix('dashboard')->middleware('can:dashboard.voir')->controller(DashboardController::class)->group(function () {
+    Route::prefix('dashboard')->middleware('dashboard.permission')->controller(DashboardController::class)->group(function () {
         route::get('', 'index')->name('dashboard.index');
         route::get('product-statistic', 'product_statistic')->name('dashboard.product-statistic');
         route::get('order-period', 'order_period')->name('dashboard.order-period');
