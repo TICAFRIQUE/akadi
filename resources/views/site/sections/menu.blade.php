@@ -86,18 +86,30 @@
             <div class="container">
                 <div class="menu-area">
                     <div class="container th-container">
-                        <div class="row align-items-center justify-content-around">
-                            <div class="col-auto d-flex">
-                                <button type="button" class="th-menu-toggle d-inline-block d-lg-none m-auto"><i
+                        <div class="row align-items-center justify-content-between mobile-header-wrapper">
+                            <!-- Hamburger à gauche -->
+                            <div class="col-auto mobile-hamburger-left">
+                                <button type="button" class="th-menu-toggle d-inline-block d-lg-none"><i
                                         class="far fa-bars"></i>
                                 </button>
+                            </div>
 
-                                <div class="header-logo m-2">
+                            <!-- Logo au centre -->
+                            <div class="col-auto mobile-logo-center">
+                                <div class="header-logo">
                                     <a href="{{ route('page-acceuil') }}">
-                                        <img src="{{ asset('site/assets/img/custom/AKADI.png') }}" width=60px
+                                        <img src="{{ asset('site/assets/img/custom/AKADI.png') }}" width="60" height="60"
                                             alt="logo akadi">
                                     </a>
                                 </div>
+                            </div>
+
+                            <!-- Panier à droite (mobile) -->
+                            <div class="col-auto mobile-cart-right d-lg-none">
+                                <a href="{{ route('panier') }}" class="simple-icon">
+                                    <i class="far fa-cart-shopping"></i>
+                                    <span class="badge">{{ Session::get('totalQuantity') ?? '0' }}</span>
+                                </a>
                             </div>
 
                             <div class="col-auto cat_desktop">
@@ -129,15 +141,21 @@
 
                             <div class="col-auto">
                                 <div class="header-button">
+                                    <!-- Hamburger à droite sur mobile -->
+                                    <button type="button" class="th-menu-toggle d-inline-block d-lg-none"><i
+                                            class="far fa-bars"></i>
+                                    </button>
+
+                                    <!-- Boutons desktop -->
                                     @guest
-                                        <a href="{{ route('login') }}" class="simple-icon">
+                                        <a href="{{ route('login') }}" class="simple-icon d-none d-lg-inline-block">
                                             <i class="far fa-user"></i>
                                         </a>
 
                                     @endguest
 
                                     @auth
-                                        <div class="dropdown">
+                                        <div class="dropdown d-none d-lg-inline-block">
                                             <button class="dropdown-toggle simple-icon" type="button"
                                                 id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
                                                 {{-- Salut, {{ Auth::user()->name }} --}}
@@ -163,10 +181,10 @@
                                         </div>
                                     @endauth
 
-                                    <button type="button" class="simple-icon searchBoxToggler"><i
+                                    <button type="button" class="simple-icon searchBoxToggler d-none d-lg-inline-block"><i
                                             class="far fa-search"></i></button>
 
-                                    <a href="{{ route('panier') }}" class="simple-icon">
+                                    <a href="{{ route('panier') }}" class="simple-icon d-none d-lg-inline-block">
                                         <i class="far fa-cart-shopping"></i>
                                         <span class="badge"> {{ Session::get('totalQuantity') ?? '0' }} </span>
                                     </a>
