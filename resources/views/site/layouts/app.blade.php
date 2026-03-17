@@ -83,6 +83,80 @@
     <link rel="stylesheet" href="{{ asset('site/assets/css/style.css') }}">
 
     <style>
+        /* Empêcher le scroll horizontal */
+        html, body {
+            overflow-x: hidden !important;
+            max-width: 100%;
+        }
+
+        body {
+            position: relative;
+        }
+
+        /* Fix pour les containers */
+        .container, .row {
+            max-width: 100%;
+        }
+
+        /* Optimisation carousel cat\u00e9gories */
+        .category-carousel {
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+            overflow: hidden;
+        }
+
+        .category-carousel[style*="visible"] {
+            opacity: 1;
+        }
+
+        /* Pr\u00e9venir le layout shift du carousel */
+        .category-item {
+            min-height: 200px;
+        }
+
+        .slick-slide {
+            outline: none;
+            margin: 0 10px;
+        }
+
+        /* Fix pour \u00e9viter l'overflow des sliders */
+        .slick-list {
+            overflow: hidden !important;
+            margin: 0 -10px;
+        }
+
+        .slick-track {
+            display: flex !important;
+            align-items: stretch;
+        }
+
+        /* Cacher les fl\u00e8ches du carousel pendant le chargement */
+        .slick-arrow {
+            opacity: 0;
+            transition: opacity 0.3s ease-in 0.3s;
+        }
+
+        .slick-initialized .slick-arrow {
+            opacity: 1;
+        }
+
+        /* Optimisation images */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        img[loading="lazy"] {
+            background: #f0f0f0;
+        }
+
+        /* Emp\u00eacher les images de causer un overflow */
+        .category-border_img img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
         .whatsapp-float {
             position: fixed;
             bottom: 90px;
@@ -732,6 +806,20 @@
     <!-- Script pour le menu mobile compte -->
     <script>
         $(document).ready(function() {
+            // Fix carousel catégories - afficher après initialisation complète
+            $(window).on('load', function() {
+                setTimeout(function() {
+                    $('.category-carousel').css('visibility', 'visible').css('opacity', '1');
+                }, 100);
+            });
+
+            // Fallback si window.load prend trop de temps
+            setTimeout(function() {
+                if ($('.category-carousel').css('visibility') === 'hidden') {
+                    $('.category-carousel').css('visibility', 'visible').css('opacity', '1');
+                }
+            }, 1000);
+
             // Ouvrir le menu compte
             $('.mobile-account-toggle').on('click', function() {
                 $('.mobile-account-dropdown').addClass('active');
