@@ -712,9 +712,7 @@
                 <a href="{{ route('panier') }}">
                     <i class="far fa-cart-shopping"></i>
                     <span>Panier</span>
-                    @if(Session::get('totalQuantity'))
-                        <span class="badge">{{ Session::get('totalQuantity') }}</span>
-                    @endif
+                    <span class="badge">{{ Session::get('totalQuantity') ?? '0' }}</span>
                 </a>
             </div>
 

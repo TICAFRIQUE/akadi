@@ -4,6 +4,157 @@ Categorie and products
 
 {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"> --}}
 
+<style>
+    /* Amélioration des boutons produits */
+    .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    }
+
+    .actions .icon-btn {
+        flex: 1;
+        min-width: 120px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .actions .icon-btn i {
+        font-size: 16px;
+        transition: transform 0.3s ease;
+    }
+
+    .actions .icon-btn span {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Bouton Détail - Utilisation de la couleur principale du site */
+    .actions .btn-detail {
+        background: linear-gradient(135deg, #eb0029 0%, #c4001f 100%);
+        color: white;
+        box-shadow: 0 4px 10px rgba(235, 0, 41, 0.3);
+    }
+
+    .actions .btn-detail:hover {
+        background: linear-gradient(135deg, #c4001f 0%, #eb0029 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(235, 0, 41, 0.4);
+        color: white;
+    }
+
+    .actions .btn-detail:hover i {
+        transform: scale(1.1);
+    }
+
+    /* Bouton Ajouter au panier - Utilisation de la couleur secondaire */
+    .actions .btn-add-cart {
+        background: linear-gradient(135deg, #ff9d2d 0%, #ff8800 100%);
+        color: white;
+        box-shadow: 0 4px 10px rgba(255, 157, 45, 0.3);
+    }
+
+    .actions .btn-add-cart:hover {
+        background: linear-gradient(135deg, #ff8800 0%, #ff9d2d 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(255, 157, 45, 0.4);
+        color: white;
+    }
+
+    .actions .btn-add-cart:hover i {
+        transform: scale(1.1) rotate(15deg);
+    }
+
+    .actions .btn-add-cart:active {
+        transform: scale(0.95);
+    }
+
+    /* Effet ripple */
+    .actions .icon-btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transform: translate(-50%, -50%);
+        transition: width 0.5s, height 0.5s;
+    }
+
+    .actions .icon-btn:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    /* Responsive Desktop */
+    @media (min-width: 992px) {
+        .actions {
+            justify-content: flex-start;
+        }
+        
+        .actions .icon-btn {
+            flex: 0 1 auto;
+        }
+    }
+
+    /* Responsive Mobile */
+    @media (max-width: 991px) {
+        .actions {
+            flex-direction: row;
+            gap: 8px;
+        }
+        
+        .actions .icon-btn {
+            flex: 1 1 calc(50% - 4px);
+            padding: 10px 14px;
+            font-size: 13px;
+            min-width: 100px;
+        }
+
+        .actions .icon-btn i {
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .actions {
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .actions .icon-btn {
+            width: 100%;
+            flex: 1 1 100%;
+            padding: 10px 16px;
+            font-size: 13px;
+        }
+
+        .actions .icon-btn i {
+            font-size: 14px;
+        }
+
+        .actions .icon-btn span {
+            display: inline;
+        }
+    }
+</style>
+
 <section class="space bg-smoke2" data-bg-src="">
     <div class="container">
         <div class="title-area text-center">
@@ -84,7 +235,7 @@ Categorie and products
                                         <div class="actions">
 
                                             @php
-                                                $numero = '2250758838338'; // Format international sans "+"
+                                                $numero = '2250758838338';
                                                 $message =
                                                     'Bonjour, je souhaite commander le produit *' .
                                                     $product->title .
@@ -94,16 +245,17 @@ Categorie and products
                                                     'https://wa.me/' . $numero . '?text=' . urlencode($message);
                                             @endphp
 
-
-
                                             <a href="{{ route('detail-produit', $product['slug']) }}"
-                                                class="icon-btn"><i class="far fa-eye"></i></a>
-                                            <button class="icon-btn"><i class="fa fa-cart-plus addCart"
-                                                    data-id="{{ $product['id'] }}"></i></button>
-
-                                            {{-- <a href="{{ $urlWhatsapp }}" target="_blank" class="icon-btn bg-success">
-                                                <i class="fab fa-whatsapp"></i>
-                                            </a> --}}
+                                                class="icon-btn btn-detail">
+                                                <i class="far fa-eye"></i>
+                                                <span>Détails</span>
+                                            </a>
+                                            
+                                            <button class="icon-btn btn-add-cart addCart"
+                                                data-id="{{ $product['id'] }}">
+                                                <i class="fa fa-cart-plus"></i>
+                                                <span class="addCart" data-id="{{$product['id']}}">Ajouter</span>
+                                            </button>
 
                                         </div>
 
