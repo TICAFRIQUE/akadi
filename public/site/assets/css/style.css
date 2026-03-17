@@ -110,6 +110,9 @@ Version: 1.0.0
 html,
 body {
     scroll-behavior: auto !important;
+
+    /**overflow**/
+    overflow-x: hidden;
 }
 
 body {
