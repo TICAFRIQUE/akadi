@@ -141,7 +141,7 @@ Categorie and products
         .actions .icon-btn {
             width: 100%;
             flex: 1 1 100%;
-            padding: 10px 16px;
+            padding: 4px 16px;
             font-size: 13px;
         }
 
