@@ -7,12 +7,20 @@ use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Delivery;
+use App\Services\StockService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    protected $stockService;
+
+    public function __construct(StockService $stockService)
+    {
+        $this->stockService = $stockService;
+    }
+
     //
     /**
      * @OA\Get(
@@ -77,14 +85,16 @@ class OrderController extends Controller
 
                 ]);
 
-                //insert data in pivot order_product
+                // Attacher les produits et décrémenter les stocks
+                $cart = [];
                 foreach ($request['produits'] as $key => $value) {
-                    $data->products()->attach($key, [
+                    $cart[$key] = [
                         'quantity' => $value['qte_unitaire'],
-                        'unit_price' => $value['prix_unitaire'],
-                        'total' => $value['qte_unitaire'] * $value['prix_unitaire'],
-                    ]);
+                        'price' => $value['prix_unitaire'],
+                    ];
                 }
+                $this->stockService->attachCartAndDecrementStock($data, $cart);
+
                 return response()->json(['success' => true, 'message' => 'La commande a été bien enregistrée']);
             }
 

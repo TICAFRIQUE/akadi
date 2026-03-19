@@ -116,7 +116,7 @@
                                     </div>
 
                                     {{-- Stock --}}
-                                    <div class="form-group row mb-4">
+                                    {{-- <div class="form-group row mb-4">
                                         <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">
                                             Stock
                                             <small class="d-block text-muted" style="font-size:.75rem">Vide =
@@ -146,6 +146,53 @@
                                                             class="form-control" placeholder="5" value="5">
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div> --}}
+
+                                    {{-- Liaison avec produit de base --}}
+                                    <div class="form-group row mb-4">
+                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">
+                                            Produit de base
+                                            <small class="d-block text-muted" style="font-size:.75rem">Optionnel</small>
+                                        </label>
+                                        <div class="col-sm-12 col-md-7">
+                                            <div class="row">
+                                                <div class="col-7">
+                                                    <label class="small font-weight-bold">Produit</label>
+                                                    <select name="product_base_id" id="product_base_id"
+                                                        class="form-control">
+                                                        <option value="">-- Aucun --</option>
+                                                        @if (isset($productBases))
+                                                            @foreach ($productBases as $pb)
+                                                                <option value="{{ $pb->id }}"
+                                                                    data-unite="{{ $pb->unite }}">
+                                                                    {{ $pb->nom }} ({{ $pb->unite }})
+                                                                </option>
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-info-circle"></i> Lie ce produit à un stock de
+                                                        base
+                                                    </small>
+                                                </div>
+                                                <div class="col-5">
+                                                    <label class="small font-weight-bold">Coefficient</label>
+                                                    <div class="input-group">
+                                                        <input name="coefficient" id="coefficient" type="number"
+                                                            step="0.01" min="0" class="form-control"
+                                                            placeholder="Ex: 1">
+                                                        <div class="input-group-append" id="unite_display">
+                                                            <span class="input-group-text">unité</span>
+                                                        </div>
+                                                    </div>
+                                                    <small class="text-muted">Quantité utilisée</small>
+                                                </div>
+                                            </div>
+                                            <div class="alert alert-info mt-2" style="font-size:.85rem">
+                                                <strong>Exemple:</strong> 1 Poulet braisé = 1 poulet de base<br>
+                                                <strong>Exemple:</strong> 1 Demi-poulet = 0.5 poulet de base
                                             </div>
                                         </div>
                                     </div>
@@ -483,6 +530,20 @@
             } else {
                 $('#MsgError').html(' ')
                 $('.btn-submit').prop('disabled', false)
+            }
+        });
+
+
+        // Gestion liaison avec produit de base
+        $('#product_base_id').change(function() {
+            var selectedOption = $(this).find('option:selected');
+            var unite = selectedOption.data('unite');
+
+            if (unite) {
+                $('#unite_display .input-group-text').text(unite);
+            } else {
+                $('#unite_display .input-group-text').text('unité');
+                $('#coefficient').val('');
             }
         });
 

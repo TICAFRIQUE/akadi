@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\StockService;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,13 @@ use Illuminate\Support\Facades\Hash;
 
 class PosController extends Controller
 {
+    protected $stockService;
+
+    public function __construct(StockService $stockService)
+    {
+        $this->stockService = $stockService;
+    }
+
     /**
      * Interface POS – formulaire de création de commande backoffice
      */
@@ -248,9 +256,10 @@ class PosController extends Controller
                 'available_product' => 'yes',
             ]);
 
-            // ── Pivot produits ───────────────────────────────────────────────────
+            // ── Pivot produits et décrémentation du stock ────────────────────────
             foreach ($productsData as $d) {
-                $order->products()->attach($d['product']->id, [
+                // Données pivot
+                $pivotData = [
                     'quantity'          => $d['quantity'],
                     'unit_price'        => $d['unit_price'],
                     'discount'          => $d['discount'],
@@ -259,9 +268,12 @@ class PosController extends Controller
                     'total'             => $d['total'],
                     'options'           => $d['options'],
                     'available'         => 'yes',
-                ]);
+                ];
 
-                // Décrémenter le stock si défini
+                // Attacher le produit et décrémenter le stock du produit de base
+                $this->stockService->attachProductAndDecrementStock($order, $d['product']->id, $pivotData);
+
+                // Décrémenter le stock du produit lui-même si défini
                 if ($d['product']->stock !== null) {
                     $d['product']->decrement('stock', $d['quantity']);
                 }

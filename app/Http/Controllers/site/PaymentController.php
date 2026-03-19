@@ -8,6 +8,7 @@ use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\WavePaymentService;
+use App\Services\StockService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -16,10 +17,12 @@ use Illuminate\Support\Facades\Session;
 class PaymentController extends Controller
 {
     protected $waveService;
+    protected $stockService;
 
-    public function __construct(WavePaymentService $waveService)
+    public function __construct(WavePaymentService $waveService, StockService $stockService)
     {
         $this->waveService = $waveService;
+        $this->stockService = $stockService;
     }
 
     /**
@@ -140,14 +143,8 @@ class PaymentController extends Controller
                 'date_order' => now()->format('Y-m-d'),
             ]);
 
-            // Attacher les produits à la commande
-            foreach ($cart as $productId => $item) {
-                $order->products()->attach($productId, [
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $item['price'],
-                    'total' => $item['price'] * $item['quantity'],
-                ]);
-            }
+            // Attacher les produits à la commande et décrémenter les stocks
+            $this->stockService->attachCartAndDecrementStock($order, $cart);
 
             // Gérer le coupon si présent
             $this->handleCoupon($deliveryInfo);
@@ -247,14 +244,8 @@ class PaymentController extends Controller
                 'user_id' => $userId
             ]);
 
-            // Attacher les produits à la commande
-            foreach ($cart as $productId => $item) {
-                $order->products()->attach($productId, [
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $item['price'],
-                    'total' => $item['price'] * $item['quantity'],
-                ]);
-            }
+            // Attacher les produits à la commande et décrémenter les stocks
+            $this->stockService->attachCartAndDecrementStock($order, $cart);
 
             // Gérer le coupon si présent
             $this->handleCoupon($deliveryInfo);

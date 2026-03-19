@@ -74,6 +74,8 @@ class ProductController extends Controller
             'status_remise' => '',
             'stock' => $request->input('stock') !== '' ? $request->input('stock') : null,
             'stock_alerte' => $request->input('stock_alerte', 5),
+            'product_base_id' => $request->input('product_base_id') ?: null,
+            'coefficient' => $request->input('coefficient') ?: null,
             'user_id' => $userId
         ]);
 
@@ -202,6 +204,8 @@ class ProductController extends Controller
             'status_remise' => '',
             'stock' => $request->input('stock') !== '' ? $request->input('stock') : null,
             'stock_alerte' => $request->input('stock_alerte', 5),
+            'product_base_id' => $request->input('product_base_id') ?: null,
+            'coefficient' => $request->input('coefficient') ?: null,
         ]);
 
 

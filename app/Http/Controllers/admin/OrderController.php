@@ -254,8 +254,19 @@ class OrderController extends Controller
             'raison_annulation_cmd' => $motif
         ]);
 
+        // Remettre à jour le stock du product_base pour chaque produit de la commande
+        $order = Order::with('products.productBase', 'user')->whereId($request['commandeId'])->first();
+        if ($order) {
+            foreach ($order->products as $product) {
+                if ($product->product_base_id && $product->productBase) {
+                    $coefficient = $product->coefficient > 0 ? $product->coefficient : 1;
+                    $quantite = $product->pivot->quantity;
+                    $product->productBase->incrementerStock($quantite * $coefficient);
+                }
+            }
+        }
+
         //envoyer email d'annulation via queue
-        $order = Order::with('user')->whereId($request['commandeId'])->first();
         if (!empty($order->user->email)) {
             SendEmailJob::dispatch(
                 $order->user->email,

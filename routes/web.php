@@ -8,6 +8,11 @@ use App\Http\Controllers\RapportController;
 use App\Http\Controllers\admin\OrderController;
 use App\Http\Controllers\admin\CouponController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\ProductBaseController;
+use App\Http\Controllers\AchatController;
+use App\Http\Controllers\FournisseurController;
+use App\Http\Controllers\SortieStockController;
+use App\Http\Controllers\SuiviStockController;
 use App\Http\Controllers\admin\SettingController;
 use App\Http\Controllers\site\AuthPageController;
 use App\Http\Controllers\site\CartPageController;
@@ -28,6 +33,7 @@ use App\Http\Controllers\admin\PermissionController;
 use App\Http\Controllers\admin\depense\DepenseController;
 use App\Http\Controllers\admin\depense\LibelleDepenseController;
 use App\Http\Controllers\admin\depense\CategorieDepenseController;
+use App\Http\Controllers\InventaireController;
 
 /*
 |--------------------------------------------------------------------------
@@ -136,6 +142,56 @@ Route::middleware(['admin'])->group(function () {
         route::post('update/{id}', 'update')->name('product.update');
         route::post('destroy/{id}', 'destroy')->name('product.destroy');
         route::post('availableProduct/{id}', 'availableProduct')->name('product.available');
+    });
+
+    /** Product Bases (Produits de base) **/
+    Route::prefix('admin/product-bases')->middleware('can:achats.produits-base')->controller(ProductBaseController::class)->group(function () {
+        route::get('', 'index')->name('product-base.index');
+        route::get('create', 'create')->name('product-base.create');
+        route::post('store', 'store')->name('product-base.store');
+        route::get('show/{productBase}', 'show')->name('product-base.show');
+        route::get('edit/{productBase}', 'edit')->name('product-base.edit');
+        route::put('update/{productBase}', 'update')->name('product-base.update');
+        route::delete('destroy/{productBase}', 'destroy')->name('product-base.destroy');
+        route::get('api/list', 'getProductBases')->name('product-base.api.list');
+    });
+
+    /** Achats **/
+    Route::prefix('admin/achats')->middleware('can:achats.gestion')->controller(AchatController::class)->group(function () {
+        route::get('', 'index')->name('achat.index');
+        route::get('create', 'create')->name('achat.create');
+        route::post('store', 'store')->name('achat.store');
+        route::get('show/{achat}', 'show')->name('achat.show');
+        route::get('edit/{achat}', 'edit')->name('achat.edit');
+        route::put('update/{achat}', 'update')->name('achat.update');
+        route::delete('destroy/{achat}', 'destroy')->name('achat.destroy');
+        route::get('rapport', 'rapport')->name('achat.rapport');
+    });
+
+    /** Fournisseurs **/
+    Route::prefix('admin/fournisseurs')->middleware('can:achats.gestion')->controller(FournisseurController::class)->group(function () {
+        route::get('', 'index')->name('fournisseur.index');
+        route::get('create', 'create')->name('fournisseur.create');
+        route::post('store', 'store')->name('fournisseur.store');
+        route::get('show/{fournisseur}', 'show')->name('fournisseur.show');
+        route::get('edit/{fournisseur}', 'edit')->name('fournisseur.edit');
+        route::put('update/{fournisseur}', 'update')->name('fournisseur.update');
+        route::delete('destroy/{fournisseur}', 'destroy')->name('fournisseur.destroy');
+    });
+
+    /** Sorties de Stock **/
+    Route::prefix('admin/sorties-stock')->middleware('can:achats.gestion')->controller(SortieStockController::class)->group(function () {
+        route::get('', 'index')->name('sortie-stock.index');
+        route::get('create', 'create')->name('sortie-stock.create');
+        route::post('store', 'store')->name('sortie-stock.store');
+        route::get('show/{sortieStock}', 'show')->name('sortie-stock.show');
+        route::delete('destroy/{sortieStock}', 'destroy')->name('sortie-stock.destroy');
+        route::get('rapport', 'rapport')->name('sortie-stock.rapport');
+    });
+
+    /** Suivi de Stock **/
+    Route::prefix('admin/suivi-stock')->middleware('can:achats.gestion')->controller(SuiviStockController::class)->group(function () {
+        route::get('', 'index')->name('suivi-stock.index');
     });
 
     //orders
@@ -273,6 +329,13 @@ Route::middleware(['admin'])->group(function () {
         route::post('update/{id}', 'update')->name('payment-method.update');
         route::get('change-state', 'changeState')->name('payment-method.changeState');
         route::post('destroy/{id}', 'destroy')->name('payment-method.destroy');
+    });
+
+    Route::prefix('inventaire')->middleware(['auth', 'admin'])->group(function () {
+        Route::get('/', [\App\Http\Controllers\InventaireController::class, 'index'])->name('inventaire.index');
+        Route::get('/create', [\App\Http\Controllers\InventaireController::class, 'create'])->name('inventaire.create');
+        Route::post('/', [\App\Http\Controllers\InventaireController::class, 'store'])->name('inventaire.store');
+        Route::get('/{id}', [\App\Http\Controllers\InventaireController::class, 'show'])->name('inventaire.show');
     });
 });
 

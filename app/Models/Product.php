@@ -35,6 +35,8 @@ class Product extends Model implements HasMedia
         'sub_category_id',
         'disponibilite',
         'user_id',
+        'product_base_id',  // Produit de base associé
+        'coefficient',      // Coefficient de consommation
         'montant_remise',
         'pourcentage_remise',
         'date_debut_remise',
@@ -77,6 +79,11 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    public function productBase()
+    {
+        return $this->belongsTo(ProductBase::class, 'product_base_id');
+    }
+
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class)->withTimestamps();
@@ -94,7 +101,7 @@ class Product extends Model implements HasMedia
 
     public function orders(): BelongsToMany
     {
-        return $this->belongsToMany(Order::class)->withPivot(['quantity', 'unit_price', 'total', 'options', 'available'])
+        return $this->belongsToMany(Order::class)->withPivot(['quantity', 'unit_price', 'total', 'options', 'available', 'coefficient'])
             ->withTimestamps();
     }
 
@@ -121,5 +128,53 @@ class Product extends Model implements HasMedia
     //         ->width(300)
     //         ->height(100);
     // }
+
+    /**
+     * Retourne le stock disponible pour ce produit selon la nouvelle logique.
+     * - Si lié à un product_base et coefficient > 0 : stock calculé
+     * - Sinon : stock infini
+     */
+    public function getStockDisponible()
+    {
+        // Si le produit est lié à un product_base et a un coefficient > 0
+        if ($this->product_base_id && $this->coefficient > 0 && $this->productBase) {
+            // Stock du produit de base ajusté par le coefficient
+            return floor($this->productBase->stock / $this->coefficient);
+        }
+        // Sinon, stock infini
+        return INF;
+    }
+
+    /**
+     * Indique si le stock est considéré comme infini (non géré)
+     */
+    public function isStockInfini()
+    {
+        return !$this->product_base_id || !$this->coefficient || $this->coefficient <= 0;
+    }
+
+    /**
+     * Retourne le seuil d'alerte pour ce produit (via product_base)
+     */
+    public function getStockAlerte()
+    {
+        if ($this->product_base_id && $this->productBase) {
+            return $this->productBase->stock_alerte;
+        }
+        return null;
+    }
+
+    /**
+     * Retourne true si le stock est en alerte (via product_base)
+     */
+    public function isStockAlerte()
+    {
+        $alerte = $this->getStockAlerte();
+        $stock = $this->getStockDisponible();
+        if ($alerte !== null && $stock !== INF) {
+            return $stock <= $alerte;
+        }
+        return false;
+    }
 
 }

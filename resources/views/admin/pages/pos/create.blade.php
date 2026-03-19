@@ -211,11 +211,16 @@
                             <select id="product-select" class="form-control select2" style="width:100%">
                                 <option value="">Rechercher un produit…</option>
                                 @foreach ($products as $p)
+                                    @php
+                                        $stockDisponible = $p->getStockDisponible();
+                                        $isInfini = $p->isStockInfini();
+                                    @endphp
                                     <option value="{{ $p->id }}" data-price="{{ $p->price }}"
-                                        data-stock="{{ $p->stock }}"
+                                        data-stock="{{ $isInfini ? '' : $stockDisponible }}"
                                         data-img="{{ $p->getFirstMediaUrl('principal_img') }}"
-                                        data-title="{{ $p->title }}">{{ $p->title }} —
-                                        {{ number_format($p->price, 0, ',', ' ') }} FCFA</option>
+                                        data-title="{{ $p->title }}">
+                                        {{ $p->title }} — {{ number_format($p->price, 0, ',', ' ') }} FCFA
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -232,7 +237,8 @@
                                             <th class="text-center">Stock</th>
                                             <th class="text-center">P.U</th>
                                             <th class="text-center">Qté</th>
-                                            <th class="text-center">Remise <small class="text-muted">(% ou FCFA)</small></th>
+                                            <th class="text-center">Remise <small class="text-muted">(% ou FCFA)</small>
+                                            </th>
                                             <th class="text-center">Total</th>
                                             <th></th>
                                         </tr>
@@ -286,8 +292,13 @@
                                     </div>
                                     <input type="hidden" name="user_id" id="user_id">
                                 </div>
+
                                 {{-- Nouveau client --}}
                                 <div id="new-client-box">
+                                    <div class="text-danger text-center"
+                                        style="font-weight:bold; font-size:16px ; text-transform:uppercase"> Ou créer un
+                                        nouveau client</div>
+
                                     <div class="form-group">
                                         <label class="small">Nom du client</label>
                                         <input type="text" name="client_name" class="form-control"
@@ -507,7 +518,7 @@
     </div>
 
     <script>
-        let cartItems    = {};
+        let cartItems = {};
         let currentTotal = 0;
 
         $(document).ready(function() {
@@ -522,7 +533,8 @@
                     id: val,
                     title: opt.attr('data-title') || opt.text().split('—')[0].trim(),
                     price: parseFloat(opt.attr('data-price')) || 0,
-                    stock: (rawStock !== undefined && rawStock !== '') ? parseInt(rawStock) : null,
+                    stock: (rawStock !== undefined && rawStock !== '' && !isNaN(rawStock)) ? parseInt(
+                        rawStock) : null,
                     img: opt.attr('data-img') || null
                 };
                 $(this).val(null).trigger('change');
@@ -839,9 +851,9 @@
             e.preventDefault();
 
             const errors = [];
-            const status     = document.querySelector('[name="status"]').value;
-            const isAttente  = ['attente', 'precommande', 'en_attente_acompte', 'annulée'].includes(status);
-            const isLivree   = status === 'livrée';
+            const status = document.querySelector('[name="status"]').value;
+            const isAttente = ['attente', 'precommande', 'en_attente_acompte', 'annulée'].includes(status);
+            const isLivree = status === 'livrée';
 
             // 1. Panier non vide
             if (!Object.keys(cartItems).length) {
@@ -860,7 +872,9 @@
                 const acompte = parseFloat(document.getElementById('acompte').value) || 0;
                 if (isLivree) {
                     if (Math.round(acompte) !== Math.round(currentTotal)) {
-                        errors.push(`Pour une commande livrée, l'acompte (${formatMoney(acompte)} FCFA) doit être égal au total (${formatMoney(currentTotal)} FCFA).`);
+                        errors.push(
+                            `Pour une commande livrée, l'acompte (${formatMoney(acompte)} FCFA) doit être égal au total (${formatMoney(currentTotal)} FCFA).`
+                            );
                     }
                 } else if (acompte <= 0) {
                     errors.push('L\'acompte doit être supérieur à 0 pour ce statut.');

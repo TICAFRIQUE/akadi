@@ -93,9 +93,13 @@
                         <select id="product-select" class="form-control select2" style="width:100%">
                             <option value="">Rechercher un produit…</option>
                             @foreach($products as $p)
+                                @php
+                                    $stockDisponible = $p->getStockDisponible();
+                                    $isInfini = $p->isStockInfini();
+                                @endphp
                                 <option value="{{ $p->id }}"
                                     data-price="{{ $p->price }}"
-                                    data-stock="{{ $p->stock }}"
+                                    data-stock="{{ $isInfini ? '' : $stockDisponible }}"
                                     data-img="{{ $p->getFirstMediaUrl('principal_img') }}"
                                     data-title="{{ $p->title }}">
                                     {{ $p->title }} — {{ number_format($p->price, 0, ',', ' ') }} FCFA
@@ -379,7 +383,7 @@
         'id'       => $p->id,
         'title'    => $p->title,
         'price'    => $p->price,
-        'stock'    => $p->stock,
+        'stock'    => $p->isStockInfini() ? null : $p->getStockDisponible(),
         'img'      => $p->getFirstMediaUrl('principal_img') ?: null,
         'qty'      => $p->pivot->quantity,
         'discount'      => (float)($p->pivot->discount ?? 0),

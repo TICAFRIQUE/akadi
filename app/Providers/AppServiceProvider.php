@@ -1,21 +1,15 @@
 <?php
-
 namespace App\Providers;
-
-use Carbon\Carbon;
+require_once __DIR__ . '/../Helpers/product_alert.php';
 use App\Models\User;
 use App\Models\Order;
-use App\Models\Coupon;
-use App\Models\Product;
 use App\Models\Category;
 use App\Models\Publicite;
-use App\Models\Collection;
 use App\Models\SubCategory;
+use App\Models\ProductBase;
 use Illuminate\Support\Facades\DB;
-use PHPMailer\PHPMailer\PHPMailer;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -288,8 +282,12 @@ class AppServiceProvider extends ServiceProvider
             $user_upcoming_birthday = User::whereIn('notify_birthday', [2, 1])->get();
             $user_birthday = User::where('notify_birthday', 0)->get();
 
+            // Produits de base pour la gestion des achats et stocks
+            $productBases = ProductBase::orderBy('nom', 'ASC')->get();
+
             // dd($category->toArray());
 
+            $nb_product_alertes = count_product_alertes();
             $view->with([
                 'annonce' => $annonce,
                 'categories' => $category,
@@ -301,6 +299,8 @@ class AppServiceProvider extends ServiceProvider
                 'orders_new' => $orders_new,
                 'user_upcoming_birthday' => $user_upcoming_birthday,
                 'user_birthday' => $user_birthday,
+                'productBases' => $productBases,
+                'nb_product_alertes' => $nb_product_alertes,
             ]);
         });
     }
