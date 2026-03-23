@@ -52,7 +52,7 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <strong>{{ number_format($achat->montant_total, 0, ',', ' ') }}
+                                                    <strong>{{ format_price($achat->montant_total) }}
                                                         FCFA</strong>
                                                 </td>
                                                 <td>{{ $achat->user->name ?? '-' }}</td>
@@ -63,6 +63,7 @@
                                                         <i class="fa fa-eye"></i>
                                                     </a>
 
+                                                    @role('developpeur')
                                                     <!--edit achat-->
                                                     <a href="{{ route('achat.edit', $achat->id) }}"
                                                         class="btn btn-primary btn-sm" data-toggle="tooltip"
@@ -83,6 +84,7 @@
                                                         </button>
                                                     </form>
                                                     <!--end delete achat-->
+                                                    @endrole
                                                 </td>
                                             </tr>
                                         @empty

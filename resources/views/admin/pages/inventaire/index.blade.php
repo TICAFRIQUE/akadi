@@ -3,21 +3,22 @@
 @section('sub-title', 'Liste des inventaires')
 @section('content')
     <section class="section">
-        <div class="section-header">
-            <h1>Inventaires</h1>
-            <div class="section-header-breadcrumb">
-                <div class="breadcrumb-item active"><a href="{{ route('dashboard.index') }}">Dashboard</a></div>
-                <div class="breadcrumb-item">Inventaires</div>
-            </div>
-        </div>
+        
         <div class="section-body">
-            <div class="mb-3">
-                <a href="{{ route('inventaire.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nouvel
-                    inventaire</a>
-            </div>
-            @include('admin.components.validationMessage')
-
             <div class="card">
+                <div class="card-header">
+                    <h4></h4>
+                    <div class="card-header-action">
+                        <a href="{{ route('achat.rapport') }}" class="btn btn-info mr-2">
+                            <i class="fas fa-chart-bar"></i> Rapport
+                        </a>
+                        <a href="{{ route('achat.create') }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Nouvel achat
+                        </a>
+                    </div>
+                </div>
+                @include('admin.components.validationMessage')
+
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped" id="tableExport">
@@ -25,15 +26,14 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Date</th>
-                                    <th>Utilisateur</th>
-                                    <th>Résultat</th>
+                                    <th>Réalisé par</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($inventaires as $inv)
+                                @foreach ($inventaires as $key => $inv)
                                     <tr>
-                                        <td>{{ $inv->id }}</td>
+                                        <td>{{ ++$key }}</td>
                                         <td>
                                             @php
                                                 $date = $inv->date_inventaire;
@@ -44,17 +44,7 @@
                                             {{ $date->format('d/m/Y H:i') }}
                                         </td>
                                         <td>{{ $inv->user->name }}</td>
-                                        <td>
-                                            @if($inv->resultat === 'conforme')
-                                                <span class="badge badge-success">Conforme</span>
-                                            @elseif($inv->resultat === 'perte')
-                                                <span class="badge badge-danger">Perte</span>
-                                            @elseif($inv->resultat === 'rupture')
-                                                <span class="badge badge-warning">Rupture</span>
-                                            @else
-                                                <span class="badge badge-secondary">-</span>
-                                            @endif
-                                        </td>
+
                                         <td>
                                             <a href="{{ route('inventaire.show', $inv->id) }}"
                                                 class="btn btn-info btn-sm"><i class="fas fa-eye"></i> Voir</a>

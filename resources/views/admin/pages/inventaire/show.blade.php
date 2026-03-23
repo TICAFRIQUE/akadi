@@ -38,7 +38,7 @@
             </div>
             <div class="row mb-2">
                 <div class="col-md-3">
-                    <strong>Utilisateur :</strong> {{ $inventaire->user ? $inventaire->user->name : '-' }}
+                    <strong>Réalisé par :</strong> {{ $inventaire->user ? $inventaire->user->name : '-' }}
                 </div>
                 <div class="col-md-3">
                     <strong>Date de création :</strong> {{ \Carbon\Carbon::parse($inventaire->date_inventaire)->format('d/m/Y H:i') }}
@@ -46,18 +46,7 @@
                 <div class="col-md-3">
                     <strong>Nombre de produits :</strong> {{ $inventaire->lignes->count() }}
                 </div>
-                <div class="col-md-3">
-                    <strong>Résultat :</strong> 
-                    @if($inventaire->resultat === 'conforme')
-                        <span class="badge badge-success">Conforme</span>
-                    @elseif($inventaire->resultat === 'perte')
-                        <span class="badge badge-danger">Perte</span>
-                    @elseif($inventaire->resultat === 'rupture')
-                        <span class="badge badge-warning">Rupture</span>
-                    @else
-                        <span class="badge badge-secondary">-</span>
-                    @endif
-                </div>
+                
             </div>
         </div>
         <div class="card">
@@ -82,14 +71,14 @@
                         @foreach($inventaire->lignes as $ligne)
                             <tr>
                                 <td>{{ $ligne->productBase->nom }}</td>
-                                <td>{{ number_format($ligne->stock_dernier_inventaire, 2) }}</td>
-                                <td>{{ number_format($ligne->stock_ajoute, 2) }}</td>
-                                <td>{{ number_format($ligne->stock_total, 2) }}</td>
-                                <td>{{ number_format($ligne->stock_vendu, 2) }}</td>
-                                <td>{{ number_format($ligne->stock_sortie, 2) }}</td>
-                                <td>{{ number_format($ligne->stock_restant, 2) }}</td>
-                                <td>{{ number_format($ligne->stock_physique, 2) }}</td>
-                                <td>{{ number_format($ligne->ecart, 2) }}</td>
+                                <td>{{ format_price($ligne->stock_dernier_inventaire) }}</td>
+                                <td>{{ format_price($ligne->stock_ajoute) }}</td>
+                                <td>{{ format_price($ligne->stock_total) }}</td>
+                                <td>{{ format_price($ligne->stock_vendu) }}</td>
+                                <td>{{ format_price($ligne->stock_sortie) }}</td>
+                                <td>{{ format_price($ligne->stock_restant) }}</td>
+                                <td>{{ format_price($ligne->stock_physique) }}</td>
+                                <td>{{ format_price($ligne->ecart) }}</td>
                                 <td>
                                     @if($ligne->resultat === 'conforme')
                                         <span class="badge badge-success">Conforme</span>
@@ -116,7 +105,9 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            var titre = 'Détail de l\'inventaire';
+            //titre doit prendre intervalle de date de l'inventaire et le user qui a réalisé l'inventaire
+            var titre = 'Détail de l\'inventaire du {{ \Carbon\Carbon::parse($inventaire->date_inventaire)->format('d-m-Y à H-i') }} par {{ $inventaire->user->name }}';
+
             $('#tableExport').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/French.json"

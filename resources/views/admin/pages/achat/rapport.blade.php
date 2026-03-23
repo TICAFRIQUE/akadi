@@ -24,35 +24,32 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="date_debut">Date de début</label>
-                                            <input type="date" 
-                                                   class="form-control" 
-                                                   id="date_debut" 
-                                                   name="date_debut" 
-                                                   value="{{ $dateDebut }}">
+                                            <input type="date" class="form-control" id="date_debut" name="date_debut"
+                                                value="{{ $dateDebut }}">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="date_fin">Date de fin</label>
-                                            <input type="date" 
-                                                   class="form-control" 
-                                                   id="date_fin" 
-                                                   name="date_fin" 
-                                                   value="{{ $dateFin }}">
+                                            <input type="date" class="form-control" id="date_fin" name="date_fin"
+                                                value="{{ $dateFin }}">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label>&nbsp;</label>
-                                        <button type="submit" class="btn btn-primary btn-block">
+                                        <button type="submit" class="btn btn-primary w75 mt-4">
                                             <i class="fas fa-filter"></i> Filtrer
                                         </button>
+                                        <a href="{{ route('achat.rapport') }}" class="btn btn-secondary mt-4 ">
+                                            <i class="fas fa-undo"></i> Réinitialiser
+                                        </a>
                                     </div>
                                 </div>
                             </form>
 
                             {{-- Statistiques globales --}}
                             <div class="row mb-4">
-                                <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                                <div class="col-lg-4 col-md-6 col-sm-6 col-12">
                                     <div class="card card-statistic-1">
                                         <div class="card-icon bg-primary">
                                             <i class="fas fa-shopping-cart"></i>
@@ -67,7 +64,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                                <div class="col-lg-4 col-md-6 col-sm-6 col-12">
                                     <div class="card card-statistic-1">
                                         <div class="card-icon bg-success">
                                             <i class="fas fa-dollar-sign"></i>
@@ -77,12 +74,12 @@
                                                 <h4>Montant Total</h4>
                                             </div>
                                             <div class="card-body">
-                                                {{ number_format($stats['montant_total'], 0, ',', ' ') }} FCFA
+                                                {{ format_price($stats['montant_total']) }} FCFA
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                                <div class="col-lg-4 col-md-6 col-sm-6 col-12">
                                     <div class="card card-statistic-1">
                                         <div class="card-icon bg-warning">
                                             <i class="fas fa-chart-line"></i>
@@ -92,12 +89,12 @@
                                                 <h4>Montant Moyen</h4>
                                             </div>
                                             <div class="card-body">
-                                                {{ number_format($stats['montant_moyen'], 0, ',', ' ') }} FCFA
+                                                {{ format_price($stats['montant_moyen']) }} FCFA
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                                {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                                     <div class="card card-statistic-1">
                                         <div class="card-icon bg-info">
                                             <i class="fas fa-box"></i>
@@ -111,13 +108,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
 
                             {{-- Rapport par produit --}}
                             <h5 class="mb-3">Détails par produit de base</h5>
                             <div class="table-responsive">
-                                <table class="table table-striped table-bordered" id="tableRapport">
+                                <table class="table table-striped table-bordered" id="tableExport">
                                     <thead class="thead-dark">
                                         <tr>
                                             <th>#</th>
@@ -130,14 +127,15 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($stats['par_produit'] as $stat)
+                                        @foreach ($stats['par_produit'] as $stat)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td><strong>{{ $stat['produit'] }}</strong></td>
                                                 <td>{{ $stat['unite'] }}</td>
-                                                <td>{{ number_format($stat['quantite_totale'], 2) }} {{ $stat['unite'] }}</td>
-                                                <td>{{ number_format($stat['montant_total'], 0, ',', ' ') }} FCFA</td>
-                                                <td>{{ $stat['quantite_totale'] > 0 ? number_format($stat['montant_total'] / $stat['quantite_totale'], 0, ',', ' ') : 0 }} FCFA</td>
+                                                <td>{{ format_price($stat['quantite_totale']) }} {{ $stat['unite'] }}</td>
+                                                <td>{{ format_price($stat['montant_total']) }} FCFA</td>
+                                                <td>{{ $stat['quantite_totale'] > 0 ? format_price($stat['montant_total'] / $stat['quantite_totale']) : 0 }}
+                                                    FCFA</td>
                                                 <td>{{ $stat['nombre_achats'] }}</td>
                                             </tr>
                                         @endforeach
@@ -145,7 +143,7 @@
                                     <tfoot class="table-info">
                                         <tr>
                                             <th colspan="4" class="text-right">TOTAL:</th>
-                                            <th>{{ number_format($stats['montant_total'], 0, ',', ' ') }} FCFA</th>
+                                            <th>{{ format_price($stats['montant_total']) }} FCFA</th>
                                             <th colspan="2"></th>
                                         </tr>
                                     </tfoot>
@@ -162,14 +160,40 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            $('#tableRapport').DataTable({
+            $('[data-toggle="tooltip"]').tooltip();
+
+            var titre =
+                'Liste des achats - {{ date('d-m-Y', strtotime($dateDebut)) }} au {{ date('d-m-Y', strtotime($dateFin)) }}';
+            $('#tableExport').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/French.json"
                 },
-                "order": [[4, "desc"]],
+                "order": [
+                    [2, "desc"]
+                ],
+
                 dom: 'Bfrtip',
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
+                buttons: [{
+                        extend: 'copy',
+                        title: titre,
+                    },
+                    {
+                        extend: 'csv',
+                        title: titre,
+                    },
+                    {
+                        extend: 'excel',
+                        title: titre,
+                    },
+                    {
+                        extend: 'pdf',
+                        title: titre,
+
+                    },
+                    {
+                        extend: 'print',
+                        title: titre,
+                    }
                 ]
             });
         });

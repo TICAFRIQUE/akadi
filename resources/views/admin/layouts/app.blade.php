@@ -115,16 +115,18 @@
                         </ul>
                     </div>
                     <ul class="navbar-nav navbar-right">
-                                                <!-- ========== Start notification produits en alerte ========== -->
-                                                <li class="dropdown">
-                                                    <a href="{{ route('suivi-stock.index') }}" class="nav-link nav-link-lg" title="Produits en alerte stock">
-                                                        <i data-feather="alert-triangle" class="text-danger"></i>
-                                                        @if($nb_product_alertes > 0)
-                                                            <span class="badge headerBadge1 bg-danger" style="position:relative;top:-8px;left:-8px;">{{ $nb_product_alertes }}</span>
-                                                        @endif
-                                                    </a>
-                                                </li>
-                                                <!-- ========== End notification produits en alerte ========== -->
+                        <!-- ========== Start notification produits en alerte ========== -->
+                        <li class="dropdown">
+                            <a href="{{ route('suivi-stock.index') }}" class="nav-link nav-link-lg"
+                                title="Produits en alerte stock">
+                                <i data-feather="alert-triangle" class="text-danger"></i>
+                                @if ($nb_product_alertes > 0)
+                                    <span class="badge headerBadge1 bg-danger"
+                                        style="position:relative;top:-8px;left:-8px;">{{ $nb_product_alertes }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        <!-- ========== End notification produits en alerte ========== -->
                         <!-- ========== Start notification orders ========== -->
                         <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
                                 class="nav-link nav-link-lg message-toggle"><i data-feather="bell" class="bell"></i>
@@ -169,7 +171,8 @@
 
                         <!-- ========== Start notification birthdays ========== -->
                         <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
-                                class="nav-link nav-link-lg message-toggle"><i data-feather="gift" class="bell"></i>
+                                class="nav-link nav-link-lg message-toggle"><i data-feather="gift"
+                                    class="bell"></i>
                                 <span class="badge headerBadge2">
                                     {{ count($user_birthday) + count($user_upcoming_birthday) }}</span>
                             </a>
@@ -436,8 +439,10 @@
                                 </li>
                             @endcanany
 
-                            {{-- Achats --}}
-                            @canany(['achats.voir', 'achats.produits-base', 'achats.gestion'])
+                            {{-- Gestion de stock --}}
+                            @canany(['gestion-de-stock.voir', 'gestion-de-stock.produits-base',
+                                'gestion-de-stock.fournisseurs', 'gestion-de-stock.achats', 'gestion-de-stock.sorties',
+                                'gestion-de-stock.suivi', 'gestion-de-stock.inventaires'])
                                 <li class="dropdown">
                                     <a href="#"
                                         class="menu-toggle nav-link has-dropdown
@@ -446,32 +451,36 @@
                                     </a>
                                     <ul
                                         class="dropdown-menu {{ Route::is('product-base.*') || Route::is('achat.*') || Route::is('fournisseur.*') || Route::is('sortie-stock.*') || Route::is('suivi-stock.*') || Route::is('inventaire.*') ? 'show' : '' }}">
-                                        @can('achats.produits-base')
+                                        @can('gestion-de-stock.produits-base')
                                             <li class="nav-item {{ Route::is('product-base.*') ? 'active' : '' }}">
-                                                <a href="{{ route('product-base.index') }}" class="nav-link">Produits de base</a>
+                                                <a href="{{ route('product-base.index') }}" class="nav-link">Produits de
+                                                    base</a>
                                             </li>
                                         @endcan
-                                        @can('achats.gestion')
+                                        @can('gestion-de-stock.fournisseurs')
                                             <li class="nav-item {{ Route::is('fournisseur.*') ? 'active' : '' }}">
                                                 <a href="{{ route('fournisseur.index') }}" class="nav-link">Fournisseurs</a>
                                             </li>
                                         @endcan
-                                        @can('achats.gestion')
-                                            <li class="nav-item {{ Route::is('achat.index') || Route::is('achat.create') || Route::is('achat.edit') || Route::is('achat.show') ? 'active' : '' }}">
+                                        @can('gestion-de-stock.achats')
+                                            <li
+                                                class="nav-item {{ Route::is('achat.*')  ? 'active' : '' }}">
                                                 <a href="{{ route('achat.index') }}" class="nav-link">Gestion des achats</a>
                                             </li>
                                         @endcan
-                                        @can('achats.gestion')
+                                        @can('gestion-de-stock.sorties')
                                             <li class="nav-item {{ Route::is('sortie-stock.*') ? 'active' : '' }}">
-                                                <a href="{{ route('sortie-stock.index') }}" class="nav-link">Sorties de stock</a>
+                                                <a href="{{ route('sortie-stock.index') }}" class="nav-link">Sorties de
+                                                    stock</a>
                                             </li>
                                         @endcan
-                                        @can('achats.gestion')
+                                        @can('gestion-de-stock.suivi')
                                             <li class="nav-item {{ Route::is('suivi-stock.*') ? 'active' : '' }}">
-                                                <a href="{{ route('suivi-stock.index') }}" class="nav-link">Suivi de stock</a>
+                                                <a href="{{ route('suivi-stock.index') }}" class="nav-link">Suivi de
+                                                    stock</a>
                                             </li>
                                         @endcan
-                                        @can('achats.gestion')
+                                        @can('gestion-de-stock.inventaires')
                                             <li class="nav-item {{ Route::is('inventaire.*') ? 'active' : '' }}">
                                                 <a href="{{ route('inventaire.index') }}" class="nav-link">Inventaires</a>
                                             </li>
@@ -517,7 +526,8 @@
                                         class="dropdown-menu {{ Route::is('user.*') || Route::is('role.*') || Route::is('permission.*') ? 'show' : '' }}">
                                         @can('administration.users')
                                             <li class="nav-item {{ Route::is('user.*') ? 'active' : '' }}">
-                                                <a class="nav-link" href="{{ route('user.list') }}">Utilisateurs / Admins</a>
+                                                <a class="nav-link" href="{{ route('user.list') }}">Utilisateurs /
+                                                    Admins</a>
                                             </li>
                                         @endcan
                                         @can('administration.roles')

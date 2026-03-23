@@ -50,7 +50,7 @@
                             <span>&times;</span>
                         </button>
                         <i class="fas fa-exclamation-triangle mr-2"></i>
-                        Vous n'avez pas la permission d'accéder au dashboard complet.
+                        Vous avez des permissions limitées. Veuillez contacter votre administrateur pour plus d'accès.
                     </div>
                 </div>
             </div>

@@ -145,7 +145,7 @@ Route::middleware(['admin'])->group(function () {
     });
 
     /** Product Bases (Produits de base) **/
-    Route::prefix('admin/product-bases')->middleware('can:achats.produits-base')->controller(ProductBaseController::class)->group(function () {
+    Route::prefix('admin/product-bases')->middleware('can:gestion-de-stock.produits-base')->controller(ProductBaseController::class)->group(function () {
         route::get('', 'index')->name('product-base.index');
         route::get('create', 'create')->name('product-base.create');
         route::post('store', 'store')->name('product-base.store');
@@ -157,7 +157,7 @@ Route::middleware(['admin'])->group(function () {
     });
 
     /** Achats **/
-    Route::prefix('admin/achats')->middleware('can:achats.gestion')->controller(AchatController::class)->group(function () {
+    Route::prefix('admin/achats')->middleware('can:gestion-de-stock.achats')->controller(AchatController::class)->group(function () {
         route::get('', 'index')->name('achat.index');
         route::get('create', 'create')->name('achat.create');
         route::post('store', 'store')->name('achat.store');
@@ -169,7 +169,7 @@ Route::middleware(['admin'])->group(function () {
     });
 
     /** Fournisseurs **/
-    Route::prefix('admin/fournisseurs')->middleware('can:achats.gestion')->controller(FournisseurController::class)->group(function () {
+    Route::prefix('admin/fournisseurs')->middleware('can:gestion-de-stock.fournisseurs')->controller(FournisseurController::class)->group(function () {
         route::get('', 'index')->name('fournisseur.index');
         route::get('create', 'create')->name('fournisseur.create');
         route::post('store', 'store')->name('fournisseur.store');
@@ -180,7 +180,7 @@ Route::middleware(['admin'])->group(function () {
     });
 
     /** Sorties de Stock **/
-    Route::prefix('admin/sorties-stock')->middleware('can:achats.gestion')->controller(SortieStockController::class)->group(function () {
+    Route::prefix('admin/sorties-stock')->middleware('can:gestion-de-stock.sorties')->controller(SortieStockController::class)->group(function () {
         route::get('', 'index')->name('sortie-stock.index');
         route::get('create', 'create')->name('sortie-stock.create');
         route::post('store', 'store')->name('sortie-stock.store');
@@ -190,7 +190,7 @@ Route::middleware(['admin'])->group(function () {
     });
 
     /** Suivi de Stock **/
-    Route::prefix('admin/suivi-stock')->middleware('can:achats.gestion')->controller(SuiviStockController::class)->group(function () {
+    Route::prefix('admin/suivi-stock')->middleware('can:gestion-de-stock.suivi')->controller(SuiviStockController::class)->group(function () {
         route::get('', 'index')->name('suivi-stock.index');
     });
 

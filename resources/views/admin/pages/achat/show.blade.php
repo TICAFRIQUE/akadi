@@ -11,9 +11,11 @@
                         <div class="card-header">
                             <h4>Détails de l'achat: {{ $achat->numero }}</h4>
                             <div class="card-header-action">
-                                <a href="{{ route('achat.edit', $achat->id) }}" class="btn btn-primary">
-                                    <i class="fas fa-edit"></i> Modifier
-                                </a>
+                                @role('developpeur')
+                                    <a href="{{ route('achat.edit', $achat->id) }}" class="btn btn-primary">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                @endrole
                                 <a href="{{ route('achat.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left"></i> Retour
                                 </a>
@@ -59,13 +61,14 @@
                                         </tr>
                                         <tr>
                                             <th>Montant total:</th>
-                                            <td><strong class="text-dark">{{ number_format($achat->montant_total, 0, ',', ' ') }} FCFA</strong></td>
+                                            <td><strong class="text-dark">{{ format_price($achat->montant_total) }}
+                                                    FCFA</strong></td>
                                         </tr>
                                     </table>
                                 </div>
                             </div>
 
-                            @if($achat->notes)
+                            @if ($achat->notes)
                                 <div class="alert alert-info">
                                     <strong>Notes:</strong><br>
                                     {{ $achat->notes }}
@@ -86,45 +89,50 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($achat->lignes as $ligne)
+                                        @foreach ($achat->lignes as $ligne)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>
                                                     <strong>{{ $ligne->productBase->nom }}</strong>
                                                     <br>
                                                     <small class="text-muted">
-                                                        Stock avant: {{ number_format($ligne->productBase->stock - $ligne->quantite, 2) }} {{ $ligne->productBase->unite }}
-                                                        → Stock après: {{ number_format($ligne->productBase->stock, 2) }} {{ $ligne->productBase->unite }}
+                                                        Stock avant:
+                                                        {{ format_price($ligne->productBase->stock - $ligne->quantite) }}
+                                                        {{ $ligne->productBase->unite }}
+                                                        → Stock après: {{ format_price($ligne->productBase->stock) }}
+                                                        {{ $ligne->productBase->unite }}
                                                     </small>
                                                 </td>
-                                                <td>{{ number_format($ligne->quantite, 2) }} {{ $ligne->productBase->unite }}</td>
-                                                <td>{{ number_format($ligne->prix_unitaire, 0, ',', ' ') }} FCFA</td>
-                                                <td><strong>{{ number_format($ligne->montant_ligne, 0, ',', ' ') }} FCFA</strong></td>
+                                                <td>{{ format_price($ligne->quantite) }} {{ $ligne->productBase->unite }}
+                                                </td>
+                                                <td>{{ format_price($ligne->prix_unitaire) }} FCFA</td>
+                                                <td><strong>{{ format_price($ligne->montant_ligne) }} FCFA</strong></td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                     <tfoot class="table-info">
                                         <tr>
                                             <th colspan="4" class="text-right">TOTAL:</th>
-                                            <th>{{ number_format($achat->montant_total, 0, ',', ' ') }} FCFA</th>
+                                            <th>{{ format_price($achat->montant_total) }} FCFA</th>
                                         </tr>
                                     </tfoot>
                                 </table>
                             </div>
                         </div>
 
-                        <div class="card-footer text-right">
-                            <form action="{{ route('achat.destroy', $achat->id) }}" 
-                                  method="POST" 
-                                  style="display: inline-block;"
-                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet achat ? Le stock sera décrémenté pour chaque produit.');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="fas fa-trash"></i> Supprimer cet achat
-                                </button>
-                            </form>
-                        </div>
+                        @role('developpeur')
+                            <div class="card-footer text-right">
+                                <form action="{{ route('achat.destroy', $achat->id) }}" method="POST"
+                                    style="display: inline-block;"
+                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet achat ? Le stock sera décrémenté pour chaque produit.');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-trash"></i> Supprimer cet achat
+                                    </button>
+                                </form>
+                            </div>
+                        @endrole
                     </div>
                 </div>
             </div>

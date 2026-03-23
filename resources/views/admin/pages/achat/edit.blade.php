@@ -167,7 +167,7 @@
                                             <tr class="table-info">
                                                 <td colspan="3" class="text-right"><strong>MONTANT TOTAL:</strong></td>
                                                 <td colspan="2">
-                                                    <strong id="montantTotal">{{ number_format($achat->montant_total, 0, ',', ' ') }} FCFA</strong>
+                                                    <strong id="montantTotal">{{ format_price($achat->montant_total) }} FCFA</strong>
                                                     <input type="hidden" name="montant_total" id="montant_total_input" value="{{ $achat->montant_total }}">
                                                 </td>
                                             </tr>

@@ -31,6 +31,8 @@ class PermissionController extends Controller
         User::role(['developpeur', 'administrateur'])->get()->each(
             fn($u) => $u->givePermissionTo($permission)
         );
+
+        // Vider le cache des permissions pour que les changements soient pris en compte immédiatement
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         return back()->with('success', 'Permission « ' . $request->name . ' » créée avec succès.');

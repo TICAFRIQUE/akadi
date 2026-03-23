@@ -49,14 +49,14 @@
                                                 <td>
                                                     <span
                                                         class="badge {{ $productBase->stock > 0 ? 'badge-success' : 'badge-danger' }}">
-                                                        {{ number_format($productBase->stock, 2) }}
+                                                        {{ format_price($productBase->stock) }}
                                                         {{ $productBase->unite }}
                                                     </span>
                                                 </td>
-                                                <td>{{ number_format($productBase->stock_alerte, 2) }}
+                                                <td>{{ format_price($productBase->stock_alerte) }}
                                                     {{ $productBase->unite }}</td>
                                                 <td>{{ $productBase->unite }}</td>
-                                                <td>{{ number_format($productBase->prix_achat_moyen, 0, ',', ' ') }} FCFA
+                                                <td>{{ format_price($productBase->prix_achat_moyen) }} FCFA
                                                 </td>
                                                 <td>
                                                     @if ($productBase->actif)

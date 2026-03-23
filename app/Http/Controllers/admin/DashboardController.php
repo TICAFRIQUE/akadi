@@ -134,15 +134,22 @@ class DashboardController extends Controller
             ->sum('total');
 
         ####################### TOP CLIENT#####################
-        //meilleur client
-        $top_user_order = User::withCount('orders')
-            ->with('orders', fn($q) => $q->whereStatus('livrée'))
-            ->whereHas('roles', fn($q)=>$q->where('name' , 'client'))
-            ->having('orders_count', '>', 0)
-            ->orderBy('orders_count', 'DESC')->take(5)->get();
+        // Meilleurs clients sur les 3 derniers mois
+        $date3mois = Carbon::now()->subMonths(3)->startOfDay();
+        $top_user_order = User::withCount([
+            'orders as delivered_orders_count' => function ($q) use ($date3mois) {
+                $q->where('status', 'livrée')
+                    ->where('date_order', '>=', $date3mois);
+            }
+        ])
+            ->whereHas('roles', fn($q) => $q->where('name', 'client'))
+            ->having('delivered_orders_count', '>', 0)
+            ->orderByDesc('delivered_orders_count')
+            ->take(5)
+            ->get();
 
 
-            // dd($top_user_order->toArray());
+        // dd($top_user_order->toArray());
         ####################### TYPE DE CLIENT#####################
         //client fidele
         $client_fidele = User::withCount('orders')
@@ -171,7 +178,7 @@ class DashboardController extends Controller
             ->orderBy('orders_count', 'DESC')->take(5)->get();
 
 
-        // dd($top_product_order->toArray());
+        // dd($top_user_order->toArray());
         return view('admin.admin', compact(
 
             //user birthday
@@ -226,17 +233,19 @@ class DashboardController extends Controller
                 'orders',
                 fn($q) => $q->whereBetween('date_order', [$startDate, $endDate])->whereStatus('livrée')
             )
-                ->withCount('orders')
+                ->withCount(['orders' => fn($q) => $q->whereBetween('date_order', [$startDate, $endDate])->whereStatus('livrée')])
                 ->having('orders_count', '>', 0)
                 ->orderBy('orders_count', 'DESC')->get();
         } else {
-
-            $top_product_order = Product::withCount('orders')
-                ->with('orders', fn($q) => $q->whereStatus('livrée'))
+            // Par défaut : 3 derniers mois, status livrée
+            $date3mois = now()->subMonths(3)->startOfDay();
+            $top_product_order = Product::whereHas(
+                'orders',
+                fn($q) => $q->where('date_order', '>=', $date3mois)->whereStatus('livrée')
+            )
+                ->withCount(['orders' => fn($q) => $q->where('date_order', '>=', $date3mois)->whereStatus('livrée')])
                 ->having('orders_count', '>', 0)
                 ->orderBy('orders_count', 'DESC')->get();
-            // dd($top_product_order->toArray());
-
         }
 
 
@@ -411,8 +420,8 @@ class DashboardController extends Controller
 
     public function checkBalanceTwilio()
     {
-        $sid   = env('TWILIO_ACCOUNT_SID');   
-        $token = env('TWILIO_AUTH_TOKEN');    
+        $sid   = env('TWILIO_ACCOUNT_SID');
+        $token = env('TWILIO_AUTH_TOKEN');
 
         try {
             $client = new \GuzzleHttp\Client();

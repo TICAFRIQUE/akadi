@@ -281,7 +281,7 @@
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-6">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Top 5 Clients</h4>
+                        <h4>Top 5 Clients sur les 3 derniers mois</h4>
                     </div>
                     <div class="card-body">
                         <div class="card-body">
@@ -291,11 +291,13 @@
                                         <img alt="image" class="mr-3 rounded-circle" width="50"
                                             src="{{ asset('site/assets/img/custom/avatar.png') }}">
                                         <div class="media-body">
-                                            <div class="media-title"> {{ $item['name'] }} </div>
+                                           <a href="{{ route('client.detail', $item['id']) }}">
+                                             <div class="media-title"> {{ $item['name'] }} </div>
                                             <div class="text-job text-muted"> <i class="fa fa-phone"></i>
                                                 {{ $item['phone'] }} </div>
                                             <div class="text-job text-muted text-lowercase"> <i
                                                     class="fa fa-envelope"></i> {{ $item['email'] }} </div>
+                                           </a>
                                         </div>
                                         <div class="media-items">
                                             <div class="media-item">

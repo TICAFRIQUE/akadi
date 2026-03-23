@@ -10,9 +10,9 @@
                     <div class="card-header">
                         <h4>Rapport des Ventes</h4>
                         {{-- Bloc période ici --}}
-                        <button class="btn btn-primary mb-3 btnImprimer">
+                        {{-- <button class="btn btn-primary mb-3 btnImprimer">
                             <i class="far fa-print"></i> Imprimer le rapport
-                        </button>
+                        </button> --}}
 
                     </div>
 
@@ -28,9 +28,9 @@
                             <input type="date" name="date_fin" id="date_fin" class="form-control"
                                 value="{{ request('date_fin') }}">
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
+                        <div class="col-md-4 d-flex align-items-center gap-2 mt-4">
                             <button type="submit" class="btn btn-primary w-100 ">Filtrer</button>
-                            {{-- <a href="{{ route('rapport.vente') }}" class="btn btn-secondary">Reset</a> --}}
+                            <a href="{{ route('rapport.vente') }}" class="btn btn-secondary">Reset</a>
                         </div>
                     </form>
                     <div class="card-body divPrint">
@@ -247,7 +247,11 @@
 
                     </div>
 
-                    <button class="w-100 btnImprimer btn btn-primary"><i class="far fa-print "></i>Imprimer le rapport</button>
+                    <div class="d-flex justify-content-center flex-wrap gap-2 my-3">
+                        <button class="btnImprimer btn btn-primary mr-2"><i class="far fa-file-pdf"></i> Imprimer le rapport</button>
+                        {{-- <button id="btnExportPDF" class="btn btn-danger mr-2"><i class="far fa-file-pdf"></i> Exporter en PDF</button> --}}
+                        <button id="btnExportExcel" class="btn btn-success"><i class="far fa-file-excel"></i> Exporter en Excel</button>
+                    </div>
 
                 </div>
             </div>
@@ -255,6 +259,10 @@
     </div>
 
 
+    <!-- SheetJS (XLSX) doit être chargé AVANT tout script qui l'utilise -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         $(document).ready(function() {
             // Fonction pour imprimer le rapport
@@ -294,10 +302,47 @@
                 fenetreImpression.print();
             }
 
-            // Ajouter un bouton d'impression
-            $('.btnImprimer')
-                .on('click', imprimerRapport);
-            // .appendTo('.divPrint');
+            // Impression
+            $('.btnImprimer').on('click', imprimerRapport);
+
+            // Export PDF
+            // $('#btnExportPDF').on('click', function() {
+            //     var div = document.querySelector('.divPrint');
+            //     html2canvas(div).then(function(canvas) {
+            //         var imgData = canvas.toDataURL('image/png');
+            //         var pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+            //         var pageWidth = pdf.internal.pageSize.getWidth();
+            //         var pageHeight = pdf.internal.pageSize.getHeight();
+            //         var imgProps = pdf.getImageProperties(imgData);
+            //         var pdfWidth = pageWidth;
+            //         var pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            //         var position = 10;
+            //         if (pdfHeight > pageHeight) {
+            //             pdfHeight = pageHeight - 20;
+            //         }
+            //         pdf.addImage(imgData, 'PNG', 5, position, pdfWidth-10, pdfHeight);
+            //         pdf.save('rapport-vente.pdf');
+            //     });
+            // });
+
+            // Export Excel
+            $('#btnExportExcel').on('click', function() {
+                if (typeof XLSX === 'undefined') {
+                    alert('Erreur : la librairie XLSX (SheetJS) n\'est pas chargée.');
+                    return;
+                }
+                var tables = document.querySelectorAll('.divPrint table');
+                if (tables.length === 0) {
+                    alert('Aucune table à exporter !');
+                    return;
+                }
+                var wb = XLSX.utils.book_new();
+                tables.forEach(function(table, idx) {
+                    var ws = XLSX.utils.table_to_sheet(table);
+                    XLSX.utils.book_append_sheet(wb, ws, 'Tableau'+(idx+1));
+                });
+                XLSX.writeFile(wb, 'rapport-vente.xlsx');
+            });
         });
     </script>
 @endsection

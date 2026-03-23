@@ -41,7 +41,7 @@
                                                 <td><strong>{{ $sortie->numero }}</strong></td>
                                                 <td>{{ $sortie->date_sortie->format('d/m/Y') }}</td>
                                                 <td>{{ $sortie->productBase->nom }}</td>
-                                                <td>{{ number_format($sortie->quantite, 2) }}
+                                                <td>{{ format_price($sortie->quantite) }}
                                                     {{ $sortie->productBase->unite }}</td>
                                                 <td>
                                                     <span
@@ -55,16 +55,19 @@
                                                         class="btn btn-sm btn-info" data-toggle="tooltip" title="Voir">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <form action="{{ route('sortie-stock.destroy', $sortie) }}"
-                                                        method="POST" class="d-inline"
-                                                        onsubmit="return confirm('Êtes-vous sûr ? Le stock sera restauré.')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                            data-toggle="tooltip" title="Supprimer">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
+
+                                                    @role('developpeur')
+                                                        <form action="{{ route('sortie-stock.destroy', $sortie) }}"
+                                                            method="POST" class="d-inline"
+                                                            onsubmit="return confirm('Êtes-vous sûr ? Le stock sera restauré.')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                                data-toggle="tooltip" title="Supprimer">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endrole
                                                 </td>
                                             </tr>
                                         @endforeach

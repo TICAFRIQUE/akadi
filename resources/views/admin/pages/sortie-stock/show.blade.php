@@ -20,13 +20,19 @@
                     <div class="card-header">
                         <h4>Informations de la sortie</h4>
                         <div class="card-header-action">
-                            <form action="{{ route('sortie-stock.destroy', $sortieStock) }}" method="POST" class="d-inline" onsubmit="return confirm('Êtes-vous sûr ? Le stock sera restauré.')">
+                           @role('developpeur')
+                                 <form action="{{ route('sortie-stock.destroy', $sortieStock) }}" method="POST" class="d-inline" onsubmit="return confirm('Êtes-vous sûr ? Le stock sera restauré.')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">
                                     <i class="fas fa-trash"></i> Supprimer
                                 </button>
                             </form>
+                            @endrole
+                            <a href="{{ route('sortie-stock.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Retour
+                            </a>
+                            
                         </div>
                     </div>
                     <div class="card-body">
@@ -45,7 +51,7 @@
                             </tr>
                             <tr>
                                 <th>Quantité:</th>
-                                <td><strong class="text-danger">{{ number_format($sortieStock->quantite, 2) }} {{ $sortieStock->productBase->unite }}</strong></td>
+                                <td><strong class="text-danger">{{ format_price($sortieStock->quantite) }} {{ $sortieStock->productBase->unite }}</strong></td>
                             </tr>
                             <tr>
                                 <th>Motif:</th>
@@ -69,7 +75,7 @@
                             </tr>
                             <tr>
                                 <th>Stock actuel du produit:</th>
-                                <td class="text-info"><strong>{{ number_format($sortieStock->productBase->stock, 2) }} {{ $sortieStock->productBase->unite }}</strong></td>
+                                <td class="text-info"><strong>{{ format_price($sortieStock->productBase->stock) }} {{ $sortieStock->productBase->unite }}</strong></td>
                             </tr>
                         </table>
 

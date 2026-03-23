@@ -70,9 +70,9 @@
                                     @foreach ($alertes as $alerte)
                                         <li>
                                             <strong>{{ $alerte['produit'] }}</strong>:
-                                            Stock actuel {{ number_format($alerte['stock_actuel'], 2) }}
+                                            Stock actuel {{ format_price($alerte['stock_actuel']) }}
                                             {{ $alerte['unite'] }}
-                                            (Minimum: {{ number_format($alerte['stock_min'], 2) }} {{ $alerte['unite'] }})
+                                            (Minimum: {{ format_price($alerte['stock_min']) }} {{ $alerte['unite'] }})
                                         </li>
                                     @endforeach
                                 </ul>
@@ -119,19 +119,19 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td><strong>{{ $stock['produit'] }}</strong></td>
                                                 <td>{{ $stock['unite'] }}</td>
-                                                <td class="text-success">+{{ number_format($stock['stock_ajoute'], 2) }}
+                                                <td class="text-success">+{{ format_price($stock['stock_ajoute']) }}
                                                 </td>
-                                                <td class="text-danger">-{{ number_format($stock['stock_vendu'], 2) }}</td>
-                                                <td class="text-warning">-{{ number_format($stock['stock_sortie'], 2) }}
+                                                <td class="text-danger">-{{ format_price($stock['stock_vendu']) }}</td>
+                                                <td class="text-warning">-{{ format_price($stock['stock_sortie']) }}
                                                 </td>
-                                                <td><strong>{{ number_format($stock['stock_actuel'], 2) }}</strong></td>
-                                                <td class="text-muted">{{ number_format($stock['stock_min'], 2) }}</td>
-                                                <td class="text-muted">{{ number_format($stock['stock_max'], 2) }}</td>
+                                                <td><strong>{{ format_price($stock['stock_actuel']) }}</strong></td>
+                                                <td class="text-muted">{{ format_price($stock['stock_min']) }}</td>
+                                                <td class="text-muted">{{ format_price($stock['stock_max']) }}</td>
                                                 <td
                                                     class="{{ $stock['stock_disponible'] > 0 ? 'text-success' : 'text-danger' }}">
-                                                    <strong>{{ number_format($stock['stock_disponible'], 2) }}</strong>
+                                                    <strong>{{ format_price($stock['stock_disponible']) }}</strong>
                                                 </td>
-                                                <td>{{ number_format($stock['prix_achat_moyen'], 0, ',', ' ') }} FCFA</td>
+                                                <td>{{ format_price($stock['prix_achat_moyen']) }} FCFA</td>
                                                 <td>
                                                     @if ($stock['alerte'])
                                                         <span class="badge badge-danger">

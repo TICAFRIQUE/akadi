@@ -109,3 +109,11 @@ if (!function_exists('clearAppCache')) {
         Cache::forget('roles_without_client');
     }
 }
+
+
+if (! function_exists('format_price')) {
+    function format_price($value, $decimals = 2)
+    {
+        return rtrim(rtrim(number_format($value, $decimals, ',', ' '), '0'), ',');
+    }
+}
