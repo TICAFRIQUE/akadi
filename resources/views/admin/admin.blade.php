@@ -301,7 +301,7 @@
                                         </div>
                                         <div class="media-items">
                                             <div class="media-item">
-                                                <div class="media-value badge badge-info">{{ count($item['orders']) }}
+                                                <div class="media-value badge badge-info">{{ $item->delivered_orders_count }}
                                                 </div>
                                                 <div class="media-label">Commandes</div>
                                             </div>
