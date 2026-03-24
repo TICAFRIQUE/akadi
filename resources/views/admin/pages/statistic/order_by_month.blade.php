@@ -34,29 +34,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-
+{{-- 
 <script>
     $(document).ready(function() {
-        // without rangetime
-        //get years
-        // function getYears(startYear, endYear) {
-        //     let years = [];
-        //     for (let year = startYear; year <= endYear; year++) {
-        //         years.push(year);
-        //     }
-        //     return years;
-        // }
-
-        // let currentYear = new Date().getFullYear();
-        // let yearsList = getYears(currentYear - 1, currentYear);
-        // //put in my select option
-        // $('#year').append('<option disabled selected value>' + 'Choisir une année' + '</option>');
-
-        // $.each(yearsList, function(index, value) {
-        //     $('#year').append('<option value="' + value + '">' + value + '</option>');
-        // });
-
-
+      
 
         $.ajax({
             url: "{{ route('dashboard.order-period') }}",
@@ -180,6 +161,107 @@
 
 
 
+
+    });
+</script> --}}
+
+
+
+<script>
+    $(document).ready(function () {
+
+        var chart = null; // 👈 variable globale pour stocker le graphique
+
+        // Options de base du graphique
+        function getChartOptions(data) {
+            return {
+                series: [{
+                    name: 'Nombre de commandes',
+                    data: data.map(item => item.count)
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    toolbar: {
+                        show: true,
+                        tools: { download: false }
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        borderRadiusApplication: 'end',
+                        horizontal: false,
+                    }
+                },
+                dataLabels: { enabled: true },
+                xaxis: {
+                    categories: data.map(item => item.month_name + ' ' + item.year)
+                },
+                noData: {
+                    text: 'Aucune donnée disponible',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                }
+            };
+        }
+
+        // Fonction pour rendre ou mettre à jour le graphique
+        function renderChart(data) {
+            if (data.orders_by_month.length === 0) {
+                $('#chart_month').html(
+                    '<div class="alert alert-info">Aucune donnée trouvée pour la période choisie.</div>'
+                );
+                return;
+            }
+
+            if (chart) {
+                // 👇 Mettre à jour sans recréer
+                chart.updateOptions(getChartOptions(data.orders_by_month));
+            } else {
+                // 👇 Créer seulement la première fois
+                $('#chart_month').html(''); // nettoyer le conteneur
+                chart = new ApexCharts(document.querySelector("#chart_month"), getChartOptions(data.orders_by_month));
+                chart.render();
+            }
+        }
+
+        // Chargement initial
+        function loadData(year = null) {
+            $.ajax({
+                url: "{{ route('dashboard.order-period') }}",
+                method: 'GET',
+                data: year ? { year: year } : {},
+                beforeSend: function () {
+                    $('#chart_month').html('<div class="text-center py-4"><i class="fa fa-spinner fa-spin"></i> Chargement...</div>');
+                    chart = null; // 👈 reset pour recréer proprement après le message
+                },
+                success: function (data) {
+                    renderChart(data);
+                },
+                error: function () {
+                    $('#chart_month').html(
+                        '<div class="alert alert-danger">Erreur lors du chargement des données.</div>'
+                    );
+                }
+            });
+        }
+
+        // Appel initial sans filtre
+        loadData();
+
+        // Soumission du formulaire
+        $('#dateRangeYear').submit(function (e) {
+            e.preventDefault();
+            var year = $('#year').val();
+
+            if (!year) {
+                alert('Veuillez choisir une année.');
+                return;
+            }
+
+            loadData(year);
+        });
 
     });
 </script>

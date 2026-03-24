@@ -34,29 +34,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-
+{{-- 
 <script>
     $(document).ready(function() {
-        // without rangetime
-        //get years
-        // function getYears(startYear, endYear) {
-        //     let years = [];
-        //     for (let year = startYear; year <= endYear; year++) {
-        //         years.push(year);
-        //     }
-        //     return years;
-        // }
-
-        // let currentYear = new Date().getFullYear();
-        // let yearsList = getYears(currentYear - 1, currentYear);
-        // //put in my select option
-        // $('#year').append('<option disabled selected value>' + 'Choisir une année' + '</option>');
-
-        // $.each(yearsList, function(index, value) {
-        //     $('#year').append('<option value="' + value + '">' + value + '</option>');
-        // });
-
-
 
         $.ajax({
             url: "{{ route('dashboard.revenu-period') }}",
@@ -92,8 +72,8 @@
                     dataLabels: {
                         enabled: true,
                     },
-                    colors: [ '#FF7F33',
-                        
+                    colors: ['#FF7F33',
+
                     ],
 
                     xaxis: {
@@ -190,6 +170,118 @@
 
 
 
+
+    });
+</script> --}}
+
+
+<script>
+    $(document).ready(function () {
+
+        var chartRevenu = null; // 👈 variable globale
+
+        function getChartOptions(data) {
+            return {
+                series: [{
+                    name: 'Revenu',
+                    data: data.map(item => item.total)
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    toolbar: {
+                        show: true,
+                        tools: { download: false }
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        borderRadiusApplication: 'end',
+                        horizontal: false,
+                    }
+                },
+                dataLabels: { enabled: true },
+                colors: ['#FF7F33'],
+                yaxis: {
+                    labels: {
+                        formatter: function (val) {
+                            return val.toLocaleString('fr-FR') + ' FCFA'; // 👈 formatage montant
+                        }
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val.toLocaleString('fr-FR') + ' FCFA';
+                        }
+                    }
+                },
+                xaxis: {
+                    categories: data.map(item => item.month_name + ' ' + item.year)
+                },
+                noData: {
+                    text: 'Aucune donnée disponible',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                }
+            };
+        }
+
+        function renderChart(data) {
+            if (data.revenu_by_month.length === 0) {
+                $('#chart_revenu_month').html(
+                    '<div class="alert alert-info">Aucune donnée trouvée pour la période choisie.</div>'
+                );
+                return;
+            }
+
+            if (chartRevenu) {
+                // 👇 Mettre à jour sans recréer
+                chartRevenu.updateOptions(getChartOptions(data.revenu_by_month));
+            } else {
+                // 👇 Créer seulement la première fois
+                $('#chart_revenu_month').html('');
+                chartRevenu = new ApexCharts(document.querySelector("#chart_revenu_month"), getChartOptions(data.revenu_by_month));
+                chartRevenu.render();
+            }
+        }
+
+        function loadData(year = null) {
+            $.ajax({
+                url: "{{ route('dashboard.revenu-period') }}",
+                method: 'GET',
+                data: year ? { year: year } : {},
+                beforeSend: function () {
+                    $('#chart_revenu_month').html('<div class="text-center py-4"><i class="fa fa-spinner fa-spin"></i> Chargement...</div>');
+                    chartRevenu = null; // 👈 reset
+                },
+                success: function (data) {
+                    renderChart(data);
+                },
+                error: function () {
+                    $('#chart_revenu_month').html(
+                        '<div class="alert alert-danger">Erreur lors du chargement des données.</div>'
+                    );
+                }
+            });
+        }
+
+        // Chargement initial
+        loadData();
+
+        // Soumission du formulaire
+        $('#dateRangeRevenu').submit(function (e) {
+            e.preventDefault();
+            var year = $('#revenuYear').val();
+
+            if (!year) {
+                alert('Veuillez choisir une année.');
+                return;
+            }
+
+            loadData(year);
+        });
 
     });
 </script>

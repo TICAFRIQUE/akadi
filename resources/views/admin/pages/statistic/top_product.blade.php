@@ -14,7 +14,8 @@
             <input type="date" id="end_date" name="end_date">
             <button type="submit" class="bg-primary text-white border-0">Obtenir les données</button>
             <button type="button" id="resetDate" class="bg-secondary text-white border-0 ml-2">Réinitialiser</button>
-            <a href="{{ route('rapport.vente') }}" target="_blank" class="btn btn-info ml-2">Voir rapport de vente complet</a>
+            <a href="{{ route('rapport.vente') }}" target="_blank" class="btn btn-info ml-2">Voir rapport de vente
+                complet</a>
         </form>
         <div class="card-body">
             <div class="">
@@ -33,7 +34,7 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 
-<script>
+{{-- <script>
     $(document).ready(function() {
         // Bouton reset
         $('#resetDate').on('click', function() {
@@ -191,5 +192,131 @@
                 }
             });
         });
+    });
+</script> --}}
+
+
+<script>
+    $(document).ready(function() {
+
+        var chartProduct = null; // 👈 variable globale
+
+        function getChartOptions(data) {
+            return {
+                series: [{
+                    name: 'Nombre de commandes',
+                    data: data.map(item => item.orders_count)
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    toolbar: {
+                        show: true,
+                        tools: {
+                            download: false
+                        }
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        borderRadiusApplication: 'end',
+                        horizontal: true,
+                    }
+                },
+                dataLabels: {
+                    enabled: true
+                },
+                colors: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#A133FF', '#FF7F33', '#33FFCC', '#FF3333',
+                    '#33FF66'
+                ],
+                xaxis: {
+                    categories: data.map(item => item.title)
+                },
+                noData: {
+                    text: 'Aucune donnée disponible',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                }
+            };
+        }
+
+        function renderChart(data) {
+            if (data.top_product_order.length === 0) {
+                $('#chart').html(
+                    '<div class="alert alert-info">Aucune donnée trouvée pour la période choisie.</div>'
+                );
+                return;
+            }
+
+            if (chartProduct) {
+                chartProduct.updateOptions(getChartOptions(data.top_product_order));
+            } else {
+                $('#chart').html('');
+                chartProduct = new ApexCharts(document.querySelector("#chart"), getChartOptions(data
+                    .top_product_order));
+                chartProduct.render();
+            }
+        }
+
+        function loadData(startDate = null, endDate = null) {
+            var params = {};
+            if (startDate && endDate) {
+                params = {
+                    start_date: startDate,
+                    end_date: endDate
+                };
+            }
+
+            $.ajax({
+                url: "{{ route('dashboard.product-statistic') }}",
+                method: 'GET',
+                data: params,
+                beforeSend: function() {
+                    $('#chart').html(
+                        '<div class="text-center py-4"><i class="fa fa-spinner fa-spin"></i> Chargement...</div>'
+                        );
+                    chartProduct = null; // 👈 reset
+                },
+                success: function(data) {
+                    renderChart(data);
+                },
+                error: function() {
+                    $('#chart').html(
+                        '<div class="alert alert-danger">Erreur lors du chargement des données.</div>'
+                    );
+                }
+            });
+        }
+
+        // Chargement initial (3 derniers mois)
+        loadData();
+
+        // Soumission du formulaire avec dates
+        $('#dateRangeForm').submit(function(e) {
+            e.preventDefault();
+            var startDate = $('#start_date').val();
+            var endDate = $('#end_date').val();
+
+            if (!startDate || !endDate) {
+                alert('Veuillez choisir une date de début et une date de fin.');
+                return;
+            }
+
+            if (startDate > endDate) {
+                alert('La date de début ne peut pas être supérieure à la date de fin.');
+                return;
+            }
+
+            loadData(startDate, endDate);
+        });
+
+        // Bouton reset
+        $('#resetDate').on('click', function() {
+            $('#start_date').val('');
+            $('#end_date').val('');
+            loadData(); // 👈 recharge avec les 3 derniers mois
+        });
+
     });
 </script>

@@ -218,130 +218,232 @@ class DashboardController extends Controller
     }
 
 
+    //statistic les product les plus commandés sur une période donnée (3 derniers mois par défaut) et le nombre de produits par catégorie
+    // public function product_statistic(Request $request)
+    // {
+    //     $startDate = $request->input('start_date');
+    //     $endDate = $request->input('end_date');
 
+    //     //meilleur produit
+
+    //     //if $startDate and endDate with eloquent
+
+    //     if ($startDate && $endDate) {
+    //         $top_product_order = Product::whereHas(
+    //             'orders',
+    //             fn($q) => $q->whereBetween('date_order', [$startDate, $endDate])->whereStatus('livrée')
+    //         )
+    //             ->withCount(['orders' => fn($q) => $q->whereBetween('date_order', [$startDate, $endDate])->whereStatus('livrée')])
+    //             ->having('orders_count', '>', 0)
+    //             ->orderBy('orders_count', 'DESC')->get();
+    //     } else {
+    //         // Par défaut : 3 derniers mois, status livrée
+    //         $date3mois = now()->subMonths(3)->startOfDay();
+    //         $top_product_order = Product::whereHas(
+    //             'orders',
+    //             fn($q) => $q->where('date_order', '>=', $date3mois)->whereStatus('livrée')
+    //         )
+    //             ->withCount(['orders' => fn($q) => $q->where('date_order', '>=', $date3mois)->whereStatus('livrée')])
+    //             ->having('orders_count', '>', 0)
+    //             ->orderBy('orders_count', 'DESC')->get();
+    //     }
+
+
+    //     //Number of products per category
+    //     $product_per_category = Category::withCount('products')->orderBy('products_count', 'DESC')->get();
+
+
+
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'top_product_order' => $top_product_order,
+    //         'product_per_category' => $product_per_category,
+
+    //     ]);
+    // }
+
+    //version optimisée de product_statistic
     public function product_statistic(Request $request)
     {
         $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $endDate   = $request->input('end_date');
 
-        //meilleur produit
-
-        //if $startDate and endDate with eloquent
-
+        // Définir la plage de dates
         if ($startDate && $endDate) {
-            $top_product_order = Product::whereHas(
-                'orders',
-                fn($q) => $q->whereBetween('date_order', [$startDate, $endDate])->whereStatus('livrée')
-            )
-                ->withCount(['orders' => fn($q) => $q->whereBetween('date_order', [$startDate, $endDate])->whereStatus('livrée')])
-                ->having('orders_count', '>', 0)
-                ->orderBy('orders_count', 'DESC')->get();
+            $dateFilter = fn($q) => $q->whereBetween('date_order', [$startDate, $endDate])
+                ->whereStatus('livrée');
         } else {
-            // Par défaut : 3 derniers mois, status livrée
-            $date3mois = now()->subMonths(3)->startOfDay();
-            $top_product_order = Product::whereHas(
-                'orders',
-                fn($q) => $q->where('date_order', '>=', $date3mois)->whereStatus('livrée')
-            )
-                ->withCount(['orders' => fn($q) => $q->where('date_order', '>=', $date3mois)->whereStatus('livrée')])
-                ->having('orders_count', '>', 0)
-                ->orderBy('orders_count', 'DESC')->get();
+            $date3mois  = now()->subMonths(3)->startOfDay();
+            $dateFilter = fn($q) => $q->where('date_order', '>=', $date3mois)
+                ->whereStatus('livrée');
         }
 
+        $top_product_order = Product::whereHas('orders', $dateFilter)
+            ->withCount(['orders' => $dateFilter])
+            ->having('orders_count', '>', 0)
+            ->orderBy('orders_count', 'DESC')
+            ->get();
 
-        //Number of products per category
-        $product_per_category = Category::withCount('products')->orderBy('products_count', 'DESC')->get();
-
-
+        $product_per_category = Category::withCount('products')
+            ->orderBy('products_count', 'DESC')
+            ->get();
 
         return response()->json([
-            'status' => 'success',
-            'top_product_order' => $top_product_order,
+            'status'               => 'success',
+            'top_product_order'    => $top_product_order,
             'product_per_category' => $product_per_category,
-
         ]);
     }
 
+    //statistic les commandes par période (jour, semaine, mois, année) et le chiffre d'affaire par période (jour, semaine, mois, année)
+
+    // public function order_period(Request $request)
+    // {
+    //     // count order by years
+    //     $orders_by_year = Order::selectRaw('YEAR(date_order) as year, COUNT(*) as count')
+    //         ->whereStatus('livrée')
+    //         ->groupBy('year')
+    //         ->orderBy('year', 'ASC')
+    //         ->get();
+
+
+    //     // count order by month
+    //     $year = $request->input('year');
+
+    //     if ($year) {
+    //         $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
+    //             ->whereStatus('livrée')
+    //             ->whereYear('date_order', $year)
+    //             ->groupBy('year', 'month', 'month_name')
+    //             ->orderBy('year', 'ASC')
+    //             ->get();
+    //     } else {
+    //         $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
+    //             ->whereStatus('livrée')
+    //             ->groupBy('year', 'month', 'month_name')
+    //             ->orderBy('year', 'ASC')
+    //             ->get();
+    //     }
+
+
+
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'orders_by_year' => $orders_by_year,
+    //         'orders_by_month' => $orders_by_month,
+
+    //     ]);
+    // }
+
+    //version optimisée de order_period
     public function order_period(Request $request)
     {
-        // count order by years
+        $year = $request->input('year');
+
+        $query = Order::selectRaw('
+            YEAR(date_order) as year, 
+            MONTH(date_order) as month, 
+            DATE_FORMAT(date_order, "%M") as month_name, 
+            COUNT(*) as count
+        ')
+            ->whereStatus('livrée')
+            ->groupBy('year', 'month', 'month_name')
+            ->orderBy('year', 'ASC')
+            ->orderBy('month', 'ASC'); // 👈 tri par mois aussi
+
+        if ($year) {
+            $query->whereYear('date_order', $year);
+        }
+
+        $orders_by_month = $query->get();
+
         $orders_by_year = Order::selectRaw('YEAR(date_order) as year, COUNT(*) as count')
             ->whereStatus('livrée')
             ->groupBy('year')
             ->orderBy('year', 'ASC')
             ->get();
 
-
-        // count order by month
-        $year = $request->input('year');
-
-        if ($year) {
-            $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
-                ->whereStatus('livrée')
-                ->whereYear('date_order', $year)
-                ->groupBy('year', 'month', 'month_name')
-                ->orderBy('year', 'ASC')
-                ->get();
-        } else {
-            $orders_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, COUNT(*) as count')
-                ->whereStatus('livrée')
-                ->groupBy('year', 'month', 'month_name')
-                ->orderBy('year', 'ASC')
-                ->get();
-        }
-
-
-
         return response()->json([
-            'status' => 'success',
-            'orders_by_year' => $orders_by_year,
+            'status'          => 'success',
+            'orders_by_year'  => $orders_by_year,
             'orders_by_month' => $orders_by_month,
-
         ]);
     }
 
-
     //Chiffre d'affaire
 
+    // public function revenu_period(Request $request)
+    // {
+    //     // count order by years
+    //     $revenu_by_year = Order::selectRaw('YEAR(date_order) as year, SUM(total) as total')
+    //         ->whereStatus('livrée')
+    //         ->groupBy('year')
+    //         ->orderBy('year', 'ASC')
+    //         ->get();
+
+
+    //     // count order by month
+    //     $year = $request->input('year');
+
+    //     if ($year) {
+    //         $revenu_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, SUM(total) as total')
+    //             ->whereStatus('livrée')
+    //             ->whereYear('date_order', $year)
+    //             ->groupBy('year', 'month', 'month_name')
+    //             ->orderBy('year', 'ASC')
+    //             ->get();
+    //     } else {
+    //         $revenu_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, SUM(total) as total')
+    //             ->whereStatus('livrée')
+    //             ->groupBy('year', 'month', 'month_name')
+    //             ->orderBy('year', 'ASC')
+    //             ->get();
+    //     }
+
+
+
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'revenu_by_year' => $revenu_by_year,
+    //         'revenu_by_month' => $revenu_by_month,
+
+    //     ]);
+    // }
+
+    //version optimisée de revenu_period
     public function revenu_period(Request $request)
     {
-        // count order by years
+        $year = $request->input('year');
+
+        $query = Order::selectRaw('
+            YEAR(date_order) as year, 
+            MONTH(date_order) as month, 
+            DATE_FORMAT(date_order, "%M") as month_name, 
+            SUM(total) as total
+        ')
+            ->whereStatus('livrée')
+            ->groupBy('year', 'month', 'month_name')
+            ->orderBy('year', 'ASC')
+            ->orderBy('month', 'ASC'); // 👈 tri par mois
+
+        if ($year) {
+            $query->whereYear('date_order', $year);
+        }
+
+        $revenu_by_month = $query->get();
+
         $revenu_by_year = Order::selectRaw('YEAR(date_order) as year, SUM(total) as total')
             ->whereStatus('livrée')
             ->groupBy('year')
             ->orderBy('year', 'ASC')
             ->get();
 
-
-        // count order by month
-        $year = $request->input('year');
-
-        if ($year) {
-            $revenu_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, SUM(total) as total')
-                ->whereStatus('livrée')
-                ->whereYear('date_order', $year)
-                ->groupBy('year', 'month', 'month_name')
-                ->orderBy('year', 'ASC')
-                ->get();
-        } else {
-            $revenu_by_month = Order::selectRaw('YEAR(date_order) as year, MONTH(date_order) as month, DATE_FORMAT(date_order, "%M") as month_name, SUM(total) as total')
-                ->whereStatus('livrée')
-                ->groupBy('year', 'month', 'month_name')
-                ->orderBy('year', 'ASC')
-                ->get();
-        }
-
-
-
         return response()->json([
-            'status' => 'success',
+            'status'         => 'success',
             'revenu_by_year' => $revenu_by_year,
             'revenu_by_month' => $revenu_by_month,
-
         ]);
     }
-
-
 
 
     /**

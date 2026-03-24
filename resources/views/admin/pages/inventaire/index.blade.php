@@ -9,11 +9,11 @@
                 <div class="card-header">
                     <h4></h4>
                     <div class="card-header-action">
-                        <a href="{{ route('achat.rapport') }}" class="btn btn-info mr-2">
+                        {{-- <a href="{{ route('inventaire.rapport') }}" class="btn btn-info mr-2">
                             <i class="fas fa-chart-bar"></i> Rapport
-                        </a>
-                        <a href="{{ route('achat.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Nouvel achat
+                        </a> --}}
+                        <a href="{{ route('inventaire.create') }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Nouvel inventaire
                         </a>
                     </div>
                 </div>
