@@ -51,16 +51,19 @@
                                                                 data-target="#myModalPosition{{ $item['id'] }}"><i
                                                                     class="fas fa-eye"></i> Position</a> --}}
 
+                                                            @if ($item->slug != 'achats-stock')
+                                                                <a href="{{ route('libelle-depense.edit', $item->id) }}"
+                                                                    class="dropdown-item has-icon"><i
+                                                                        class="far fa-edit"></i>
+                                                                    Modifier</a>
 
-                                                            <a href="{{ route('libelle-depense.edit', $item->id) }}"
-                                                                class="dropdown-item has-icon"><i class="far fa-edit"></i>
-                                                                Modifier</a>
 
 
-
-                                                            <a href="#" role="button" data-id="{{ $item['id'] }}"
-                                                                class="dropdown-item has-icon text-danger delete"><i
-                                                                    class="far fa-trash-alt"></i>Delete</a>
+                                                                <a href="#" role="button"
+                                                                    data-id="{{ $item['id'] }}"
+                                                                    class="dropdown-item has-icon text-danger delete"><i
+                                                                        class="far fa-trash-alt"></i>Delete</a>
+                                                            @endif
 
                                                         </div>
                                                     </div>

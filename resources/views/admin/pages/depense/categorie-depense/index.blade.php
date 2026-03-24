@@ -52,15 +52,19 @@
                                                                     class="fas fa-eye"></i> Position</a> --}}
 
 
-                                                            <a href="{{ route('categorie-depense.edit', $item->id) }}"
-                                                                class="dropdown-item has-icon"><i class="far fa-edit"></i>
-                                                                Modifier</a>
+                                                            @if ($item->slug != 'achats-stock')
+                                                                <a href="{{ route('categorie-depense.edit', $item->id) }}"
+                                                                    class="dropdown-item has-icon"><i
+                                                                        class="far fa-edit"></i>
+                                                                    Modifier</a>
 
 
 
-                                                            <a href="#" role="button" data-id="{{ $item['id'] }}"
-                                                                class="dropdown-item has-icon text-danger delete"><i
-                                                                    class="far fa-trash-alt"></i>Delete</a>
+                                                                <a href="#" role="button"
+                                                                    data-id="{{ $item['id'] }}"
+                                                                    class="dropdown-item has-icon text-danger delete"><i
+                                                                        class="far fa-trash-alt"></i>Delete</a>
+                                                            @endif
 
                                                         </div>
                                                     </div>
