@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
+use App\Observers\AchatObserver;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 
 class Order extends Model
 {
@@ -168,4 +169,9 @@ class Order extends Model
     {
         return $this->user?->phone ?? $this->client_phone ?? '';
     }
+
+
+
+
+
 }

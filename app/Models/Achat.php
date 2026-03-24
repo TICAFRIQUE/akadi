@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\AchatObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -96,5 +97,14 @@ class Achat extends Model
         $this->montant_total = $this->lignes()->sum('montant_ligne');
         $this->save();
         return $this->montant_total;
+    }
+
+
+
+
+        // ─── Méthodes ───────────────────────────────────────────────────────────────OBSERVERS
+    protected static function booted()
+    {
+        static::observe(AchatObserver::class);
     }
 }

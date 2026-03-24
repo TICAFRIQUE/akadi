@@ -43,54 +43,114 @@ class AchatController extends Controller
     /**
      * Enregistrer un nouveau achat
      */
+    // public function store(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'date_achat' => 'required|date',
+    //         'fournisseur_id' => 'nullable|exists:fournisseurs,id',
+    //         'fournisseur' => 'nullable|string|max:255',
+    //         'notes' => 'nullable|string',
+    //         'lignes' => 'required|array|min:1',
+    //         'lignes.*.product_base_id' => 'required|exists:product_bases,id',
+    //         'lignes.*.quantite' => 'required|numeric|min:0.01',
+    //         'lignes.*.prix_unitaire' => 'required|numeric|min:0',
+    //         'lignes.*.notes' => 'nullable|string',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return redirect()->back()
+    //             ->withErrors($validator)
+    //             ->withInput();
+    //     }
+
+    //     DB::beginTransaction();
+    //     try {
+    //         // Créer l'achat
+    //         $achat = Achat::create([
+    //             'numero' => $request->numero ?? 'ACH-' . date('YmdHis') . '-' . mt_rand(100, 999),
+    //             'date_achat' => $request->date_achat,
+    //             'montant_total' => 0, // Sera calculé après
+    //             'fournisseur_id' => $request->fournisseur_id,
+    //             'fournisseur' => $request->fournisseur,
+    //             'notes' => $request->notes,
+    //             'user_id' => Auth::id(),
+    //         ]);
+
+    //         // Créer les lignes d'achat
+    //         $montantTotal = 0;
+    //         foreach ($request->lignes as $ligneData) {
+    //             $ligne = $achat->lignes()->create([
+    //                 'product_base_id' => $ligneData['product_base_id'],
+    //                 'quantite' => $ligneData['quantite'],
+    //                 'prix_unitaire' => $ligneData['prix_unitaire'],
+    //                 'notes' => $ligneData['notes'] ?? null,
+    //             ]);
+    //             $montantTotal += $ligne->montant_ligne;
+    //         }
+
+    //         // Mettre à jour le montant total
+    //         $achat->update(['montant_total' => $montantTotal]);
+
+    //         DB::commit();
+
+    //         return redirect()->route('achat.index')
+    //             ->with('success', 'Achat enregistré avec succès. Stocks mis à jour.');
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return redirect()->back()
+    //             ->with('error', 'Erreur lors de l\'enregistrement: ' . $e->getMessage())
+    //             ->withInput();
+    //     }
+    // }
+
+// version optimisée de store() avec calcul du montant total avant la création de l'achat pour éviter un update() supplémentaire
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'date_achat' => 'required|date',
-            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-            'fournisseur' => 'nullable|string|max:255',
-            'notes' => 'nullable|string',
-            'lignes' => 'required|array|min:1',
-            'lignes.*.product_base_id' => 'required|exists:product_bases,id',
-            'lignes.*.quantite' => 'required|numeric|min:0.01',
-            'lignes.*.prix_unitaire' => 'required|numeric|min:0',
-            'lignes.*.notes' => 'nullable|string',
+            'date_achat'                   => 'required|date',
+            'fournisseur_id'               => 'nullable|exists:fournisseurs,id',
+            'fournisseur'                  => 'nullable|string|max:255',
+            'notes'                        => 'nullable|string',
+            'lignes'                       => 'required|array|min:1',
+            'lignes.*.product_base_id'     => 'required|exists:product_bases,id',
+            'lignes.*.quantite'            => 'required|numeric|min:0.01',
+            'lignes.*.prix_unitaire'       => 'required|numeric|min:0',
+            'lignes.*.notes'               => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
         DB::beginTransaction();
         try {
-            // Créer l'achat
+            // 👇 Calculer le montant total AVANT de créer l'achat
+            $montantTotal = collect($request->lignes)->sum(function ($ligne) {
+                return $ligne['quantite'] * $ligne['prix_unitaire'];
+            });
+
+            // Créer l'achat avec le bon montant dès le départ
             $achat = Achat::create([
-                'numero' => $request->numero ?? 'ACH-' . date('YmdHis') . '-' . mt_rand(100, 999),
-                'date_achat' => $request->date_achat,
-                'montant_total' => 0, // Sera calculé après
+                'numero'         => $request->numero ?? 'ACH-' . date('YmdHis') . '-' . mt_rand(100, 999),
+                'date_achat'     => $request->date_achat,
+                'montant_total'  => $montantTotal, // 👈 correct dès la création
                 'fournisseur_id' => $request->fournisseur_id,
-                'fournisseur' => $request->fournisseur,
-                'notes' => $request->notes,
-                'user_id' => Auth::id(),
+                'fournisseur'    => $request->fournisseur,
+                'notes'          => $request->notes,
+                'user_id'        => Auth::id(),
             ]);
 
             // Créer les lignes d'achat
-            $montantTotal = 0;
             foreach ($request->lignes as $ligneData) {
-                $ligne = $achat->lignes()->create([
+                $achat->lignes()->create([
                     'product_base_id' => $ligneData['product_base_id'],
-                    'quantite' => $ligneData['quantite'],
-                    'prix_unitaire' => $ligneData['prix_unitaire'],
-                    'notes' => $ligneData['notes'] ?? null,
+                    'quantite'        => $ligneData['quantite'],
+                    'prix_unitaire'   => $ligneData['prix_unitaire'],
+                    'notes'           => $ligneData['notes'] ?? null,
                 ]);
-                $montantTotal += $ligne->montant_ligne;
             }
 
-            // Mettre à jour le montant total
-            $achat->update(['montant_total' => $montantTotal]);
-
+            // 👇 Plus besoin du second update()
             DB::commit();
 
             return redirect()->route('achat.index')
