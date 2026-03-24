@@ -65,7 +65,6 @@
         $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
 
-
             var titre =
                 'Liste des Inventaires';
             $('#tableExport').DataTable({

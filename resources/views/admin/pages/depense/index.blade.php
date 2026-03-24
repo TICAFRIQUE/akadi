@@ -112,7 +112,7 @@
 
                             </form>
                             <div class="table-responsive">
-                                <table class="table table-striped" id="table-1">
+                                <table class="table table-striped" id="tableExport">
                                     <thead>
                                         <tr>
                                         <tr>
@@ -172,8 +172,62 @@
 
 
 
-    <script>
+    {{-- <script>
         $(document).ready(function() {
+
+             $('[data-toggle="tooltip"]').tooltip();
+
+            var titre =
+                'Liste des Dépenses';
+            $('#tableExport').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/French.json"
+                },
+                "order": [
+                    [2, "desc"]
+                ],
+
+                dom: 'Bfrtip',
+                buttons: [{
+                        extend: 'copy',
+                        title: titre,
+                        exportOptions: {
+                            columns: ':not(:last-child)' // Exclure la colonne des actions
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        title: titre,
+                        exportOptions: {
+                            columns: ':not(:last-child)' // Exclure la colonne des actions
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        title: titre,
+                        exportOptions: {
+                            columns: ':not(:last-child)' // Exclure la colonne des actions
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        title: titre,
+                        exportOptions: {
+                            columns: ':not(:last-child)' // Exclure la colonne des actions
+                        }
+
+                    },
+                    {
+                        extend: 'print',
+                        title: titre,
+                        exportOptions: {
+                            columns: ':not(:last-child)' // Exclure la colonne des actions
+                        }
+
+
+                    }
+                ]
+            });
 
             // Si on choisit une date → vider la période
             $('#start_date, #date_debut, #date_fin').on('change', function() {
@@ -216,6 +270,150 @@
                                         toast: true,
                                         icon: 'success',
                                         title: 'La categorie a été supprimée avec succès!',
+                                        animation: false,
+                                        position: 'top',
+                                        background: '#3da108e0',
+                                        iconColor: '#fff',
+                                        color: '#fff',
+                                        showConfirmButton: false,
+                                        timer: 1000,
+                                        timerProgressBar: true,
+                                    });
+                                    setTimeout(function() {
+                                        window.location.href =
+                                            "{{ route('depense.index') }}";
+                                    }, 500);
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script> --}}
+
+    @php
+        $periodes = [
+            'jour' => "Aujourd'hui",
+            'semaine' => 'Cette semaine',
+            'mois' => 'Ce mois',
+            'annee' => 'Cette année',
+        ];
+
+        $titre = 'Liste des Dépenses — ';
+
+        if (request('date_debut') || request('date_fin')) {
+            $titre .= request('date_debut')
+                ? 'Du ' . \Carbon\Carbon::parse(request('date_debut'))->format('d/m/Y')
+                : '';
+            $titre .= request('date_fin') ? ' Au ' . \Carbon\Carbon::parse(request('date_fin'))->format('d/m/Y') : '';
+        } elseif (request('periode')) {
+            $titre .= $periodes[request('periode')] ?? request('periode');
+        } else {
+            $titre .= 'Mois en cours (' . \Carbon\Carbon::now()->locale('fr')->translatedFormat('F Y') . ')';
+        }
+
+        if (request('categorie')) {
+            $titre .= ' — ' . ucfirst(App\Models\CategorieDepense::find(request('categorie'))->libelle ?? '');
+        }
+    @endphp
+
+    <script>
+        $(document).ready(function() {
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            var titre = '{{ addslashes($titre) }}'; // 👈 titre dynamique depuis Blade
+
+            $('#tableExport').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/French.json"
+                },
+                "order": [
+                    [2, "desc"]
+                ],
+                dom: 'Bfrtip',
+                buttons: [{
+                        extend: 'copy',
+                        title: titre,
+                        exportOptions: {
+                            columns: ':not(:last-child)'
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        title: titre,
+                        exportOptions: {
+                            columns: ':not(:last-child)'
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        title: titre,
+                        exportOptions: {
+                            columns: ':not(:last-child)'
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        title: titre,
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        exportOptions: {
+                            columns: ':not(:last-child)'
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        title: titre,
+                        exportOptions: {
+                            columns: ':not(:last-child)'
+                        }
+                    }
+                ]
+            });
+
+            // Si on choisit une date → vider la période
+            $('#date_debut, #date_fin').on('change', function() {
+                if ($(this).val()) {
+                    $('#periode').val('').trigger('change');
+                }
+            });
+
+            // Si on choisit une période → vider les dates
+            $('#periode').on('change', function() {
+                if ($(this).val()) {
+                    $('#date_debut').val('');
+                    $('#date_fin').val('');
+                }
+            });
+
+            // Confirmation de suppression & suppression via AJAX
+            $('.delete').on("click", function(e) {
+                e.preventDefault();
+                var Id = $(this).attr('data-id');
+                swal({
+                    title: "Suppression",
+                    text: "Veuillez confirmer la suppression",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Confirmer",
+                    cancelButtonText: "Annuler",
+                }).then((result) => {
+                    if (result) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/admin/depense/destroy/" + Id,
+                            dataType: "json",
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.status === 200) {
+                                    Swal.fire({
+                                        toast: true,
+                                        icon: 'success',
+                                        title: 'La dépense a été supprimée avec succès!',
                                         animation: false,
                                         position: 'top',
                                         background: '#3da108e0',
