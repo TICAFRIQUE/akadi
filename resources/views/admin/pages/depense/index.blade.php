@@ -105,7 +105,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-2 mt-4">
-                                        <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+                                        <button type="submit" class="btn btn-primary w-50 ">Filtrer</button>
+                                        <a href="{{ route('depense.index') }}" class="btn btn-secondary"> <i class="fas fa-sync-alt"></i></a>   
                                     </div>
 
                                 </div>
