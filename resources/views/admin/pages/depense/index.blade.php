@@ -15,35 +15,42 @@
                     </div>
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
-                            <h4>Depenses
-
-                                @if (request()->has('categorie') && request('categorie') != null)
-                                    -
-                                    <strong>{{ ucfirst(App\Models\CategorieDepense::find(request('categorie'))->libelle) }}</strong>
-                                @endif
-
-                                @if (request()->has('periode') && request('periode') != null)
-                                    -
-                                    <strong>{{ request('periode') }}</strong>
-                                @endif
-
+                            <h4>Dépenses —
                                 @if (request('date_debut') || request('date_fin'))
-                                    du
+                                    {{-- Plage de dates --}}
                                     @if (request('date_debut'))
-                                        {{ \Carbon\Carbon::parse(request('date_debut'))->format('d/m/Y') }}
+                                        du {{ \Carbon\Carbon::parse(request('date_debut'))->format('d/m/Y') }}
                                     @endif
                                     @if (request('date_fin'))
                                         au {{ \Carbon\Carbon::parse(request('date_fin'))->format('d/m/Y') }}
                                     @endif
+                                @elseif (request('periode'))
+                                    {{-- Période sélectionnée --}}
+                                    @php
+                                        $periodes = [
+                                            'jour' => 'Aujourd\'hui',
+                                            'semaine' => 'Cette semaine',
+                                            'mois' => 'Ce mois',
+                                            'annee' => 'Cette année',
+                                        ];
+                                    @endphp
+                                    <strong>{{ $periodes[request('periode')] ?? request('periode') }}</strong>
+                                @else
+                                    {{-- Par défaut : mois en cours --}}
+                                    <strong>Mois en cours — {{ \Carbon\Carbon::now()->translatedFormat('F Y') }}</strong>
+                                @endif
+
+                                {{-- Catégorie si sélectionnée --}}
+                                @if (request('categorie'))
+                                    —
+                                    <strong>{{ ucfirst(App\Models\CategorieDepense::find(request('categorie'))->libelle) }}</strong>
                                 @endif
                             </h4>
-                            <a href="{{route('depense.create')}}"  class="btn btn-primary">Ajouter
-                                une depense</a>
 
-
-
+                            <a href="{{ route('depense.create') }}" class="btn btn-primary">
+                                Ajouter une dépense
+                            </a>
                         </div>
-
 
 
                         <div class="card-body">
@@ -64,6 +71,8 @@
                                             </select>
                                         </div>
                                     </div>
+
+
 
                                     <div class="col-md-3">
                                         <div class="mb-3">
@@ -88,7 +97,7 @@
                                                 <option value="">Toutes les periodes</option>
                                                 @foreach (['jour' => 'Jour', 'semaine' => 'Semaine', 'mois' => 'Mois', 'annee' => 'Année'] as $key => $value)
                                                     <option value="{{ $key }}"
-                                                        {{ request('periode') == $key ? 'selected' : '' }}>
+                                                        {{ request('periode', 'mois') == $key ? 'selected' : '' }}>
                                                         {{ $value }}
                                                     </option>
                                                 @endforeach
@@ -161,8 +170,26 @@
         </div>
     </section>
 
+
+
     <script>
         $(document).ready(function() {
+
+            // Si on choisit une date → vider la période
+            $('#start_date, #date_debut, #date_fin').on('change', function() {
+                if ($(this).val()) {
+                    $('#periode').val('').trigger('change');
+                }
+            });
+
+            // Si on choisit une période → vider les dates
+            $('#periode').on('change', function() {
+                if ($(this).val()) {
+                    $('#date_debut').val('');
+                    $('#date_fin').val('');
+                }
+            });
+            // Confirmation de suppression & suppression via AJAX
             $('.delete').on("click", function(e) {
                 e.preventDefault();
                 var Id = $(this).attr('data-id');
@@ -210,4 +237,5 @@
             });
         });
     </script>
+
 @endsection
