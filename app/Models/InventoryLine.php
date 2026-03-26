@@ -11,6 +11,8 @@ class InventoryLine extends Model
     protected $fillable = [
         'inventaire_id',
         'product_base_id',
+        'date_debut',
+        'date_fin',
         'stock_dernier_inventaire',
         'stock_ajoute',
         'stock_total',

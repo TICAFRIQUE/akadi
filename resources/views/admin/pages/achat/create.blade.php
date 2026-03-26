@@ -22,12 +22,10 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="date_achat">Date d'achat <span class="text-danger">*</span></label>
-                                            <input type="date" 
-                                                   class="form-control @error('date_achat') is-invalid @enderror" 
-                                                   id="date_achat" 
-                                                   name="date_achat" 
-                                                   value="{{ old('date_achat', date('Y-m-d')) }}" 
-                                                   required>
+                                            <input type="date"
+                                                class="form-control @error('date_achat') is-invalid @enderror"
+                                                id="date_achat" name="date_achat"
+                                                value="{{ old('date_achat', date('Y-m-d')) }}" required>
                                             @error('date_achat')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -37,12 +35,12 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="fournisseur_id">Fournisseur</label>
-                                            <select class="form-control @error('fournisseur_id') is-invalid @enderror" 
-                                                    id="fournisseur_id" 
-                                                    name="fournisseur_id">
+                                            <select class="form-control @error('fournisseur_id') is-invalid @enderror"
+                                                id="fournisseur_id" name="fournisseur_id">
                                                 <option value="">-- Sélectionner un fournisseur --</option>
-                                                @foreach($fournisseurs ?? [] as $f)
-                                                    <option value="{{ $f->id }}" {{ old('fournisseur_id') == $f->id ? 'selected' : '' }}>
+                                                @foreach ($fournisseurs ?? [] as $f)
+                                                    <option value="{{ $f->id }}"
+                                                        {{ old('fournisseur_id') == $f->id ? 'selected' : '' }}>
                                                         {{ $f->nom }}
                                                     </option>
                                                 @endforeach
@@ -72,12 +70,10 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="numero_facture">N° Facture</label>
-                                            <input type="text" 
-                                                   class="form-control @error('numero_facture') is-invalid @enderror" 
-                                                   id="numero_facture" 
-                                                   name="numero_facture" 
-                                                   value="{{ old('numero_facture') }}" 
-                                                   placeholder="Ex: FACT-2026-001">
+                                            <input type="text"
+                                                class="form-control @error('numero_facture') is-invalid @enderror"
+                                                id="numero_facture" name="numero_facture"
+                                                value="{{ old('numero_facture') }}" placeholder="Ex: FACT-2026-001">
                                             @error('numero_facture')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -100,14 +96,15 @@
 
                                 {{-- Lignes de produits --}}
                                 <h5 class="mb-3">Produits achetés</h5>
-                                
+
                                 <div class="table-responsive">
                                     <table class="table table-bordered" id="tableLignes">
                                         <thead class="thead-light">
                                             <tr>
                                                 <th width="40%">Produit de base <span class="text-danger">*</span></th>
                                                 <th width="20%">Quantité <span class="text-danger">*</span></th>
-                                                <th width="20%">Prix unitaire (FCFA) <span class="text-danger">*</span></th>
+                                                <th width="20%">Prix unitaire (FCFA) <span class="text-danger">*</span>
+                                                </th>
                                                 <th width="15%">Montant ligne</th>
                                                 <th width="5%"></th>
                                             </tr>
@@ -116,41 +113,34 @@
                                             {{-- Ligne par défaut --}}
                                             <tr class="ligne-produit">
                                                 <td>
-                                                    <select class="form-control product-select" name="lignes[0][product_base_id]" required>
+                                                    <select class="form-control product-select"
+                                                        name="lignes[0][product_base_id]" required>
                                                         <option value="">-- Sélectionner un produit --</option>
-                                                        @foreach($productBases as $pb)
-                                                            <option value="{{ $pb->id }}" data-unite="{{ $pb->unite }}">
+                                                        @foreach ($productBases as $pb)
+                                                            <option value="{{ $pb->id }}"
+                                                                data-unite="{{ $pb->unite }}">
                                                                 {{ $pb->nom }} ({{ $pb->unite }})
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <input type="number" 
-                                                           class="form-control quantite-input" 
-                                                           name="lignes[0][quantite]" 
-                                                           step="0.01" 
-                                                           min="0.01" 
-                                                           placeholder="0" 
-                                                           required>
+                                                    <input type="number" class="form-control quantite-input"
+                                                        name="lignes[0][quantite]" step="0.01" min="0.01"
+                                                        placeholder="0" required>
                                                 </td>
                                                 <td>
-                                                    <input type="number" 
-                                                           class="form-control prix-input" 
-                                                           name="lignes[0][prix_unitaire]" 
-                                                           step="1" 
-                                                           min="0" 
-                                                           placeholder="0" 
-                                                           required>
+                                                    <input type="number" class="form-control prix-input"
+                                                        name="lignes[0][prix_unitaire]" step="1" min="0"
+                                                        placeholder="0" required>
                                                 </td>
                                                 <td>
-                                                    <input type="text" 
-                                                           class="form-control montant-ligne" 
-                                                           readonly 
-                                                           value="0">
+                                                    <input type="text" class="form-control montant-ligne" readonly
+                                                        value="0">
                                                 </td>
                                                 <td class="text-center">
-                                                    <button type="button" class="btn btn-danger btn-sm btn-remove-ligne" disabled>
+                                                    <button type="button" class="btn btn-danger btn-sm btn-remove-ligne"
+                                                        disabled>
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </td>
@@ -159,7 +149,8 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="5">
-                                                    <button type="button" class="btn btn-success btn-sm" id="btnAjouterLigne">
+                                                    <button type="button" class="btn btn-success btn-sm"
+                                                        id="btnAjouterLigne">
                                                         <i class="fas fa-plus"></i> Ajouter un produit
                                                     </button>
                                                 </td>
@@ -168,7 +159,8 @@
                                                 <td colspan="3" class="text-right"><strong>MONTANT TOTAL:</strong></td>
                                                 <td colspan="2">
                                                     <strong id="montantTotal">0 FCFA</strong>
-                                                    <input type="hidden" name="montant_total" id="montant_total_input" value="0">
+                                                    <input type="hidden" name="montant_total" id="montant_total_input"
+                                                        value="0">
                                                 </td>
                                             </tr>
                                         </tfoot>
@@ -192,7 +184,7 @@
     </section>
 @endsection
 
-@push('js')
+{{-- @push('js')
 <script>
     $(document).ready(function() {
         console.log('Script achat chargé');
@@ -234,7 +226,7 @@
                     <td>
                         <select class="form-control product-select" name="lignes[${ligneIndex}][product_base_id]" required>
                             <option value="">-- Sélectionner un produit --</option>
-                            @foreach($productBases as $pb)
+                            @foreach ($productBases as $pb)
                                 <option value="{{ $pb->id }}" data-unite="{{ $pb->unite }}">
                                     {{ $pb->nom }} ({{ $pb->unite }})
                                 </option>
@@ -316,4 +308,187 @@
         console.log('Script achat initialisé');
     });
 </script>
+@endpush --}}
+@push('js')
+    <script>
+        $(document).ready(function() {
+            let ligneIndex = 1;
+
+            // ─── Vérifier si un produit est déjà sélectionné dans une autre ligne ───
+            function produitDejaSelectionne($selectActuel) {
+                const valeurActuelle = $selectActuel.val();
+                if (!valeurActuelle) return false;
+
+                let doublon = false;
+                $('.product-select').not($selectActuel).each(function() {
+                    if ($(this).val() === valeurActuelle) {
+                        doublon = true;
+                        return false; // break
+                    }
+                });
+                return doublon;
+            }
+
+            // ─── Calculer le montant d'une ligne ───
+            function calculerMontantLigne($ligne) {
+                const quantite = parseFloat($ligne.find('.quantite-input').val()) || 0;
+                const prixUnitaire = parseFloat($ligne.find('.prix-input').val()) || 0;
+                const montant = quantite * prixUnitaire;
+                $ligne.find('.montant-ligne').val(montant.toFixed(0));
+                calculerMontantTotal();
+            }
+
+            // ─── Calculer le montant total ───
+            function calculerMontantTotal() {
+                let total = 0;
+                $('.ligne-produit').each(function() {
+                    const montant = parseFloat($(this).find('.montant-ligne').val()) || 0;
+                    total += montant;
+                });
+                $('#montantTotal').text(total.toLocaleString('fr-FR') + ' FCFA');
+                $('#montant_total_input').val(total);
+            }
+
+            // ─── Changement de quantité ou prix → recalcul ───
+            $(document).on('input', '.quantite-input, .prix-input', function() {
+                calculerMontantLigne($(this).closest('.ligne-produit'));
+            });
+
+            // ─── Changement de produit → vérifier doublon ───
+            $(document).on('change', '.product-select', function() {
+                if (produitDejaSelectionne($(this))) {
+                    Swal.fire({
+                        toast: true,
+                        icon: 'warning',
+                        title: 'Ce produit a déjà été sélectionné dans une autre ligne !',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                    });
+                    $(this).val('').trigger('change'); // réinitialiser le select
+                }
+            });
+
+            // ─── Ajouter une ligne ───
+            $('#btnAjouterLigne').on('click', function() {
+                const nouvelleLigne = `
+                <tr class="ligne-produit">
+                    <td>
+                        <select class="form-control product-select" name="lignes[${ligneIndex}][product_base_id]" required>
+                            <option value="">-- Sélectionner un produit --</option>
+                            @foreach ($productBases as $pb)
+                                <option value="{{ $pb->id }}" data-unite="{{ $pb->unite }}">
+                                    {{ $pb->nom }} ({{ $pb->unite }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" 
+                               class="form-control quantite-input" 
+                               name="lignes[${ligneIndex}][quantite]" 
+                               step="0.01" min="0.01" 
+                               placeholder="0" required>
+                    </td>
+                    <td>
+                        <input type="number" 
+                               class="form-control prix-input" 
+                               name="lignes[${ligneIndex}][prix_unitaire]" 
+                               step="1" min="0" 
+                               placeholder="0" required>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control montant-ligne" readonly value="0">
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-danger btn-sm btn-remove-ligne">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+
+                $('#lignesContainer').append(nouvelleLigne);
+                ligneIndex++;
+
+                // Activer tous les boutons de suppression si plus d'une ligne
+                if ($('.ligne-produit').length > 1) {
+                    $('.btn-remove-ligne').prop('disabled', false);
+                }
+            });
+
+            // ─── Supprimer une ligne ───
+            $(document).on('click', '.btn-remove-ligne', function() {
+                if ($('.ligne-produit').length > 1) {
+                    $(this).closest('.ligne-produit').remove();
+                    calculerMontantTotal();
+
+                    // Désactiver le bouton si une seule ligne restante
+                    if ($('.ligne-produit').length === 1) {
+                        $('.btn-remove-ligne').prop('disabled', true);
+                    }
+                } else {
+                    Swal.fire({
+                        toast: true,
+                        icon: 'warning',
+                        title: 'Vous devez conserver au moins une ligne de produit.',
+                        position: 'top',
+                        showConfirmButton: false,
+                        timer: 2000,
+                    });
+                }
+            });
+
+            // ─── Validation à la soumission ───
+            $('#formAchat').on('submit', function(e) {
+                let valid = true;
+                let messages = [];
+
+                if ($('.ligne-produit').length === 0) {
+                    valid = false;
+                    messages.push('Vous devez ajouter au moins un produit');
+                }
+
+                let produitsSelectionnes = [];
+
+                $('.ligne-produit').each(function(index) {
+                    const productId = $(this).find('.product-select').val();
+                    const productNom = $(this).find('.product-select option:selected').text();
+                    const quantite = $(this).find('.quantite-input').val();
+                    const prix = $(this).find('.prix-input').val();
+
+                    // Champs vides
+                    if (!productId || !quantite || !prix) {
+                        valid = false;
+                        messages.push(`Ligne ${index + 1} : Tous les champs sont requis`);
+                    }
+
+                    // Doublon
+                    if (productId) {
+                        if (produitsSelectionnes.includes(productId)) {
+                            valid = false;
+                            messages.push(
+                                `Ligne ${index + 1} : Le produit "${productNom}" est déjà présent dans une autre ligne`
+                                );
+                        } else {
+                            produitsSelectionnes.push(productId);
+                        }
+                    }
+                });
+
+                if (!valid) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreurs de validation',
+                        html: messages.map(m => `• ${m}`).join('<br>'),
+                        confirmButtonText: 'Corriger',
+                    });
+                    return false;
+                }
+            });
+
+        });
+    </script>
 @endpush

@@ -28,6 +28,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('inventaire_id');
             $table->unsignedBigInteger('product_base_id');
+            // $table->dateTime('date_debut')->nullable();
+            // $table->dateTime('date_fin')->nullable();
             $table->decimal('stock_dernier_inventaire', 15, 2);
             $table->decimal('stock_ajoute', 15, 2);
             $table->decimal('stock_total', 15, 2);
