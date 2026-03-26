@@ -219,9 +219,9 @@ class InventaireController extends Controller
                     'resultat'                 => $resultat,
                 ]);
 
-                // Mettre à jour le stock du produit
+                // Mettre à jour le stock et stock_physique du produit
                 ProductBase::where('id', $ligne['product_base_id'])
-                    ->update(['stock' => $stock_physique]); // 👈 update direct, pas besoin de find()
+                    ->update(['stock' => $stock_physique, 'stock_physique' => $stock_physique]); // 👈 update direct, pas besoin de find()
             }
 
             DB::commit();
