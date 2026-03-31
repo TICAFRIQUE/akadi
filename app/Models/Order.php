@@ -31,12 +31,15 @@ class Order extends Model
     const SOURCE_WEB        = 'web';
     const SOURCE_BACKOFFICE = 'backoffice';
     const SOURCE_WHATSAPP   = 'whatsapp';
+    const SOURCE_FACEBOOK     = 'facebook';
+    const SOURCE_TIKTOK      = 'tiktok';
+    const SOURCE_INSTAGRAM      = 'instagram';
     const SOURCE_APPEL      = 'appel';
     const SOURCE_AUTRE      = 'autre';
 
     public static array $statuts = [
         self::STATUS_ATTENTE          => ['label' => 'En attente',          'color' => 'warning'],
-        self::STATUS_PRECOMMANDE       => ['label' => 'Précommande',          'color' => 'purple'],
+        self::STATUS_PRECOMMANDE      => ['label' => 'Précommande',          'color' => 'purple'],
         self::STATUS_ATTENTE_ACOMPTE  => ['label' => 'Attente acompte',     'color' => 'orange'],
         self::STATUS_CONFIRMEE        => ['label' => 'Confirmée',           'color' => 'success'],
         self::STATUS_EN_CUISINE       => ['label' => 'En cuisine',          'color' => 'info'],
@@ -50,8 +53,12 @@ class Order extends Model
         self::SOURCE_WEB        => ['label' => 'Site Web',   'icon' => 'fa-globe',        'color' => 'primary'],
         self::SOURCE_BACKOFFICE => ['label' => 'Backoffice', 'icon' => 'fa-desktop',      'color' => 'secondary'],
         self::SOURCE_WHATSAPP   => ['label' => 'WhatsApp',   'icon' => 'fa-whatsapp',     'color' => 'success'],
+        self::SOURCE_FACEBOOK   => ['label' => 'Facebook',   'icon' => 'fa-facebook',     'color' => 'primary'],
+        self::SOURCE_TIKTOK     => ['label' => 'TikTok',     'icon' => 'fa-tiktok',     'color' => 'warning'],
+        self::SOURCE_INSTAGRAM  => ['label' => 'Instagram',  'icon' => 'fa-instagram',     'color' => 'danger'],
         self::SOURCE_APPEL      => ['label' => 'Appel',      'icon' => 'fa-phone',        'color' => 'info'],
         self::SOURCE_AUTRE      => ['label' => 'Autre',      'icon' => 'fa-question',     'color' => 'warning'],
+
     ];
 
     protected $fillable = [
@@ -169,9 +176,4 @@ class Order extends Model
     {
         return $this->user?->phone ?? $this->client_phone ?? '';
     }
-
-
-
-
-
 }
