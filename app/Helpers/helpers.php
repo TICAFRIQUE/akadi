@@ -102,11 +102,14 @@ if (!function_exists('canChangeOrderStatus')) {
 if (!function_exists('clearAppCache')) {
     function clearAppCache()
     {
-        Cache::forget('categories');
-        Cache::forget('categories_backend');
-        Cache::forget('subcategories');
-        Cache::forget('roles');
+        Cache::forget('front_categories');
+        Cache::forget('front_subcategories');
+        Cache::forget('admin_categories');
         Cache::forget('roles_without_client');
+        Cache::forget('annonce_active');
+        Cache::forget('product_bases_list');
+        Cache::forget('orders_new');
+        Cache::forget('nb_product_alertes');
     }
 }
 
