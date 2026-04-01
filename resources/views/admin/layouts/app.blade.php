@@ -86,7 +86,6 @@
         <div class="main-wrapper main-wrapper-1">
             <div class="navbar-bg"></div>
 
-
             @if (Route::currentRouteName() !== 'auth.login')
                 {{-- Horizontal nav --}}
                 <nav class="navbar navbar-expand-lg main-navbar sticky">
@@ -633,7 +632,7 @@
 
 
 
-    <script>
+    {{-- <script>
         function checkNewOrders() {
             $.ajax({
                 url: "/dashboard/check-new-order",
@@ -680,7 +679,7 @@
 
         // Vérifier les nouvelles commandes toutes les 15 secondes
         setInterval(checkNewOrders, 15000);
-    </script>
+    </script> --}}
 
 </body>
 

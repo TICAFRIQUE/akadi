@@ -57,9 +57,7 @@ Route::controller(AuthAdminController::class)->group(function () {
 Route::middleware(['admin'])->group(function () {
 
     // Page pour utilisateurs sans permission dashboard
-    Route::get('admin/no-p', function () {
-        return view('admin.admin-no-permission');
-    })->name('admin-no-permission');
+    Route::get('admin/no-p', fn() => view('admin.admin-no-permission'))->name('admin-no-permission');
 
     //Dashboard
     Route::prefix('dashboard')->middleware('dashboard.permission')->controller(DashboardController::class)->group(function () {

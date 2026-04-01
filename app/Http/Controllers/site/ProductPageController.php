@@ -9,6 +9,7 @@ use App\Models\Publicite;
 use App\Models\Commentaire;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,51 +21,54 @@ class ProductPageController extends Controller
     public function liste_produit(Request $request)
     {
         try {
-            $category = request('categorie');
-            $subcategory = request('sous-categorie');
-            //get category et subcategory name
+            $category    = $request->query('categorie');
+            $subcategory = $request->query('sous-categorie');
             $name_category = '';
 
             if ($category) {
-                $name_category = Category::whereId($category)->select('name')->first();
+                $name_category = Cache::remember("category_name_{$category}", 600, fn () =>
+                    Category::whereId($category)->select('id', 'name')->first()
+                );
 
-                $product = Product::whereHas(
-                    'categories',
-                    fn($q) => $q->where('category_product.category_id', $category)->active(),
+                $product = Cache::remember("products_by_category_{$category}", 180, fn () =>
+                    Product::whereHas('categories',
+                        fn ($q) => $q->where('category_product.category_id', $category)->active()
+                    )->with(['media', 'categories', 'subcategorie'])
+                        ->whereDisponibilite(1)
+                        ->orderBy('created_at', 'DESC')
+                        ->get()
+                );
+            } elseif ($subcategory) {
+                $name_category = Cache::remember("subcategory_name_{$subcategory}", 600, fn () =>
+                    SubCategory::whereId($subcategory)->select('id', 'name')->first()
+                );
 
-                )->with(['media', 'categories', 'subcategorie'])
-                    ->orderBy('created_at', 'DESC')
-                    ->whereDisponibilite(1)
-                    ->get();
-            } else if ($subcategory) {
-                $name_category = SubCategory::whereId($subcategory)->select('name')->first();
-
-                $product = Product::with(['media', 'categories', 'subcategorie'])
-                    ->where('sub_category_id', $subcategory)->orderBy('created_at', 'DESC')
-                    ->whereDisponibilite(1)
-                    ->get();
+                $product = Cache::remember("products_by_subcategory_{$subcategory}", 180, fn () =>
+                    Product::with(['media', 'categories', 'subcategorie'])
+                        ->where('sub_category_id', $subcategory)
+                        ->whereDisponibilite(1)
+                        ->orderBy('created_at', 'DESC')
+                        ->get()
+                );
             } else {
-                $product = Product::with(['media', 'categories', 'subcategorie'])->orderBy('created_at', 'DESC')
-                ->whereHas('categories', fn($q) => $q->active())
-                    ->whereDisponibilite(1)
-                    ->get();
+                $product = Cache::remember('products_all_active', 180, fn () =>
+                    Product::with(['media', 'categories', 'subcategorie'])
+                        ->whereHas('categories', fn ($q) => $q->active())
+                        ->whereDisponibilite(1)
+                        ->orderBy('created_at', 'DESC')
+                        ->get()
+                );
             }
-            // dd([$name_category]); 
 
-            return view(
-                'site.pages.produit',
-
-                compact('product', 'name_category')
-            );
+            return view('site.pages.produit', compact('product', 'name_category'));
         } catch (Exception $e) {
-            $e->getMessage();
-            $product = Product::with(['media', 'categories', 'subcategorie'])->orderBy('created_at', 'DESC')
-                ->whereDisponibilite(1)
-                ->get();
-            return view(
-                'site.pages.produit',
-                compact('product',)
+            $product = Cache::remember('products_all_available', 180, fn () =>
+                Product::with(['media', 'categories', 'subcategorie'])
+                    ->whereDisponibilite(1)
+                    ->orderBy('created_at', 'DESC')
+                    ->get()
             );
+            return view('site.pages.produit', compact('product'));
         }
     }
 
@@ -75,21 +79,25 @@ class ProductPageController extends Controller
     public function detail_produit($slug)
     {
         try {
+            $product = Cache::remember("product_detail_{$slug}", 300, fn () =>
+                Product::whereSlug($slug)
+                    ->with(['categories', 'subcategorie', 'media'])
+                    ->firstOrFail()
+            );
 
-            $product = Product::whereSlug($slug)
-                ->with(['categories', 'subcategorie', 'media'])
-                ->firstOrFail();
-
-
-            $product_related =
+            // inRandomOrder() est coûteux sur MySQL, on cache le résultat 5 min
+            $categoryId = $product->categories->first()?->id;
+            $product_related = Cache::remember("product_related_{$product->id}_{$categoryId}", 300, fn () =>
                 Product::with(['media', 'categories', 'subcategorie'])
-                ->whereHas('categories', fn($q) => $q->where('category_product.category_id', $product['categories'][0]['id']))
-                ->Where('sub_category_id', $product['sub_category_id'])
-                ->where('id', '!=',  $product['id'])
-                ->whereDisponibilite(1)
-                ->inRandomOrder()->take(10)->get();
+                    ->whereHas('categories', fn ($q) => $q->where('category_product.category_id', $categoryId))
+                    ->where('sub_category_id', $product->sub_category_id)
+                    ->where('id', '!=', $product->id)
+                    ->whereDisponibilite(1)
+                    ->inRandomOrder()
+                    ->take(10)
+                    ->get()
+            );
 
-            // dd($product_related->toArray());
             return view('site.pages.detail-produit', compact('product', 'product_related'));
         } catch (Exception $error) {
             return redirect()->action([HomePageController::class, 'page_acceuil']);
@@ -119,20 +127,16 @@ class ProductPageController extends Controller
     }
 
     /***************rechercher un produit */
-
     public function recherche(Request $request)
     {
-
         $search = $request['q'];
-        $product = Product::with([
-            'categories',
-            'subcategorie',
-            'media'
-        ])
+        $product = Product::with(['categories', 'subcategorie', 'media'])
             ->where('title', 'Like', "%{$search}%")
             ->whereDisponibilite(1)
-            ->orderBy('created_at', 'desc')->inRandomOrder()->get();
+            ->orderBy('created_at', 'desc')
+            ->take(50)
+            ->get();
 
-        return view('site.pages.produit', compact('product',));
+        return view('site.pages.produit', compact('product'));
     }
 }

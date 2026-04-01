@@ -781,145 +781,145 @@
             });    // fin DataTable
 
 
-          // URLs injectées par Blade (évite les \' dans interpolations qui causent une erreur PHP)
-            var _orderShowUrl = '{{ url("admin/order/show") }}';
-            var _orderEditUrl = '{{ url("admin/pos") }}';
+        //   // URLs injectées par Blade (évite les \' dans interpolations qui causent une erreur PHP)
+        //     var _orderShowUrl = '{{ url("admin/order/show") }}';
+        //     var _orderEditUrl = '{{ url("admin/pos") }}';
 
-            // ── Polling nouvelles commandes ──────────────────────────────────────────
-            // IMPORTANT : lancé UNE SEULE FOIS ici (hors drawCallback pour éviter
-            // la multiplication des intervalles à chaque redraw DataTables)
-            (function initOrderPolling() {
-                let lastSeenId = 0;
-                // Set JS pour la déduplication : fiable même quand DataTables
-                // pagine les lignes hors du DOM visible
-                const knownIds = new Set();
+        //     // ── Polling nouvelles commandes ──────────────────────────────────────────
+        //     // IMPORTANT : lancé UNE SEULE FOIS ici (hors drawCallback pour éviter
+        //     // la multiplication des intervalles à chaque redraw DataTables)
+        //     (function initOrderPolling() {
+        //         let lastSeenId = 0;
+        //         // Set JS pour la déduplication : fiable même quand DataTables
+        //         // pagine les lignes hors du DOM visible
+        //         const knownIds = new Set();
 
-                // Initialiser depuis les lignes déjà présentes dans le tableau
-                $('#tableExport tbody tr[id^="row_"]').each(function() {
-                    const id = parseInt(this.id.replace('row_', ''), 10);
-                    knownIds.add(id);
-                    if (id > lastSeenId) lastSeenId = id;
-                });
+        //         // Initialiser depuis les lignes déjà présentes dans le tableau
+        //         $('#tableExport tbody tr[id^="row_"]').each(function() {
+        //             const id = parseInt(this.id.replace('row_', ''), 10);
+        //             knownIds.add(id);
+        //             if (id > lastSeenId) lastSeenId = id;
+        //         });
 
-                function pollNewOrders() {
-                    $.ajax({
-                        url: "{{ route('order.checkNewOrder') }}",
-                        method: "GET",
-                        data: { since_id: lastSeenId },
-                        success: function(data) {
-                            if (!data.orders || data.orders.length === 0) return;
+        //         function pollNewOrders() {
+        //             $.ajax({
+        //                 url: "{{ route('order.checkNewOrder') }}",
+        //                 method: "GET",
+        //                 data: { since_id: lastSeenId },
+        //                 success: function(data) {
+        //                     if (!data.orders || data.orders.length === 0) return;
 
-                            // Avancer le curseur immédiatement (évite les doublons si re-poll rapide)
-                            const maxId = Math.max.apply(null, data.orders.map(function(o) { return o.id; }));
-                            if (maxId > lastSeenId) lastSeenId = maxId;
+        //                     // Avancer le curseur immédiatement (évite les doublons si re-poll rapide)
+        //                     const maxId = Math.max.apply(null, data.orders.map(function(o) { return o.id; }));
+        //                     if (maxId > lastSeenId) lastSeenId = maxId;
 
-                            let inserted = 0;
+        //                     let inserted = 0;
 
-                            // Inverser : les ordres arrivent du + récent au + ancien
-                            data.orders.slice().reverse().forEach(function(item) {
-                                if (knownIds.has(item.id)) return; // déjà connu, même si hors DOM
-                                knownIds.add(item.id);
+        //                     // Inverser : les ordres arrivent du + récent au + ancien
+        //                     data.orders.slice().reverse().forEach(function(item) {
+        //                         if (knownIds.has(item.id)) return; // déjà connu, même si hors DOM
+        //                         knownIds.add(item.id);
 
-                                // 1. AFFICHER AU-DESSUS DU TABLEAU dans la zone dédiée
-                                const cardHtml = 
-                                    '<div class="new-order-card" data-order-id="' + item.id + '" onclick="window.location.href=\'' + _orderShowUrl + '/' + item.id + '\'">' +
-                                        '<div class="order-header">' +
-                                            '<div class="order-code">' +
-                                                '<i class="fas fa-shopping-cart" style="color: #ffc107; margin-right: 5px;"></i>' +
-                                                item.code +
-                                            '</div>' +
-                                            '<div class="order-time"><i class="far fa-clock"></i> ' + item.created_at + '</div>' +
-                                        '</div>' +
-                                        '<div class="order-info">' +
-                                            '<div><i class="fas fa-user"></i> <strong>' + item.nom_client + '</strong></div>' +
-                                            '<div><i class="fas fa-phone"></i> ' + item.tel_client + '</div>' +
-                                            '<div><span class="badge badge-' + item.status_color + '">' + item.status_label + '</span> ' +
-                                            '<i class="fab ' + item.source_icon + '"></i> ' + item.source_label + '</div>' +
-                                        '</div>' +
-                                        '<div class="order-total">' +
-                                            '<i class="fas fa-coins"></i> ' + Number(item.total).toLocaleString('fr-FR') + ' FCFA' +
-                                        '</div>' +
-                                    '</div>';
+        //                         // 1. AFFICHER AU-DESSUS DU TABLEAU dans la zone dédiée
+        //                         const cardHtml = 
+        //                             '<div class="new-order-card" data-order-id="' + item.id + '" onclick="window.location.href=\'' + _orderShowUrl + '/' + item.id + '\'">' +
+        //                                 '<div class="order-header">' +
+        //                                     '<div class="order-code">' +
+        //                                         '<i class="fas fa-shopping-cart" style="color: #ffc107; margin-right: 5px;"></i>' +
+        //                                         item.code +
+        //                                     '</div>' +
+        //                                     '<div class="order-time"><i class="far fa-clock"></i> ' + item.created_at + '</div>' +
+        //                                 '</div>' +
+        //                                 '<div class="order-info">' +
+        //                                     '<div><i class="fas fa-user"></i> <strong>' + item.nom_client + '</strong></div>' +
+        //                                     '<div><i class="fas fa-phone"></i> ' + item.tel_client + '</div>' +
+        //                                     '<div><span class="badge badge-' + item.status_color + '">' + item.status_label + '</span> ' +
+        //                                     '<i class="fab ' + item.source_icon + '"></i> ' + item.source_label + '</div>' +
+        //                                 '</div>' +
+        //                                 '<div class="order-total">' +
+        //                                     '<i class="fas fa-coins"></i> ' + Number(item.total).toLocaleString('fr-FR') + ' FCFA' +
+        //                                 '</div>' +
+        //                             '</div>';
 
-                                $('#new-orders-list').prepend(cardHtml);
-                                $('#new-orders-zone').show();
+        //                         $('#new-orders-list').prepend(cardHtml);
+        //                         $('#new-orders-zone').show();
                                 
-                                // 2. AUSSI ajouter dans le tableau DataTables (comme avant)
-                                const soldeClass = item.solde_restant > 0 ? 'text-danger' : 'text-muted';
-                                const rowHtml = '<tr id="row_' + item.id + '" class="table-warning">' +
-                                    '<td><span class="badge badge-warning text-dark p-1 px-2" style="white-space:nowrap;font-size:.75rem">&#11088; Nouveau</span></td>' +
-                                    '<td><span class="badge badge-' + item.status_color + ' text-white p-1 px-2" style="white-space:nowrap;font-size:.75rem">' + item.status_label + '</span></td>' +
-                                    '<td><span class="badge-source"><i class="fab ' + item.source_icon + ' mr-1"></i>' + item.source_label + '</span></td>' +
-                                    '<td><strong>' + item.code + '</strong></td>' +
-                                    '<td>' + item.nom_client + '</td>' +
-                                    '<td>' + item.tel_client + '</td>' +
-                                    '<td class="text-right font-weight-bold">' + Number(item.total).toLocaleString('fr-FR') + ' FCFA</td>' +
-                                    '<td class="text-right text-success small">' + Number(item.acompte).toLocaleString('fr-FR') + '</td>' +
-                                    '<td class="text-right small ' + soldeClass + '">' + Number(item.solde_restant).toLocaleString('fr-FR') + '</td>' +
-                                    '<td style="white-space:nowrap;font-size:.82rem">' + item.created_at + '</td>' +
-                                    '<td>' +
-                                        '<div class="dropdown">' +
-                                            '<a href="#" data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle">Options</a>' +
-                                            '<div class="dropdown-menu dropdown-menu-right">' +
-                                                '<a href="' + _orderShowUrl + '/' + item.id + '" class="dropdown-item has-icon"><i class="fas fa-eye"></i> Détail</a>' +
-                                                '<a href="' + _orderEditUrl + '/' + item.id + '/edit" class="dropdown-item has-icon"><i class="fas fa-edit"></i> Modifier</a>' +
-                                            '</div>' +
-                                        '</div>' +
-                                    '</td>' +
-                                '</tr>';
+        //                         // 2. AUSSI ajouter dans le tableau DataTables (comme avant)
+        //                         const soldeClass = item.solde_restant > 0 ? 'text-danger' : 'text-muted';
+        //                         const rowHtml = '<tr id="row_' + item.id + '" class="table-warning">' +
+        //                             '<td><span class="badge badge-warning text-dark p-1 px-2" style="white-space:nowrap;font-size:.75rem">&#11088; Nouveau</span></td>' +
+        //                             '<td><span class="badge badge-' + item.status_color + ' text-white p-1 px-2" style="white-space:nowrap;font-size:.75rem">' + item.status_label + '</span></td>' +
+        //                             '<td><span class="badge-source"><i class="fab ' + item.source_icon + ' mr-1"></i>' + item.source_label + '</span></td>' +
+        //                             '<td><strong>' + item.code + '</strong></td>' +
+        //                             '<td>' + item.nom_client + '</td>' +
+        //                             '<td>' + item.tel_client + '</td>' +
+        //                             '<td class="text-right font-weight-bold">' + Number(item.total).toLocaleString('fr-FR') + ' FCFA</td>' +
+        //                             '<td class="text-right text-success small">' + Number(item.acompte).toLocaleString('fr-FR') + '</td>' +
+        //                             '<td class="text-right small ' + soldeClass + '">' + Number(item.solde_restant).toLocaleString('fr-FR') + '</td>' +
+        //                             '<td style="white-space:nowrap;font-size:.82rem">' + item.created_at + '</td>' +
+        //                             '<td>' +
+        //                                 '<div class="dropdown">' +
+        //                                     '<a href="#" data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle">Options</a>' +
+        //                                     '<div class="dropdown-menu dropdown-menu-right">' +
+        //                                         '<a href="' + _orderShowUrl + '/' + item.id + '" class="dropdown-item has-icon"><i class="fas fa-eye"></i> Détail</a>' +
+        //                                         '<a href="' + _orderEditUrl + '/' + item.id + '/edit" class="dropdown-item has-icon"><i class="fas fa-edit"></i> Modifier</a>' +
+        //                                     '</div>' +
+        //                                 '</div>' +
+        //                             '</td>' +
+        //                         '</tr>';
 
-                                // Utiliser l'API DataTables (tri, pagination, recherche restent cohérents)
-                                // draw() sans argument → va à la page 1 pour montrer la nouvelle ligne
-                                table.row.add($(rowHtml)[0]).draw();
-                                inserted++;
-                            });
+        //                         // Utiliser l'API DataTables (tri, pagination, recherche restent cohérents)
+        //                         // draw() sans argument → va à la page 1 pour montrer la nouvelle ligne
+        //                         table.row.add($(rowHtml)[0]).draw();
+        //                         inserted++;
+        //                     });
 
-                            if (inserted === 0) return;
+        //                     if (inserted === 0) return;
 
-                            // Mettre à jour le compteur de nouvelles commandes
-                            const currentCount = $('#new-orders-list .new-order-card').length;
-                            $('#new-orders-count').text(currentCount);
+        //                     // Mettre à jour le compteur de nouvelles commandes
+        //                     const currentCount = $('#new-orders-list .new-order-card').length;
+        //                     $('#new-orders-count').text(currentCount);
 
-                            // Son de notification
-                            try { new Audio('/audio/notification.mp3').play(); } catch (e) {}
+        //                     // Son de notification
+        //                     try { new Audio('/audio/notification.mp3').play(); } catch (e) {}
 
-                            // Alert div fixée en haut à droite
-                            var alertDiv = $('<div>')
-                                .text('🛒 ' + inserted + ' nouvelle(s) commande(s) reçue(s)')
-                                .css({
-                                    position: 'fixed',
-                                    top: '20px',
-                                    right: '20px',
-                                    zIndex: 99999,
-                                    padding: '14px 20px',
-                                    background: '#28a745',
-                                    color: '#fff',
-                                    borderRadius: '6px',
-                                    fontWeight: 'bold',
-                                    fontSize: '14px',
-                                    boxShadow: '0 4px 12px rgba(0,0,0,.25)',
-                                    opacity: 0
-                                });
-                            $('body').append(alertDiv);
-                            alertDiv.animate({ opacity: 1 }, 300);
-                            setTimeout(function() {
-                                alertDiv.animate({ opacity: 0 }, 400, function() {
-                                    alertDiv.remove();
-                                });
-                            }, 30000); // 30 secondes
-                        }
-                    });
-                }
+        //                     // Alert div fixée en haut à droite
+        //                     var alertDiv = $('<div>')
+        //                         .text('🛒 ' + inserted + ' nouvelle(s) commande(s) reçue(s)')
+        //                         .css({
+        //                             position: 'fixed',
+        //                             top: '20px',
+        //                             right: '20px',
+        //                             zIndex: 99999,
+        //                             padding: '14px 20px',
+        //                             background: '#28a745',
+        //                             color: '#fff',
+        //                             borderRadius: '6px',
+        //                             fontWeight: 'bold',
+        //                             fontSize: '14px',
+        //                             boxShadow: '0 4px 12px rgba(0,0,0,.25)',
+        //                             opacity: 0
+        //                         });
+        //                     $('body').append(alertDiv);
+        //                     alertDiv.animate({ opacity: 1 }, 300);
+        //                     setTimeout(function() {
+        //                         alertDiv.animate({ opacity: 0 }, 400, function() {
+        //                             alertDiv.remove();
+        //                         });
+        //                     }, 30000); // 30 secondes
+        //                 }
+        //             });
+        //         }
 
-                // Bouton "Tout marquer comme vu"
-                $('#clear-new-orders').on('click', function() {
-                    $('#new-orders-list').empty();
-                    $('#new-orders-zone').fadeOut(300);
-                    $('#new-orders-count').text('0');
-                });
+        //         // Bouton "Tout marquer comme vu"
+        //         $('#clear-new-orders').on('click', function() {
+        //             $('#new-orders-list').empty();
+        //             $('#new-orders-zone').fadeOut(300);
+        //             $('#new-orders-count').text('0');
+        //         });
 
-                setInterval(pollNewOrders, 15000); // toutes les 15 secondes
-            })();
+        //         setInterval(pollNewOrders, 15000); // toutes les 15 secondes
+        //     })();
         });
     </script>
 @endsection

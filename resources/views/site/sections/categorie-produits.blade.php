@@ -4,6 +4,7 @@ Categorie and products
 
 {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"> --}}
 
+@once
 <style>
     /* Amélioration des boutons produits */
     .actions {
@@ -154,6 +155,7 @@ Categorie and products
         }
     }
 </style>
+@endonce
 
 <section class="space bg-smoke2" data-bg-src="">
     <div class="container">
@@ -183,12 +185,18 @@ Categorie and products
                     @endforeach
                 </div>
                 <div class="row gy-4 filter-active">
+                    @php $waNumero = '2250758838338'; @endphp
                     @foreach ($categories as $categorie)
                         @foreach ($categorie['products'] as $product)
+                            @php
+                                $detailUrl = route('detail-produit', $product->slug);
+                                $waMessage = 'Bonjour, je souhaite commander le produit *' . $product->title . "*.\nVoici le lien : " . $detailUrl;
+                                $urlWhatsapp = 'https://wa.me/' . $waNumero . '?text=' . urlencode($waMessage);
+                            @endphp
                             <div class="col-lg-6 filter-item cat{{ $product['pivot']['category_id'] }}">
                                 <div class="th-product list-view">
                                     <div class="product-img">
-                                        <a href="{{ route('detail-produit', $product['slug']) }}">
+                                        <a href="{{ $detailUrl }}">
                                             <img src="{{ asset($product->getFirstMediaUrl('product_image')) }}"
                                                 alt="Product Image">
                                         </a>
@@ -204,7 +212,7 @@ Categorie and products
                                                     class="rating">1</span> customer rating</span>
                                         </div> --}}
                                         <h3 class="product-title"><a
-                                                href="{{ route('detail-produit', $product['slug']) }}">{{ $product['title'] }}</a>
+                                                href="{{ $detailUrl }}">{{ $product['title'] }}</a>
                                         </h3>
 
                                         @if ($product['subcategorie'])
@@ -234,18 +242,7 @@ Categorie and products
 
                                         <div class="actions">
 
-                                            @php
-                                                $numero = '2250758838338';
-                                                $message =
-                                                    'Bonjour, je souhaite commander le produit *' .
-                                                    $product->title .
-                                                    "*.\nVoici le lien : " .
-                                                    route('detail-produit', $product->slug);
-                                                $urlWhatsapp =
-                                                    'https://wa.me/' . $numero . '?text=' . urlencode($message);
-                                            @endphp
-
-                                            <a href="{{ route('detail-produit', $product['slug']) }}"
+                                            <a href="{{ $detailUrl }}"
                                                 class="icon-btn btn-detail">
                                                 <i class="far fa-eye"></i>
                                                 <span>Détails</span>
