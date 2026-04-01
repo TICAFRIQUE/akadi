@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             // Provenance de la commande
-            $table->enum('source', ['web', 'backoffice', 'whatsapp', 'appel', 'autre'])
+            $table->string('source')
                 ->default('web')
                 ->nullable()
                 ->after('type_order');

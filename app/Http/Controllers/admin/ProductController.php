@@ -20,7 +20,7 @@ class ProductController extends Controller
     public function index()
     {
         //
-        $product = Product::with(['categories',  'media'])
+        $product = Product::with('categories' , 'productBase', 'subcategorie')
             ->orderBy('created_at', 'DESC')
             ->get();
         // dd($product->toArray());

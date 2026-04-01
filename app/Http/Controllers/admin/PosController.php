@@ -97,7 +97,7 @@ class PosController extends Controller
             'products.*.discount'           => 'nullable|numeric|min:0',
             'products.*.type_discount'      => 'nullable|in:percent,fixed',
             'type_discount'                 => 'nullable|in:percent,fixed',
-            'source'                        => 'required|in:web,backoffice,whatsapp,appel,autre',
+            'source'                        => 'required|in:'.implode(',', array_keys(Order::$sources)),
             'status'                        => 'required|string',
         ];
 
@@ -179,11 +179,14 @@ class PosController extends Controller
                 $prixApres    = max(0, $prixApres);
                 $lineTotal    = $prixApres * $qty;
 
-                if ($product->stock !== null && $qty > $product->stock) {
-                    DB::rollBack();
-                    return redirect()->back()
-                        ->with('error', "Stock insuffisant pour « {$product->title} » (stock: {$product->stock})")
-                        ->withInput();
+                if (!$product->isStockInfini()) {
+                    $stockDisponible = $product->getStockDisponible();
+                    if ($qty > $stockDisponible) {
+                        DB::rollBack();
+                        return redirect()->back()
+                            ->with('error', "Stock insuffisant pour « {$product->title} » (stock disponible : {$stockDisponible})")
+                            ->withInput();
+                    }
                 }
 
                 $subtotal        += $lineTotal;
@@ -392,11 +395,14 @@ class PosController extends Controller
                 // Vérifier stock (en tenant compte de l'ancienne quantité)
                 $oldQty = $order->products->find($product->id)?->pivot->quantity ?? 0;
                 $diff   = $qty - $oldQty;
-                if ($product->stock !== null && $diff > 0 && $diff > $product->stock) {
-                    DB::rollBack();
-                    return redirect()->back()
-                        ->with('error', "Stock insuffisant pour « {$product->title} »")
-                        ->withInput();
+                if (!$product->isStockInfini() && $diff > 0) {
+                    $stockDisponible = $product->getStockDisponible();
+                    if ($diff > $stockDisponible) {
+                        DB::rollBack();
+                        return redirect()->back()
+                            ->with('error', "Stock insuffisant pour « {$product->title} » (stock disponible : {$stockDisponible})")
+                            ->withInput();
+                    }
                 }
 
                 $subtotal        += $lineTotal;

@@ -89,10 +89,11 @@
                                                 #
                                             </th>
                                             <th>Stock</th>
-                                            <th>image</th>
+                                            <th>code</th>
                                             <th>Nom</th>
                                             <th>categories</th>
                                             <th>prix</th>
+                                            <th>Produit de base</th>
                                             <th>date</th>
                                             <th>Action</th>
                                         </tr>
@@ -112,9 +113,9 @@
                                                     </label>
                                                 </td>
                                                 <td>
-                                                    <img alt="{{ asset($item->getFirstMediaUrl('product_image')) }}"
+                                                    {{-- <img alt="{{ asset($item->getFirstMediaUrl('product_image')) }}"
                                                         src="{{ asset($item->getFirstMediaUrl('product_image')) }}"
-                                                        width="35">
+                                                        width="35"> --}}
                                                     <br> <small># {{ $item['code'] }} </small>
                                                 </td>
                                                 <td>{{ $item['title'] }}</td>
@@ -144,16 +145,7 @@
                                                             <small>FCFA</small></span>
                                                     @endif
                                                 </td>
-                                                {{-- <td>
-                                                    @foreach ($item['pointures'] as $items)
-                                                        {{ $items['pointure'] }}
-                                                    @endforeach
-                                                </td> --}}
-                                                {{-- <td>
-                                                    @foreach ($item['tailles'] as $items)
-                                                        {{ $items['taille'] }}
-                                                    @endforeach
-                                                </td> --}}
+                                                <td>{{ $item['productBase'] ? $item['productBase']['nom'] : '' }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}</td>
                                                 <td>
                                                     <div class="dropdown">

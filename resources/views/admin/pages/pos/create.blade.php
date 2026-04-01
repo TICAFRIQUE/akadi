@@ -217,6 +217,8 @@
                                     @endphp
                                     <option value="{{ $p->id }}" data-price="{{ $p->price }}"
                                         data-stock="{{ $isInfini ? '' : $stockDisponible }}"
+                                        data-stock-base="{{ $p->productBase?->stock ?? '' }}"
+                                        data-coefficient="{{ $p->coefficient ?? '' }}"
                                         data-img="{{ $p->getFirstMediaUrl('principal_img') }}"
                                         data-title="{{ $p->title }}">
                                         {{ $p->title }} — {{ number_format($p->price, 0, ',', ' ') }} FCFA
@@ -529,12 +531,16 @@
                 if (!val) return;
                 var opt = $(this).find('option[value="' + val + '"]');
                 var rawStock = opt.attr('data-stock');
+                var rawStockBase = opt.attr('data-stock-base');
+                var rawCoeff = opt.attr('data-coefficient');
                 var p = {
                     id: val,
                     title: opt.attr('data-title') || opt.text().split('—')[0].trim(),
                     price: parseFloat(opt.attr('data-price')) || 0,
                     stock: (rawStock !== undefined && rawStock !== '' && !isNaN(rawStock)) ? parseInt(
                         rawStock) : null,
+                    stockBase: (rawStockBase !== undefined && rawStockBase !== '' && !isNaN(rawStockBase)) ? parseFloat(rawStockBase) : null,
+                    coefficient: (rawCoeff !== undefined && rawCoeff !== '' && !isNaN(rawCoeff)) ? parseFloat(rawCoeff) : null,
                     img: opt.attr('data-img') || null
                 };
                 $(this).val(null).trigger('change');
@@ -545,6 +551,24 @@
 
         // ── Ajouter un produit au tableau ───────────────────────────────────────────
         function addProduct(p) {
+            // Bloquer si stock disponible = 0
+            if (p.stock !== null && p.stock <= 0) {
+                let msg;
+                if (p.stockBase !== null && p.coefficient !== null && p.coefficient > 0) {
+                    msg = `Stock de base insuffisant : ${p.stockBase} disponible, mais il faut ${p.coefficient} par unité vendue.`;
+                } else {
+                    msg = `« ${p.title} » est en rupture de stock.`;
+                }
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Stock insuffisant',
+                    text: msg,
+                    timer: 5000,
+                    showConfirmButton: false
+                });
+                return;
+            }
+
             // Si déjà présent, incrémenter la quantité
             if (cartItems[p.id]) {
                 const row = document.getElementById('row-' + p.id);
@@ -679,7 +703,8 @@
         // ── Recalcul ligne ──────────────────────────────────────────────────────────
         function recalcRow(pid) {
             const row = document.getElementById('row-' + pid);
-            const qty = parseInt(row.querySelector('.qty-input').value) || 1;
+            const qtyInput = row.querySelector('.qty-input');
+            let qty = parseInt(qtyInput.value) || 0;
             const unitPrice = parseFloat(row.querySelector('.unit-price-input').value) || 0;
             let discountVal = parseFloat(row.querySelector('.discount-input').value) || 0;
             const typeDiscount = row.querySelector('.type-discount-input').value || 'percent';
@@ -698,9 +723,9 @@
                 row.querySelector('.discount-input').value = unitPrice;
             }
 
-            // Vérif stock
-            const qtyInput = row.querySelector('.qty-input');
+            // Vérif stock : cap la quantité au stock disponible et continue le calcul
             if (stock !== null && qty > stock) {
+                qty = stock;
                 qtyInput.value = stock;
                 Swal.fire({
                     icon: 'warning',
@@ -709,7 +734,6 @@
                     timer: 2000,
                     showConfirmButton: false
                 });
-                return;
             }
 
             let prixApres;
@@ -745,7 +769,7 @@
             Object.keys(cartItems).forEach(pid => {
                 const row = document.getElementById('row-' + pid);
                 if (!row) return;
-                const qty = parseInt(row.querySelector('.qty-input').value) || 1;
+                const qty = parseInt(row.querySelector('.qty-input').value) || 0;
                 const unitPrice = parseFloat(row.querySelector('.unit-price-input').value) || 0;
                 const discountVal = parseFloat(row.querySelector('.discount-input').value) || 0;
                 const typeDiscount = row.querySelector('.type-discount-input').value || 'percent';
