@@ -71,66 +71,53 @@ class DashboardController extends Controller
 
 
 
-        //statistic
-        //count all orders
-        $orders = Order::count();
-        //count all products
+        // ===== STATISTIQUES GÉNÉRALES =====
+        $orders   = Order::count();
         $products = Product::count();
-        //count all user  
-        $users = User::count();
-        //montant des depenses
+        $users    = User::count();
         $depenses = Depense::sum('montant');
 
-        ############################## STATISTIQUE ORDER ###########
-        // statistic order
-        $orders_days = Order::where('date_order', Carbon::today())
-            ->whereStatus('livrée')
-            ->count();
+        // ===== DATES DE RÉFÉRENCE =====
+        $today      = Carbon::today()->toDateString();          // "2026-04-02"
+        $startWeek  = Carbon::now()->startOfWeek(Carbon::MONDAY)->toDateString(); // "2026-03-30"
+        $endWeek    = Carbon::now()->endOfWeek(Carbon::SUNDAY)->toDateString();   // "2026-04-05"
+        $thisMonth  = Carbon::now()->month;
+        $thisYear   = Carbon::now()->year;
 
-        // dd($orders_days);
-
-        $orders_month = Order::whereMonth('date_order', Carbon::now()->month)
-            ->whereYear('date_order', Carbon::now()->year) // Ajouté pour plus de précision
+        // ===== COMMANDES =====
+        $orders_days = Order::where('date_order', $today)
             ->where('status', 'livrée')
             ->count();
-
-        $orders_year = Order::whereYear('date_order', Carbon::now()->year)
-            ->where('status', 'livrée')
-            ->count();
-
-        //orders semaine
-
-        $startWeek =  Carbon::now()->startOfWeek(Carbon::MONDAY);
-        $endWeek =  Carbon::now()->endOfWeek(Carbon::SUNDAY);
-
-
 
         $orders_week = Order::whereBetween('date_order', [$startWeek, $endWeek])
-            ->whereStatus('livrée')
+            ->where('status', 'livrée')
             ->count();
 
+        $orders_month = Order::whereMonth('date_order', $thisMonth)
+            ->whereYear('date_order', $thisYear)
+            ->where('status', 'livrée')
+            ->count();
 
+        $orders_year = Order::whereYear('date_order', $thisYear)
+            ->where('status', 'livrée')
+            ->count();
 
-        #################################### CHIFFRE AFFAIRE ###################
-        // Chiffre affaire
-        $ca_days = Order::orderBy('created_at', 'DESC')
-            ->where('date_order', Carbon::today())
-            ->whereStatus('livrée')
+        // ===== CHIFFRE D'AFFAIRES =====
+        $ca_days = Order::where('date_order', $today)
+            ->where('status', 'livrée')
             ->sum('total');
 
-
-        $ca_week = Order::orderBy('created_at', 'DESC')
-            ->whereBetween('date_order', [$startWeek, $endWeek])
-            ->whereStatus('livrée')
+        $ca_week = Order::whereBetween('date_order', [$startWeek, $endWeek])
+            ->where('status', 'livrée')
             ->sum('total');
 
-        $ca_month = Order::whereMonth('date_order', Carbon::now()->month)
-            ->whereYear('date_order', Carbon::now()->year)
-            ->whereStatus('livrée')
+        $ca_month = Order::whereMonth('date_order', $thisMonth)
+            ->whereYear('date_order', $thisYear)
+            ->where('status', 'livrée')
             ->sum('total');
 
-        $ca_year = Order::whereYear('date_order', Carbon::now()->year)
-            ->whereStatus('livrée')
+        $ca_year = Order::whereYear('date_order', $thisYear)
+            ->where('status', 'livrée')
             ->sum('total');
 
         ####################### TOP CLIENT#####################
