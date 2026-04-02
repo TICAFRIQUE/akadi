@@ -36,10 +36,12 @@ class ProductController extends Controller
         // $category = Category::orderBy('name', 'ASC')
         // ->whereType('principale')
         // ->get();
+
+         $subcategories =SubCategory::orderBy('name')->get();
  
 
 
-        return view('admin.pages.product.add');
+        return view('admin.pages.product.add' , compact('subcategories'));
     }
 
     /**

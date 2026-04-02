@@ -632,7 +632,7 @@
 
 
 
-    {{-- <script>
+    <script>
         function checkNewOrders() {
             $.ajax({
                 url: "/dashboard/check-new-order",
@@ -679,7 +679,7 @@
 
         // Vérifier les nouvelles commandes toutes les 15 secondes
         setInterval(checkNewOrders, 15000);
-    </script> --}}
+    </script>
 
 </body>
 
