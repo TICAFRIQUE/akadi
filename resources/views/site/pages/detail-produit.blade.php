@@ -53,33 +53,26 @@
                 </div> --}}
 
                 <div class="col-lg-7">
-    <div class="product-thumb-area">
-        <div class="product-thumb-tab" data-asnavfor=".product-big-img">
-            @foreach ($product->getMedia('product_image') as $item)
-                <div class="tab-btn active">
-                    <img 
-                        src="{{ $item->getUrl('thumb') ?: $item->getUrl() }}" 
-                        alt="Product Thumb"
-                        loading="lazy"
-                    >
-                </div>
-            @endforeach
-        </div>
-        <div class="product-big-img th-carousel" data-slide-show="1" data-md-slide-show="1" data-fade="true">
-            @foreach ($product->getMedia('product_image') as $item)
-                <div class="col-auto">
-                    <div class="img">
-                        <img 
-                            src="{{ $item->getUrl('bigthumb') ?: $item->getUrl() }}" 
-                            alt="Product Image"
-                            loading="lazy"
-                        >
+                    <div class="product-thumb-area">
+                        <div class="product-thumb-tab" data-asnavfor=".product-big-img">
+                            @foreach ($product->getMedia('product_image') as $item)
+                                <div class="tab-btn active">
+                                    <img src="{{ $item->getUrl() }}" alt="Product Thumb" loading="lazy">
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="product-big-img th-carousel" data-slide-show="1" data-md-slide-show="1"
+                            data-fade="true">
+                            @foreach ($product->getMedia('product_image') as $item)
+                                <div class="col-auto">
+                                    <div class="img">
+                                        <img src="{{ $item->getUrl() }}" alt="Product Image" loading="lazy">
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            @endforeach
-        </div>
-    </div>
-</div>
                 <div class="col-lg-5">
                     <div class="product-about">
                         {{-- <div class="product-rating">
@@ -187,12 +180,9 @@
                                     </a> --}}
 
                                     <a href="{{ route('detail-produit', $item['slug']) }}">
-    <img 
-        src="{{ $item->getFirstMediaUrl('product_image', 'thumb') ?: $item->getFirstMediaUrl('product_image') }}"
-        alt="{{ $item['title'] }}"
-        loading="lazy"
-    >
-</a>
+                                        <img src="{{ $item->getFirstMediaUrl('product_image', 'thumb') ?: $item->getFirstMediaUrl('product_image') }}"
+                                            alt="{{ $item['title'] }}" loading="lazy">
+                                    </a>
 
                                     @if ($item['status_remise'] == 'en_cours')
                                         <div class="th-menu_discount">
