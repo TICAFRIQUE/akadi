@@ -2,8 +2,8 @@
 Hero Area
 ==============================-->
 <div id="slider" class="ls-wp-container fitvidsignore hero-5 th-hero-carousel"
-    data-bg-src="{{ $background ? $background->getFirstMediaUrl('publicite_image') : '' }}"
-    style="width:1920px;height:810px;margin-top:90px;margin-bottom: 0px;">
+    data-bg-src="{{ $background ? $background->getFirstMediaUrl('publicite_image', 'background') : '' }}"
+    style="width:1920px;height:810px;margin-top:90px;margin-bottom: 0px;{{ $background ? 'background-image:url(\'' . $background->getFirstMediaUrl('publicite_image', 'background') . '\');background-size:cover;background-position:center;' : '' }}">
 
     <!-- Slide-->
     @if ($sliders)
@@ -16,10 +16,14 @@ Hero Area
             Welcome to Pizzan
         </ls-layer> --}}
 
-                <img width="800" height="800" src="{{ $item->getFirstMediaUrl('publicite_image') }}"
-                    class="ls-l ls-img-layer" alt="image" decoding="async"
-                    style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; left:1000px; top:100px;"
-                    data-ls="offsetyin:-160; easingin:easeOutSine; rotatein:20; rotatexin:30; offsetyout:-100;">
+                <picture>
+                    <source srcset="{{ $item->getFirstMediaUrl('publicite_image', 'slider') }}" type="image/webp">
+                    <img width="800" height="800" src="{{ $item->getFirstMediaUrl('publicite_image') }}"
+                        class="ls-l ls-img-layer" alt="image" decoding="async"
+                        loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                        style="font-size:36px; color:#000; text-align:left; font-style:normal; text-decoration:none; text-transform:none; font-weight:400; letter-spacing:0px; background-position:0% 0%; background-repeat:no-repeat; left:1000px; top:100px;"
+                        data-ls="offsetyin:-160; easingin:easeOutSine; rotatein:20; rotatexin:30; offsetyout:-100;">
+                </picture>
 
 
 
