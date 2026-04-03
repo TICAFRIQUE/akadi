@@ -20,79 +20,164 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
+    // public function boot(): void
+    // {
+    //     DB::statement("SET lc_time_names = 'fr_FR'");
+
+    //     // ── Vues FRONT (site public) ─────────────────────────────────────────────
+    //     View::composer('site.*', function ($view) {
+    //         $categories = Cache::remember('front_categories', 300, fn() =>
+    //             Category::with([
+    //                 'products' => fn($q) => $q->whereDisponibilite(1)->latest()->take(10),
+    //                 'media',
+    //                 'subcategories',
+    //             ])->whereNotIn('name', ['Pack'])->active()->latest()->get()
+    //         );
+
+    //         $subcategory = Cache::remember('front_subcategories', 300, fn() =>
+    //             SubCategory::with(['products', 'media', 'category'])->orderBy('name')->get()
+    //         );
+
+    //         $annonce = Cache::remember('annonce_active', 120, fn() =>
+    //             Publicite::with('media')->whereType('annonce')->whereStatus('active')->first()
+    //         );
+
+    //         $view->with(compact('categories', 'subcategory', 'annonce'));
+    //     });
+
+    //     // ── Vues ADMIN (backoffice) ──────────────────────────────────────────────
+    //     View::composer('admin.*', function ($view) {
+    //         $category_backend = Cache::remember('admin_categories', 120, fn() =>
+    //             Category::with(['products', 'media', 'subcategories'])->latest()->get()
+    //         );
+
+    //         $roleWithoutClient = Cache::remember('roles_without_client', 600, fn() =>
+    //             Role::whereNotIn('name', ['developpeur', 'client', 'fidele', 'prospect'])->get()
+    //         );
+
+    //         $annonce = Cache::remember('annonce_active', 120, fn() =>
+    //             Publicite::with('media')->whereType('annonce')->whereStatus('active')->first()
+    //         );
+
+    //         $productBases = Cache::remember('product_bases_list', 120, fn() =>
+    //             ProductBase::orderBy('nom', 'ASC')->get()
+    //         );
+
+    //         // Commandes récentes : courte durée, données critiques
+    //         $orders_new = Cache::remember('orders_new', 30, fn() =>
+    //             Order::whereIn('status', ['attente', 'precommande'])->latest()->limit(100)->get()
+    //         );
+    //         $orders_attente = $orders_new->where('status', 'attente')->values();
+
+    //         // Anniversaires : données peu changeantes
+    //         $user_upcoming_birthday = Cache::remember('users_birthday_upcoming', 3600, fn() =>
+    //             User::whereIn('notify_birthday', [2, 1])->get()
+    //         );
+    //         $user_birthday = Cache::remember('users_birthday_today', 3600, fn() =>
+    //             User::where('notify_birthday', 0)->get()
+    //         );
+
+    //         $nb_product_alertes = Cache::remember('nb_product_alertes', 120, fn() =>
+    //             count_product_alertes()
+    //         );
+
+    //         $view->with(compact(
+    //             'annonce',
+    //             'category_backend',
+    //             'roleWithoutClient',
+    //             'orders_attente',
+    //             'orders_new',
+    //             'user_upcoming_birthday',
+    //             'user_birthday',
+    //             'productBases',
+    //             'nb_product_alertes',
+    //         ));
+    //     });
+    // }
+
+
+
     public function boot(): void
-    {
-        DB::statement("SET lc_time_names = 'fr_FR'");
+{
+    DB::statement("SET lc_time_names = 'fr_FR'");
 
-        // ── Vues FRONT (site public) ─────────────────────────────────────────────
-        View::composer('site.*', function ($view) {
-            $categories = Cache::remember('front_categories', 300, fn() =>
-                Category::with([
-                    'products' => fn($q) => $q->whereDisponibilite(1)->latest(),
-                    'media',
-                    'subcategories',
-                ])->whereNotIn('name', ['Pack'])->active()->latest()->get()
-            );
+    // ── Vues FRONT (site public) ─────────────────────────────────────────────
+    View::composer('site.*', function ($view) {
+        static $front = null;
 
-            $subcategory = Cache::remember('front_subcategories', 300, fn() =>
-                SubCategory::with(['products', 'media', 'category'])->orderBy('name')->get()
-            );
+        if ($front === null) {
+            $front = [
+                'categories' => Cache::remember('front_categories', 300, fn() =>
+                    Category::with([
+                        'products' => fn($q) => $q->whereDisponibilite(1)->latest()->take(10),
+                        'media',
+                        'subcategories',
+                    ])->whereNotIn('name', ['Pack'])->active()->latest()->get()
+                ),
 
-            $annonce = Cache::remember('annonce_active', 120, fn() =>
-                Publicite::with('media')->whereType('annonce')->whereStatus('active')->first()
-            );
+                'subcategory' => Cache::remember('front_subcategories', 300, fn() =>
+                    SubCategory::with(['products', 'media', 'category'])->orderBy('name')->get()
+                ),
 
-            $view->with(compact('categories', 'subcategory', 'annonce'));
-        });
+                // with('media') retiré : Spatie le charge automatiquement
+                // et causait des requêtes répétées à chaque @include
+                'annonce' => Cache::remember('annonce_active', 120, fn() =>
+                    Publicite::whereType('annonce')->whereStatus('active')->first()
+                ),
+            ];
+        }
 
-        // ── Vues ADMIN (backoffice) ──────────────────────────────────────────────
-        View::composer('admin.*', function ($view) {
-            $category_backend = Cache::remember('admin_categories', 120, fn() =>
-                Category::with(['products', 'media', 'subcategories'])->latest()->get()
-            );
+        $view->with($front);
+    });
 
-            $roleWithoutClient = Cache::remember('roles_without_client', 600, fn() =>
-                Role::whereNotIn('name', ['developpeur', 'client', 'fidele', 'prospect'])->get()
-            );
+    // ── Vues ADMIN (backoffice) ──────────────────────────────────────────────
+    View::composer('admin.*', function ($view) {
+        static $admin = null;
 
-            $annonce = Cache::remember('annonce_active', 120, fn() =>
-                Publicite::with('media')->whereType('annonce')->whereStatus('active')->first()
-            );
-
-            $productBases = Cache::remember('product_bases_list', 120, fn() =>
-                ProductBase::orderBy('nom', 'ASC')->get()
-            );
-
-            // Commandes récentes : courte durée, données critiques
+        if ($admin === null) {
             $orders_new = Cache::remember('orders_new', 30, fn() =>
                 Order::whereIn('status', ['attente', 'precommande'])->latest()->limit(100)->get()
             );
-            $orders_attente = $orders_new->where('status', 'attente')->values();
 
-            // Anniversaires : données peu changeantes
-            $user_upcoming_birthday = Cache::remember('users_birthday_upcoming', 3600, fn() =>
-                User::whereIn('notify_birthday', [2, 1])->get()
-            );
-            $user_birthday = Cache::remember('users_birthday_today', 3600, fn() =>
-                User::where('notify_birthday', 0)->get()
-            );
+            $admin = [
+                'category_backend' => Cache::remember('admin_categories', 120, fn() =>
+                    Category::with(['products', 'media', 'subcategories'])->latest()->get()
+                ),
 
-            $nb_product_alertes = Cache::remember('nb_product_alertes', 120, fn() =>
-                count_product_alertes()
-            );
+                'roleWithoutClient' => Cache::remember('roles_without_client', 600, fn() =>
+                    Role::whereNotIn('name', ['developpeur', 'client', 'fidele', 'prospect'])->get()
+                ),
 
-            $view->with(compact(
-                'annonce',
-                'category_backend',
-                'roleWithoutClient',
-                'orders_attente',
-                'orders_new',
-                'user_upcoming_birthday',
-                'user_birthday',
-                'productBases',
-                'nb_product_alertes',
-            ));
-        });
-    }
+                // with('media') retiré ici aussi pour la même raison
+                'annonce' => Cache::remember('annonce_active', 120, fn() =>
+                    Publicite::whereType('annonce')->whereStatus('active')->first()
+                ),
+
+                'productBases' => Cache::remember('product_bases_list', 120, fn() =>
+                    ProductBase::orderBy('nom', 'ASC')->get()
+                ),
+
+                // orders_new chargé avant le tableau pour pouvoir
+                // dériver orders_attente sans requête supplémentaire
+                'orders_new'     => $orders_new,
+                'orders_attente' => $orders_new->where('status', 'attente')->values(),
+
+                'user_upcoming_birthday' => Cache::remember('users_birthday_upcoming', 3600, fn() =>
+                    User::whereIn('notify_birthday', [2, 1])->get()
+                ),
+
+                'user_birthday' => Cache::remember('users_birthday_today', 3600, fn() =>
+                    User::where('notify_birthday', 0)->get()
+                ),
+
+                'nb_product_alertes' => Cache::remember('nb_product_alertes', 120, fn() =>
+                    count_product_alertes()
+                ),
+            ];
+        }
+
+        $view->with($admin);
+    });
+}
 }
 

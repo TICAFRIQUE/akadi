@@ -14,7 +14,7 @@
                     <li><a class="" href="#">Categorie</a></li>
                     <li class="active">
                         @if (request('categorie') || request('sous-categorie'))
-                            {{ $name_category['name'] }}
+                            {{ $name_category->name ?? 'Categorie non trouvée' }}
                         @else
                             Liste de tous les produits
                         @endif
@@ -40,7 +40,7 @@
                 </p>
             </div>
             <div class="row gy-40">
-                @foreach ($product as $item)
+                @forelse ($product as $item)
                     <div class="col-xl-3 col-lg-4 col-sm-6">
                         <div class="th-product">
                             <div class="product-img">
@@ -104,17 +104,15 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <p>Aucun produit trouvé.</p>
+                @endforelse
 
             </div>
-            {{-- <div class="th-pagination text-center pt-50">
-                <ul>
-                    <li><a href="blog.html">1</a></li>
-                    <li><a href="blog.html">2</a></li>
-                    <li><a href="blog.html">3</a></li>
-                    <li><a href="blog.html"><i class="far fa-arrow-right"></i></a></li>
-                </ul>
-            </div> --}}
+            <!-- Pagination -->
+            <div class="pagination-area d-flex justify-content-center mt-5">
+                {{ $product->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </section>
 

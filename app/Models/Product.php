@@ -117,17 +117,6 @@ class Product extends Model implements HasMedia
     }
 
 
-    /*******resize image */
-
-    //     public function registerMediaConversions(Media $media = null)
-    // {
-    //     $this->addMediaConversion('thumb')
-    //         ->width(150)
-    //         ->height(100);
-    //     $this->addMediaConversion('bigthumb')
-    //         ->width(300)
-    //         ->height(100);
-    // }
 
     /**
      * Retourne le stock disponible pour ce produit selon la nouvelle logique.
@@ -177,4 +166,53 @@ class Product extends Model implements HasMedia
         return false;
     }
 
+    //Conversion & optimisation d'image avec Spatie Media Library
+
+    // public function registerMediaConversions(?Media $media = null): void
+    // {
+    //     $this->addMediaConversion('thumb')
+    //         ->width(400)
+    //         ->height(400)
+    //         ->fit('contain')   // string en v10
+    //         ->queued();
+
+    //     $this->addMediaConversion('webp')
+    //         ->width(800)
+    //         ->height(800)
+    //         ->fit('contain')
+    //         ->queued();
+    // }
+
+    // public function registerMediaConversions(?Media $media = null): void
+    // {
+    //     $this->addMediaConversion('thumb')
+    //         ->width(400)
+    //         ->height(400)
+    //         ->fit('crop')
+    //         ->queued();
+
+    //     $this->addMediaConversion('bigthumb')
+    //         ->width(800)
+    //         ->height(800)
+    //         ->fit('crop')
+    //         ->queued();
+    // }
+
+
+    public function registerMediaConversions(?Media $media = null): void
+{
+    $this->addMediaConversion('thumb')
+        ->width(400)
+        ->height(400)
+        ->fit(\Spatie\Image\Enums\Fit::Max)
+        ->quality(90)
+        ->queued();
+
+    $this->addMediaConversion('bigthumb')
+        ->width(800)
+        ->height(800)
+        ->fit(\Spatie\Image\Enums\Fit::Max)
+        ->quality(90)
+        ->queued();
+}
 }

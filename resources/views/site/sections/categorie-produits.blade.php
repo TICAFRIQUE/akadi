@@ -196,10 +196,17 @@ Categorie and products
                             <div class="col-lg-6 filter-item cat{{ $product['pivot']['category_id'] }}">
                                 <div class="th-product list-view">
                                     <div class="product-img">
-                                        <a href="{{ $detailUrl }}">
+                                        {{-- <a href="{{ $detailUrl }}">
                                             <img src="{{ asset($product->getFirstMediaUrl('product_image')) }}"
                                                 alt="Product Image">
-                                        </a>
+                                        </a> --}}
+                                        <a href="{{ $detailUrl }}">
+    <img 
+        src="{{ $product->getFirstMediaUrl('product_image', 'thumb') ?: $product->getFirstMediaUrl('product_image') }}"
+        alt="{{ $product->title }}"
+        loading="lazy"
+    >
+</a>
                                         {{-- @if ($product['montant_remise'])
                                             <div class="th-menu_discount w-10">
                                                 <span class="sale">{{ $product['pourcentage_remise'] }}% OFF</span>
@@ -222,8 +229,10 @@ Categorie and products
                                             <a href="/produit?categorie={{ $product['categories'][0]['id'] }}"
                                                 class="category text-danger">{{ $product['subcategorie'] ? $product['subcategorie']['name'] : $product['categories'][0]['name'] }}</a>
                                         @endif
-                                        <p class="product-text"> {!! substr(strip_tags($product->description), 0, 50) !!}.... </p>
-
+                                        {{-- <p class="product-text"> {!! substr(strip_tags($product->description), 0, 50) !!}.... </p> --}}
+<p class="product-text">
+    {{ Str::limit(strip_tags($product->description ?? ''), 50, '...') }}
+</p>
                                         @if ($product['montant_remise'] != null && $product['status_remise'] == 'en_cours')
                                             <span class="price">
                                                 @php

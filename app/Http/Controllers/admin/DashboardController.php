@@ -166,6 +166,8 @@ class DashboardController extends Controller
 
 
         // dd($top_user_order->toArray());
+        // dd($startWeek, $endWeek, $orders_week, $orders_month);
+        // mois  ✅ mois > semaine
         return view('admin.admin', compact(
 
             //user birthday

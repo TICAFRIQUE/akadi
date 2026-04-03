@@ -16,8 +16,12 @@
                     <div class="category-border">
                         <div class="category-border_img">
                             <a href="/produit?categorie={{$item['id']}}">
-                                <img src="{{ $item->getFirstMediaUrl('category_image') }}"
-                                alt="{{ $item['name'] }}" class="img-fluid" loading="lazy">
+                               <img 
+                                    src="{{ $item->getFirstMediaUrl('category_image', 'thumb') ?: $item->getFirstMediaUrl('category_image') }}"
+                                    alt="{{ $item['name'] }}" 
+                                    class="img-fluid" 
+                                    loading="lazy"
+                                >
                             </a>
                         </div>
                         
