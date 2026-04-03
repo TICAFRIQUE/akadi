@@ -58,7 +58,7 @@
                                           $type = [
                                               'slider',
                                               //   'popup',
-                                              //   'arriere-plan',
+                                                'arriere-plan',
                                               //   'banniere',
                                               //   'pack',
                                               'top-promo',

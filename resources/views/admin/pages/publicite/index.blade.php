@@ -21,7 +21,7 @@
 
                             <div class="dropdown">
                                 @php
-                                    $type = ['slider',  'top-promo' , 'annonce'];
+                                    $type = ['slider',  'top-promo' , 'annonce' , 'arriere-plan'];
                                 @endphp
                                 <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
                                     <i class="fa fa-filter"></i>
