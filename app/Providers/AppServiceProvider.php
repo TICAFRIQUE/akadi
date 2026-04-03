@@ -1,6 +1,9 @@
 <?php
+
 namespace App\Providers;
+
 require_once __DIR__ . '/../Helpers/product_alert.php';
+
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Category;
@@ -98,86 +101,134 @@ class AppServiceProvider extends ServiceProvider
 
 
     public function boot(): void
-{
-    DB::statement("SET lc_time_names = 'fr_FR'");
+    {
+        DB::statement("SET lc_time_names = 'fr_FR'");
 
-    // ── Vues FRONT (site public) ─────────────────────────────────────────────
-    View::composer('site.*', function ($view) {
-        static $front = null;
+        // ── Vues FRONT (site public) ─────────────────────────────────────────────
+        View::composer('site.*', function ($view) {
+            static $front = null;
 
-        if ($front === null) {
-            $front = [
-                'categories' => Cache::remember('front_categories', 300, fn() =>
-                    Category::with([
-                        'products' => fn($q) => $q->whereDisponibilite(1)->latest()->take(10),
-                        'media',
-                        'subcategories',
-                    ])->whereNotIn('name', ['Pack'])->active()->latest()->get()
-                ),
+            if ($front === null) {
+                $front = [
+                    // 'categories' => Cache::remember(
+                    //     'front_categories',
+                    //     300,
+                    //     fn() =>
+                    //     Category::with([
+                    //         'products' => fn($q) => $q->whereDisponibilite(1)->latest()->take(10),
+                    //         'media',
+                    //         'subcategories',
+                    //     ])->whereNotIn('name', ['Pack'])->active()->latest()->get()
+                    // ),
 
-                'subcategory' => Cache::remember('front_subcategories', 300, fn() =>
-                    SubCategory::with(['products', 'media', 'category'])->orderBy('name')->get()
-                ),
 
-                // with('media') retiré : Spatie le charge automatiquement
-                // et causait des requêtes répétées à chaque @include
-                'annonce' => Cache::remember('annonce_active', 120, fn() =>
-                    Publicite::whereType('annonce')->whereStatus('active')->first()
-                ),
-            ];
-        }
+                    'categories' => Cache::remember(
+                        'front_categories',
+                        300,
+                        fn() =>
+                        Category::with([
+                            'products' => fn($q) => $q->whereDisponibilite(1)->with(['media', 'categories', 'subcategorie'])->latest()->take(10),
+                            'media',
+                        ])
+                            ->whereNotIn('name', ['Pack'])
+                            ->whereHas('products', fn($q) => $q->whereDisponibilite(1))
+                            ->active()
+                            ->latest()
+                            ->get()
+                    ),
 
-        $view->with($front);
-    });
+                    'subcategory' => Cache::remember(
+                        'front_subcategories',
+                        300,
+                        fn() =>
+                        SubCategory::with(['products', 'media', 'category'])->orderBy('name')->get()
+                    ),
 
-    // ── Vues ADMIN (backoffice) ──────────────────────────────────────────────
-    View::composer('admin.*', function ($view) {
-        static $admin = null;
+                    // with('media') retiré : Spatie le charge automatiquement
+                    // et causait des requêtes répétées à chaque @include
+                    'annonce' => Cache::remember(
+                        'annonce_active',
+                        120,
+                        fn() =>
+                        Publicite::whereType('annonce')->whereStatus('active')->first()
+                    ),
+                ];
+            }
 
-        if ($admin === null) {
-            $orders_new = Cache::remember('orders_new', 30, fn() =>
-                Order::whereIn('status', ['attente', 'precommande'])->latest()->limit(100)->get()
-            );
+            $view->with($front);
+        });
 
-            $admin = [
-                'category_backend' => Cache::remember('admin_categories', 120, fn() =>
-                    Category::with(['products', 'media', 'subcategories'])->latest()->get()
-                ),
+        // ── Vues ADMIN (backoffice) ──────────────────────────────────────────────
+        View::composer('admin.*', function ($view) {
+            static $admin = null;
 
-                'roleWithoutClient' => Cache::remember('roles_without_client', 600, fn() =>
-                    Role::whereNotIn('name', ['developpeur', 'client', 'fidele', 'prospect'])->get()
-                ),
+            if ($admin === null) {
+                $orders_new = Cache::remember(
+                    'orders_new',
+                    30,
+                    fn() =>
+                    Order::whereIn('status', ['attente', 'precommande'])->latest()->limit(100)->get()
+                );
 
-                // with('media') retiré ici aussi pour la même raison
-                'annonce' => Cache::remember('annonce_active', 120, fn() =>
-                    Publicite::whereType('annonce')->whereStatus('active')->first()
-                ),
+                $admin = [
+                    'category_backend' => Cache::remember(
+                        'admin_categories',
+                        120,
+                        fn() =>
+                        Category::with(['products', 'media', 'subcategories'])->latest()->get()
+                    ),
 
-                'productBases' => Cache::remember('product_bases_list', 120, fn() =>
-                    ProductBase::orderBy('nom', 'ASC')->get()
-                ),
+                    'roleWithoutClient' => Cache::remember(
+                        'roles_without_client',
+                        600,
+                        fn() =>
+                        Role::whereNotIn('name', ['developpeur', 'client', 'fidele', 'prospect'])->get()
+                    ),
 
-                // orders_new chargé avant le tableau pour pouvoir
-                // dériver orders_attente sans requête supplémentaire
-                'orders_new'     => $orders_new,
-                'orders_attente' => $orders_new->where('status', 'attente')->values(),
+                    // with('media') retiré ici aussi pour la même raison
+                    'annonce' => Cache::remember(
+                        'annonce_active',
+                        120,
+                        fn() =>
+                        Publicite::whereType('annonce')->whereStatus('active')->first()
+                    ),
 
-                'user_upcoming_birthday' => Cache::remember('users_birthday_upcoming', 3600, fn() =>
-                    User::whereIn('notify_birthday', [2, 1])->get()
-                ),
+                    'productBases' => Cache::remember(
+                        'product_bases_list',
+                        120,
+                        fn() =>
+                        ProductBase::orderBy('nom', 'ASC')->get()
+                    ),
 
-                'user_birthday' => Cache::remember('users_birthday_today', 3600, fn() =>
-                    User::where('notify_birthday', 0)->get()
-                ),
+                    // orders_new chargé avant le tableau pour pouvoir
+                    // dériver orders_attente sans requête supplémentaire
+                    'orders_new'     => $orders_new,
+                    'orders_attente' => $orders_new->where('status', 'attente')->values(),
 
-                'nb_product_alertes' => Cache::remember('nb_product_alertes', 120, fn() =>
-                    count_product_alertes()
-                ),
-            ];
-        }
+                    'user_upcoming_birthday' => Cache::remember(
+                        'users_birthday_upcoming',
+                        3600,
+                        fn() =>
+                        User::whereIn('notify_birthday', [2, 1])->get()
+                    ),
 
-        $view->with($admin);
-    });
+                    'user_birthday' => Cache::remember(
+                        'users_birthday_today',
+                        3600,
+                        fn() =>
+                        User::where('notify_birthday', 0)->get()
+                    ),
+
+                    'nb_product_alertes' => Cache::remember(
+                        'nb_product_alertes',
+                        120,
+                        fn() =>
+                        count_product_alertes()
+                    ),
+                ];
+            }
+
+            $view->with($admin);
+        });
+    }
 }
-}
-
