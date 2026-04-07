@@ -205,7 +205,7 @@ Categorie and products
                                                 alt="Product Image">
                                         </a> --}}
                                         <a href="{{ $detailUrl }}">
-                                            <img src="{{ $product->getFirstMediaUrl('product_image', 'thumb') ?: $product->getFirstMediaUrl('product_image') }}"
+                                            <img src="{{ $product->getFirstMediaUrl('product_image') }}"
                                                 alt="{{ $product->title }}" loading="lazy">
                                         </a>
                                         {{-- @if ($product['montant_remise'])
