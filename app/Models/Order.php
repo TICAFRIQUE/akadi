@@ -143,6 +143,18 @@ class Order extends Model
             ->withTimestamps();
     }
 
+/**
+ * Relation avec les produits de base liés à cette commande via la table pivot
+ * 
+ * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+ */
+    public function productBases(): BelongsToMany
+{
+    return $this->belongsToMany(ProductBase::class, 'order_product_base')
+        ->withPivot(['product_id', 'coefficient', 'quantity_consumed'])
+        ->withTimestamps();
+}
+
     // ─── Accessors ───────────────────────────────────────────────────────────────
 
     public function getStatusLabelAttribute(): string

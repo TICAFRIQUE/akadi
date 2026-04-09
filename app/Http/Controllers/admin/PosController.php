@@ -38,13 +38,54 @@ class PosController extends Controller
         //     return redirect()->route('caisse.selection')->with('error', 'Veuillez d\'abord sélectionner une caisse.');
         // }
 
-        $products       = Product::with('media')->where('disponibilite', '!=', 'indisponible')->orWhereNull('disponibilite')->orderBy('title')->get();
+        // $products       = Product::with('media')->where('disponibilite', '!=', 'indisponible')->orWhereNull('disponibilite')->orderBy('title')->get();
+        $products = Product::with(['productBases', 'categories', 'media'])
+            ->orderBy('title')
+            ->get()
+            ->map(function ($p) {
+                // Calculer le stock disponible selon les productBases multiples
+                $stockInfo = [];
+                $stockDisponible = null; // null = infini
+
+                if ($p->productBases->count() > 0) {
+                    foreach ($p->productBases as $base) {
+                        $coeff = $base->pivot->coefficient ?? 0;
+                        if ($coeff > 0) {
+                            $qtyPossible = floor($base->stock / $coeff);
+                            $stockInfo[] = [
+                                'nom'        => $base->nom,
+                                'stock'      => $base->stock,
+                                'coefficient' => $coeff,
+                                'possible'   => $qtyPossible,
+                                'insuffisant' => $qtyPossible <= 0,
+                            ];
+                            // Le stock dispo du produit = le minimum possible parmi tous les bases
+                            if ($stockDisponible === null) {
+                                $stockDisponible = $qtyPossible;
+                            } else {
+                                $stockDisponible = min($stockDisponible, $qtyPossible);
+                            }
+                        }
+                    }
+                }
+
+                $p->stock_disponible  = $stockDisponible; // null = infini, int = calculé
+                $p->stock_info        = $stockInfo;        // détail par base
+                $p->stock_insuffisant = $stockDisponible !== null && $stockDisponible <= 0;
+
+                return $p;
+            });
+
         $paymentMethods = PaymentMethod::actif()->get();
         $deliveries     = Delivery::orderBy('zone')->get();
         $sources        = Order::$sources;
         $statuts        = Order::$statuts;
         $caisse_id      = session('caisse_id');
         $caisse         = $caisse_id ? Caisse::find($caisse_id) : null;
+
+        // dd($products->toArray());
+
+        // ── Vues FRONT (site public) ─────────────────────────────────────────────
 
         return view('admin.pages.pos.create', compact(
             'products',
@@ -97,7 +138,7 @@ class PosController extends Controller
             'products.*.discount'           => 'nullable|numeric|min:0',
             'products.*.type_discount'      => 'nullable|in:percent,fixed',
             'type_discount'                 => 'nullable|in:percent,fixed',
-            'source'                        => 'required|in:'.implode(',', array_keys(Order::$sources)),
+            'source'                        => 'required|in:' . implode(',', array_keys(Order::$sources)),
             'status'                        => 'required|string',
         ];
 
@@ -302,16 +343,50 @@ class PosController extends Controller
         if (!canChangeOrderStatus(\App\Models\Order::STATUS_CONFIRMEE)) {
             abort(403, 'Vous devez avoir la permission p-confirmation pour modifier une commande.');
         }
-        // if (!session('caisse_id')) {
-        //     return redirect()->route('caisse.selection')->with('error', 'Veuillez d\'abord sélectionner une caisse.');
-        // }
 
-        $order          = Order::with(['products', 'user', 'paymentMethod', 'caisse'])->findOrFail($id);
-        $products       = Product::with('media')->orderBy('title')->get();
+        $order = Order::with([
+            'products.productBases',
+            'user',
+            'paymentMethod',
+            'caisse'
+        ])->findOrFail($id);
         $paymentMethods = PaymentMethod::actif()->get();
         $deliveries     = Delivery::orderBy('zone')->get();
         $sources        = Order::$sources;
         $statuts        = Order::$statuts;
+
+        $products = Product::with(['productBases', 'media'])
+            ->orderBy('title')
+            ->get()
+            ->map(function ($p) {
+                $stockInfo       = [];
+                $stockDisponible = null;
+
+                if ($p->productBases->count() > 0) {
+                    foreach ($p->productBases as $base) {
+                        $coeff = $base->pivot->coefficient ?? 0;
+                        if ($coeff > 0) {
+                            $qtyPossible = floor($base->stock / $coeff);
+                            $stockInfo[] = [
+                                'nom'         => $base->nom,
+                                'stock'       => $base->stock,
+                                'coefficient' => $coeff,
+                                'possible'    => $qtyPossible,
+                                'insuffisant' => $qtyPossible <= 0,
+                            ];
+                            $stockDisponible = $stockDisponible === null
+                                ? $qtyPossible
+                                : min($stockDisponible, $qtyPossible);
+                        }
+                    }
+                }
+
+                $p->stock_disponible  = $stockDisponible;
+                $p->stock_info        = $stockInfo;
+                $p->stock_insuffisant = $stockDisponible !== null && $stockDisponible <= 0;
+
+                return $p;
+            });
 
         return view('admin.pages.pos.edit', compact(
             'order',
@@ -322,7 +397,6 @@ class PosController extends Controller
             'statuts'
         ));
     }
-
     /**
      * Mettre à jour une commande existante
      */

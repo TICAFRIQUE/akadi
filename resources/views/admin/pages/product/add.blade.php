@@ -89,7 +89,7 @@
                             <div class="row">
 
                                 {{-- ====== Colonne principale : champs produit ====== --}}
-                                <div class="col-lg-8 border-right pr-lg-5">
+                                <div class="col-lg-6 border-right pr-lg-5">
                                     <p class="text-muted text-uppercase font-weight-bold mb-3"
                                         style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
                                         <i data-feather="package" style="width:12px;vertical-align:middle"></i>
@@ -115,88 +115,7 @@
                                         </div>
                                     </div>
 
-                                    {{-- Stock --}}
-                                    {{-- <div class="form-group row mb-4">
-                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">
-                                            Stock
-                                            <small class="d-block text-muted" style="font-size:.75rem">Vide =
-                                                infini</small>
-                                        </label>
-                                        <div class="col-sm-12 col-md-7">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <label class="small font-weight-bold">Quantité</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-boxes"></i></span>
-                                                        </div>
-                                                        <input name="stock" type="number" min="0"
-                                                            class="form-control" placeholder="Infini par défaut">
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="small font-weight-bold">Seuil alerte</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-exclamation-triangle text-warning"></i></span>
-                                                        </div>
-                                                        <input name="stock_alerte" type="number" min="0"
-                                                            class="form-control" placeholder="5" value="5">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> --}}
-
-                                    {{-- Liaison avec produit de base --}}
-                                    <div class="form-group row mb-4">
-                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">
-                                            Produit de base
-                                            <small class="d-block text-muted" style="font-size:.75rem">Optionnel</small>
-                                        </label>
-                                        <div class="col-sm-12 col-md-7">
-                                            <div class="row">
-                                                <div class="col-7">
-                                                    <label class="small font-weight-bold">Produit</label>
-                                                    <select name="product_base_id" id="product_base_id"
-                                                        class="form-control">
-                                                        <option value="">-- Aucun --</option>
-                                                        @if (isset($productBases))
-                                                            @foreach ($productBases as $pb)
-                                                                <option value="{{ $pb->id }}"
-                                                                    data-unite="{{ $pb->unite }}">
-                                                                    {{ $pb->nom }} ({{ $pb->unite }})
-                                                                </option>
-                                                            @endforeach
-                                                        @endif
-                                                    </select>
-                                                    <small class="text-muted">
-                                                        <i class="fas fa-info-circle"></i> Lie ce produit à un stock de
-                                                        base
-                                                    </small>
-                                                </div>
-                                                <div class="col-5">
-                                                    <label class="small font-weight-bold">Coefficient</label>
-                                                    <div class="input-group">
-                                                        <input name="coefficient" id="coefficient" type="number"
-                                                            step="0.01" min="0" class="form-control"
-                                                            placeholder="Ex: 1">
-                                                        <div class="input-group-append" id="unite_display">
-                                                            <span class="input-group-text">unité</span>
-                                                        </div>
-                                                    </div>
-                                                    <small class="text-muted">Quantité utilisée</small>
-                                                </div>
-                                            </div>
-                                            <div class="alert alert-info mt-2" style="font-size:.85rem">
-                                                <strong>Exemple:</strong> 1 Poulet braisé = 1 poulet de base<br>
-                                                <strong>Exemple:</strong> 1 Demi-poulet = 0.5 poulet de base
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                   
                                     <div class="form-group row mb-4">
                                         <label for=""
                                             class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Catégorie</label>
@@ -229,14 +148,19 @@
                                     <div class="form-group row mb-2">
                                         <label
                                             class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Description</label>
-                                        <div class="col-sm-12 col-md-7">
+                                        <div class="col-sm-12 col-md-12">
                                             <textarea name="description" class="summernote"></textarea>
                                         </div>
                                     </div>
                                 </div>
 
                                 {{-- ====== Colonne médias ====== --}}
-                                <div class="col-lg-4 pl-lg-4 mt-4 mt-lg-0">
+                                <div class="col-lg-6 pl-lg-6 mt-4 mt-lg-0">
+                                    {{-- Liaison avec produits de base (dynamique) --}}
+                                    @include('admin.components.product_bases_form')
+                                    
+                                    <hr>
+
                                     <p class="text-muted text-uppercase font-weight-bold mb-3"
                                         style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
                                         <i data-feather="image" style="width:12px;vertical-align:middle"></i> Médias

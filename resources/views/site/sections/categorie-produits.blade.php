@@ -260,7 +260,7 @@ Categorie and products
                                             <button class="icon-btn btn-add-cart addCart"
                                                 data-id="{{ $product['id'] }}">
                                                 <i class="fa fa-cart-plus"></i>
-                                                <span class="addCart" data-id="{{ $product['id'] }}">Ajouter</span>
+                                               Ajouter
                                             </button>
 
                                         </div>

@@ -74,7 +74,7 @@ class InventaireController extends Controller
     //version 2 : on affiche la date du dernier inventaire, et on calcule les mouvements depuis cette date (et pas depuis le début du temps)
     public function create()
     {
-        $produits = ProductBase::all();
+        $produits = ProductBase::actifs()->get(); // On ne propose que les produits actifs pour l'inventaire
         $lignes   = [];
 
         foreach ($produits as $produit) {
@@ -98,9 +98,17 @@ class InventaireController extends Controller
                 ->where('achat_lignes.created_at', '>', $dateDebut)
                 ->sum('achat_lignes.quantite');
 
-            $stockVendu = $produit->ventes()
+            // $stockVendu = $produit->ventes()
+            //     ->where('order_product.created_at', '>', $dateDebut)
+            //     ->sum('order_product.quantity');
+
+            $stockVendu = DB::table('order_product')
+                ->join('orders', 'order_product.order_id', '=', 'orders.id')
+                ->join('product_product_base', 'product_product_base.product_id', '=', 'order_product.product_id')
+                ->where('product_product_base.product_base_id', $produit->id)
                 ->where('order_product.created_at', '>', $dateDebut)
-                ->sum('order_product.quantity');
+                ->where('orders.status', '!=', 'annulée')
+                ->sum(DB::raw('order_product.quantity * product_product_base.coefficient'));
 
             $stockSortie = $produit->sorties()
                 ->where('sortie_stocks.created_at', '>', $dateDebut)
@@ -120,7 +128,7 @@ class InventaireController extends Controller
                 'stock_vendu'              => $stockVendu,
                 'stock_sortie'             => $stockSortie,
                 'stock_theorique'          => $stockTheorique,
-                'stock_restant'            => $stockTheorique,
+                'stock_restant'            => $produit->stock,
                 'stock_total'              => $stockDepart + $stockAjoute,
                 'stock_physique'           => 0,
                 'ecart'                    => null,
@@ -176,7 +184,7 @@ class InventaireController extends Controller
     //     return redirect()->route('inventaire.show', $inventaire->id)->with('success', 'Inventaire enregistré');
     // }
 
-//version 2 : on ajoute une transaction pour éviter les problèmes de données incohérentes en cas d'erreur
+    //version 2 : on ajoute une transaction pour éviter les problèmes de données incohérentes en cas d'erreur
     public function store(Request $request)
     {
         DB::beginTransaction();

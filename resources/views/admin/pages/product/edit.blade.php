@@ -1,6 +1,14 @@
 @extends('admin.layouts.app')
 @section('title', 'produit')
 @section('sub-title', 'Modifier un produit')
+
+@push('css')
+    <link rel="stylesheet" href="{{ asset('admin/assets/bundles/jquery-selectric/selectric.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/assets/bundles/select2/dist/css/select2.min.css') }}">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
+@endpush
+
 @section('content')
     <style>
         input[type="file"] {
@@ -41,173 +49,78 @@
         }
     </style>
 
-@section('css')
-    <link rel="stylesheet" href="{{ asset('admin/assets/bundles/jquery-selectric/selectric.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/assets/bundles/select2/dist/css/select2.min.css') }}">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
+    <script>
+        //upload principal image
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
 
-@endsection
-
-
-<script>
-    //upload principal image
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function(e) {
-                $('#img-preview')
-                    .attr('src', e.target.result);
-            };
+                reader.onload = function(e) {
+                    $('#img-preview')
+                        .attr('src', e.target.result);
+                };
 
 
-            reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(input.files[0]);
+            }
         }
-    }
-</script>
-<section class="section">
-    <div class="section-body">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Modifier un produit</h4>
-                    </div>
-                    @include('admin.components.validationMessage')
+    </script>
+    <section class="section">
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Modifier un produit</h4>
+                        </div>
+                        @include('admin.components.validationMessage')
 
-                    <form class="needs-validation" novalidate="" action="{{ route('product.update', $product['id']) }}"
-                        method="post" enctype="multipart/form-data">
-                        @csrf
-                        <div class="card-body">
+                        <form class="needs-validation" novalidate="" action="{{ route('product.update', $product->id) }}"
+                            method="post" enctype="multipart/form-data">
+                            @csrf
+                            <div class="card-body">
                             <div class="row">
 
                                 {{-- ====== Colonne principale : champs produit ====== --}}
-                                <div class="col-lg-8 border-right pr-lg-5">
-                                    <p class="text-muted text-uppercase font-weight-bold mb-3" style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
-                                        <i data-feather="package" style="width:12px;vertical-align:middle"></i> Informations produit
+                                <div class="col-lg-6 border-right pr-lg-5">
+                                    <p class="text-muted text-uppercase font-weight-bold mb-3"
+                                        style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
+                                        <i data-feather="package" style="width:12px;vertical-align:middle"></i>
+                                        Informations produit
                                     </p>
 
                                     <div class="form-group row mb-4">
-                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Titre</label>
+                                        <label
+                                            class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Titre</label>
                                         <div class="col-sm-12 col-md-7">
-                                            <input name="title" type="text" value="{{ $product['title'] }}" class="form-control" required>
+                                            <input name="title" type="text" value="{{ $product->title }}"
+                                                class="form-control" required>
                                             <div class="invalid-feedback">Champs obligatoire</div>
                                         </div>
                                     </div>
 
                                     <div class="form-group row mb-4">
-                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Prix</label>
+                                        <label
+                                            class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Prix</label>
                                         <div class="col-sm-12 col-md-7">
-                                            <input name="price" id="product_price" value="{{ $product['price'] }}" type="number" class="form-control currency" required>
+                                            <input name="price" id="product_price" value="{{ $product->price }}"
+                                                type="number" class="form-control currency" required>
                                             <div class="invalid-feedback">Champs obligatoire</div>
                                         </div>
                                     </div>
 
-                                    {{-- Stock --}}
-                                    {{-- <div class="form-group row mb-4">
-                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">
-                                            Stock
-                                            <small class="d-block text-muted" style="font-size:.75rem">Vide = infini</small>
-                                        </label>
-                                        <div class="col-sm-12 col-md-7">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <label class="small font-weight-bold">Quantité</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text"><i class="fas fa-boxes"></i></span>
-                                                        </div>
-                                                        <input name="stock" type="number" min="0" class="form-control" value="{{ $product['stock'] }}" placeholder="Infini par défaut">
-                                                    </div>
-                                                    @if($product['stock'] !== null)
-                                                        <small class="{{ $product['stock'] <= ($product['stock_alerte'] ?? 5) ? 'text-danger font-weight-bold' : 'text-success' }}">
-                                                            <i class="fas fa-circle" style="font-size:.6rem"></i>
-                                                            {{ $product['stock'] <= ($product['stock_alerte'] ?? 5) ? 'Stock bas' : 'En stock' }}
-                                                            ({{ $product['stock'] }} unités)
-                                                        </small>
-                                                    @else
-                                                        <small class="text-info"><i class="fas fa-infinity"></i> Stock infini</small>
-                                                    @endif
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="small font-weight-bold">Seuil alerte</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text"><i class="fas fa-exclamation-triangle text-warning"></i></span>
-                                                        </div>
-                                                        <input name="stock_alerte" type="number" min="0" class="form-control" value="{{ $product['stock_alerte'] ?? 5 }}" placeholder="5">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> --}}
-
-                                    {{-- Liaison avec produit de base --}}
-                                    <div class="form-group row mb-4">
-                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">
-                                            Produit de base
-                                            <small class="d-block text-muted" style="font-size:.75rem">Optionnel</small>
-                                        </label>
-                                        <div class="col-sm-12 col-md-7">
-                                            <div class="row">
-                                                <div class="col-7">
-                                                    <label class="small font-weight-bold">Produit</label>
-                                                    <select name="product_base_id" id="product_base_id" class="form-control">
-                                                        <option value="">-- Aucun --</option>
-                                                        @if(isset($productBases))
-                                                            @foreach($productBases as $pb)
-                                                                <option value="{{ $pb->id }}" 
-                                                                        data-unite="{{ $pb->unite }}"
-                                                                        {{ $product->product_base_id == $pb->id ? 'selected' : '' }}>
-                                                                    {{ $pb->nom }} ({{ $pb->unite }})
-                                                                </option>
-                                                            @endforeach
-                                                        @endif
-                                                    </select>
-                                                    <small class="text-muted">
-                                                        <i class="fas fa-info-circle"></i> Lie ce produit à un stock de base
-                                                    </small>
-                                                </div>
-                                                <div class="col-5">
-                                                    <label class="small font-weight-bold">Coefficient</label>
-                                                    <div class="input-group">
-                                                        <input name="coefficient" 
-                                                               id="coefficient" 
-                                                               type="number" 
-                                                               step="0.01" 
-                                                               min="0" 
-                                                               class="form-control" 
-                                                               value="{{ $product->coefficient ?? '' }}" 
-                                                               placeholder="Ex: 1">
-                                                        <div class="input-group-append" id="unite_display">
-                                                            <span class="input-group-text">
-                                                                @if($product->productBase)
-                                                                    {{ $product->productBase->unite }}
-                                                                @else
-                                                                    unité
-                                                                @endif
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <small class="text-muted">Quantité utilisée</small>
-                                                </div>
-                                            </div>
-                                            <div class="alert alert-info mt-2" style="font-size:.85rem">
-                                                <strong>Exemple:</strong> 1 Poulet braisé = 1 poulet de base<br>
-                                                <strong>Exemple:</strong> 1 Demi-poulet = 0.5 poulet de base
-                                            </div>
-                                        </div>
-                                    </div>
+                                   
 
                                     <div class="form-group row mb-4">
-                                        <label for="" class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Catégorie</label>
+                                        <label for=""
+                                            class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Catégorie</label>
                                         <div class="col-sm-12 col-md-7">
-                                            <select name="categories" id="category" class="form-control select2" required>
+                                            <select name="categories" id="category" class="form-control select2"
+                                                required>
                                                 @foreach ($category_backend as $item)
-                                                    <option value="{{ $item['id'] }}" tag={{ $item['name'] }}
-                                                        @if ($product->categories->containsStrict('id', $item['id'])) @selected(true) @endif>
-                                                        {{ $item['name'] }}
+                                                    <option value="{{ $item->id }}" tag="{{ $item->name }}"
+                                                        @if ($product->categories->containsStrict('id', $item->id)) @selected(true) @endif>
+                                                        {{ $item->name }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -216,11 +129,14 @@
                                     </div>
 
                                     <div class="form-group row mb-4 subcat">
-                                        <label for="" class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Sous catégorie</label>
+                                        <label for=""
+                                            class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Sous
+                                            catégorie</label>
                                         <div class="col-sm-12 col-md-7">
                                             <select name="subcategories" class="form-control select2">
                                                 @foreach ($subcategory_exist as $item)
-                                                    <option value="{{ $item['id'] }}" {{ $item['id'] == $product['sub_category_id'] ? 'selected' : '' }}>
+                                                    <option value="{{ $item->id }}"
+                                                        {{ $item->id == $product->sub_category_id ? 'selected' : '' }}>
                                                         {{ $item['name'] }}
                                                     </option>
                                                 @endforeach
@@ -230,16 +146,26 @@
                                     </div>
 
                                     <div class="form-group row mb-2">
-                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Description</label>
-                                        <div class="col-sm-12 col-md-7">
-                                            <textarea name="description" class="summernote">{{ $product['description'] }}</textarea>
+                                        <label
+                                            class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Description</label>
+                                        <div class="col-sm-12 col-md-12">
+                                            <textarea name="description" class="summernote">{{ $product->description }}</textarea>
                                         </div>
                                     </div>
                                 </div>
 
                                 {{-- ====== Colonne médias ====== --}}
-                                <div class="col-lg-4 pl-lg-4 mt-4 mt-lg-0">
-                                    <p class="text-muted text-uppercase font-weight-bold mb-3" style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
+                                <div class="col-lg-6 pl-lg-6 mt-4 mt-lg-0"> 
+                                    <hr>
+                                    <p class="text-muted text-uppercase font-weight-bold mb-3"
+                                        style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
+                                        <i data-feather="package" style="width:12px;vertical-align:middle"></i> Produits de base
+                                    </p>{{-- Liaison avec produits de base (dynamique) --}}
+                                    @include('admin.components.product_bases_form')
+
+                                    <hr>
+                                    <p class="text-muted text-uppercase font-weight-bold mb-3"
+                                        style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
                                         <i data-feather="image" style="width:12px;vertical-align:middle"></i> Médias
                                     </p>
 
@@ -252,8 +178,10 @@
                                             </label>
                                             <img id="img-preview"
                                                 src="{{ $product->getFirstMediaUrl('principal_img') }}"
-                                                class="img-fluid rounded mb-2 w-100" style="max-height:180px;object-fit:cover;border:1px solid #dee2e6" />
-                                            <input type="file" name="principal_img" id="file_single" class="form-control" onchange="readURL(this);" hidden>
+                                                class="img-fluid rounded mb-2 w-100"
+                                                style="max-height:180px;object-fit:cover;border:1px solid #dee2e6" />
+                                            <input type="file" name="principal_img" id="file_single"
+                                                class="form-control" onchange="readURL(this);" hidden>
                                             <label for="file_single" class="btn btn-outline-primary btn-sm w-100">
                                                 <i data-feather="upload" style="width:13px"></i> Changer l'image
                                             </label>
@@ -263,7 +191,8 @@
 
                                     {{-- Images produit --}}
                                     <label class="small font-weight-bold d-block mb-2">Images du produit</label>
-                                    <input type="file" id="files" class="form-control" name="files[]" accept=".jpg, .jpeg, .png, .gif, .webp" multiple hidden />
+                                    <input type="file" id="files" class="form-control" name="files[]"
+                                        accept=".jpg, .jpeg, .png, .gif, .webp" multiple hidden />
                                     <label for="files" class="btn btn-outline-secondary btn-sm w-100 mb-2">
                                         <i data-feather="plus-square" style="width:13px"></i> Ajouter des images
                                     </label>
@@ -274,26 +203,34 @@
                             <hr class="mt-4">
 
                             {{-- ====== Section Remise ====== --}}
-                            <p class="text-muted text-uppercase font-weight-bold mb-3" style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
+                            <p class="text-muted text-uppercase font-weight-bold mb-3"
+                                style="font-size:.7rem;letter-spacing:.08em;border-bottom:1px solid #f0f0f0;padding-bottom:.5rem">
                                 <i data-feather="tag" style="width:12px;vertical-align:middle"></i> Remise
                             </p>
                             <p class="fw-bold fs-2 col-12" id="MsgError"></p>
                             <div class="form-group row mb-3">
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Montant</label>
-                                    <input type="number" id="discount_price" value="{{ $product['montant_remise'] }}" name="montant_remise" class="form-control">
+                                    <input type="number" id="discount_price"
+                                        value="{{ $product->montant_remise }}" name="montant_remise"
+                                        class="form-control">
                                 </div>
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Pourcentage (%)</label>
-                                    <input type="number" id="discount" value="{{ $product['pourcentage_remise'] }}" name="pourcentage_remise" class="form-control">
+                                    <input type="number" id="discount"
+                                        value="{{ $product->pourcentage_remise }}" name="pourcentage_remise"
+                                        class="form-control">
                                 </div>
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Date début</label>
-                                    <input type="text" id="date_start" value="{{ $product['date_debut_remise'] }}" name="date_debut_remise" class="form-control datetimepicker">
+                                    <input type="text" id="date_start"
+                                        value="{{ $product->date_debut_remise }}" name="date_debut_remise"
+                                        class="form-control datetimepicker">
                                 </div>
                                 <div class="col-sm-3">
                                     <label class="col-sm-12 col-form-label">Date fin</label>
-                                    <input type="text" id="date_end" value="{{ $product['date_fin_remise'] }}" name="date_fin_remise" class="form-control datetimepicker">
+                                    <input type="text" id="date_end" value="{{ $product->date_fin_remise }}"
+                                        name="date_fin_remise" class="form-control datetimepicker">
                                 </div>
                             </div>
 
@@ -311,15 +248,14 @@
         </div>
     </div>
 </section>
+@endsection
 
-
-@section('script')
+@push('js')
     <script src="{{ asset('admin/assets/bundles/select2/dist/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('admin/assets/bundles/jquery-selectric/jquery.selectric.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js">
     </script>
-@endsection
-<script type="text/javascript">
+    <script type="text/javascript">
     $(document).ready(function() {
         //display principal image if category is pack
         // $('#principal_image').hide()
@@ -553,7 +489,7 @@
         $('#product_base_id').change(function() {
             var selectedOption = $(this).find('option:selected');
             var unite = selectedOption.data('unite');
-            
+
             if (unite) {
                 $('#unite_display .input-group-text').text(unite);
             } else {
@@ -569,4 +505,4 @@
 
     });
 </script>
-@endsection
+@endpush

@@ -124,7 +124,7 @@ class ProductBase extends Model
     public function calculerPrixAchatMoyen()
     {
         $lignes = $this->achatLignes()->get();
-        
+
         if ($lignes->count() === 0) {
             $this->prix_achat_moyen = 0;
             $this->save();
@@ -143,5 +143,11 @@ class ProductBase extends Model
         $this->prix_achat_moyen = 0;
         $this->save();
         return 0;
+    }
+
+    // scope pour filtrer les produits actifs et par ordre alphabétique
+    public function scopeActifs($query)
+    {
+        return $query->where('actif', true)->orderBy('nom');
     }
 }

@@ -178,6 +178,9 @@ class AchatController extends Controller
      */
     public function edit(Achat $achat)
     {
+        // Charger les lignes d'achat et leurs produits de base associés
+        $achat->load(['lignes.productBase']);
+
         $productBases = ProductBase::where('actif', true)
             ->orderBy('nom')
             ->get();

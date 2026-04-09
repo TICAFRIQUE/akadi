@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Models\Taille;
 use App\Models\Product;
 use App\Models\Category;
-
+use App\Models\ProductBase;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +19,7 @@ class ProductController extends Controller
     public function index()
     {
         //
-        $product = Product::with('categories' , 'productBase', 'subcategorie')
+        $product = Product::with('categories', 'productBase', 'subcategorie')
             ->orderBy('created_at', 'DESC')
             ->get();
         // dd($product->toArray());
@@ -37,11 +36,11 @@ class ProductController extends Controller
         // ->whereType('principale')
         // ->get();
 
-         $subcategories =SubCategory::orderBy('name')->get();
- 
+        $subcategories = SubCategory::orderBy('name')->get();
+        $allProductBases = ProductBase::orderBy('nom')->get();
 
 
-        return view('admin.pages.product.add' , compact('subcategories'));
+        return view('admin.pages.product.add', compact('subcategories', 'allProductBases'));
     }
 
     /**
@@ -76,10 +75,15 @@ class ProductController extends Controller
             'status_remise' => '',
             'stock' => $request->input('stock') !== '' ? $request->input('stock') : null,
             'stock_alerte' => $request->input('stock_alerte', 5),
-            'product_base_id' => $request->input('product_base_id') ?: null,
-            'coefficient' => $request->input('coefficient') ?: null,
+            'product_base_id' => null,  // On ne stocke jamais le tableau ici, utiliser productBases() à la place
+            'coefficient' => null,      // Idem
             'user_id' => $userId
         ]);
+
+        // Attacher les multiples productBases via la pivot si fourni
+        if ($request->has('product_base_id') && is_array($request->input('product_base_id'))) {
+            $this->attachProductBasesToPivot($product, $request);
+        }
 
         //insert category in pivot table
         if ($request->has('categories')) {
@@ -124,49 +128,95 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+    // public function edit(string $id)
+    // {
+    //     $product = Product::with([
+    //         'categories',
+    //         'subcategorie',
+    //         'media',
+    //         'productBases'
+    //     ])
+    //         ->whereId($id)
+    //         ->first();
+
+    //     // Récupérer l'ID de la catégorie correctement (depuis l'objet)
+    //     $catId = $product->categories->first()?->id;
+
+    //     // Sous-catégories existantes
+    //     $subcategory_exist = SubCategory::where('category_id', $catId)
+    //         ->orderBy('name', 'ASC')
+    //         ->get();
+
+    //     // Toutes les catégories pour le formulaire
+    //     $category_backend = Category::orderBy('name', 'ASC')->get();
+
+    //     // Images du produit
+    //     $images = $product->media->toArray();
+
+    //     // Tous les produits de base pour le formulaire
+    //     $allProductBases = ProductBase::orderBy('nom')->get();
+    //     $productBases = $product->productBases;
+
+    //     // dd($productBases->toArray());
+
+    //     return view('admin.pages.product.edit', compact(
+    //         'product',
+    //         'category_backend',
+    //         'subcategory_exist',
+    //         'images',
+    //         'allProductBases',
+    //         'productBases'
+    //     ));
+    // }
     public function edit(string $id)
     {
-
-        //
-        // $collection = Collection::orderBy('name', 'DESC')->get();
-
         $product = Product::with([
-            'categories', 'subcategorie',  'media'
+            'categories',
+            'subcategorie',
+            'media',
+            'productBases'
         ])
             ->whereId($id)
             ->first();
-        $catId = $product['categories'][0]['id'];
 
+        // Récupérer l'ID de la catégorie correctement (depuis l'objet)
+        $catId = $product->categories->first()?->id;
 
-        // dd($catId);
-
-
-        //sub cat of category selected
-        // $cat  = Product::with([
-        //     'categories' => fn ($q) => $q->whereType('principale'), 'subcategorie', 'collection', 'tailles', 'pointures', 'media'
-        // ])
-        //     ->whereId($id)
-        //     ->first();
+        // Sous-catégories existantes
         $subcategory_exist = SubCategory::where('category_id', $catId)
             ->orderBy('name', 'ASC')
             ->get();
 
-        //get Image from database
-        $images = [];
+        // Toutes les catégories pour le formulaire
+        $category_backend = Category::orderBy('name', 'ASC')->get();
 
-        foreach ($product->media as $value) {
-            array_push($images, $value);
-        }
-        // dd($cat->toArray());
+        // Images du produit
+        $images = $product->media->toArray();
+
+        // Tous les produits de base pour le formulaire
+        $allProductBases = ProductBase::orderBy('nom')->get();
+        $productBases    = $product->productBases;
+
+        // Préparer les données des liaisons existantes pour le composant Blade
+        $productBasesData = $productBases->map(function ($pb) {
+            return [
+                'id'          => $pb->id,
+                'nom'         => $pb->nom,
+                'unite'       => $pb->unite,
+                'coefficient' => $pb->pivot->coefficient ?? 0,
+            ];
+        })->values();
 
         return view('admin.pages.product.edit', compact(
             'product',
+            'category_backend',
             'subcategory_exist',
-            // 'collection',
-            'images'
+            'images',
+            'allProductBases',
+            'productBases',
+            'productBasesData'
         ));
     }
-
 
     /**
      * delete image on edit product.
@@ -206,9 +256,17 @@ class ProductController extends Controller
             'status_remise' => '',
             'stock' => $request->input('stock') !== '' ? $request->input('stock') : null,
             'stock_alerte' => $request->input('stock_alerte', 5),
-            'product_base_id' => $request->input('product_base_id') ?: null,
-            'coefficient' => $request->input('coefficient') ?: null,
+            'product_base_id' => null,  // On ne stocke jamais le tableau ici, utiliser productBases() à la place
+            'coefficient' => null,      // Idem
         ]);
+
+        // Mettre à jour les productBases dans la pivot
+        if ($request->has('product_base_id') && is_array($request->input('product_base_id'))) {
+            $this->attachProductBasesToPivot($product, $request);
+        } else {
+            // Si pas d'array, détacher tous les productBases (fallback)
+            $product->productBases()->detach();
+        }
 
 
         //insert category in pivot table
@@ -277,5 +335,25 @@ class ProductController extends Controller
             'status' => 200,
 
         ]);
+    }
+
+    /**
+     * Attacher les productBases au produit via la pivot avec leurs coefficients
+     */
+    private function attachProductBasesToPivot(Product $product, Request $request)
+    {
+        // Récupérer les IDs et coefficients du formulaire
+        $productBaseIds = $request->input('product_base_id', []);
+        $coefficients = $request->input('coefficient', []);
+
+        // Détacher tous les productBases existants
+        $product->productBases()->detach();
+
+        // Attacher les nouveaux productBases avec leurs coefficients
+        foreach ($productBaseIds as $index => $baseId) {
+            if (!empty($baseId) && !empty($coefficients[$index])) {
+                $product->productBases()->attach($baseId, ['coefficient' => $coefficients[$index]]);
+            }
+        }
     }
 }

@@ -1,9 +1,9 @@
-﻿<?php
+<?php
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -76,6 +76,17 @@ class PermissionSeeder extends Seeder
             'administration.roles',
             'administration.permissions',
         ],
+
+        // ── Gestion de stock ─────────────────────────────────────────────────────────────
+        'Gestion-de-stock ' => [
+            'gestion-de-stock.achats',
+            'gestion-de-stock.fournisseurs',
+            'gestion-de-stock.inventaires',
+            'gestion-de-stock.produits-base',
+            'gestion-de-stock.sorties',
+            'gestion-de-stock.suivi',
+            'gestion-de-stock.voir',
+        ],
     ];
 
     public function run(): void
@@ -94,5 +105,11 @@ class PermissionSeeder extends Seeder
         }
 
 
+        //attribuer toutes les permissions à l'administrateur et developpeur
+        User::role(['developpeur', 'administrateur'])->get()->each(
+            function ($user) use ($allPermissions) {
+                $user->syncPermissions($allPermissions);
+            }
+        );
     }
 }

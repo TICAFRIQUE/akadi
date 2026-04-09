@@ -6,10 +6,14 @@ require_once __DIR__ . '/../Helpers/product_alert.php';
 
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Publicite;
 use App\Models\SubCategory;
 use App\Models\ProductBase;
+use App\Observers\OrderObserver;
+use App\Observers\ProductObserver;
+use App\Observers\ProductBaseObserver;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -103,6 +107,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         DB::statement("SET lc_time_names = 'fr_FR'");
+
+        // ── Observers ─────────────────────────────────────────────────────────────
+        Order::observe(OrderObserver::class);
+        Product::observe(ProductObserver::class);
+        ProductBase::observe(ProductBaseObserver::class);
 
         // ── Vues FRONT (site public) ─────────────────────────────────────────────
         View::composer('site.*', function ($view) {

@@ -84,6 +84,16 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(ProductBase::class, 'product_base_id');
     }
 
+    /**
+     * Relation pour les multiples produits de base via la table pivot
+     */
+    public function productBases(): BelongsToMany
+    {
+        return $this->belongsToMany(ProductBase::class, 'product_product_base')
+            ->withPivot(['coefficient'])
+            ->withTimestamps();
+    }
+
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class)->withTimestamps();
@@ -200,19 +210,19 @@ class Product extends Model implements HasMedia
 
 
     public function registerMediaConversions(?Media $media = null): void
-{
-    $this->addMediaConversion('thumb')
-        ->width(400)
-        ->height(400)
-        ->fit(\Spatie\Image\Enums\Fit::Max)
-        ->quality(90)
-        ->queued();
+    {
+        $this->addMediaConversion('thumb')
+            ->width(400)
+            ->height(400)
+            ->fit(\Spatie\Image\Enums\Fit::Max)
+            ->quality(90)
+            ->queued();
 
-    $this->addMediaConversion('bigthumb')
-        ->width(800)
-        ->height(800)
-        ->fit(\Spatie\Image\Enums\Fit::Max)
-        ->quality(90)
-        ->queued();
-}
+        $this->addMediaConversion('bigthumb')
+            ->width(800)
+            ->height(800)
+            ->fit(\Spatie\Image\Enums\Fit::Max)
+            ->quality(90)
+            ->queued();
+    }
 }

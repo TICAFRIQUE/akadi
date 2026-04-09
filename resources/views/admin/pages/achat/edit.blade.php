@@ -107,7 +107,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="lignesContainer">
-                                            @foreach(old('lignes', $achat->lignes) as $index => $ligne)
+                                            @foreach($achat->lignes ?? [] as $index => $ligne)
                                                 <tr class="ligne-produit" data-ligne-id="{{ is_object($ligne) ? $ligne->id : '' }}">
                                                     <td>
                                                         <input type="hidden" name="lignes[{{ $index }}][id]" value="{{ is_object($ligne) ? $ligne->id : '' }}">
@@ -196,7 +196,7 @@
 <script>
     $(document).ready(function() {
         console.log('Script achat edit chargé');
-        let ligneIndex = {{ count(old('lignes', $achat->lignes)) }};
+        let ligneIndex = {{ count($achat->lignes ?? []) }};
 
         // Calculer les montants au chargement
         $('.ligne-produit').each(function() {
