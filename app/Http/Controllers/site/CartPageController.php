@@ -58,7 +58,7 @@ class CartPageController extends Controller
     }
 
 
-   
+
     //modifier et mettre à jour le panier
     public function update(Request $request)
     {
@@ -219,7 +219,7 @@ class CartPageController extends Controller
     }
 
 
-   
+
 
     public function checkCoupon(Request $request, $code)
     {
@@ -422,7 +422,6 @@ class CartPageController extends Controller
                 'info@akadi.ci',
                 'AKADI Restaurant'
             );
-
         } catch (Exception $e) {
             Log::error('Erreur dispatch email job: ' . $e->getMessage());
         }
@@ -457,7 +456,7 @@ class CartPageController extends Controller
                     $couponExists = DB::table('coupons')
                         ->where('id', $coupon_id)
                         ->exists();
-                    
+
                     if (!$couponExists) {
                         Log::warning('Tentative d\'utilisation d\'un coupon inexistant - valeur annulée', [
                             'coupon_id' => $coupon_id,

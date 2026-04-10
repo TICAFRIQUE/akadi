@@ -40,22 +40,33 @@ class SuiviStockController extends Controller
             $stockAjoute = $pb->achatLignes->sum('quantite');
             $stockSortie = $pb->sorties->sum('quantite');
 
-            // Stock vendu (via la table pivot order_product)
-            $stockVendu = 0;
+
             // Stock vendu (nouvelle logique multi-bases)
-            $stockVendu = 0;
-            if ($filtre === 'vendu' || $filtre === 'tous') {
-                $stockVendu = DB::table('order_product')
-                    ->join('orders', 'order_product.order_id', '=', 'orders.id')
-                    ->join('product_product_base', 'product_product_base.product_id', '=', 'order_product.product_id')
-                    ->where('product_product_base.product_base_id', $pb->id)
-                    ->whereBetween('orders.created_at', [
-                        $dateDebut . ' 00:00:00',
-                        $dateFin   . ' 23:59:59'
-                    ])
-                    ->where('orders.status', '!=', 'annulée')
-                    ->sum(DB::raw('order_product.quantity * product_product_base.coefficient'));
-            }
+            // $stockVendu = 0;
+            // if ($filtre === 'vendu' || $filtre === 'tous') {
+            //     $stockVendu = DB::table('order_product')
+            //         ->join('orders', 'order_product.order_id', '=', 'orders.id')
+            //         ->join('product_product_base', 'product_product_base.product_id', '=', 'order_product.product_id')
+            //         ->where('product_product_base.product_base_id', $pb->id)
+            //         ->whereBetween('orders.created_at', [
+            //             $dateDebut . ' 00:00:00',
+            //             $dateFin   . ' 23:59:59'
+            //         ])
+            //         ->where('orders.status', '!=', 'annulée')
+            //         ->sum(DB::raw('order_product.quantity * product_product_base.coefficient'));
+            // }
+
+            // Suivi --> Nouvelle logique de calcul du stock vendu directement à partir de la table pivot order_product_base
+            $stockVendu = DB::table('order_product_base')
+                ->join('orders', 'order_product_base.order_id', '=', 'orders.id')
+                ->where('order_product_base.product_base_id', $pb->id)
+                ->whereBetween('orders.created_at', [
+                    $dateDebut . ' 00:00:00',
+                    $dateFin   . ' 23:59:59'
+                ])
+                ->where('orders.status', '!=', 'annulée')
+                ->sum('order_product_base.quantity_consumed'); // ← direct, plus besoin de multiplier
+
 
             $stockActuel = $pb->stock;
             $stockMin = $pb->stock_alerte ?? 0;

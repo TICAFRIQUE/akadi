@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\SendEmailJob;
 use App\Models\Order;
 use App\Models\PaymentMethod;
+use App\Services\StockService;
 use App\Services\TicAfriqueService;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
@@ -18,6 +19,13 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 class OrderController extends Controller
 {
+
+    protected $stockService;
+
+    public function __construct(StockService $stockService)
+    {
+        $this->stockService = $stockService;
+    }
 
     /**
      * Envoyer un SMS au client via l'API TIC Afrique un fois la commande confirmée
@@ -107,6 +115,11 @@ class OrderController extends Controller
                 'products' => fn($q) => $q->with('media')
             ])
             ->orderBy('created_at', 'DESC')->first();
+
+        //si la commande n'existe pas
+        if (!$orders) {
+            return redirect()->back()->with('error', 'Commande introuvable.');
+        }
 
         $statuts        = Order::$statuts;
         $sources        = Order::$sources;
@@ -241,52 +254,93 @@ class OrderController extends Controller
     }
 
 
-    public function orderCancel(Request $request)  // cancel order with reason
+    // public function orderCancel(Request $request)  // cancel order with reason
+    // {
+    //     $motif = "";
+    //     if ($request['motif'] == 'autre') {
+    //         $motif = $request['motif_autre'];
+    //     } else {
+    //         $motif = $request['motif'];
+    //     }
+    //     Order::whereId($request['commandeId'])->update([
+    //         'status' => 'annulée',
+    //         'raison_annulation_cmd' => $motif
+    //     ]);
+
+    //     // Remettre à jour le stock du product_base pour chaque produit de la commande
+    //     $order = Order::with('products.productBase', 'user')->whereId($request['commandeId'])->first();
+    //     // appelle de la fonction service pour incrementer le stock de chaque product_base lié à la commande annulée
+    //     if ($order) {
+    //         $this->stockService->reincrementStockOnCancellation($order);
+    //     }
+
+    //     // if ($order) {
+    //     //     foreach ($order->products as $product) {
+    //     //         if ($product->product_base_id && $product->productBase) {
+    //     //             $coefficient = $product->coefficient > 0 ? $product->coefficient : 1;
+    //     //             $quantite = $product->pivot->quantity;
+    //     //             $product->productBase->incrementerStock($quantite * $coefficient);
+    //     //         }
+    //     //     }
+    //     // }
+
+    //     //envoyer email d'annulation via queue
+    //     if (!empty($order->user->email)) {
+    //         SendEmailJob::dispatch(
+    //             $order->user->email,
+    //             'Annulation de commande',
+    //             'emails.order-status',
+    //             [
+    //                 'imagePath' => asset('site/assets/img/custom/AKADI.png'),
+    //                 'clientName' => $order->user->name,
+    //                 'orderCode' => $order->code,
+    //                 'status' => 'annulée',
+    //                 'raison' => $motif
+    //             ],
+    //             'info@akadi.ci',
+    //             'Akadi'
+    //         );
+    //     }
+
+    //     return back()->withSuccess('Commande annulée avec success');
+    // }
+    public function orderCancel(Request $request)
     {
-        $motif = "";
-        if ($request['motif'] == 'autre') {
-            $motif = $request['motif_autre'];
-        } else {
-            $motif = $request['motif'];
-        }
+        $motif = $request['motif'] == 'autre'
+            ? $request['motif_autre']
+            : $request['motif'];
+
         Order::whereId($request['commandeId'])->update([
-            'status' => 'annulée',
-            'raison_annulation_cmd' => $motif
+            'status'                 => 'annulée',
+            'raison_annulation_cmd'  => $motif
         ]);
 
-        // Remettre à jour le stock du product_base pour chaque produit de la commande
-        $order = Order::with('products.productBase', 'user')->whereId($request['commandeId'])->first();
+        // Charger la commande avec user pour l'email
+        $order = Order::with('user')->whereId($request['commandeId'])->first();
+
         if ($order) {
-            foreach ($order->products as $product) {
-                if ($product->product_base_id && $product->productBase) {
-                    $coefficient = $product->coefficient > 0 ? $product->coefficient : 1;
-                    $quantite = $product->pivot->quantity;
-                    $product->productBase->incrementerStock($quantite * $coefficient);
-                }
-            }
+            $this->stockService->reincrementStockOnCancellation($order);
         }
 
-        //envoyer email d'annulation via queue
         if (!empty($order->user->email)) {
             SendEmailJob::dispatch(
                 $order->user->email,
                 'Annulation de commande',
                 'emails.order-status',
                 [
-                    'imagePath' => asset('site/assets/img/custom/AKADI.png'),
+                    'imagePath'  => asset('site/assets/img/custom/AKADI.png'),
                     'clientName' => $order->user->name,
-                    'orderCode' => $order->code,
-                    'status' => 'annulée',
-                    'raison' => $motif
+                    'orderCode'  => $order->code,
+                    'status'     => 'annulée',
+                    'raison'     => $motif
                 ],
                 'info@akadi.ci',
                 'Akadi'
             );
         }
 
-        return back()->withSuccess('Commande annulée avec success');
+        return back()->withSuccess('Commande annulée avec succès');
     }
-
 
     public function checkNewOrder(Request $request)
     {

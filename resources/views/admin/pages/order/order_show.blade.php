@@ -32,9 +32,13 @@
             <i data-feather="arrow-left"></i> Retour
         </button>
         <div class="d-flex" style="gap:8px;flex-wrap:wrap">
+            <!-- aficher modifier si pas annulée -->
+            @if(!in_array($orders->status, ['annulée']))
             <a href="{{ route('pos.edit', $orders->id) }}" class="btn btn-primary">
                 <i class="fas fa-edit mr-1"></i> Modifier
             </a>
+            @endif
+            
             @if(!in_array($orders->status, ['livrée','annulée']))
             <div class="dropdown">
                 <a href="#" data-toggle="dropdown" class="btn btn-dark dropdown-toggle">

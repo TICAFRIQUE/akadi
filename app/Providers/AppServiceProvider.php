@@ -109,7 +109,7 @@ class AppServiceProvider extends ServiceProvider
         DB::statement("SET lc_time_names = 'fr_FR'");
 
         // ── Observers ─────────────────────────────────────────────────────────────
-        Order::observe(OrderObserver::class);
+        // Order::observe(OrderObserver::class);
         Product::observe(ProductObserver::class);
         ProductBase::observe(ProductBaseObserver::class);
 

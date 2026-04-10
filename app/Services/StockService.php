@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductBase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class StockService
@@ -19,7 +21,7 @@ class StockService
     public function attachProductAndDecrementStock(Order $order, int $productId, array $pivotData)
     {
         $product = Product::with(['productBase', 'productBases'])->find($productId);
-        
+
         if (!$product) {
             Log::warning('Produit introuvable', ['product_id' => $productId]);
             return;
@@ -69,7 +71,7 @@ class StockService
                     ]);
                 }
             }
-        } 
+        }
         // Fallback: si pas de pivot, utiliser l'ancienne logique
         elseif ($product->productBase && $product->coefficient) {
             $quantiteVendue = $pivotData['quantity'];
@@ -129,46 +131,107 @@ class StockService
      * @param Order $order
      * @return void
      */
+    // public function reincrementStockOnCancellation(Order $order)
+    // {
+    //     foreach ($order->products as $product) {
+    //         // Chercher les multiples productBases via la relation pivot
+    //         $productBases = $product->productBases()->get();
+
+    //         // Si le produit a des productBases via la pivot, les traiter tous
+    //         if ($productBases->count() > 0) {
+    //             foreach ($productBases as $productBase) {
+    //                 $quantiteVendue = $product->pivot->quantity;
+    //                 $coefficient = $productBase->pivot->coefficient;
+    //                 $quantiteAReincrémenter = $quantiteVendue * $coefficient;
+
+    //                 $productBase->incrementerStock($quantiteAReincrémenter);
+
+    //                 Log::info('Stock réincrémenté suite à annulation', [
+    //                     'order_id' => $order->id,
+    //                     'product_id' => $product->id,
+    //                     'product_base_id' => $productBase->id,
+    //                     'quantite_reincrémentée' => $quantiteAReincrémenter,
+    //                     'stock_actuel' => $productBase->stock,
+    //                 ]);
+    //             }
+    //         }
+    //         // Fallback: si pas de pivot, utiliser l'ancienne logique
+    //         elseif ($product->productBase && $product->pivot->coefficient) {
+    //             $quantiteVendue = $product->pivot->quantity;
+    //             $coefficient = $product->pivot->coefficient;
+    //             $quantiteAReincrémenter = $quantiteVendue * $coefficient;
+
+    //             $product->productBase->incrementerStock($quantiteAReincrémenter);
+
+    //             Log::info('Stock réincrémenté suite à annulation', [
+    //                 'order_id' => $order->id,
+    //                 'product_id' => $product->id,
+    //                 'product_base_id' => $product->productBase->id,
+    //                 'quantite_reincrémentée' => $quantiteAReincrémenter,
+    //                 'stock_actuel' => $product->productBase->stock,
+    //             ]);
+    //         }
+    //     }
+    // }
+
     public function reincrementStockOnCancellation(Order $order)
     {
-        foreach ($order->products as $product) {
-            // Chercher les multiples productBases via la relation pivot
-            $productBases = $product->productBases()->get();
+        // Utiliser les snapshots figés au moment de la vente
+        $snapshots = DB::table('order_product_base')
+            ->where('order_id', $order->id)
+            ->get();
 
-            // Si le produit a des productBases via la pivot, les traiter tous
-            if ($productBases->count() > 0) {
-                foreach ($productBases as $productBase) {
-                    $quantiteVendue = $product->pivot->quantity;
-                    $coefficient = $productBase->pivot->coefficient;
-                    $quantiteAReincrémenter = $quantiteVendue * $coefficient;
+        if ($snapshots->isEmpty()) {
+            // Fallback : ancienne logique pour les commandes avant la migration
+            foreach ($order->products as $product) {
+                $productBases = $product->productBases()->get();
 
-                    $productBase->incrementerStock($quantiteAReincrémenter);
+                if ($productBases->count() > 0) {
+                    foreach ($productBases as $productBase) {
+                        $quantiteVendue        = $product->pivot->quantity;
+                        $coefficient           = $productBase->pivot->coefficient;
+                        $quantiteAReincrementer = $quantiteVendue * $coefficient;
+                        $productBase->incrementerStock($quantiteAReincrementer);
 
-                    Log::info('Stock réincrémenté suite à annulation', [
-                        'order_id' => $order->id,
-                        'product_id' => $product->id,
-                        'product_base_id' => $productBase->id,
-                        'quantite_reincrémentée' => $quantiteAReincrémenter,
-                        'stock_actuel' => $productBase->stock,
+                        Log::info('Stock réincrémenté (fallback) suite à annulation', [
+                            'order_id'               => $order->id,
+                            'product_id'             => $product->id,
+                            'product_base_id'        => $productBase->id,
+                            'quantite_reincrémentée' => $quantiteAReincrementer,
+                        ]);
+                    }
+                } elseif ($product->productBase && $product->pivot->coefficient) {
+                    $quantiteVendue        = $product->pivot->quantity;
+                    $coefficient           = $product->pivot->coefficient;
+                    $quantiteAReincrementer = $quantiteVendue * $coefficient;
+                    $product->productBase->incrementerStock($quantiteAReincrementer);
+
+                    Log::info('Stock réincrémenté (fallback ancien) suite à annulation', [
+                        'order_id'               => $order->id,
+                        'product_id'             => $product->id,
+                        'product_base_id'        => $product->productBase->id,
+                        'quantite_reincrémentée' => $quantiteAReincrementer,
                     ]);
                 }
             }
-            // Fallback: si pas de pivot, utiliser l'ancienne logique
-            elseif ($product->productBase && $product->pivot->coefficient) {
-                $quantiteVendue = $product->pivot->quantity;
-                $coefficient = $product->pivot->coefficient;
-                $quantiteAReincrémenter = $quantiteVendue * $coefficient;
+            return;
+        }
 
-                $product->productBase->incrementerStock($quantiteAReincrémenter);
+        // Nouvelle logique : utiliser les snapshots
+        foreach ($snapshots as $snap) {
+            $productBase = ProductBase::find($snap->product_base_id);
+            if (!$productBase) continue;
 
-                Log::info('Stock réincrémenté suite à annulation', [
-                    'order_id' => $order->id,
-                    'product_id' => $product->id,
-                    'product_base_id' => $product->productBase->id,
-                    'quantite_reincrémentée' => $quantiteAReincrémenter,
-                    'stock_actuel' => $product->productBase->stock,
-                ]);
-            }
+            $productBase->incrementerStock($snap->quantity_consumed);
+
+            Log::info('Stock réincrémenté (snapshot) suite à annulation', [
+                'order_id'               => $order->id,
+                'product_id'             => $snap->product_id,
+                'product_base_id'        => $snap->product_base_id,
+                'quantite_reincrémentée' => $snap->quantity_consumed,
+                'coefficient_snapshot'   => $snap->coefficient,
+                'stock_actuel'           => $productBase->fresh()->stock,
+            ]);
         }
     }
 

@@ -98,17 +98,24 @@ class InventaireController extends Controller
                 ->where('achat_lignes.created_at', '>', $dateDebut)
                 ->sum('achat_lignes.quantite');
 
-            // $stockVendu = $produit->ventes()
-            //     ->where('order_product.created_at', '>', $dateDebut)
-            //     ->sum('order_product.quantity');
 
-            $stockVendu = DB::table('order_product')
-                ->join('orders', 'order_product.order_id', '=', 'orders.id')
-                ->join('product_product_base', 'product_product_base.product_id', '=', 'order_product.product_id')
-                ->where('product_product_base.product_base_id', $produit->id)
-                ->where('order_product.created_at', '>', $dateDebut)
+
+            // $stockVendu = DB::table('order_product')
+            //     ->join('orders', 'order_product.order_id', '=', 'orders.id')
+            //     ->join('product_product_base', 'product_product_base.product_id', '=', 'order_product.product_id')
+            //     ->where('product_product_base.product_base_id', $produit->id)
+            //     ->where('order_product.created_at', '>', $dateDebut)
+            //     ->where('orders.status', '!=', 'annulée')
+            //     ->sum(DB::raw('order_product.quantity * product_product_base.coefficient'));
+
+
+            // Inventaire -- nouvelle logique de calcul du stock vendu directement à partir de la table pivot order_product_base
+            $stockVendu = DB::table('order_product_base')
+                ->join('orders', 'order_product_base.order_id', '=', 'orders.id')
+                ->where('order_product_base.product_base_id', $produit->id)
+                ->where('order_product_base.created_at', '>', $dateDebut)
                 ->where('orders.status', '!=', 'annulée')
-                ->sum(DB::raw('order_product.quantity * product_product_base.coefficient'));
+                ->sum('order_product_base.quantity_consumed');
 
             $stockSortie = $produit->sorties()
                 ->where('sortie_stocks.created_at', '>', $dateDebut)

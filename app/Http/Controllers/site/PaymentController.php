@@ -146,6 +146,44 @@ class PaymentController extends Controller
             // Attacher les produits à la commande et décrémenter les stocks
             $this->stockService->attachCartAndDecrementStock($order, $cart);
 
+
+            //------------------ SNAPSHOT insertion des product_base  ----------------------------
+
+            // 3️⃣ 🔥 RELOAD (OBLIGATOIRE)
+            $order->load([
+                'products' => function ($q) {
+                    $q->withPivot('quantity');
+                },
+                'products.productBases' => function ($q) {
+                    $q->withPivot('coefficient');
+                }
+            ]);
+
+            // 4️⃣ 🔥 SNAPSHOT
+            foreach ($order->products as $product) {
+
+                $qty = (int) ($product->pivot->quantity ?? 0);
+                if ($qty <= 0) continue;
+
+                foreach ($product->productBases as $base) {
+
+                    $coeff = (float) ($base->pivot->coefficient ?? 0);
+                    if ($coeff <= 0) continue;
+
+                    $quantityConsumed = $qty * $coeff;
+
+                    DB::table('order_product_base')->insert([
+                        'order_id'          => $order->id,
+                        'product_id'        => $product->id,
+                        'product_base_id'   => $base->id,
+                        'coefficient'       => $coeff,
+                        'quantity_consumed' => $quantityConsumed,
+                        'created_at'        => now(),
+                        'updated_at'        => now(),
+                    ]);
+                }
+            }
+
             // Gérer le coupon si présent
             $this->handleCoupon($deliveryInfo);
 
@@ -246,6 +284,43 @@ class PaymentController extends Controller
 
             // Attacher les produits à la commande et décrémenter les stocks
             $this->stockService->attachCartAndDecrementStock($order, $cart);
+
+            //------─────────────────────── Insertion des bases de produits dans la table order_product_base ────────────────────────────────────────────────────────
+            // 3️⃣ reload de la commande pour s'assurer d'avoir les relations à jour (OBLIGATOIRE avant de faire le snapshot)
+            $order->load([
+                'products' => function ($q) {
+                    $q->withPivot('quantity');
+                },
+                'products.productBases' => function ($q) {
+                    $q->withPivot('coefficient');
+                }
+            ]);
+
+            // 4️⃣ snapshot des consommations de bases pour chaque produit de la commande
+            foreach ($order->products as $product) {
+
+                $qty = (int) ($product->pivot->quantity ?? 0);
+                if ($qty <= 0) continue;
+
+                foreach ($product->productBases as $base) {
+
+                    $coeff = (float) ($base->pivot->coefficient ?? 0);
+                    if ($coeff <= 0) continue;
+
+                    $quantityConsumed = $qty * $coeff;
+
+                    DB::table('order_product_base')->insert([
+                        'order_id'          => $order->id,
+                        'product_id'        => $product->id,
+                        'product_base_id'   => $base->id,
+                        'coefficient'       => $coeff,
+                        'quantity_consumed' => $quantityConsumed,
+                        'created_at'        => now(),
+                        'updated_at'        => now(),
+                    ]);
+                }
+            }
+
 
             // Gérer le coupon si présent
             $this->handleCoupon($deliveryInfo);
