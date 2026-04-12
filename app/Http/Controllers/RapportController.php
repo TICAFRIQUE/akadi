@@ -150,7 +150,7 @@ class RapportController extends Controller
             // Vérification de la catégorie de dépense
             $categorieDepenseExiste = CategorieDepense::where('id', $categorieDepense)->first();
 
-           
+
 
             // Récupération des dépenses de la catégorie sélectionnée dans la période spécifiée
             $depenses = Depense::where('categorie_depense_id', $categorieDepense)
@@ -166,7 +166,7 @@ class RapportController extends Controller
                 })
                 ->with(['categorie_depense', 'libelle_depense'])
                 ->get();
-           
+
             return view('admin.pages.rapport.detail_depense', compact('depenses', 'dateDebut', 'dateFin', 'categorieDepense'));
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -193,15 +193,15 @@ class RapportController extends Controller
 
             // 3. Produits vendus avec Eloquent
             $produitsVendus = Product::whereHas('orders', function ($q) use ($dateDebut, $dateFin) {
-                    $q->where('orders.status', '!=', 'annule');
-                    if ($dateDebut && $dateFin) {
-                        $q->whereBetween('orders.created_at', [$dateDebut, $dateFin]);
-                    } elseif ($dateDebut) {
-                        $q->where('orders.created_at', '>=', $dateDebut);
-                    } elseif ($dateFin) {
-                        $q->where('orders.created_at', '<=', $dateFin);
-                    }
-                })
+                $q->where('orders.status', '!=', 'annule');
+                if ($dateDebut && $dateFin) {
+                    $q->whereBetween('orders.created_at', [$dateDebut, $dateFin]);
+                } elseif ($dateDebut) {
+                    $q->where('orders.created_at', '>=', $dateDebut);
+                } elseif ($dateFin) {
+                    $q->where('orders.created_at', '<=', $dateFin);
+                }
+            })
                 ->with(['orders' => function ($q) use ($dateDebut, $dateFin) {
                     $q->where('orders.status', '!=', 'annule');
                     if ($dateDebut && $dateFin) {
@@ -213,21 +213,67 @@ class RapportController extends Controller
                     }
                 }])
                 ->get()
-                ->map(function ($product) {
+                // ->map(function ($product) {
+                //     $total_quantite = $product->orders->sum(function ($order) {
+                //         return $order->pivot->quantity;
+                //     });
+                //     $total_chiffre_affaires = $product->orders->sum(function ($order) {
+                //         return $order->pivot->quantity * $order->pivot->unit_price;
+                //     });
+                //     return [
+                //         'id' => $product->id,
+                //         'title' => $product->title,
+                //         'code' => $product->code,
+                //         'categorie' => $product->subcategorie ? $product->subcategorie->name : 'N/A',
+                //         'price' => $product->price,
+                //         'total_quantite' => $total_quantite,
+                //         'total_chiffre_affaires' => $total_chiffre_affaires,
+                //     ];
+                // })
+
+
+                ->map(function ($product) use ($dateDebut, $dateFin) {
                     $total_quantite = $product->orders->sum(function ($order) {
                         return $order->pivot->quantity;
                     });
                     $total_chiffre_affaires = $product->orders->sum(function ($order) {
                         return $order->pivot->quantity * $order->pivot->unit_price;
                     });
+
+                    // Récupérer les bases consommées depuis les snapshots
+                    $orderIds = $product->orders->pluck('id');
+
+                    $basesQuery = DB::table('order_product_base')
+                        ->join('product_bases', 'order_product_base.product_base_id', '=', 'product_bases.id')
+                        ->whereIn('order_product_base.order_id', $orderIds)
+                        ->where('order_product_base.product_id', $product->id);
+
+                    if ($dateDebut && $dateFin) {
+                        $basesQuery->whereBetween('order_product_base.created_at', [$dateDebut, $dateFin]);
+                    } elseif ($dateDebut) {
+                        $basesQuery->where('order_product_base.created_at', '>=', $dateDebut);
+                    } elseif ($dateFin) {
+                        $basesQuery->where('order_product_base.created_at', '<=', $dateFin);
+                    }
+
+                    $bases_consommees = $basesQuery
+                        ->select(
+                            'product_bases.nom',
+                            'product_bases.unite',
+                            DB::raw('SUM(order_product_base.quantity_consumed) as total_consomme')
+                        )
+                        ->groupBy('product_bases.id', 'product_bases.nom', 'product_bases.unite')
+                        ->get();
+
                     return [
-                        'id' => $product->id,
-                        'title' => $product->title,
-                        'code' => $product->code,
-                        'categorie' => $product->subcategorie ? $product->subcategorie->name : 'N/A',
-                        'price' => $product->price,
-                        'total_quantite' => $total_quantite,
-                        'total_chiffre_affaires' => $total_chiffre_affaires,
+                        'id'                      => $product->id,
+                        'title'                   => $product->title,
+                        'code'                    => $product->code,
+                        'categorie'               => $product->subcategorie ? $product->subcategorie->name : 'N/A',
+                        'price'                   => $product->price,
+                        'total_quantite'          => $total_quantite,
+                        'total_chiffre_affaires'  => $total_chiffre_affaires,
+                        'bases_consommees'        => $bases_consommees, // ← nouveau
                     ];
                 })
                 ->sortByDesc('total_quantite')
@@ -279,7 +325,6 @@ class RapportController extends Controller
                 'dateFin',
                 'listeProduitsVendus'
             ));
-
         } catch (\Exception $e) {
             return back()->with('error', 'Erreur lors de la génération du rapport: ' . $e->getMessage());
         }

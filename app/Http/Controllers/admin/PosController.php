@@ -785,7 +785,7 @@ class PosController extends Controller
     //     }
     // }
 
-//version 2
+    //version 2
     public function update(Request $request, $id)
     {
         $order = Order::with('products')->findOrFail($id);
@@ -941,15 +941,15 @@ class PosController extends Controller
                     'available'         => 'yes',
                 ];
 
-                // Ajuster stock produit direct si besoin
+                // Ajuster stock produit direct (pas product_base) si besoin
                 if ($d['product']->stock !== null && $d['diff'] !== 0) {
                     $d['product']->decrement('stock', $d['diff']);
                 }
 
-                // ── Nouveaux snapshots + décrémentation product_bases ─────────────────
+                // ── Nouveaux snapshots + décrémentation COMPLÈTE du nouveau stock ─────
                 foreach ($d['product']->productBases as $base) {
                     $coeff            = (float) ($base->pivot->coefficient ?? 0);
-                    $quantityConsumed = $d['qty'] * $coeff;
+                    $quantityConsumed = $d['qty'] * $coeff; // nouvelle quantité complète
 
                     if ($quantityConsumed > 0) {
                         DB::table('order_product_base')->insert([
@@ -962,7 +962,8 @@ class PosController extends Controller
                             'updated_at'        => now(),
                         ]);
 
-                        // $base->decrement('stock', $quantityConsumed);
+                        // ← Cette ligne était commentée, c'est le bug
+                        $base->decrement('stock', $quantityConsumed);
                     }
                 }
             }

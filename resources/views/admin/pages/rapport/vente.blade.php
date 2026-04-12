@@ -148,7 +148,22 @@
                                             @forelse($top10ProduitsVendus as $index => $produit)
                                                 <tr>
                                                     <td>{{ $index + 1 }}</td>
-                                                    <td>{{ $produit['title'] }}</td>
+                                                    <td>
+                                                        <span class="font-weight-bold">{{ $produit['title'] }}</span>
+                                                        @if (!empty($produit['bases_consommees']) && count($produit['bases_consommees']) > 0)
+                                                            <div class="mt-1">
+                                                                @foreach ($produit['bases_consommees'] as $base)
+                                                                    <small class="text-muted d-block">
+                                                                        <i
+                                                                            class="fas fa-arrow-right fa-xs mr-1 text-secondary"></i>
+                                                                        {{ $base->nom }} :
+                                                                        <strong>{{ format_price($base->total_consomme) }}</strong>
+                                                                        {{ $base->unite }}
+                                                                    </small>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+                                                    </td>
                                                     <td>{{ $produit['categorie'] }}</td>
                                                     <td>{{ number_format($produit['price'], 0, ',', ' ') }} FCFA</td>
                                                     <td>{{ $produit['total_quantite'] }}</td>
@@ -197,10 +212,37 @@
                                                 <th>Chiffre d'Affaires</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        {{-- <tbody>
                                             @foreach ($listeProduitsVendus as $produit)
                                                 <tr>
                                                     <td>{{ $produit['title'] }}</td>
+                                                    <td>{{ $produit['categorie'] }}</td>
+                                                    <td>{{ $produit['total_quantite'] }}</td>
+                                                    <td>{{ number_format($produit['total_chiffre_affaires'], 0, ',', ' ') }}
+                                                        FCFA</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody> --}}
+
+                                        <tbody>
+                                            @foreach ($listeProduitsVendus as $produit)
+                                                <tr>
+                                                    <td>
+                                                        <span class="font-weight-bold">{{ $produit['title'] }}</span>
+                                                        @if (!empty($produit['bases_consommees']) && count($produit['bases_consommees']) > 0)
+                                                            <div class="mt-1">
+                                                                @foreach ($produit['bases_consommees'] as $base)
+                                                                    <small class="text-muted d-block">
+                                                                        <i
+                                                                            class="fas fa-arrow-right fa-xs mr-1 text-secondary"></i>
+                                                                        {{ $base->nom }} :
+                                                                        <strong>{{ format_price($base->total_consomme) }}</strong>
+                                                                        {{ $base->unite }}
+                                                                    </small>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+                                                    </td>
                                                     <td>{{ $produit['categorie'] }}</td>
                                                     <td>{{ $produit['total_quantite'] }}</td>
                                                     <td>{{ number_format($produit['total_chiffre_affaires'], 0, ',', ' ') }}
@@ -243,14 +285,14 @@
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
 
                     <div class="d-flex justify-content-center flex-wrap gap-2 my-3">
-                        <button class="btnImprimer btn btn-primary mr-2"><i class="far fa-file-pdf"></i> Imprimer le rapport</button>
+                        <button class="btnImprimer btn btn-primary mr-2"><i class="far fa-file-pdf"></i> Imprimer le
+                            rapport</button>
                         {{-- <button id="btnExportPDF" class="btn btn-danger mr-2"><i class="far fa-file-pdf"></i> Exporter en PDF</button> --}}
-                        <button id="btnExportExcel" class="btn btn-success"><i class="far fa-file-excel"></i> Exporter en Excel</button>
+                        <button id="btnExportExcel" class="btn btn-success"><i class="far fa-file-excel"></i> Exporter en
+                            Excel</button>
                     </div>
 
                 </div>
@@ -339,7 +381,7 @@
                 var wb = XLSX.utils.book_new();
                 tables.forEach(function(table, idx) {
                     var ws = XLSX.utils.table_to_sheet(table);
-                    XLSX.utils.book_append_sheet(wb, ws, 'Tableau'+(idx+1));
+                    XLSX.utils.book_append_sheet(wb, ws, 'Tableau' + (idx + 1));
                 });
                 XLSX.writeFile(wb, 'rapport-vente.xlsx');
             });
