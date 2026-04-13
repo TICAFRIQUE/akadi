@@ -19,9 +19,12 @@ class ProductController extends Controller
     public function index()
     {
         //
-        $product = Product::with('categories', 'productBase', 'subcategorie')
+        $product = Product::with('categories', 'productBases', 'subcategorie')
             ->orderBy('created_at', 'DESC')
             ->get();
+        // 
+
+        
         // dd($product->toArray());
         return view('admin.pages.product.index', compact('product'));
     }

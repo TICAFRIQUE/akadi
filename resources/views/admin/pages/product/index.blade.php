@@ -145,7 +145,20 @@
                                                             <small>FCFA</small></span>
                                                     @endif
                                                 </td>
-                                                <td>{{ $item['productBase'] ? $item['productBase']['nom'] : '' }}</td>
+                                                <td>
+                                                    @if (!empty($item->productBases))
+                                                        @foreach ($item->productBases as $base)
+                                                            <ul class="text-muted mb-0">
+                                                                <li><small >
+                                                                    {{ $base->nom }} <br>
+                                                                    Coef: {{ format_price($base->pivot->coefficient ?? 0) }}
+                                                                </small>
+                                                                </li>
+                                                                
+                                                            </ul>
+                                                        @endforeach
+                                                    @endif
+                                                </td>
                                                 <td>{{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}</td>
                                                 <td>
                                                     <div class="dropdown">
