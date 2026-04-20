@@ -149,7 +149,8 @@ class OrderController extends Controller
 
 
         return PDF::loadView('admin.pages.order.invoicePdf', compact('orders'))
-            ->setPaper('a5', 'portrait')
+            // ->setPaper('a5', 'portrait')
+            ->setPaper([0, 0, 226.77, 600], 'portrait') // 80mm de large, hauteur auto
             ->setWarnings(true)
             ->save(public_path("storage/" . $orders['id'] . ".pdf"))
             ->stream(Str::slug($orders->code) . ".pdf");

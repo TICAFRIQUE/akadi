@@ -1,209 +1,262 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8" />
-    <title>Facture-#{{ $orders['code'] }} </title>
-
+    <title>Facture-#{{ $orders['code'] }}</title>
     <style>
-        .invoice-box {
-            max-width: 600px;
-            margin: auto;
-            padding: 3px;
-            border: 1px solid #ececec;
-            /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); */
-            font-size: 9px;
-            line-height: 11px;
+        @page {
+            size: 80mm auto;
+            margin: 2mm 3mm;
+        }
+
+        body {
+            width: 74mm;
             font-family: 'Courier New', Courier, monospace;
-            color: #000000;
+            font-size: 8pt;
+            color: #000;
+            background: #fff;
         }
 
-        .invoice-box table {
+        .header {
+            text-align: center;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 2mm;
+            margin-bottom: 2mm;
+        }
+        .logo-text {
+            font-size: 13pt;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .header-sub {
+            font-size: 7pt;
+            margin-top: 1mm;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 7.5pt;
+            border-bottom: 1px solid #000;
+            padding-bottom: 0.5mm;
+            margin-bottom: 1mm;
+            margin-top: 2mm;
+        }
+
+        .info-table {
             width: 100%;
-            line-height: inherit;
-            text-align: left;
+            border-collapse: collapse;
+            font-size: 7.5pt;
+            line-height: 1.5;
         }
-
-        .invoice-box table td {
-            padding: 0.5px;
+        .info-table td {
+            padding: 0.2mm 0;
             vertical-align: top;
         }
-
-        .invoice-box table tr td:nth-child(2) {
-            text-align: right;
-        }
-
-        .invoice-box table tr.top table td {
-            padding-bottom: 0px;
-        }
-
-        .invoice-box table tr.top table td.title {
-            font-size: 9px;
-            line-height: 11px;
+        .info-table td.label {
+            width: 22mm;
             color: #333;
         }
-
-        .invoice-box table tr.information table td {
-            padding-bottom: 5px;
-        }
-
-        .invoice-box table tr.heading td {
-            background: #eee;
-            border-bottom: 1px solid #ddd;
+        .info-table td.value {
             font-weight: bold;
-            text-align: justify;
-
-        }
-
-        .invoice-box table tr.details td {
-            padding-bottom: 20px;
-        }
-
-        .invoice-box table tr.item td {
-            border-bottom: 1px solid #eee;
-            text-align: justify;
-
-        }
-
-        .invoice-box table tr.item.last td {
-            border-bottom: none;
-        }
-
-        .invoice-box table tr.total td:nth-child(2) {
-            border-top: 2px solid #ffffff;
-            font-weight: bold;
-
-        }
-
-        @media only screen and (max-width: 600px) {
-            .invoice-box table tr.top table td {
-                width: 100%;
-                display: block;
-                text-align: center;
-            }
-
-            .invoice-box table tr.information table td {
-                width: 100%;
-                display: block;
-                text-align: center;
-            }
-        }
-
-        /** RTL **/
-        .invoice-box.rtl {
-            direction: rtl;
-            font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-        }
-
-        .invoice-box.rtl table {
             text-align: right;
         }
 
-        .invoice-box.rtl table tr td:nth-child(2) {
-            text-align: left;
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 7.5pt;
+            margin-top: 1.5mm;
+        }
+        .items-table thead tr {
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+        .items-table thead td {
+            font-weight: bold;
+            padding: 0.8mm 0.5mm;
+        }
+        .items-table tbody tr {
+            border-bottom: 1px dotted #999;
+        }
+        .items-table tbody td {
+            padding: 0.7mm 0.5mm;
+            vertical-align: top;
+        }
+        .items-table td.col-produit { width: 34mm; }
+        .items-table td.col-qty     { width: 8mm;  text-align: right; }
+        .items-table td.col-pu      { width: 15mm; text-align: right; }
+        .items-table td.col-total   { width: 15mm; text-align: right; }
+
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8pt;
+            margin-top: 2mm;
+            border-top: 1px dashed #000;
+        }
+        .totals-table td {
+            padding: 0.4mm 0;
+        }
+        .totals-table td.tot-label { text-align: left; }
+        .totals-table td.tot-value { text-align: right; font-weight: bold; }
+        .totals-table tr.grand td {
+            border-top: 1px solid #000;
+            padding-top: 1mm;
+            font-size: 9.5pt;
+        }
+        .totals-table tr.solde td {
+            color: #000;
+            font-size: 8.5pt;
+        }
+
+        .note-box {
+            font-size: 7pt;
+            margin-top: 2mm;
+            border-top: 1px dotted #999;
+            padding-top: 1mm;
+            line-height: 1.4;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3mm;
+            border-top: 1px dashed #000;
+            padding-top: 2mm;
+            font-size: 7pt;
+            line-height: 1.6;
+        }
+        .footer .bonne-deg {
+            font-size: 7pt;
+            font-style: italic;
+            margin-top: 1mm;
+        }
+
+        .cut-line {
+            text-align: center;
+            font-size: 7.5pt;
+            margin: 3mm 0;
+        }
+
+        .copy-label {
+            text-align: center;
+            font-size: 6.5pt;
+            letter-spacing: 1px;
+            font-weight: bold;
+            margin-bottom: 2mm;
+            border: 1px solid #000;
+            padding: 0.8mm;
         }
     </style>
 </head>
-
 <body>
 
-    @for ($i = 1; $i <= 2; $i++)
+@for ($i = 0; $i < 2; $i++)
 
-        <div class="invoice-box">
-            <table cellpadding="0" cellspacing="0">
-                <tr class="top">
-                    <td colspan="4">
-                        <table>
-                            <tr>
-                                <td class="title">
-                                    {{-- https://akadi.ci/wp-content/uploads/2023/10/cropped-logo-site-ak.png --}}
-                                    <img src="https://akadi.ci/site/assets/img/custom/logo.png" width="35" />
-                                </td>
+    <div class="copy-label">{{ $i === 0 ? 'COPIE CLIENT' : 'COPIE AKADI' }}</div>
 
-                                <td>
-                                    N°Cmd #: {{ $orders['code'] }} <br />
-                                    Date Cmd: {{ $orders['created_at']->format('d-m-Y') }} <br />
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-
-                <tr class="information">
-                    <td colspan="4">
-                        <table>
-                            <tr>
-                                <td>
-                                    <span>SAV: <b>07 58 83 83 38</b> </span><br>
-                                    <span>Email: <b>info@akadi.ci</b> </span><br>
-                                    <span>Adresse: <b>Plateau Dokui</b> </span><br>
-
-                                </td>
-
-                                <td>
-                                    <span>Nom: <b>{{ $orders['user']['name'] }}</b> </span><br>
-                                    <span>Email: <b>{{ $orders['user']['email'] }}</b> </span><br>
-                                    <span>Téléphone: <b>{{ $orders['user']['phone'] }}</b> </span><br>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-
-                {{-- <tr class="heading">
-            <td>Payment Method</td>
-
-            <td>Check #</td>
-        </tr> --}}
-
-                {{-- <tr class="details">
-            <td>Check</td>
-
-            <td>1000</td>
-        </tr> --}}
-
-                <tr class="heading">
-                    <td>Produit</td>
-                    <td>Qté</td>
-                    <td>Pu</td>
-                    <td>Total</td>
-                </tr>
-                @foreach ($orders['products'] as $item)
-                    <tr class="item">
-                        <td> {{ $item['title'] }}</td>
-                        <td>{{ $item['pivot']['quantity'] }} </td>
-                        <td> {{ number_format($item['pivot']['unit_price']) }}</td>
-                        @php
-                            $total = $item['pivot']['quantity'] * $item['pivot']['unit_price'];
-                        @endphp
-                        <td> {{ number_format($total) }}</td>
-
-                    </tr>
-                @endforeach
-                <tr class="total" style="text-align:right;">
-                    <td colspan="4" style="padding-right:20px; padding-top:5px"> <b>Sous-total</b>:
-                        {{ number_format($orders['subtotal']) }} FCFA</td>
-                </tr>
-
-                <tr class="total" style="text-align:right;">
-                    <td colspan="4" style="padding-right:20px;"> <b>Livraison</b>:
-                        {{ number_format($orders['delivery_price']) }} FCFA</td>
-
-
-                </tr>
-
-                <tr class="total" style="text-align:right;">
-                    <td colspan="4" style="padding-right:20px;"> <b>TOTAL</b>:
-                        {{ number_format($orders['total']) }} FCFA</td>
-                </tr>
-            </table>
+    {{-- EN-TÊTE --}}
+    <div class="header">
+        <div class="logo-text">AKADI.CI</div>
+        <div class="header-sub">
+            07 58 83 83 38 &nbsp;|&nbsp; www.akadi.ci
         </div>
-        <small style="text-align:center ; font-size:10px ;" >Reçu imprimé le
-            {{ \Carbon\Carbon::now()->format('d/m/Y') }} </small>
+    </div>
 
-        <hr style="border : 1px dotted rgb(0, 0, 0)">
-    @endfor
+    {{-- COMMANDE --}}
+    <div class="section-title">COMMANDE</div>
+    <table class="info-table">
+        <tr>
+            <td class="label">N° Cmd</td>
+            <td class="value">#{{ $orders['code'] }}</td>
+        </tr>
+        <tr>
+            <td class="label">Date</td>
+            <td class="value">{{ $orders['created_at']->format('d/m/Y H:i') }}</td>
+        </tr>
+    </table>
+
+    {{-- CLIENT --}}
+    <div class="section-title">CLIENT</div>
+    <table class="info-table">
+        <tr>
+            <td class="label">Nom</td>
+            <td class="value">{{ $orders['user']['name'] ?? $orders['client_name'] ?? 'Anonyme' }}</td>
+        </tr>
+        <tr>
+            <td class="label">Téléphone</td>
+            <td class="value">{{ $orders['user']['phone'] ?? $orders['client_phone'] ?? '-' }}</td>
+        </tr>
+    </table>
+
+    {{-- ARTICLES --}}
+    <table class="items-table">
+        <thead>
+            <tr>
+                <td class="col-produit">Produit</td>
+                <td class="col-qty">Qté</td>
+                <td class="col-pu">P.U</td>
+                <td class="col-total">Total</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($orders['products'] as $item)
+                @php $total = $item['pivot']['quantity'] * $item['pivot']['unit_price']; @endphp
+                <tr>
+                    <td class="col-produit">{{ $item['title'] }}</td>
+                    <td class="col-qty">{{ $item['pivot']['quantity'] }}</td>
+                    <td class="col-pu">{{ number_format($item['pivot']['unit_price']) }}</td>
+                    <td class="col-total">{{ number_format($total) }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    {{-- TOTAUX --}}
+    <table class="totals-table">
+        <tr>
+            <td class="tot-label">Sous-total</td>
+            <td class="tot-value">{{ number_format($orders['subtotal']) }} F</td>
+        </tr>
+        <tr>
+            <td class="tot-label">Livraison</td>
+            <td class="tot-value">{{ number_format($orders['delivery_price']) }} F</td>
+        </tr>
+        <tr class="grand">
+            <td class="tot-label">TOTAL</td>
+            <td class="tot-value">{{ number_format($orders['total']) }} FCFA</td>
+        </tr>
+        @if(!empty($orders['acompte']) && $orders['acompte'] > 0)
+        <tr>
+            <td class="tot-label">Acompte versé</td>
+            <td class="tot-value">{{ number_format($orders['acompte']) }} F</td>
+        </tr>
+        @endif
+        @if(!empty($orders['solde_restant']) && $orders['solde_restant'] > 0)
+        <tr class="solde">
+            <td class="tot-label">Reste à payer</td>
+            <td class="tot-value">{{ number_format($orders['solde_restant']) }} F</td>
+        </tr>
+        @endif
+    </table>
+
+    {{-- NOTE (si présente) --}}
+    {{-- @if(!empty($orders['note']))
+    <div class="note-box">
+        <b>Note :</b> {{ $orders['note'] }}
+    </div>
+    @endif --}}
+
+    {{-- PIED --}}
+    <div class="footer">
+        <div>Imprimé le {{ \Carbon\Carbon::now()->format('d/m/Y à H:i') }}</div>
+        <div class="bonne-deg">Bonne dégustation !</div>
+    </div>
+
+    @if ($i === 0)
+        <div class="cut-line">- - - - - - - ✂ - - - - - - -</div>
+    @endif
+
+@endfor
 
 </body>
-
 </html>
