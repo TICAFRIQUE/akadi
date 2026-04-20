@@ -4,21 +4,20 @@
     <meta charset="utf-8" />
     <title>Ticket - {{ $orders->code }}</title>
     <style>
-        /* Reset complet - SUPPRIME TOUTES LES MARGES */
+        /* Reset complet */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Styles d'impression 80mm - AUCUNE MARGE */
+        /* Styles d'impression 80mm */
         @page {
             size: 80mm auto;
             margin: 0mm;
-            padding: 0mm;
         }
 
-        /* Corps - AUCUNE MARGE */
+        /* Corps */
         body {
             font-family: 'Courier New', 'Lucida Console', monospace;
             background: white;
@@ -30,12 +29,11 @@
             color: #000;
         }
 
-        /* Conteneur - AUCUN PADDING EN HAUT */
+        /* Conteneur avec marges internes */
         .ticket {
             width: 100%;
             margin: 0;
-            padding: 0;
-            padding-top: 0;
+            padding: 8px 6px 8px 6px;  /* Haut, Droite, Bas, Gauche */
             background: white;
         }
 
@@ -54,9 +52,7 @@
             text-align: right;
         }
 
-        /* Espacements réduits au maximum */
-        .mt-0 { margin-top: 0; }
-        .mb-0 { margin-bottom: 0; }
+        /* Espacements */
         .mt-1 { margin-top: 2px; }
         .mb-1 { margin-bottom: 2px; }
         .mt-2 { margin-top: 4px; }
@@ -64,28 +60,24 @@
         /* Séparateurs */
         .dashed-line {
             border-top: 1px dashed #000;
-            margin: 3px 0;
+            margin: 4px 0;
         }
         .solid-line {
             border-top: 1px solid #000;
-            margin: 3px 0;
+            margin: 4px 0;
         }
         .double-line {
             border-top: 2px solid #000;
-            margin: 3px 0;
+            margin: 4px 0;
         }
 
-        /* En-tête - PAS DE MARGE HAUT */
+        /* En-tête */
         .shop-name {
             font-size: 16px;
-            font-weight: bold;
             letter-spacing: 2px;
-            margin-top: 0;
-            padding-top: 0;
         }
         .shop-infos {
             font-size: 9px;
-            font-weight: bold;
         }
 
         /* Lignes d'information */
@@ -93,7 +85,7 @@
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
             font-size: 11px;
         }
 
@@ -101,7 +93,7 @@
         .item-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 1px;
+            margin-bottom: 2px;
             font-size: 11px;
         }
         .item-name {
@@ -120,8 +112,8 @@
         /* Prix unitaire */
         .unit-price {
             font-size: 9px;
-            margin-bottom: 3px;
-            margin-top: -1px;
+            margin-bottom: 4px;
+            margin-top: -2px;
             text-align: right;
         }
         
@@ -129,29 +121,26 @@
         .total-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
             font-size: 11px;
         }
         .grand-total {
             font-size: 14px;
-            font-weight: bold;
             border-top: 1px solid #000;
-            padding-top: 3px;
-            margin-top: 3px;
+            padding-top: 4px;
+            margin-top: 4px;
         }
         
         /* Footer */
         .footer {
             text-align: center;
-            margin-top: 6px;
+            margin-top: 8px;
             margin-bottom: 0;
-            padding-bottom: 0;
             font-size: 9px;
         }
         .thankyou {
-            font-weight: bold;
             font-size: 11px;
-            margin: 4px 0;
+            margin: 5px 0;
         }
         
         /* Bouton d'impression */
@@ -165,7 +154,6 @@
             text-align: center;
             cursor: pointer;
             font-family: Arial, sans-serif;
-            font-weight: bold;
             border: none;
             border-radius: 4px;
         }
@@ -178,18 +166,13 @@
                 margin: 0;
                 padding: 0;
             }
-            .ticket {
-                margin: 0;
-                padding: 0;
-            }
         }
     </style>
 </head>
 <body>
 
-<!-- PAS UN SEUL ESPACE OU RETOUR A LA LIGNE AVANT LE TICKET -->
 <div class="ticket">
-    <!-- En-tête - COLLE PARFAITEMENT EN HAUT -->
+    <!-- En-tête -->
     <div class="center">
         <div class="shop-name">AKADI.CI</div>
         <div class="shop-infos">07 58 83 83 38</div>
@@ -225,7 +208,7 @@
     <div class="dashed-line"></div>
 
     <!-- En-tête articles -->
-    <div class="item-row" style="border-bottom: 1px solid #000; margin-bottom: 3px; padding-bottom: 1px;">
+    <div class="item-row" style="border-bottom: 1px solid #000; margin-bottom: 4px; padding-bottom: 2px;">
         <span class="item-name">ARTICLE</span>
         <span class="item-qty">QTÉ</span>
         <span class="item-price">TOTAL</span>
@@ -268,7 +251,7 @@
     </div>
     
     @if(($orders->solde_restant ?? 0) > 0)
-    <div class="total-row" style="margin-top: 3px; font-size: 12px;">
+    <div class="total-row" style="margin-top: 4px; font-size: 12px;">
         <span>RESTE</span>
         <span>{{ number_format($orders->solde_restant) }} F</span>
     </div>
