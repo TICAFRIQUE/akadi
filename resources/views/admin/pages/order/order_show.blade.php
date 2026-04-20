@@ -66,7 +66,7 @@
                 </div>
             </div>
             @endif
-            <a href="{{ route('order.invoice', $orders->id) }}" target="_blank" class="btn btn-outline-secondary">
+            <a href="{{ route('order.invoice', $orders->id) }}" target="_blank" class="btn btn-outline-danger">
                 <i data-feather="file-text"></i> Facture
             </a>
         </div>

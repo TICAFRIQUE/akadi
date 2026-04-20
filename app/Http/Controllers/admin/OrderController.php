@@ -128,39 +128,53 @@ class OrderController extends Controller
         return view('admin.pages.order.order_show', compact('orders', 'statuts', 'sources', 'paymentMethods'));
     }
 
+    // public function invoice($id)
+    // {
+    //     //function si on verifie la disponibilite des articles
+    //     // $orders= Order::whereId($id)
+    //     // ->with(['user','products'
+    //     //     =>fn($q)=>$q->with('media')->where('available', 'disponible')
+    //     // ])
+    //     // ->orderBy('created_at','DESC')->first();
+
+
+    //     //function sans verification de disponiblite
+    //     $orders = Order::whereId($id)
+    //         ->with([
+    //             'user',
+    //             'products'
+    //             => fn($q) => $q->with('media')
+    //         ])
+    //         ->orderBy('created_at', 'DESC')->first();
+
+
+    //     return PDF::loadView('admin.pages.order.invoicePdf', compact('orders'))
+    //         // ->setPaper('a5', 'portrait')
+    //         ->setPaper([0, 0, 203.9, 841.9], 'portrait') // 72mm de large
+    //         ->setOption('margin_top', 0)
+    //         ->setOption('margin_right', 0)
+    //         ->setOption('margin_bottom', 0)
+    //         ->setOption('margin_left', 0)
+    //         ->setWarnings(true)
+    //         ->save(public_path("storage/" . $orders['id'] . ".pdf"))
+    //         ->stream(Str::slug($orders->code) . ".pdf");
+
+    //     // return $pdf->download(Str::slug($orders->code) . ".pdf");
+
+
+    //     // dd($orders->toArray());
+    //     // return view('admin.pages.order.invoicePdf',compact('orders'));
+    // }
+
     public function invoice($id)
-    {
-        //function si on verifie la disponibilite des articles
-        // $orders= Order::whereId($id)
-        // ->with(['user','products'
-        //     =>fn($q)=>$q->with('media')->where('available', 'disponible')
-        // ])
-        // ->orderBy('created_at','DESC')->first();
+{
+    $orders = Order::whereId($id)
+        ->with(['user', 'products', 'paymentMethod'])
+        ->orderBy('created_at', 'DESC')
+        ->firstOrFail();
 
-
-        //function sans verification de disponiblite
-        $orders = Order::whereId($id)
-            ->with([
-                'user',
-                'products'
-                => fn($q) => $q->with('media')
-            ])
-            ->orderBy('created_at', 'DESC')->first();
-
-
-        return PDF::loadView('admin.pages.order.invoicePdf', compact('orders'))
-            // ->setPaper('a5', 'portrait')
-            ->setPaper([0, 0, 226.77, 600], 'portrait') // 80mm de large, hauteur auto
-            ->setWarnings(true)
-            ->save(public_path("storage/" . $orders['id'] . ".pdf"))
-            ->stream(Str::slug($orders->code) . ".pdf");
-
-        // return $pdf->download(Str::slug($orders->code) . ".pdf");
-
-
-        // dd($orders->toArray());
-        // return view('admin.pages.order.invoicePdf',compact('orders'));
-    }
+    return view('admin.pages.order.invoicePos', compact('orders'));
+}
 
 
     //changer le status de la commande
