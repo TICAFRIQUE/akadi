@@ -4,231 +4,213 @@
     <meta charset="utf-8" />
     <title>Ticket - {{ $orders->code }}</title>
     <style>
-        /* Reset complet */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Styles d'impression 80mm */
         @page {
             size: 80mm auto;
-            margin: 0mm;
+            margin: 0;
         }
 
-        /* Corps */
         body {
+            background: #d1d5db;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 30px 16px 60px;
             font-family: 'Courier New', 'Lucida Console', monospace;
-            background: white;
-            width: 80mm;
-            margin: 0;
-            padding: 0;
-            font-size: 11px;
-            line-height: 1.3;
             color: #000;
         }
 
-        /* Conteneur avec marges internes */
-        .ticket {
-            width: 100%;
-            margin: 0;
-            padding: 8px 6px 8px 6px;  /* Haut, Droite, Bas, Gauche */
-            background: white;
-        }
-
-        /* Tout en gras */
-        .ticket, .ticket * {
-            font-weight: bold;
-        }
-
-        /* Centrage */
-        .center {
-            text-align: center;
-        }
-        
-        /* Alignement droite */
-        .right {
-            text-align: right;
-        }
-
-        /* Espacements */
-        .mt-1 { margin-top: 2px; }
-        .mb-1 { margin-bottom: 2px; }
-        .mt-2 { margin-top: 4px; }
-        
-        /* Séparateurs */
-        .dashed-line {
-            border-top: 1px dashed #000;
-            margin: 4px 0;
-        }
-        .solid-line {
-            border-top: 1px solid #000;
-            margin: 4px 0;
-        }
-        .double-line {
-            border-top: 2px solid #000;
-            margin: 4px 0;
-        }
-
-        /* En-tête */
-        .shop-name {
-            font-size: 16px;
-            letter-spacing: 2px;
-        }
-        .shop-infos {
-            font-size: 9px;
-        }
-
-        /* Lignes d'information */
-        .info-row {
+        .action-bar {
             display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 3px;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 9px 22px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+        }
+        .btn-print { background: #111; color: #fff; }
+        .btn-close  { background: #fff; color: #111; border: 1px solid #aaa; }
+
+        .ticket {
+            background: #fff;
+            width: 302px;
+            padding: 12px 10px 14px;
             font-size: 11px;
+            line-height: 1.4;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            position: relative;
         }
 
-        /* Lignes articles */
-        .item-row {
+        .ticket::before {
+            content: '';
+            display: block;
+            position: absolute;
+            top: -8px; left: 0; right: 0; height: 8px;
+            background: radial-gradient(circle at 6px -2px, #d1d5db 6px, white 6px) top left / 12px 8px repeat-x;
+        }
+        .ticket::after {
+            content: '';
+            display: block;
+            position: absolute;
+            bottom: -8px; left: 0; right: 0; height: 8px;
+            background: radial-gradient(circle at 6px 10px, #d1d5db 6px, white 6px) bottom left / 12px 8px repeat-x;
+        }
+
+        .ticket * { font-weight: bold; }
+
+        .center { text-align: center; }
+
+        /* Un seul séparateur simple */
+        .sep {
+            border-top: 1px dashed #999;
+            margin: 6px 0;
+        }
+
+        .shop-name {
+            font-size: 18px;
+            letter-spacing: 4px;
+            margin-bottom: 2px;
+        }
+        .shop-sub {
+            font-size: 9px;
+            line-height: 1.5;
+        }
+
+        .row {
             display: flex;
             justify-content: space-between;
             margin-bottom: 2px;
-            font-size: 11px;
+            font-size: 10px;
         }
-        .item-name {
-            width: 55%;
-            word-break: break-word;
-        }
-        .item-qty {
-            width: 15%;
-            text-align: center;
-        }
-        .item-price {
-            width: 30%;
-            text-align: right;
-        }
-        
-        /* Prix unitaire */
-        .unit-price {
+        .row .lbl { color: #666; font-size: 9px; }
+        .row .val { text-align: right; }
+
+        /* Articles */
+        .items-head {
+            display: flex;
+            border-bottom: 1px solid #000;
+            padding-bottom: 2px;
+            margin-bottom: 3px;
             font-size: 9px;
-            margin-bottom: 4px;
-            margin-top: -2px;
-            text-align: right;
         }
-        
+        .h-name { width: 50%; }
+        .h-qty  { width: 12%; text-align: center; }
+        .h-pu   { width: 20%; text-align: right; }
+        .h-tot  { width: 18%; text-align: right; }
+
+        .item-line {
+            display: flex;
+            margin-bottom: 3px;
+            font-size: 10px;
+        }
+        .i-name { width: 50%; word-break: break-word; }
+        .i-qty  { width: 12%; text-align: center; }
+        .i-pu   { width: 20%; text-align: right; }
+        .i-tot  { width: 18%; text-align: right; }
+
         /* Totaux */
         .total-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 3px;
-            font-size: 11px;
+            font-size: 10px;
+            margin-bottom: 2px;
         }
-        .grand-total {
+        .total-row.grand {
             font-size: 14px;
             border-top: 1px solid #000;
             padding-top: 4px;
             margin-top: 4px;
         }
-        
-        /* Footer */
+
         .footer {
             text-align: center;
-            margin-top: 8px;
-            margin-bottom: 0;
+            margin-top: 10px;
             font-size: 9px;
+            line-height: 1.6;
         }
-        .thankyou {
-            font-size: 11px;
-            margin: 5px 0;
+        .footer .deg {
+            font-size: 10px;
+            font-style: italic;
+            margin-bottom: 2px;
         }
-        
-        /* Bouton d'impression */
-        .print-btn {
-            display: block;
-            width: 200px;
-            margin: 20px auto;
-            padding: 10px;
-            background: #000;
-            color: #fff;
-            text-align: center;
-            cursor: pointer;
-            font-family: Arial, sans-serif;
-            border: none;
-            border-radius: 4px;
-        }
-        
+
         @media print {
-            .print-btn {
-                display: none;
-            }
-            body {
-                margin: 0;
-                padding: 0;
-            }
+            body { background: none; display: block; padding: 0; }
+            .action-bar { display: none; }
+            .ticket { width: 100%; box-shadow: none; padding: 3mm 2mm; }
+            .ticket::before, .ticket::after { display: none; }
         }
     </style>
 </head>
 <body>
 
+<div class="action-bar">
+    <button class="btn btn-print" onclick="window.print()">&#128438; Imprimer</button>
+    <button class="btn btn-close"  onclick="window.close()">&#10005; Fermer</button>
+</div>
+
 <div class="ticket">
-    <!-- En-tête -->
+
+    {{-- En-tête --}}
     <div class="center">
         <div class="shop-name">AKADI.CI</div>
-        <div class="shop-infos">07 58 83 83 38</div>
-        <div class="shop-infos">www.akadi.ci</div>
+        <div class="shop-sub">07 58 83 83 38 &nbsp;|&nbsp; www.akadi.ci</div>
     </div>
 
-    <div class="solid-line"></div>
+    <div class="sep"></div>
 
-    <!-- Infos commande -->
-    <div class="info-row">
-        <span>N°</span>
-        <span>#{{ $orders->code }}</span>
+    {{-- Commande --}}
+    <div class="row">
+        <span class="lbl">N° CMD</span>
+        <span class="val">#{{ $orders->code }}</span>
     </div>
-    <div class="info-row">
-        <span>DATE</span>
-        <span>{{ $orders->created_at->format('d/m/Y H:i') }}</span>
+    <div class="row">
+        <span class="lbl">DATE</span>
+        <span class="val">{{ $orders->created_at->format('d/m/Y H:i') }}</span>
     </div>
-
-    <div class="dashed-line"></div>
-
-    <!-- Infos client -->
-    <div class="info-row">
-        <span>CLIENT</span>
-        <span>{{ $orders->nom_client ?: 'COMPTE' }}</span>
+    <div class="row">
+        <span class="lbl">CLIENT</span>
+        <span class="val">{{ $orders->nom_client }}</span>
     </div>
     @if($orders->tel_client)
-    <div class="info-row">
-        <span>TEL</span>
-        <span>{{ $orders->tel_client }}</span>
+    <div class="row">
+        <span class="lbl">TEL</span>
+        <span class="val">{{ $orders->tel_client }}</span>
     </div>
     @endif
 
-    <div class="dashed-line"></div>
+    <div class="sep"></div>
 
-    <!-- En-tête articles -->
-    <div class="item-row" style="border-bottom: 1px solid #000; margin-bottom: 4px; padding-bottom: 2px;">
-        <span class="item-name">ARTICLE</span>
-        <span class="item-qty">QTÉ</span>
-        <span class="item-price">TOTAL</span>
+    {{-- Articles --}}
+    <div class="items-head">
+        <span class="h-name">ARTICLE</span>
+        <span class="h-qty">QTE</span>
+        <span class="h-pu">P.U</span>
+        <span class="h-tot">TOTAL</span>
     </div>
-    
-    <!-- Liste des articles -->
+
     @foreach ($orders->products as $item)
-    <div class="item-row">
-        <span class="item-name">{{ $item->title }}</span>
-        <span class="item-qty">{{ $item->pivot->quantity }}</span>
-        <span class="item-price">{{ number_format($item->pivot->quantity * $item->pivot->unit_price) }}</span>
-    </div>
-    <div class="unit-price">
-        ({{ number_format($item->pivot->unit_price) }} x {{ $item->pivot->quantity }})
+    @php $lineTotal = $item->pivot->quantity * $item->pivot->unit_price; @endphp
+    <div class="item-line">
+        <span class="i-name">{{ $item->title }}</span>
+        <span class="i-qty">{{ $item->pivot->quantity }}</span>
+        <span class="i-pu">{{ number_format($item->pivot->unit_price) }}</span>
+        <span class="i-tot">{{ number_format($lineTotal) }}</span>
     </div>
     @endforeach
 
-    <div class="double-line"></div>
+    <div class="sep"></div>
 
-    <!-- Totaux -->
+    {{-- Totaux --}}
     <div class="total-row">
         <span>SOUS-TOTAL</span>
         <span>{{ number_format($orders->subtotal) }} F</span>
@@ -237,50 +219,42 @@
         <span>LIVRAISON</span>
         <span>{{ number_format($orders->delivery_price) }} F</span>
     </div>
-    
+    <div class="total-row grand">
+        <span>TOTAL</span>
+        <span>{{ number_format($orders->total) }} FCFA</span>
+    </div>
     @if(($orders->acompte ?? 0) > 0)
-    <div class="total-row">
+    <div class="total-row" style="margin-top:3px">
         <span>ACOMPTE</span>
-        <span>-{{ number_format($orders->acompte) }} F</span>
+        <span>{{ number_format($orders->acompte) }} F</span>
     </div>
     @endif
-    
-    <div class="grand-total total-row">
-        <span>TOTAL</span>
-        <span>{{ number_format($orders->total) }} F</span>
-    </div>
-    
     @if(($orders->solde_restant ?? 0) > 0)
-    <div class="total-row" style="margin-top: 4px; font-size: 12px;">
-        <span>RESTE</span>
+    <div class="total-row" style="font-size:11px">
+        <span>RESTE A PAYER</span>
         <span>{{ number_format($orders->solde_restant) }} F</span>
     </div>
     @endif
 
-    <!-- Note -->
     @if(!empty($orders->note))
-    <div class="dashed-line"></div>
-    <div class="info-row">
-        <span>NOTE</span>
-        <span>{{ $orders->note }}</span>
+    <div class="sep"></div>
+    <div class="row">
+        <span class="lbl">NOTE</span>
+        <span class="val">{{ $orders->note }}</span>
     </div>
     @endif
 
-    <!-- Footer -->
+    {{-- Footer --}}
     <div class="footer">
-        <div class="solid-line"></div>
-        <div class="thankyou">MERCI</div>
-        <div>BONNE DEGUSTATION</div>
-        <div class="mt-1">{{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</div>
+        <div class="sep"></div>
+        <div class="deg">Bonne degustation !</div>
+        <div>{{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</div>
     </div>
+
 </div>
 
-<button class="print-btn" onclick="window.print();">IMPRIMER</button>
-
 <script>
-    window.onload = function() {
-        window.print();
-    };
+    window.onload = function () { window.print(); };
 </script>
 
 </body>
