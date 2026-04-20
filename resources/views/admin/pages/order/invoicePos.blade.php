@@ -2,297 +2,302 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8" />
-    <title>Recu #{{ $orders->code }}</title>
+    <title>Ticket - {{ $orders->code }}</title>
     <style>
-        /* ── Reset ── */
-        * { margin: 0; padding: 0; }
+        /* Reset complet - SUPPRIME TOUTES LES MARGES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        /* ── Corps général (aperçu navigateur) ── */
+        /* Styles d'impression 80mm - AUCUNE MARGE */
+        @page {
+            size: 80mm auto;
+            margin: 0mm;
+            padding: 0mm;
+        }
+
+        /* Corps - AUCUNE MARGE */
         body {
-            background: #e5e5e5;
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Courier New', 'Lucida Console', monospace;
+            background: white;
+            width: 80mm;
+            margin: 0;
+            padding: 0;
+            font-size: 11px;
+            line-height: 1.3;
+            color: #000;
         }
 
-        .receipt-wrap {
-            background: #fff;
-            width: 302px; /* 80mm ≈ 302px à 96dpi */
-            padding: 10px 8px;
+        /* Conteneur - AUCUN PADDING EN HAUT */
+        .ticket {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            padding-top: 0;
+            background: white;
         }
 
-        /* ── En-tête ── */
-        .header {
+        /* Tout en gras */
+        .ticket, .ticket * {
+            font-weight: bold;
+        }
+
+        /* Centrage */
+        .center {
             text-align: center;
-            border-bottom: 1px dashed #000;
-            padding-bottom: 6px;
-            margin-bottom: 6px;
         }
-        .logo-text {
+        
+        /* Alignement droite */
+        .right {
+            text-align: right;
+        }
+
+        /* Espacements réduits au maximum */
+        .mt-0 { margin-top: 0; }
+        .mb-0 { margin-bottom: 0; }
+        .mt-1 { margin-top: 2px; }
+        .mb-1 { margin-bottom: 2px; }
+        .mt-2 { margin-top: 4px; }
+        
+        /* Séparateurs */
+        .dashed-line {
+            border-top: 1px dashed #000;
+            margin: 3px 0;
+        }
+        .solid-line {
+            border-top: 1px solid #000;
+            margin: 3px 0;
+        }
+        .double-line {
+            border-top: 2px solid #000;
+            margin: 3px 0;
+        }
+
+        /* En-tête - PAS DE MARGE HAUT */
+        .shop-name {
             font-size: 16px;
             font-weight: bold;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
+            margin-top: 0;
+            padding-top: 0;
         }
-        .header-sub {
-            font-size: 10px;
-            margin-top: 3px;
-        }
-
-        /* ── Étiquette copie ── */
-        .copy-label {
-            text-align: center;
+        .shop-infos {
             font-size: 9px;
             font-weight: bold;
-            letter-spacing: 1px;
-            border: 1px solid #000;
-            padding: 2px 0;
-            margin-bottom: 6px;
         }
 
-        /* ── Titres de section ── */
-        .section-title {
-            font-weight: bold;
-            font-size: 9px;
-            border-bottom: 1px solid #000;
-            padding-bottom: 2px;
-            margin-bottom: 3px;
-            margin-top: 6px;
-        }
-
-        /* ── Tableau infos (2 colonnes) ── */
-        .info-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 9px;
-            line-height: 1.6;
-        }
-        .info-table td { padding: 0; vertical-align: top; }
-        .info-table td.label { width: 80px; }
-        .info-table td.value { font-weight: bold; text-align: right; }
-
-        /* ── Tableau articles ── */
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 9px;
-            margin-top: 5px;
-        }
-        .items-table thead tr {
-            border-top: 1px solid #000;
-            border-bottom: 1px solid #000;
-        }
-        .items-table thead td { font-weight: bold; padding: 2px 0; }
-        .items-table tbody tr { border-bottom: 1px dotted #aaa; }
-        .items-table tbody td { padding: 2px 0; vertical-align: top; }
-        .items-table td.col-produit { width: 120px; }
-        .items-table td.col-qty     { width: 28px; text-align: right; }
-        .items-table td.col-pu      { width: 56px; text-align: right; }
-        .items-table td.col-total   { width: 62px; text-align: right; }
-
-        /* ── Totaux ── */
-        .totals-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 9px;
-            margin-top: 5px;
-            border-top: 1px dashed #000;
-            padding-top: 3px;
-        }
-        .totals-table td { padding: 1px 0; }
-        .totals-table td.tot-label { text-align: left; }
-        .totals-table td.tot-value { text-align: right; font-weight: bold; }
-        .totals-table tr.grand td {
-            border-top: 1px solid #000;
-            padding-top: 3px;
+        /* Lignes d'information */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 2px;
             font-size: 11px;
         }
 
-        /* ── Note ── */
-        .note-box {
-            font-size: 8px;
-            margin-top: 5px;
-            border-top: 1px dotted #aaa;
-            padding-top: 3px;
-            line-height: 1.4;
+        /* Lignes articles */
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1px;
+            font-size: 11px;
         }
-
-        /* ── Pied ── */
+        .item-name {
+            width: 55%;
+            word-break: break-word;
+        }
+        .item-qty {
+            width: 15%;
+            text-align: center;
+        }
+        .item-price {
+            width: 30%;
+            text-align: right;
+        }
+        
+        /* Prix unitaire */
+        .unit-price {
+            font-size: 9px;
+            margin-bottom: 3px;
+            margin-top: -1px;
+            text-align: right;
+        }
+        
+        /* Totaux */
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+            font-size: 11px;
+        }
+        .grand-total {
+            font-size: 14px;
+            font-weight: bold;
+            border-top: 1px solid #000;
+            padding-top: 3px;
+            margin-top: 3px;
+        }
+        
+        /* Footer */
         .footer {
             text-align: center;
-            margin-top: 8px;
-            border-top: 1px dashed #000;
-            padding-top: 5px;
-            font-size: 8px;
-            line-height: 1.6;
-        }
-        .footer .bonne-deg { font-style: italic; }
-
-        /* ── Séparateur de coupe ── */
-        .cut-line {
-            text-align: center;
+            margin-top: 6px;
+            margin-bottom: 0;
+            padding-bottom: 0;
             font-size: 9px;
-            margin: 8px 0;
-            color: #555;
         }
-
-        /* ── Bouton impression (masqué à l'impression) ── */
-        .btn-print {
+        .thankyou {
+            font-weight: bold;
+            font-size: 11px;
+            margin: 4px 0;
+        }
+        
+        /* Bouton d'impression */
+        .print-btn {
             display: block;
-            margin: 15px auto 0;
-            padding: 8px 24px;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
             background: #000;
             color: #fff;
+            text-align: center;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
             border: none;
             border-radius: 4px;
-            font-size: 13px;
-            cursor: pointer;
-            letter-spacing: 1px;
         }
-
-        /* ════════════════════════════
-           STYLES D'IMPRESSION
-        ════════════════════════════ */
+        
         @media print {
-            @page {
-                size: 80mm auto;
-                margin: 0;
+            .print-btn {
+                display: none;
             }
-
             body {
-                background: none;
-                display: block;
+                margin: 0;
                 padding: 0;
             }
-
-            .receipt-wrap {
-                width: 100%;
-                padding: 4mm 3mm;
+            .ticket {
+                margin: 0;
+                padding: 0;
             }
-
-            .btn-print { display: none; }
         }
     </style>
 </head>
 <body>
 
-<div class="receipt-wrap">
-
-    @for ($i = 0; $i < 2; $i++)
-
-    <div class="copy-label">{{ $i === 0 ? 'COPIE CLIENT' : 'COPIE MARCHAND' }}</div>
-
-    {{-- EN-TÊTE --}}
-    <div class="header">
-        <div class="logo-text">AKADI.CI</div>
-        <div class="header-sub">07 58 83 83 38 | www.akadi.ci</div>
+<!-- PAS UN SEUL ESPACE OU RETOUR A LA LIGNE AVANT LE TICKET -->
+<div class="ticket">
+    <!-- En-tête - COLLE PARFAITEMENT EN HAUT -->
+    <div class="center">
+        <div class="shop-name">AKADI.CI</div>
+        <div class="shop-infos">07 58 83 83 38</div>
+        <div class="shop-infos">www.akadi.ci</div>
     </div>
 
-    {{-- COMMANDE --}}
-    <div class="section-title">COMMANDE</div>
-    <table class="info-table">
-        <tr>
-            <td class="label">N° Cmd</td>
-            <td class="value">#{{ $orders->code }}</td>
-        </tr>
-        <tr>
-            <td class="label">Date</td>
-            <td class="value">{{ $orders->created_at->format('d/m/Y H:i') }}</td>
-        </tr>
-    </table>
+    <div class="solid-line"></div>
 
-    {{-- CLIENT --}}
-    <div class="section-title">CLIENT</div>
-    <table class="info-table">
-        <tr>
-            <td class="label">Nom</td>
-            <td class="value">{{ $orders->nom_client }}</td>
-        </tr>
-        <tr>
-            <td class="label">Tel</td>
-            <td class="value">{{ $orders->tel_client ?: '-' }}</td>
-        </tr>
-    </table>
+    <!-- Infos commande -->
+    <div class="info-row">
+        <span>N°</span>
+        <span>#{{ $orders->code }}</span>
+    </div>
+    <div class="info-row">
+        <span>DATE</span>
+        <span>{{ $orders->created_at->format('d/m/Y H:i') }}</span>
+    </div>
 
-    {{-- ARTICLES --}}
-    <table class="items-table">
-        <thead>
-            <tr>
-                <td class="col-produit">Produit</td>
-                <td class="col-qty">Qte</td>
-                <td class="col-pu">P.U</td>
-                <td class="col-total">Total</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($orders->products as $item)
-                @php $total = $item->pivot->quantity * $item->pivot->unit_price; @endphp
-                <tr>
-                    <td class="col-produit">{{ $item->title }}</td>
-                    <td class="col-qty">{{ $item->pivot->quantity }}</td>
-                    <td class="col-pu">{{ number_format($item->pivot->unit_price) }}</td>
-                    <td class="col-total">{{ number_format($total) }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="dashed-line"></div>
 
-    {{-- TOTAUX --}}
-    <table class="totals-table">
-        <tr>
-            <td class="tot-label">Sous-total</td>
-            <td class="tot-value">{{ number_format($orders->subtotal) }} F</td>
-        </tr>
-        <tr>
-            <td class="tot-label">Livraison</td>
-            <td class="tot-value">{{ number_format($orders->delivery_price) }} F</td>
-        </tr>
-        <tr class="grand">
-            <td class="tot-label">TOTAL</td>
-            <td class="tot-value">{{ number_format($orders->total) }} FCFA</td>
-        </tr>
-        @if(($orders->acompte ?? 0) > 0)
-        <tr>
-            <td class="tot-label">Acompte</td>
-            <td class="tot-value">{{ number_format($orders->acompte) }} F</td>
-        </tr>
-        @endif
-        @if(($orders->solde_restant ?? 0) > 0)
-        <tr>
-            <td class="tot-label">Reste a payer</td>
-            <td class="tot-value">{{ number_format($orders->solde_restant) }} F</td>
-        </tr>
-        @endif
-    </table>
+    <!-- Infos client -->
+    <div class="info-row">
+        <span>CLIENT</span>
+        <span>{{ $orders->nom_client ?: 'COMPTE' }}</span>
+    </div>
+    @if($orders->tel_client)
+    <div class="info-row">
+        <span>TEL</span>
+        <span>{{ $orders->tel_client }}</span>
+    </div>
+    @endif
 
-    {{-- NOTE --}}
+    <div class="dashed-line"></div>
+
+    <!-- En-tête articles -->
+    <div class="item-row" style="border-bottom: 1px solid #000; margin-bottom: 3px; padding-bottom: 1px;">
+        <span class="item-name">ARTICLE</span>
+        <span class="item-qty">QTÉ</span>
+        <span class="item-price">TOTAL</span>
+    </div>
+    
+    <!-- Liste des articles -->
+    @foreach ($orders->products as $item)
+    <div class="item-row">
+        <span class="item-name">{{ $item->title }}</span>
+        <span class="item-qty">{{ $item->pivot->quantity }}</span>
+        <span class="item-price">{{ number_format($item->pivot->quantity * $item->pivot->unit_price) }}</span>
+    </div>
+    <div class="unit-price">
+        ({{ number_format($item->pivot->unit_price) }} x {{ $item->pivot->quantity }})
+    </div>
+    @endforeach
+
+    <div class="double-line"></div>
+
+    <!-- Totaux -->
+    <div class="total-row">
+        <span>SOUS-TOTAL</span>
+        <span>{{ number_format($orders->subtotal) }} F</span>
+    </div>
+    <div class="total-row">
+        <span>LIVRAISON</span>
+        <span>{{ number_format($orders->delivery_price) }} F</span>
+    </div>
+    
+    @if(($orders->acompte ?? 0) > 0)
+    <div class="total-row">
+        <span>ACOMPTE</span>
+        <span>-{{ number_format($orders->acompte) }} F</span>
+    </div>
+    @endif
+    
+    <div class="grand-total total-row">
+        <span>TOTAL</span>
+        <span>{{ number_format($orders->total) }} F</span>
+    </div>
+    
+    @if(($orders->solde_restant ?? 0) > 0)
+    <div class="total-row" style="margin-top: 3px; font-size: 12px;">
+        <span>RESTE</span>
+        <span>{{ number_format($orders->solde_restant) }} F</span>
+    </div>
+    @endif
+
+    <!-- Note -->
     @if(!empty($orders->note))
-    <div class="note-box">Note : {{ $orders->note }}</div>
-    @endif
-
-    {{-- PIED --}}
-    <div class="footer">
-        <div>Imprime le {{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</div>
-        <div class="bonne-deg">Bonne degustation !</div>
+    <div class="dashed-line"></div>
+    <div class="info-row">
+        <span>NOTE</span>
+        <span>{{ $orders->note }}</span>
     </div>
-
-    {{-- SÉPARATEUR --}}
-    @if($i === 0)
-    <div class="cut-line">- - - - - - - - - - - - - - - - - -</div>
     @endif
 
-    @endfor
-
+    <!-- Footer -->
+    <div class="footer">
+        <div class="solid-line"></div>
+        <div class="thankyou">MERCI</div>
+        <div>BONNE DEGUSTATION</div>
+        <div class="mt-1">{{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</div>
+    </div>
 </div>
 
-{{-- Bouton impression visible dans le navigateur --}}
-<button class="btn-print" onclick="window.print()">Imprimer</button>
+<button class="print-btn" onclick="window.print();">IMPRIMER</button>
 
 <script>
-    // Auto-impression à l'ouverture de la page
-    window.addEventListener('load', function () {
+    window.onload = function() {
         window.print();
-    });
+    };
 </script>
 
 </body>
