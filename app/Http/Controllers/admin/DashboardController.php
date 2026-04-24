@@ -63,9 +63,27 @@ class DashboardController extends Controller
             ->get();
 
 
-        $orders_new = Order::orderBy('created_at', 'DESC')
-            ->whereIn('status', ['attente', 'precommande'])
-            ->get();
+        // $orders_new = Order::orderBy('created_at', 'DESC')
+        //     ->whereIn('status', ['attente', 'precommande'])
+        //     ->get();
+
+
+
+        // $orders_new = Order::orderBy('created_at', 'DESC')
+        //     // ->where('source', 'web')
+        //     ->where('payment_status', 'completed')
+        //     ->where(function ($query) {
+        //         // Commandes en attente normale : toujours affichées
+        //         $query->where('status', 'attente')
+        //             // Précommandes : uniquement si la date prévue est aujourd'hui ou passée
+        //             ->orWhere(function ($q) {
+        //                 $q->where('status', 'precommande')
+        //                     ->whereDate('delivery_planned', '<=', now()->format('Y-m-d'));
+        //             });
+        //     })
+        //     ->get();
+        //compter les nouvelles commandes
+        // $orders_new_count = $orders_new->count();
 
 
 
@@ -177,7 +195,8 @@ class DashboardController extends Controller
             'orders',
             'products',
             'users',
-            'orders_new',
+            // 'orders_new',
+            // 'orders_new_count',
             'depenses',
 
             //order
@@ -468,34 +487,34 @@ class DashboardController extends Controller
 
     //new version de checkNewOrder
     public function checkNewOrder(Request $request)
-{
-    $orders_new = Order::orderBy('created_at', 'DESC')
-        ->where('source', 'web')
-        ->where('payment_status', 'completed')
-        ->where(function ($query) {
-            // Commandes en attente normale : toujours affichées
-            $query->where('status', 'attente')
-                  // Précommandes : uniquement si la date prévue est aujourd'hui ou passée
-                  ->orWhere(function ($q) {
-                      $q->where('status', 'precommande')
-                        ->whereDate('delivery_planned', '<=', now()->format('Y-m-d'));
-                  });
-        })
-        ->get();
+    {
+        $orders_new = Order::orderBy('created_at', 'DESC')
+            ->where('source', 'web')
+            ->where('payment_status', 'completed')
+            ->where(function ($query) {
+                // Commandes en attente normale : toujours affichées
+                $query->where('status', 'attente')
+                    // Précommandes : uniquement si la date prévue est aujourd'hui ou passée
+                    ->orWhere(function ($q) {
+                        $q->where('status', 'precommande')
+                            ->whereDate('delivery_planned', '<=', now()->format('Y-m-d'));
+                    });
+            })
+            ->get();
 
-    return response()->json([
-        'orders_new' => $orders_new->map(function ($order) {
-            return [
-                'id'               => $order->id,
-                'code'             => $order->code,
-                'status'           => $order->status,
-                'created_at'       => $order->created_at->format('Y-m-d H:i:s'),
-                'created_at_human' => Carbon::parse($order->created_at)->diffForHumans(),
-            ];
-        }),
-        'count' => $orders_new->count(),
-    ]);
-}
+        return response()->json([
+            'orders_new' => $orders_new->map(function ($order) {
+                return [
+                    'id'               => $order->id,
+                    'code'             => $order->code,
+                    'status'           => $order->status,
+                    'created_at'       => $order->created_at->format('Y-m-d H:i:s'),
+                    'created_at_human' => Carbon::parse($order->created_at)->diffForHumans(),
+                ];
+            }),
+            'count' => $orders_new->count(),
+        ]);
+    }
 
     // public function checkBalanceTwilio()
     // {

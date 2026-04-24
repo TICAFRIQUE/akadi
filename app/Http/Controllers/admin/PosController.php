@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\ProductBase;
 use App\Models\User;
 use App\Services\StockService;
+use App\Services\TicAfriqueService;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +27,15 @@ class PosController extends Controller
         $this->stockService = $stockService;
     }
 
+
+    /**
+     * Envoyer un SMS au client via l'API TIC Afrique un fois la commande confirmée
+     */
+    public function sendSms($order)
+    {
+        $smsService = new TicAfriqueService();
+        $smsService->sendOrderConfirmationSms($order);
+    }
     /**
      * Interface POS – formulaire de création de commande backoffice
      */
@@ -550,6 +560,11 @@ class PosController extends Controller
                         // $base->decrement('stock', $quantityConsumed);
                     }
                 }
+            }
+
+            // si status est confirmée alors on envoi le sms
+            if ($order->status == Order::STATUS_CONFIRMEE) {
+                 $this->sendSms($order);
             }
 
             DB::commit();

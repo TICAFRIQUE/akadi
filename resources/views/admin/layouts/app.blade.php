@@ -130,7 +130,7 @@
                         <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
                                 class="nav-link nav-link-lg message-toggle"><i data-feather="bell" class="bell"></i>
                                 <span id="orderNew" class="badge headerBadge1">
-                                    {{ count($orders_new) }}</span> </a>
+                                   {{ $orders_new->count()}}</span> </a>
                             <div class="dropdown-menu dropdown-list dropdown-menu-right pullDown">
                                 <div class="dropdown-header">
                                     Notifications
@@ -156,8 +156,6 @@
                                             </span>
                                         </a>
                                     @endforeach
-
-
                                 </div>
                                 <div class="dropdown-footer text-center">
                                     <a href="{{ route('order.index') }}">Voir tous les commandes en attentes <i
@@ -462,8 +460,7 @@
                                             </li>
                                         @endcan
                                         @can('gestion-de-stock.achats')
-                                            <li
-                                                class="nav-item {{ Route::is('achat.*')  ? 'active' : '' }}">
+                                            <li class="nav-item {{ Route::is('achat.*') ? 'active' : '' }}">
                                                 <a href="{{ route('achat.index') }}" class="nav-link">Gestion des achats</a>
                                             </li>
                                         @endcan

@@ -176,7 +176,21 @@ class AppServiceProvider extends ServiceProvider
                     'orders_new',
                     30,
                     fn() =>
-                    Order::whereIn('status', ['attente', 'precommande'])->latest()->limit(100)->get()
+                    // Order::whereIn('status', ['attente', 'precommande'])->latest()->limit(100)->get()
+
+                    Order::orderBy('created_at', 'DESC')
+                        // ->where('source', 'web')
+                        ->where('payment_status', 'completed')
+                        ->where(function ($query) {
+                            // Commandes en attente normale : toujours affichées
+                            $query->where('status', 'attente')
+                                // Précommandes : uniquement si la date prévue est aujourd'hui ou passée
+                                ->orWhere(function ($q) {
+                                    $q->where('status', 'precommande')
+                                        ->whereDate('delivery_planned', '<=', now()->format('Y-m-d'));
+                                });
+                        })
+                        ->latest()->limit(100)->get()
                 );
 
                 $admin = [
