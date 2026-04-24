@@ -10,6 +10,15 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
+                        <!--afficher le motif du client-->
+                        <div class="Alert alert-info">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Motif d'inscription :
+                            <strong>{{ $user['motif'] ? \App\Models\User::MOTIFS[$user['motif']] : '—' }}</strong>
+                            @if ($user['motif'] === 'autre' && $user['motif_autre'])
+                                <br><span class="ml-4"><em>{{ $user['motif_autre'] }}</em></span>
+                            @endif
+                        </div>
                         <div class="d-flex align-items-center flex-wrap" style="gap: 24px;">
 
                             {{-- Avatar --}}
@@ -17,7 +26,8 @@
                                 <img alt="avatar" src="{{ asset('site/assets/img/custom/avatar.png') }}"
                                     class="rounded-circle" style="width:80px;height:80px;object-fit:cover;">
                                 <div class="mt-1">
-                                    <span class="badge badge-{{ $user['type_client'] === 'fidele' ? 'success' : 'warning' }}">
+                                    <span
+                                        class="badge badge-{{ $user['type_client'] === 'fidele' ? 'success' : 'warning' }}">
                                         {{ ucfirst($user['type_client'] ?? 'prospect') }}
                                     </span>
                                 </div>
@@ -29,7 +39,8 @@
                                     <h4 class="mb-0 mr-2">{{ $user['name'] }}</h4>
                                     <span class="badge badge-primary">client</span>
                                 </div>
-                                <div class="text-muted small mb-2">Inscrit le {{ \Carbon\Carbon::parse($user['created_at'])->format('d/m/Y') }}</div>
+                                <div class="text-muted small mb-2">Inscrit le
+                                    {{ \Carbon\Carbon::parse($user['created_at'])->format('d/m/Y') }}</div>
                                 <div class="row">
                                     @php
                                         $Y = date('Y');
@@ -78,7 +89,9 @@
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-primary"><i class="fas fa-shopping-cart"></i></div>
                     <div class="card-wrap">
-                        <div class="card-header"><h4>Total</h4></div>
+                        <div class="card-header">
+                            <h4>Total</h4>
+                        </div>
                         <div class="card-body">{{ $user['orders_count'] }}</div>
                     </div>
                 </div>
@@ -87,7 +100,9 @@
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-info"><i class="fas fa-calendar-alt"></i></div>
                     <div class="card-wrap">
-                        <div class="card-header"><h4>Ce mois</h4></div>
+                        <div class="card-header">
+                            <h4>Ce mois</h4>
+                        </div>
                         <div class="card-body">{{ $orders_mois }}</div>
                     </div>
                 </div>
@@ -96,7 +111,9 @@
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-success"><i class="fas fa-check-circle"></i></div>
                     <div class="card-wrap">
-                        <div class="card-header"><h4>Livrées</h4></div>
+                        <div class="card-header">
+                            <h4>Livrées</h4>
+                        </div>
                         <div class="card-body">{{ $orders_livre }}</div>
                     </div>
                 </div>
@@ -105,7 +122,9 @@
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-warning"><i class="fas fa-spinner"></i></div>
                     <div class="card-wrap">
-                        <div class="card-header"><h4>En cours</h4></div>
+                        <div class="card-header">
+                            <h4>En cours</h4>
+                        </div>
                         <div class="card-body">{{ $orders_en_cours }}</div>
                     </div>
                 </div>
@@ -114,7 +133,9 @@
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-danger"><i class="fas fa-times-circle"></i></div>
                     <div class="card-wrap">
-                        <div class="card-header"><h4>Annulées</h4></div>
+                        <div class="card-header">
+                            <h4>Annulées</h4>
+                        </div>
                         <div class="card-body">{{ $orders_annule }}</div>
                     </div>
                 </div>
@@ -123,7 +144,9 @@
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-dark"><i class="fas fa-coins"></i></div>
                     <div class="card-wrap">
-                        <div class="card-header"><h4>CA total</h4></div>
+                        <div class="card-header">
+                            <h4>CA total</h4>
+                        </div>
                         <div class="card-body" style="font-size:13px;">{{ number_format($ca_total, 0, ',', ' ') }} F</div>
                     </div>
                 </div>
@@ -158,7 +181,7 @@
                                 <button type="submit" class="btn btn-sm btn-primary">
                                     <i class="fa fa-search mr-1"></i> Filtrer
                                 </button>
-                                @if($dateDebut || $dateFin)
+                                @if ($dateDebut || $dateFin)
                                     <a href="{{ route('client.detail', $user['id']) }}"
                                         class="btn btn-sm btn-outline-secondary" title="Réinitialiser">
                                         <i class="fa fa-undo"></i>
@@ -171,12 +194,12 @@
                         </div>
                     </div>
 
-                    @if($dateDebut || $dateFin)
+                    @if ($dateDebut || $dateFin)
                         <div class="card-header py-2 bg-light border-top-0">
                             <small class="text-muted">
                                 <i class="fas fa-filter mr-1"></i> Filtre appliqué :
-                                {{ $dateDebut ? 'Du '.\Carbon\Carbon::parse($dateDebut)->format('d/m/Y') : '' }}
-                                {{ $dateFin   ? ' au '.\Carbon\Carbon::parse($dateFin)->format('d/m/Y')  : '' }}
+                                {{ $dateDebut ? 'Du ' . \Carbon\Carbon::parse($dateDebut)->format('d/m/Y') : '' }}
+                                {{ $dateFin ? ' au ' . \Carbon\Carbon::parse($dateFin)->format('d/m/Y') : '' }}
                                 — {{ $orders->count() }} commande(s) affichée(s)
                             </small>
                         </div>
@@ -199,8 +222,10 @@
                                 <tbody>
                                     @forelse($orders as $index => $order)
                                         @php
-                                            $statut = \App\Models\Order::$statuts[$order->status]
-                                                      ?? ['label' => $order->status, 'color' => 'secondary'];
+                                            $statut = \App\Models\Order::$statuts[$order->status] ?? [
+                                                'label' => $order->status,
+                                                'color' => 'secondary',
+                                            ];
                                         @endphp
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
@@ -228,11 +253,12 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
-                                @if($orders->count() > 0)
+                                @if ($orders->count() > 0)
                                     <tfoot>
                                         <tr class="font-weight-bold bg-light">
                                             <td colspan="4" class="text-right">Total :</td>
-                                            <td>{{ number_format($orders->where('status','!=','annulée')->sum('total'), 0, ',', ' ') }} F</td>
+                                            <td>{{ number_format($orders->where('status', '!=', 'annulée')->sum('total'), 0, ',', ' ') }}
+                                                F</td>
                                             <td colspan="2"></td>
                                         </tr>
                                     </tfoot>
@@ -248,29 +274,65 @@
 
     <style>
         @@media print {
+
             .no-print,
             .navbar,
             .sidebar,
             nav,
             .section-header,
-            .main-sidebar { display: none !important; }
-            #printZone { box-shadow: none !important; border: none !important; }
-            body { font-size: 12px; }
+            .main-sidebar {
+                display: none !important;
+            }
+
+            #printZone {
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            body {
+                font-size: 12px;
+            }
         }
     </style>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#tableCommandes').DataTable({
-                order: [[5, 'desc']],
+                order: [
+                    [5, 'desc']
+                ],
                 pageLength: 25,
                 dom: 'Bfrtip',
-                buttons: [
-                    { extend: 'copy',  exportOptions: { columns: [0,1,2,3,4,5] } },
-                    { extend: 'csv',   exportOptions: { columns: [0,1,2,3,4,5] } },
-                    { extend: 'excel', exportOptions: { columns: [0,1,2,3,4,5] } },
-                    { extend: 'pdf',   exportOptions: { columns: [0,1,2,3,4,5] } },
-                    { extend: 'print', exportOptions: { columns: [0,1,2,3,4,5] } },
+                buttons: [{
+                        extend: 'copy',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    },
                 ],
             });
         });

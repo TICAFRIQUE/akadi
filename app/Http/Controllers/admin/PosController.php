@@ -403,6 +403,7 @@ class PosController extends Controller
                         'name'     => $request->client_name ?? 'Client anonyme',
                         'password' => Hash::make('password'),
                         'role'     => 'client',
+                        'motif'    => 'passer_commande',
                     ]
                 );
                 $userId = $user->id;

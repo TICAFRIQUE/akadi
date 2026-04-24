@@ -444,27 +444,58 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function checkNewOrder(Request $request)
-    {
-        $orders_new = Order::orderBy('created_at', 'DESC')
-            ->whereIn('status', ['attente', 'precommande'])
-            ->where('source', 'web')
-            ->where('payment_status', 'completed')
-            ->get();
+    // public function checkNewOrder(Request $request)
+    // {
+    //     $orders_new = Order::orderBy('created_at', 'DESC')
+    //         ->whereIn('status', ['attente', 'precommande'])
+    //         ->where('source', 'web')
+    //         ->where('payment_status', 'completed')
+    //         ->get();
 
-        return response()->json([
-            'orders_new' => $orders_new->map(function ($order) {
-                return [
-                    'id'               => $order->id,
-                    'code'             => $order->code,
-                    'status'           => $order->status,
-                    'created_at'       => $order->created_at->format('Y-m-d H:i:s'),
-                    'created_at_human' => Carbon::parse($order->created_at)->diffForHumans(),
-                ];
-            }),
-            'count' => $orders_new->count(),
-        ]);
-    }
+    //     return response()->json([
+    //         'orders_new' => $orders_new->map(function ($order) {
+    //             return [
+    //                 'id'               => $order->id,
+    //                 'code'             => $order->code,
+    //                 'status'           => $order->status,
+    //                 'created_at'       => $order->created_at->format('Y-m-d H:i:s'),
+    //                 'created_at_human' => Carbon::parse($order->created_at)->diffForHumans(),
+    //             ];
+    //         }),
+    //         'count' => $orders_new->count(),
+    //     ]);
+    // }
+
+    //new version de checkNewOrder
+    public function checkNewOrder(Request $request)
+{
+    $orders_new = Order::orderBy('created_at', 'DESC')
+        ->where('source', 'web')
+        ->where('payment_status', 'completed')
+        ->where(function ($query) {
+            // Commandes en attente normale : toujours affichées
+            $query->where('status', 'attente')
+                  // Précommandes : uniquement si la date prévue est aujourd'hui ou passée
+                  ->orWhere(function ($q) {
+                      $q->where('status', 'precommande')
+                        ->whereDate('delivery_planned', '<=', now()->format('Y-m-d'));
+                  });
+        })
+        ->get();
+
+    return response()->json([
+        'orders_new' => $orders_new->map(function ($order) {
+            return [
+                'id'               => $order->id,
+                'code'             => $order->code,
+                'status'           => $order->status,
+                'created_at'       => $order->created_at->format('Y-m-d H:i:s'),
+                'created_at_human' => Carbon::parse($order->created_at)->diffForHumans(),
+            ];
+        }),
+        'count' => $orders_new->count(),
+    ]);
+}
 
     // public function checkBalanceTwilio()
     // {

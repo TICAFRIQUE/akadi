@@ -325,8 +325,8 @@
                                     <select name="type_order" class="form-control">
                                         <option value="normal" {{ $order->type_order == 'normal' ? 'selected' : '' }}>
                                             Normal</option>
-                                        <option value="precommande"
-                                            {{ $order->type_order == 'precommande' ? 'selected' : '' }}>Précommande
+                                        <option value="cmd_precommande"
+                                            {{ $order->type_order == 'cmd_precommande' ? 'selected' : '' }}>Précommande
                                         </option>
                                     </select>
                                 </div>

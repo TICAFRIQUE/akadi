@@ -37,6 +37,19 @@ class User extends Authenticatable
         'localisation',
         'date_anniversaire',
         'notify_birthday',
+        'motif',
+        'motif_autre'
+    ];
+
+
+    const MOTIFS = [
+        'demande_prix'     => 'Demande de prix',
+        'situation_geographique'    => 'Situation géographique',
+        'demande_menu'     => 'Demande de menu',
+        'reclamation'      => 'Réclamation client',
+        'probleme_livreur' => 'Problème Livreur',
+        'passer_commande'  => 'Passer commande',
+        'autre'            => 'Autres',
     ];
 
     public static function boot()
@@ -70,11 +83,11 @@ class User extends Authenticatable
     }
 
 
-       // Relation avec les coupons via la table pivot coupon_use
-       public function couponUse()
-       {
-           return $this->belongsToMany(Coupon::class, 'coupon_use')->withPivot('use_count')->withTimestamps();
-       }
+    // Relation avec les coupons via la table pivot coupon_use
+    public function couponUse()
+    {
+        return $this->belongsToMany(Coupon::class, 'coupon_use')->withPivot('use_count')->withTimestamps();
+    }
 
 
     /**

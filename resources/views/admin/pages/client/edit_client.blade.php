@@ -103,6 +103,28 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="motif">Motif de contact</label>
+                                    <select id="motif" name="motif" class="form-control" required>
+                                        <option disabled value="">-- Choisir un motif --</option>
+                                        @foreach (\App\Models\User::MOTIFS as $key => $label)
+                                            <option value="{{ $key }}"
+                                                {{ old('motif', $user->motif) == $key ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback">Champs obligatoire</div>
+                                </div>
+
+                                <div class="form-group" id="motif_autre_wrapper" style="display: none;">
+                                    <label for="motif_autre">Préciser le motif</label>
+                                    <input id="motif_autre" type="text" class="form-control" name="motif_autre"
+                                        placeholder="Décrivez le motif..."
+                                        value="{{ old('motif_autre', $user->motif_autre) }}">
+                                    <div class="invalid-feedback">Veuillez préciser le motif</div>
+                                </div>
+
                                 <div class="row">
                                     <div class="form-group col-8">
                                         <label for="password" class="d-block">Mot de passe
@@ -131,4 +153,21 @@
 
 @section('script')
     <script src="{{ asset('admin/assets/bundles/select2/dist/js/select2.full.min.js') }}"></script>
+    <script>
+        const motifSelect = document.getElementById('motif');
+        const autreWrapper = document.getElementById('motif_autre_wrapper');
+        const autreInput = document.getElementById('motif_autre');
+
+        function toggleAutre() {
+            const isAutre = motifSelect.value === 'autre';
+            autreWrapper.style.display = isAutre ? 'block' : 'none';
+            autreInput.required = isAutre;
+        }
+
+        // Au chargement (pour old('motif') après erreur de validation)
+        toggleAutre();
+
+        motifSelect.addEventListener('change', toggleAutre);
+    </script>
+
 @endsection

@@ -13,7 +13,8 @@
                 <a class="btn btn-primary fas fa-arrow-left mb-2" href="{{ route('client.list') }}">
                     Retour à la liste des clients
                 </a>
-                <div class="col-12 col-sm-10 offset-sm-1 col-md-10 offset-md-2 col-lg-10 offset-lg-2 col-xl-10 offset-xl-2 m-auto">
+                <div
+                    class="col-12 col-sm-10 offset-sm-1 col-md-10 offset-md-2 col-lg-10 offset-lg-2 col-xl-10 offset-xl-2 m-auto">
 
                     <div class="card card-primary">
                         @include('admin.components.validationMessage')
@@ -27,8 +28,8 @@
                                 <div class="row">
                                     <div class="form-group col-6">
                                         <label for="name">Nom & prénoms</label>
-                                        <input id="name" type="text" class="form-control" name="name"
-                                            autofocus required>
+                                        <input id="name" type="text" class="form-control" name="name" autofocus
+                                            required>
                                         <div class="invalid-feedback">Champs obligatoire</div>
                                     </div>
                                     <div class="form-group col-6">
@@ -46,7 +47,8 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Date d'anniversaire <strong>(Peut-être qu'une surprise vous atteindra le Jour-J)</strong></label>
+                                    <label>Date d'anniversaire <strong>(Peut-être qu'une surprise vous atteindra le
+                                            Jour-J)</strong></label>
                                     <div class="row">
                                         <div class="col-6">
                                             <select name="jour" class="form-control">
@@ -61,8 +63,20 @@
                                         <div class="col-6">
                                             <select name="mois" class="form-control">
                                                 @php
-                                                    $month = ['janvier','février','mars','avril','mai','juin',
-                                                              'juillet','août','septembre','octobre','novembre','décembre'];
+                                                    $month = [
+                                                        'janvier',
+                                                        'février',
+                                                        'mars',
+                                                        'avril',
+                                                        'mai',
+                                                        'juin',
+                                                        'juillet',
+                                                        'août',
+                                                        'septembre',
+                                                        'octobre',
+                                                        'novembre',
+                                                        'décembre',
+                                                    ];
                                                 @endphp
                                                 <option disabled selected>Mois</option>
                                                 @foreach ($month as $key => $item)
@@ -75,10 +89,33 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="motif">Motif du client</label>
+                                    <select id="motif" name="motif" class="form-control" required>
+                                        <option disabled selected value="">-- Choisir un motif --</option>
+                                        @foreach ($motifs as $key => $label)
+                                            <option value="{{ $key }}"
+                                                {{ old('motif') == $key ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback">Champs obligatoire</div>
+                                </div>
+
+                                {{-- Champ affiché uniquement si "Autres" est sélectionné --}}
+                                <div class="form-group" id="motif_autre_wrapper" style="display: none;">
+                                    <label for="motif_autre">Préciser le motif</label>
+                                    <input id="motif_autre" type="text" class="form-control" name="motif_autre"
+                                        placeholder="Décrivez le motif..." value="{{ old('motif_autre') }}">
+                                    <div class="invalid-feedback">Veuillez préciser le motif</div>
+                                </div>
+
                                 <div class="row">
                                     <div class="form-group col-8">
                                         <label for="password" class="d-block">Mot de passe
-                                           <br> Nb : <span class="text-danger" style="font-size: 12px">Laisser vide pour le mot de passe par défaut : <code>password</code></span>
+                                            <br> Nb : <span class="text-danger" style="font-size: 12px">Laisser vide pour le
+                                                mot de passe par défaut : <code>password</code></span>
                                         </label>
                                         <input id="password" type="password" class="form-control" name="password"
                                             aria-autocomplete="none" autocomplete="off">
@@ -104,4 +141,21 @@
 
 @section('script')
     <script src="{{ asset('admin/assets/bundles/select2/dist/js/select2.full.min.js') }}"></script>
+
+    <script>
+        const motifSelect = document.getElementById('motif');
+        const autreWrapper = document.getElementById('motif_autre_wrapper');
+        const autreInput = document.getElementById('motif_autre');
+
+        function toggleAutre() {
+            const isAutre = motifSelect.value === 'autre';
+            autreWrapper.style.display = isAutre ? 'block' : 'none';
+            autreInput.required = isAutre;
+        }
+
+        // Au chargement (pour old('motif') après erreur de validation)
+        toggleAutre();
+
+        motifSelect.addEventListener('change', toggleAutre);
+    </script>
 @endsection

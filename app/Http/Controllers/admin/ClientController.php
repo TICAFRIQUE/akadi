@@ -21,11 +21,11 @@ class ClientController extends Controller
         $dateFin   = request('date_fin',   !request()->has('date_fin')   ? now()->endOfMonth()->format('Y-m-d')   : null);
 
         $users = User::withCount([
-                'orders',
-                'orders as orders_month_count' => fn($q) => $q
-                    ->whereMonth('created_at', now()->month)
-                    ->whereYear('created_at', now()->year),
-            ])
+            'orders',
+            'orders as orders_month_count' => fn($q) => $q
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year),
+        ])
             ->where('role', 'client')
             ->when($typeClient, fn($q) => $q->where('type_client', $typeClient))
             ->when($dateDebut, fn($q) => $q->whereDate('created_at', '>=', $dateDebut))
@@ -69,15 +69,26 @@ class ClientController extends Controller
             ->get();
 
         return view('admin.pages.client.detail', compact(
-            'user', 'orders', 'orders_livre', 'orders_annule',
-            'orders_en_cours', 'ca_total', 'ca_mois', 'orders_mois',
-            'dateDebut', 'dateFin'
+            'user',
+            'orders',
+            'orders_livre',
+            'orders_annule',
+            'orders_en_cours',
+            'ca_total',
+            'ca_mois',
+            'orders_mois',
+            'dateDebut',
+            'dateFin'
         ));
     }
 
     public function create()
     {
-        return view('admin.pages.client.create');
+
+        //recuperer la liste des motifs
+        $motifs = User::MOTIFS;
+
+        return view('admin.pages.client.create', compact('motifs'));
     }
 
     public function store(Request $request)
@@ -116,6 +127,8 @@ class ClientController extends Controller
             'localisation'      => $request->localisation,
             'date_anniversaire' => $date_anniv,
             'password'          => Hash::make($password),
+            'motif'             => $request->motif,
+            'motif_autre'       => $request->motif == 'autre' ? $request->motif_autre : null,
         ]);
 
         $user->assignRole('client');
@@ -130,11 +143,42 @@ class ClientController extends Controller
         return view('admin.pages.client.edit_client', compact('user', 'typeClientOptions'));
     }
 
+    // public function update(Request $request, $id)
+    // {
+    //     $date_anniv = '';
+    //     if ($request->jour && $request->mois) {
+    //         $date_anniv = $request->jour . '-' . $request->mois;
+    //     }
+
+    //     $updateData = [
+    //         'name'              => $request['name'],
+    //         'phone'             => $request['phone'],
+    //         'email'             => $request->email,
+    //         'role'              => 'client',
+    //         'type_client'       => $request->type_client,
+    //         'date_anniversaire' => $date_anniv,
+    //         'localisation'      => $request->localisation,
+    //     ];
+
+    //     if ($request->filled('password')) {
+    //         $updateData['password'] = Hash::make($request['password']);
+    //     }
+
+    //     tap(User::find($id))->update($updateData);
+
+    //     return back()->with('success', 'Client modifié avec succès');
+    // }
+
     public function update(Request $request, $id)
     {
         $date_anniv = '';
         if ($request->jour && $request->mois) {
             $date_anniv = $request->jour . '-' . $request->mois;
+        }
+
+        // Rendre motif_autre obligatoire uniquement si "autre" est sélectionné
+        if ($request->motif === 'autre') {
+            $rules['motif_autre'] = 'required|string|max:255';
         }
 
         $updateData = [
@@ -145,6 +189,8 @@ class ClientController extends Controller
             'type_client'       => $request->type_client,
             'date_anniversaire' => $date_anniv,
             'localisation'      => $request->localisation,
+            'motif'             => $request->motif,
+            'motif_autre'       => $request->motif === 'autre' ? $request->motif_autre : null,
         ];
 
         if ($request->filled('password')) {

@@ -86,6 +86,7 @@ class Order extends Model
         'available_product',
         'user_id',
         'date_order',
+        // 'date_precommande', //date de commande si c'est une precommande
         'note',
         'type_order',
         'source',                // web, backoffice, whatsapp, appel, autre

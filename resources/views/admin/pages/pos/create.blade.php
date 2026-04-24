@@ -323,8 +323,8 @@
                                         <option value="normal" {{ old('type_order') == 'normal' ? 'selected' : '' }}>
                                             Normal
                                         </option>
-                                        <option value="precommande"
-                                            {{ old('type_order') == 'precommande' ? 'selected' : '' }}>Précommande
+                                        <option value="cmd_precommande"
+                                            {{ old('type_order') == 'cmd_precommande' ? 'selected' : '' }}>Précommande
                                         </option>
                                     </select>
                                 </div>
