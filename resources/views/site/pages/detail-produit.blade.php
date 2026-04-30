@@ -180,7 +180,7 @@
                                     </a> --}}
 
                                     <a href="{{ route('detail-produit', $item['slug']) }}">
-                                        <img src="{{ $item->getFirstMediaUrl('product_image', 'thumb') ?: $item->getFirstMediaUrl('product_image') }}"
+                                        <img src="{{ $item->getFirstMediaUrl('product_image') ?: $item->getFirstMediaUrl('product_image') }}"
                                             alt="{{ $item['title'] }}" loading="lazy">
                                     </a>
 
