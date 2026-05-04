@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="utf-8" />
     <title>Ticket - {{ $orders->code }}</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         @page {
             size: 80mm auto;
@@ -28,6 +35,7 @@
             gap: 10px;
             margin-bottom: 20px;
         }
+
         .btn {
             padding: 9px 22px;
             border: none;
@@ -37,8 +45,17 @@
             cursor: pointer;
             font-family: Arial, sans-serif;
         }
-        .btn-print { background: #111; color: #fff; }
-        .btn-close  { background: #fff; color: #111; border: 1px solid #aaa; }
+
+        .btn-print {
+            background: #111;
+            color: #fff;
+        }
+
+        .btn-close {
+            background: #fff;
+            color: #111;
+            border: 1px solid #aaa;
+        }
 
         .ticket {
             background: #fff;
@@ -46,7 +63,7 @@
             padding: 12px 10px 14px;
             font-size: 11px;
             line-height: 1.4;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
             position: relative;
         }
 
@@ -54,20 +71,31 @@
             content: '';
             display: block;
             position: absolute;
-            top: -8px; left: 0; right: 0; height: 8px;
+            top: -8px;
+            left: 0;
+            right: 0;
+            height: 8px;
             background: radial-gradient(circle at 6px -2px, #d1d5db 6px, white 6px) top left / 12px 8px repeat-x;
         }
+
         .ticket::after {
             content: '';
             display: block;
             position: absolute;
-            bottom: -8px; left: 0; right: 0; height: 8px;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 8px;
             background: radial-gradient(circle at 6px 10px, #d1d5db 6px, white 6px) bottom left / 12px 8px repeat-x;
         }
 
-        .ticket * { font-weight: bold; }
+        .ticket * {
+            font-weight: bold;
+        }
 
-        .center { text-align: center; }
+        .center {
+            text-align: center;
+        }
 
         /* Un seul séparateur simple */
         .sep {
@@ -80,6 +108,7 @@
             letter-spacing: 4px;
             margin-bottom: 2px;
         }
+
         .shop-sub {
             font-size: 9px;
             line-height: 1.5;
@@ -91,8 +120,15 @@
             margin-bottom: 2px;
             font-size: 10px;
         }
-        .row .lbl { color: #666; font-size: 9px; }
-        .row .val { text-align: right; }
+
+        .row .lbl {
+            color: #666;
+            font-size: 9px;
+        }
+
+        .row .val {
+            text-align: right;
+        }
 
         /* Articles */
         .items-head {
@@ -102,20 +138,51 @@
             margin-bottom: 3px;
             font-size: 9px;
         }
-        .h-name { width: 50%; }
-        .h-qty  { width: 12%; text-align: center; }
-        .h-pu   { width: 20%; text-align: right; }
-        .h-tot  { width: 18%; text-align: right; }
+
+        .h-name {
+            width: 50%;
+        }
+
+        .h-qty {
+            width: 12%;
+            text-align: center;
+        }
+
+        .h-pu {
+            width: 20%;
+            text-align: right;
+        }
+
+        .h-tot {
+            width: 18%;
+            text-align: right;
+        }
 
         .item-line {
             display: flex;
             margin-bottom: 3px;
             font-size: 10px;
         }
-        .i-name { width: 50%; word-break: break-word; }
-        .i-qty  { width: 12%; text-align: center; }
-        .i-pu   { width: 20%; text-align: right; }
-        .i-tot  { width: 18%; text-align: right; }
+
+        .i-name {
+            width: 50%;
+            word-break: break-word;
+        }
+
+        .i-qty {
+            width: 12%;
+            text-align: center;
+        }
+
+        .i-pu {
+            width: 20%;
+            text-align: right;
+        }
+
+        .i-tot {
+            width: 18%;
+            text-align: right;
+        }
 
         /* Totaux */
         .total-row {
@@ -124,6 +191,7 @@
             font-size: 10px;
             margin-bottom: 2px;
         }
+
         .total-row.grand {
             font-size: 14px;
             border-top: 1px solid #000;
@@ -137,6 +205,7 @@
             font-size: 9px;
             line-height: 1.6;
         }
+
         .footer .deg {
             font-size: 10px;
             font-style: italic;
@@ -144,118 +213,164 @@
         }
 
         @media print {
-            body { background: none; display: block; padding: 0; }
-            .action-bar { display: none; }
-            .ticket { width: 100%; box-shadow: none; padding: 3mm 2mm; }
-            .ticket::before, .ticket::after { display: none; }
+            body {
+                background: none;
+                display: block;
+                padding: 0;
+            }
+
+            .action-bar {
+                display: none;
+            }
+
+            .ticket {
+                width: 100%;
+                box-shadow: none;
+                padding: 3mm 2mm;
+            }
+
+            .ticket::before,
+            .ticket::after {
+                display: none;
+            }
+        }
+
+        @media print {
+
+            #qrcode img,
+            #qrcode canvas {
+                display: block !important;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="action-bar">
-    <button class="btn btn-print" onclick="window.print()">&#128438; Imprimer</button>
-    <button class="btn btn-close"  onclick="window.close()">&#10005; Fermer</button>
-</div>
-
-<div class="ticket">
-
-    {{-- En-tête --}}
-    <div class="center">
-        <div class="shop-name">AKADI.CI</div>
-        <div class="shop-sub">07 58 83 83 38 &nbsp;|&nbsp; www.akadi.ci</div>
+    <div class="action-bar">
+        <button class="btn btn-print" onclick="window.print()">&#128438; Imprimer</button>
+        <button class="btn btn-close" onclick="window.close()">&#10005; Fermer</button>
     </div>
 
-    <div class="sep"></div>
+    <div class="ticket">
 
-    {{-- Commande --}}
-    <div class="row">
-        <span class="lbl">N° CMD</span>
-        <span class="val">#{{ $orders->code }}</span>
-    </div>
-    <div class="row">
-        <span class="lbl">DATE</span>
-        <span class="val">{{ $orders->created_at->format('d/m/Y H:i') }}</span>
-    </div>
-    <div class="row">
-        <span class="lbl">CLIENT</span>
-        <span class="val">{{ $orders->nom_client }}</span>
-    </div>
-    @if($orders->tel_client)
-    <div class="row">
-        <span class="lbl">TEL</span>
-        <span class="val">{{ $orders->tel_client }}</span>
-    </div>
-    @endif
+        {{-- En-tête --}}
+        <div class="center">
+            <div class="shop-name"><img src="{{ asset('site/assets/img/custom/AKADI.png') }}" width="60px"
+                    alt="logo akadi"></div>
+            <div class="shop-sub">07 58 83 83 38 &nbsp;|&nbsp; www.akadi.ci</div>
+        </div>
 
-    <div class="sep"></div>
-
-    {{-- Articles --}}
-    <div class="items-head">
-        <span class="h-name">ARTICLE</span>
-        <span class="h-qty">QTE</span>
-        <span class="h-pu">P.U</span>
-        <span class="h-tot">TOTAL</span>
-    </div>
-
-    @foreach ($orders->products as $item)
-    @php $lineTotal = $item->pivot->quantity * $item->pivot->unit_price; @endphp
-    <div class="item-line">
-        <span class="i-name">{{ $item->title }}</span>
-        <span class="i-qty">{{ $item->pivot->quantity }}</span>
-        <span class="i-pu">{{ number_format($item->pivot->unit_price) }}</span>
-        <span class="i-tot">{{ number_format($lineTotal) }}</span>
-    </div>
-    @endforeach
-
-    <div class="sep"></div>
-
-    {{-- Totaux --}}
-    <div class="total-row">
-        <span>SOUS-TOTAL</span>
-        <span>{{ number_format($orders->subtotal) }} F</span>
-    </div>
-    <div class="total-row">
-        <span>LIVRAISON</span>
-        <span>{{ number_format($orders->delivery_price) }} F</span>
-    </div>
-    <div class="total-row grand">
-        <span>TOTAL</span>
-        <span>{{ number_format($orders->total) }} FCFA</span>
-    </div>
-    @if(($orders->acompte ?? 0) > 0)
-    <div class="total-row" style="margin-top:3px">
-        <span>ACOMPTE</span>
-        <span>{{ number_format($orders->acompte) }} F</span>
-    </div>
-    @endif
-    @if(($orders->solde_restant ?? 0) > 0)
-    <div class="total-row" style="font-size:11px">
-        <span>RESTE A PAYER</span>
-        <span>{{ number_format($orders->solde_restant) }} F</span>
-    </div>
-    @endif
-
-    @if(!empty($orders->note))
-    <div class="sep"></div>
-    <div class="row">
-        <span class="lbl">NOTE</span>
-        <span class="val">{{ $orders->note }}</span>
-    </div>
-    @endif
-
-    {{-- Footer --}}
-    <div class="footer">
         <div class="sep"></div>
-        <div class="deg">Bonne degustation !</div>
-        <div>{{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</div>
+
+        {{-- Commande --}}
+        <div class="row">
+            <span class="lbl">N° CMD</span>
+            <span class="val">#{{ $orders->code }}</span>
+        </div>
+        <div class="row">
+            <span class="lbl">DATE</span>
+            <span class="val">{{ $orders->created_at->format('d/m/Y H:i') }}</span>
+        </div>
+        <div class="row">
+            <span class="lbl">CLIENT</span>
+            <span class="val">{{ $orders->nom_client }}</span>
+        </div>
+        @if ($orders->tel_client)
+            <div class="row">
+                <span class="lbl">TEL</span>
+                <span class="val">{{ $orders->tel_client }}</span>
+            </div>
+        @endif
+
+        <div class="sep"></div>
+
+        {{-- Articles --}}
+        <div class="items-head">
+            <span class="h-name">ARTICLE</span>
+            <span class="h-qty">QTE</span>
+            <span class="h-pu">P.U</span>
+            <span class="h-tot">TOTAL</span>
+        </div>
+
+        @foreach ($orders->products as $item)
+            @php $lineTotal = $item->pivot->quantity * $item->pivot->unit_price; @endphp
+            <div class="item-line">
+                <span class="i-name">{{ $item->title }}</span>
+                <span class="i-qty">{{ $item->pivot->quantity }}</span>
+                <span class="i-pu">{{ format_price($item->pivot->unit_price) }}</span>
+                <span class="i-tot">{{ format_price($lineTotal) }}</span>
+            </div>
+        @endforeach
+
+        <div class="sep"></div>
+
+        {{-- Totaux --}}
+        <div class="total-row">
+            <span>SOUS-TOTAL</span>
+            <span>{{ format_price($orders->subtotal) }} F</span>
+        </div>
+        <div class="total-row">
+            <span>LIVRAISON</span>
+            <span>{{ format_price($orders->delivery_price) }} F</span>
+        </div>
+        <div class="total-row grand">
+            <span>TOTAL</span>
+            <span>{{ format_price($orders->total) }} FCFA</span>
+        </div>
+        @if (($orders->acompte ?? 0) > 0)
+            <div class="total-row" style="margin-top:3px">
+                <span>ACOMPTE</span>
+                <span>{{ format_price($orders->acompte) }} F</span>
+            </div>
+        @endif
+        @if (($orders->solde_restant ?? 0) > 0)
+            <div class="total-row" style="font-size:11px">
+                <span>RESTE A PAYER</span>
+                <span>{{ format_price($orders->solde_restant) }} F</span>
+            </div>
+        @endif
+
+        @if (!empty($orders->note))
+            <div class="sep"></div>
+            <div class="row">
+                <span class="lbl">NOTE</span>
+                <span class="val">{{ $orders->note }}</span>
+            </div>
+        @endif
+
+        {{-- Footer --}}
+        <div class="footer">
+            <div class="sep"></div>
+            <div class="deg">Bonne dégustation !</div>
+
+            {{-- QR Code --}}
+            <div id="qrcode" style="display:flex;justify-content:center;margin:6px 0 4px;"></div>
+            <div style="font-size:8px;margin-bottom:3px;">Scannez pour visiter notre site</div>
+
+            <div>{{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</div>
+        </div>
+
     </div>
 
-</div>
+    <script>
+        window.onload = function() {
+            new QRCode(document.getElementById("qrcode"), {
+                text: "https://www.akadi.ci",
+                width: 80,
+                height: 80,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
 
-<script>
-    window.onload = function () { window.print(); };
-</script>
+            // Petit délai pour laisser le QR code se générer avant l'impression
+            setTimeout(function() {
+                window.print();
+            }, 300);
+        };
+    </script>
 
 </body>
+
 </html>
