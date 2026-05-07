@@ -886,7 +886,7 @@
                 },
             });
         }
-
+  
         // ── Recherche client (AJAX) ──────────────────────────────────────────────────
         const clientSearch = document.getElementById("client-search");
         const clientResults = document.getElementById("client-results");
@@ -971,23 +971,6 @@
             if (!userId && phone.length < 8)
                 errors.push("Le téléphone du client est obligatoire (8 chiffres minimum).");
 
-                // SI ACOMPTE OBLIGATOIRE (statut non "attente") → vérifier que acompte > 0 et moyen de paiement sélectionné
-            // if (!isAttente) {
-            //     const acompte = parseFloat(document.getElementById("acompte").value) || 0;
-            //     if (isLivree) {
-            //         if (Math.round(acompte) !== Math.round(currentTotal))
-            //             errors.push(
-            //                 `Pour une commande livrée, l'acompte (${formatMoney(acompte)} FCFA) doit être égal au total (${formatMoney(currentTotal)} FCFA).`
-            //             );
-            //     } else if (acompte <= 0) {
-            //         errors.push("L'acompte doit être supérieur à 0 pour ce statut.");
-            //     }
-            //     const paiement = document.querySelector('[name="payment_method_id"]').value;
-            //     if (!paiement)
-            //         errors.push("Le moyen de paiement est obligatoire pour ce statut.");
-            // }
-
-            //  SI ACOMPTE PAS OBLIGATOIRE (statut "attente") → verifier que moyen de paiement selectionne
             if (!isAttente) {
                 const acompte = parseFloat(document.getElementById("acompte").value) || 0;
                 if (isLivree) {
@@ -995,6 +978,8 @@
                         errors.push(
                             `Pour une commande livrée, l'acompte (${formatMoney(acompte)} FCFA) doit être égal au total (${formatMoney(currentTotal)} FCFA).`
                         );
+                } else if (acompte <= 0) {
+                    errors.push("L'acompte doit être supérieur à 0 pour ce statut.");
                 }
                 const paiement = document.querySelector('[name="payment_method_id"]').value;
                 if (!paiement)

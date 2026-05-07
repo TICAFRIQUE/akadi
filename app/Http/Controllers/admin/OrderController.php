@@ -36,18 +36,66 @@ class OrderController extends Controller
         $smsService->sendOrderConfirmationSms($order);
     }
     //get all order 
+    // public function getAllOrder(Request $request)
+    // {
+    //     // Par défaut : mois en cours
+    //     $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
+    //     $dateFin   = $request->input('date_fin',   now()->endOfMonth()->format('Y-m-d'));
+    //     $status    = $request->input('status');
+    //     $source    = $request->input('source');
+
+    //     // Restriction selon permission (p-cuisine, p-livraison, p-confirmation)
+    //     $allowedStatuses = orderStatusesAllowed();
+
+    //     // Si tableau vide → aucun statut autorisé, retour accès refusé
+    //     if (is_array($allowedStatuses) && count($allowedStatuses) === 0) {
+    //         abort(403, 'Accès non autorisé.');
+    //     }
+
+    //     $orders = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
+    //         ->orderBy('created_at', 'DESC')
+    //         ->when($allowedStatuses !== null, fn($q) => $q->whereIn('status', $allowedStatuses))
+    //         ->when(request('d'), fn($q) => $q->where('date_order', Carbon::now()->format('Y-m-d')))
+    //         ->when(request('s'), fn($q) => $q->whereStatus(request('s')))
+    //         ->when($source, fn($q) => $q->where('source', $source))
+    //         ->when(
+    //             !request('d') && !request('s'),
+    //             function ($q) use ($dateDebut, $dateFin, $status) {
+    //                 $q->whereBetween('date_order', [$dateDebut, $dateFin]);
+    //                 if ($status && $status !== 'all') {
+    //                     $q->whereStatus($status);
+    //                 }
+    //             }
+    //         )
+    //         ->get();
+
+    //     // Limiter le sélecteur de statuts aux statuts autorisés
+    //     $statuts = $allowedStatuses !== null
+    //         ? array_intersect_key(Order::$statuts, array_flip($allowedStatuses))
+    //         : Order::$statuts;
+    //     $sources = Order::$sources;
+
+    //     return view('admin.pages.order.order', compact('orders', 'dateDebut', 'dateFin', 'statuts', 'sources'));
+    // }
+
     public function getAllOrder(Request $request)
     {
-        // Par défaut : mois en cours
-        $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
-        $dateFin   = $request->input('date_fin',   now()->endOfMonth()->format('Y-m-d'));
-        $status    = $request->input('status');
-        $source    = $request->input('source');
+        $status   = $request->input('status');
+        $source   = $request->input('source');
+        $allDates = $request->boolean('all_dates');
+
+        // Dates seulement si pas "toutes les dates"
+        $dateDebut = null;
+        $dateFin   = null;
+
+        if (!$allDates) {
+            $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
+            $dateFin   = $request->input('date_fin',   now()->endOfMonth()->format('Y-m-d'));
+        }
 
         // Restriction selon permission (p-cuisine, p-livraison, p-confirmation)
         $allowedStatuses = orderStatusesAllowed();
 
-        // Si tableau vide → aucun statut autorisé, retour accès refusé
         if (is_array($allowedStatuses) && count($allowedStatuses) === 0) {
             abort(403, 'Accès non autorisé.');
         }
@@ -60,8 +108,10 @@ class OrderController extends Controller
             ->when($source, fn($q) => $q->where('source', $source))
             ->when(
                 !request('d') && !request('s'),
-                function ($q) use ($dateDebut, $dateFin, $status) {
-                    $q->whereBetween('date_order', [$dateDebut, $dateFin]);
+                function ($q) use ($allDates, $dateDebut, $dateFin, $status) {
+                    if (!$allDates) {
+                        $q->whereBetween('date_order', [$dateDebut, $dateFin]);
+                    }
                     if ($status && $status !== 'all') {
                         $q->whereStatus($status);
                     }
@@ -75,10 +125,8 @@ class OrderController extends Controller
             : Order::$statuts;
         $sources = Order::$sources;
 
-        return view('admin.pages.order.order', compact('orders', 'dateDebut', 'dateFin', 'statuts', 'sources'));
+        return view('admin.pages.order.order', compact('orders', 'dateDebut', 'dateFin', 'statuts', 'sources', 'allDates'));
     }
-
-
     //filter
     public function filter(Request $request)
     {
@@ -167,14 +215,14 @@ class OrderController extends Controller
     // }
 
     public function invoice($id)
-{
-    $orders = Order::whereId($id)
-        ->with(['user', 'products', 'paymentMethod'])
-        ->orderBy('created_at', 'DESC')
-        ->firstOrFail();
+    {
+        $orders = Order::whereId($id)
+            ->with(['user', 'products', 'paymentMethod'])
+            ->orderBy('created_at', 'DESC')
+            ->firstOrFail();
 
-    return view('admin.pages.order.invoicePos', compact('orders'));
-}
+        return view('admin.pages.order.invoicePos', compact('orders'));
+    }
 
 
     //changer le status de la commande
@@ -203,19 +251,29 @@ class OrderController extends Controller
             Order::STATUS_ATTENTE_ACOMPTE,
             Order::STATUS_ANNULEE,
         ]);
+        // Ancienne logique : acompte obligatoire pour tous les statuts sauf ceux où l'acompte est optionnel
+        // if (!$acompteOptionnel) {
+        //     if ($state === Order::STATUS_LIVREE) {
+        //         if (round((float) $order->acompte, 2) !== round((float) $order->total, 2)) {
+        //             return back()->with(
+        //                 'error',
+        //                 "Pour passer en « Livrée », l'acompte (" . number_format($order->acompte, 0, ',', ' ') . " FCFA) doit être égal au total (" . number_format($order->total, 0, ',', ' ') . " FCFA)."
+        //             );
+        //         }
+        //     } elseif ((float) $order->acompte <= 0) {
+        //         return back()->with(
+        //             'error',
+        //             "Un acompte est obligatoire avant de passer au statut « {$state} »."
+        //         );
+        //     }
+        // }
 
-        if (!$acompteOptionnel) {
-            if ($state === Order::STATUS_LIVREE) {
-                if (round((float) $order->acompte, 2) !== round((float) $order->total, 2)) {
-                    return back()->with(
-                        'error',
-                        "Pour passer en « Livrée », l'acompte (" . number_format($order->acompte, 0, ',', ' ') . " FCFA) doit être égal au total (" . number_format($order->total, 0, ',', ' ') . " FCFA)."
-                    );
-                }
-            } elseif ((float) $order->acompte <= 0) {
+        // SANS ACOMPTE OBLIGATOIRE, MAIS ACOMPTE DOIT ÊTRE ÉGAL AU TOTAL POUR PASSER EN LIVRÉE
+        if (!$acompteOptionnel && $state === Order::STATUS_LIVREE) {
+            if (round((float) $order->acompte, 2) !== round((float) $order->total, 2)) {
                 return back()->with(
                     'error',
-                    "Un acompte est obligatoire avant de passer au statut « {$state} »."
+                    "Pour passer en « Livrée », l'acompte (" . number_format($order->acompte, 0, ',', ' ') . " FCFA) doit être égal au total (" . number_format($order->total, 0, ',', ' ') . " FCFA)."
                 );
             }
         }

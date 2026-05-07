@@ -11,10 +11,31 @@
                         @include('admin.components.validationMessage')
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h4 class="mb-0">
-                                @if (request('type') == 'prospect') Prospects
-                                @elseif (request('type') == 'fidele') Clients fidèles
-                                @else Tous les clients
+                                @php
+                                    $typeLabel = match (request('type')) {
+                                        'prospect' => 'Prospects',
+                                        'fidele' => 'Clients fidèles',
+                                        default => 'Tous les clients',
+                                    };
+                                @endphp
+
+                                @if ($allDates)
+                                    {{ $typeLabel }} — Toutes les dates
+                                @elseif($dateDebut && $dateFin && $dateDebut === $dateFin)
+                                    {{ $typeLabel }} du
+                                    {{ \Carbon\Carbon::parse($dateDebut)->locale('fr_FR')->isoFormat('D MMMM YYYY') }}
+                                @elseif($dateDebut && $dateFin)
+                                    {{ $typeLabel }} du
+                                    {{ \Carbon\Carbon::parse($dateDebut)->locale('fr_FR')->isoFormat('D MMM YYYY') }}
+                                    au {{ \Carbon\Carbon::parse($dateFin)->locale('fr_FR')->isoFormat('D MMM YYYY') }}
+                                @elseif($dateDebut)
+                                    {{ $typeLabel }} à partir du
+                                    {{ \Carbon\Carbon::parse($dateDebut)->locale('fr_FR')->isoFormat('D MMM YYYY') }}
+                                @else
+                                    {{ $typeLabel }} du mois de
+                                    {{ \Carbon\Carbon::parse(now()->startOfMonth())->locale('fr_FR')->isoFormat('MMMM YYYY') }}
                                 @endif
+
                                 <span class="badge badge-primary ml-1">{{ count($users) }}</span>
                             </h4>
                             <a href="{{ route('client.createForm') }}" class="btn btn-primary btn-sm">
@@ -45,28 +66,74 @@
 
                                 <div class="vr mx-1" style="height:30px; border-left:1px solid #ccc;"></div>
 
-                                {{-- Filtre date --}}
                                 @if (request('type'))
                                     <input type="hidden" name="type" value="{{ request('type') }}">
                                 @endif
-                                <div class="d-flex align-items-center" style="gap: 6px;">
-                                    <span class="text-muted small font-weight-bold">Du</span>
-                                    <input type="date" name="date_debut" class="form-control form-control-sm"
-                                        value="{{ $dateDebut }}" style="width:145px;">
-                                    <span class="text-muted small font-weight-bold">Au</span>
-                                    <input type="date" name="date_fin" class="form-control form-control-sm"
-                                        value="{{ $dateFin }}" style="width:145px;">
-                                    <button class="btn btn-sm btn-primary" type="submit">
-                                        <i class="fa fa-search mr-1"></i> Filtrer
-                                    </button>
-                                    <a href="{{ route('client.list') }}{{ request('type') ? '?type='.request('type') : '' }}"
-                                        class="btn btn-sm btn-outline-secondary" title="Réinitialiser les dates">
-                                        <i class="fa fa-undo"></i>
+
+                                {{-- Toggle période --}}
+                                <div class="d-flex align-items-center" style="gap: 4px;">
+                                    <span class="text-muted small font-weight-bold">Période</span>
+                                    <a href="{{ route('client.list', array_merge(request()->except(['all_dates']), ['type' => request('type')])) }}"
+                                        class="btn btn-sm {{ !$allDates ? 'btn-dark' : 'btn-outline-secondary' }}">
+                                        Ce mois
+                                    </a>
+                                    <a href="{{ route('client.list', array_merge(request()->all(), ['all_dates' => 1])) }}"
+                                        class="btn btn-sm {{ $allDates ? 'btn-dark' : 'btn-outline-secondary' }}">
+                                        Toutes
                                     </a>
                                 </div>
+
+                                {{-- Dates (masquées si all_dates ou search actif) --}}
+                                @if (!$allDates)
+                                    <div class="d-flex align-items-center" style="gap: 6px;">
+                                        <span class="text-muted small font-weight-bold">Du</span>
+                                        <input type="date" name="date_debut" class="form-control form-control-sm"
+                                            value="{{ $dateDebut ?? '' }}" style="width:145px;">
+                                        <span class="text-muted small font-weight-bold">Au</span>
+                                        <input type="date" name="date_fin" class="form-control form-control-sm"
+                                            value="{{ $dateFin ?? '' }}" style="width:145px;">
+                                    </div>
+
+                                    <!--boutton filtre -->
+                                    <div class="d-flex" style="gap: 4px;">
+                                        <button class="btn btn-sm btn-primary" type="submit">
+                                            <i class="fa fa-search mr-1"></i> Filtrer
+                                        </button>
+                                        <a href="{{ route('client.list') }}{{ request('type') ? '?type=' . request('type') : '' }}"
+                                            class="btn btn-sm btn-outline-secondary" title="Réinitialiser">
+                                            <i class="fa fa-undo"></i>
+                                        </a>
+                                    </div>
+                                @else
+                                    {{-- Boutons --}}
+                                    <div class="d-flex" style="gap: 4px;">
+                                        {{-- <button class="btn btn-sm btn-primary" type="submit">
+                                            <i class="fa fa-search mr-1"></i> Filtrer
+                                        </button> --}}
+                                        <a href="{{ route('client.list') }}{{ request('type') ? '?type=' . request('type') : '' }}"
+                                            class="btn btn-sm btn-outline-secondary" title="Réinitialiser">
+                                            <i class="fa fa-undo"></i>
+                                        </a>
+                                    </div>
+                                @endif
+
+                                {{-- Nom & Téléphone --}}
+                                {{-- <div class="d-flex align-items-center" style="gap: 6px;">
+                                    <span class="text-muted small font-weight-bold">Nom</span>
+                                    <input type="text" name="name" class="form-control form-control-sm"
+                                        value="{{ request('name') ?: '' }}" placeholder="Rechercher par nom"
+                                        style="width:180px;">
+
+                                    <span class="text-muted small font-weight-bold">Téléphone</span>
+                                    <input type="text" name="phone" class="form-control form-control-sm"
+                                        value="{{ request('phone') ?: '' }}" placeholder="Rechercher par téléphone"
+                                        style="width:170px;">
+                                </div> --}}
+
+
+
                             </form>
                         </div>
-
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
@@ -89,7 +156,8 @@
                                             <tr id="row_{{ $item['id'] }}">
                                                 <td>{{ ++$key }}</td>
                                                 <td>
-                                                    <span class="badge badge-{{ $item->orders_count > 0 ? 'success' : 'primary' }}">
+                                                    <span
+                                                        class="badge badge-{{ $item->orders_count > 0 ? 'success' : 'primary' }}">
                                                         {{ $item->orders_count > 0 ? 'A commandé' : 'Aucune commande' }}
                                                     </span>
                                                 </td>
@@ -105,10 +173,10 @@
                                                 <td>{{ $date }}</td>
                                                 <td>
                                                     @php
-                                                        $badgeColor = match($item['type_client']) {
-                                                            'fidele'   => 'success',
+                                                        $badgeColor = match ($item['type_client']) {
+                                                            'fidele' => 'success',
                                                             'prospect' => 'warning',
-                                                            default    => 'secondary',
+                                                            default => 'secondary',
                                                         };
                                                     @endphp
                                                     <span class="badge badge-{{ $badgeColor }}">
@@ -116,12 +184,14 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span class="badge badge-{{ $item->orders_count > 0 ? 'dark' : 'secondary' }}">
+                                                    <span
+                                                        class="badge badge-{{ $item->orders_count > 0 ? 'dark' : 'secondary' }}">
                                                         {{ $item->orders_count }}
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span class="badge badge-{{ $item->orders_month_count > 0 ? 'info' : 'light text-muted' }}">
+                                                    <span
+                                                        class="badge badge-{{ $item->orders_month_count > 0 ? 'info' : 'light text-muted' }}">
                                                         {{ $item->orders_month_count }}
                                                     </span>
                                                 </td>
@@ -161,12 +231,36 @@
         $(document).ready(function() {
             var table = $('#tableExport').DataTable({
                 dom: 'Bfrtip',
-                buttons: [
-                    { extend: 'copy',  exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-                    { extend: 'csv',   exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-                    { extend: 'excel', exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-                    { extend: 'pdf',   exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-                    { extend: 'print', exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
+                buttons: [{
+                        extend: 'copy',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    },
                 ],
                 drawCallback: function(settings) {
                     $('.delete').on("click", function(e) {
@@ -185,7 +279,9 @@
                                     type: "POST",
                                     url: "/admin/clients/destroy/" + Id,
                                     dataType: "json",
-                                    data: { _token: '{{ csrf_token() }}' },
+                                    data: {
+                                        _token: '{{ csrf_token() }}'
+                                    },
                                     success: function(response) {
                                         if (response.status === 200) {
                                             Swal.fire({

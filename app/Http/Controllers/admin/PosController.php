@@ -382,7 +382,8 @@ class PosController extends Controller
             $rules['acompte']           = 'required|numeric|min:0';
             $rules['payment_method_id'] = 'required|exists:payment_methods,id';
         } else {
-            $rules['acompte']           = 'required|numeric|min:1';
+            // $rules['acompte']           = 'required|numeric|min:1'; // Ancienne règle : acompte doit être > 0
+            $rules['acompte']           = 'required|numeric|min:0'; // Permettre acompte = 0 pour les commandes confirmées, en cuisine, etc. (le statut attente_acompte sera appliqué automatiquement dans ce cas)
             $rules['payment_method_id'] = 'required|exists:payment_methods,id';
         }
 
@@ -489,9 +490,10 @@ class PosController extends Controller
             }
 
             $finalStatus = $status;
-            if (!$acompteOptionnel && !$isLivree && $acompte <= 0) {
-                $finalStatus = Order::STATUS_ATTENTE_ACOMPTE;
-            }
+            // Forcer le statut "attente_acompte" si le statut choisi nécessite un acompte mais que l'acompte est à 0 (sauf pour les statuts où l'acompte n'est pas obligatoire)
+            // if (!$acompteOptionnel && !$isLivree && $acompte <= 0) {
+            //     $finalStatus = Order::STATUS_ATTENTE_ACOMPTE;
+            // }
 
             // ── Création commande ─────────────────────────────────────────────────────
             $order = Order::create([
@@ -564,7 +566,7 @@ class PosController extends Controller
 
             // si status est confirmée alors on envoi le sms
             if ($order->status == Order::STATUS_CONFIRMEE) {
-                 $this->sendSms($order);
+                $this->sendSms($order);
             }
 
             DB::commit();
@@ -832,7 +834,8 @@ class PosController extends Controller
             $rules['acompte']           = 'required|numeric|min:0';
             $rules['payment_method_id'] = 'required|exists:payment_methods,id';
         } else {
-            $rules['acompte']           = 'required|numeric|min:1';
+            // $rules['acompte']           = 'required|numeric|min:1'; //si acompte est obligatoire alors il doit être > 0
+            $rules['acompte']           = 'required|numeric|min:0'; // Permettre acompte = 0 pour les commandes confirmées, en cuisine, etc. (le statut attente_acompte sera appliqué automatiquement dans ce cas)
             $rules['payment_method_id'] = 'required|exists:payment_methods,id';
         }
 

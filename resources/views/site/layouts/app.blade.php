@@ -24,7 +24,7 @@
     <meta name="author" content="Ticafrique">
     {{-- <meta name="description" content="Akadi-@yield('description')"> --}}
     <meta name="og:keywords" content="restaurant, poulet, fumé, livraison, Abidjan, Côte d'Ivoire">
-    
+
     <meta property="og:title" content="Akadi - @yield('title')" />
     <meta property="og:description" content="Akadi-@yield('description')" />
     <meta property="og:image" content="@yield('image')" />
@@ -84,7 +84,8 @@
 
     <style>
         /* Empêcher le scroll horizontal */
-        html, body {
+        html,
+        body {
             overflow-x: hidden !important;
             max-width: 100%;
         }
@@ -94,7 +95,8 @@
         }
 
         /* Fix pour les containers */
-        .container, .row {
+        .container,
+        .row {
             max-width: 100%;
         }
 
@@ -353,37 +355,37 @@
             .mobile-bottom-nav {
                 display: block;
             }
-            
+
             .mobile-account-dropdown {
                 display: none;
             }
-            
+
             .mobile-account-dropdown.active {
                 display: block;
             }
-            
+
             /* Ajuster WhatsApp float pour ne pas chevaucher */
             .whatsapp-float {
                 bottom: 150px;
                 right: 15px;
             }
-            
+
             /* Ajouter padding en bas pour éviter que le contenu soit caché */
             body {
                 padding-bottom: 65px;
             }
-            
+
             /* Scroll to top en dessous de WhatsApp */
             .scroll-top {
                 bottom: 85px !important;
                 right: 15px !important;
             }
-            
+
             /* Bien positionner le hamburger et le logo */
             .menu-area .row {
                 justify-content: space-between !important;
             }
-            
+
             /* Layout mobile : Hamburger | Logo | Panier */
             .mobile-header-wrapper {
                 display: flex !important;
@@ -392,12 +394,12 @@
                 width: 100%;
                 padding: 0 10px;
             }
-            
+
             .mobile-hamburger-left {
                 order: 1;
                 flex: 0 0 auto;
             }
-            
+
             .mobile-logo-center {
                 order: 2;
                 flex: 1;
@@ -408,23 +410,23 @@
                 transform: translateX(-50%);
                 pointer-events: none;
             }
-            
+
             .mobile-logo-center .header-logo {
                 pointer-events: auto;
             }
-            
+
             .mobile-cart-right {
                 order: 3;
                 flex: 0 0 auto;
                 z-index: 10;
             }
-            
+
             .mobile-cart-right .simple-icon {
                 position: relative;
                 font-size: 20px;
                 color: var(--theme-color, #333);
             }
-            
+
             .mobile-cart-right .badge {
                 position: absolute;
                 top: -8px;
@@ -437,13 +439,13 @@
                 border-radius: 10px;
                 min-width: 18px;
             }
-            
+
             .header-button {
                 order: 3;
                 flex: 0 0 auto;
                 z-index: 10;
             }
-            
+
             .th-menu-toggle {
                 font-size: 26px;
                 padding: 8px;
@@ -455,37 +457,38 @@
                 margin: 0;
                 line-height: 1;
             }
-            
+
             .th-menu-toggle:hover {
                 color: var(--theme-color, #ff6b35);
             }
-            
+
             .header-logo {
                 display: flex;
                 align-items: center;
             }
-            
+
             .header-logo img {
                 width: 50px !important;
                 height: 50px !important;
                 object-fit: contain;
             }
         }
-        
+
         /* Sur desktop */
         @media (min-width: 992px) {
+
             .mobile-hamburger-left,
             .mobile-cart-right,
             .mobile-account-dropdown,
             .mobile-overlay {
                 display: none !important;
             }
-            
+
             .mobile-logo-center {
                 position: static !important;
                 transform: none !important;
             }
-            
+
             .header-logo img {
                 width: 60px !important;
                 height: 60px !important;
@@ -498,6 +501,7 @@
                 transform: translateY(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -559,10 +563,20 @@
                         <div class="widget footer-widget">
                             <h3 class="widget_title">A propos de AKADI</h3>
                             <div class="th-widget-about">
-                                <p class="about-text">
-                                    Akadi, est un restaurant en ligne spécialisé en poulet fumé crée par une jeune dame
-                                    dynamique qui
-                                    évolue dans le domaine de la relation clientèle.
+                                <p class="about-text" style="font-size: 14px; line-height: 1.6;">
+                                    AKADI Restaurant est un restaurant en ligne spécialisé dans le poulet fumé braisé et
+                                    les saveurs locales revisitées.
+
+                                    Notre mission est de créer des moments de plaisir à travers des repas savoureux,
+                                    préparés avec soin et passion.
+
+                                    Chez AKADI, nous mettons un point d’honneur sur la qualité, l’hygiène, le goût et
+                                    une expérience client simple et agréable, de la commande à la livraison.
+
+                                    Nous proposons une sélection de plats gourmands adaptés aux envies de nos clients,
+                                    avec un service pensé pour allier praticité et satisfaction.
+
+                                    AKADI, c’est le goût du partage et de la convivialité… livré directement chez vous.
                                 </p>
                                 <div class="th-social">
                                     <a href="https://www.facebook.com/CvraimentDoux" target="blank"><i
@@ -736,33 +750,33 @@
 
     <!-- Menu déroulant mobile pour le compte -->
     @auth
-    <div class="mobile-overlay"></div>
-    <div class="mobile-account-dropdown">
-        <div class="dropdown-header">
-            <h3>Mon Compte</h3>
-            <button class="close-dropdown">&times;</button>
+        <div class="mobile-overlay"></div>
+        <div class="mobile-account-dropdown">
+            <div class="dropdown-header">
+                <h3>Mon Compte</h3>
+                <button class="close-dropdown">&times;</button>
+            </div>
+            <ul class="dropdown-menu-list">
+                <li>
+                    <a href="{{ route('user-profil') }}">
+                        <i class="far fa-user-circle"></i>
+                        Mon Profil
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('user-order') }}">
+                        <i class="far fa-shopping-bag"></i>
+                        Mes Commandes
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('logout') }}" class="logout">
+                        <i class="far fa-sign-out"></i>
+                        Déconnexion
+                    </a>
+                </li>
+            </ul>
         </div>
-        <ul class="dropdown-menu-list">
-            <li>
-                <a href="{{ route('user-profil') }}">
-                    <i class="far fa-user-circle"></i>
-                    Mon Profil
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('user-order') }}">
-                    <i class="far fa-shopping-bag"></i>
-                    Mes Commandes
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('logout') }}" class="logout">
-                    <i class="far fa-sign-out"></i>
-                    Déconnexion
-                </a>
-            </li>
-        </ul>
-    </div>
     @endauth
 
 

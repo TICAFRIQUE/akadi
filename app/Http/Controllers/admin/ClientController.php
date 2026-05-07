@@ -13,12 +13,113 @@ class ClientController extends Controller
 {
     private array $typeClientOptions = ['prospect', 'fidele'];
 
+    //liste des client avec search sans name et phone
+    // public function listClient()
+    // {
+    //     $typeClient = request('type');
+
+    //     $dateDebut = request('date_debut', !request()->has('date_debut') ? now()->startOfMonth()->format('Y-m-d') : null);
+    //     $dateFin   = request('date_fin',   !request()->has('date_fin')   ? now()->endOfMonth()->format('Y-m-d')   : null);
+
+    //     $name = request('name');
+    //     $phone = request('phone');
+
+    //     if ($name) {
+    //         $name = Str::of($name)->trim()->replaceMatches('/\s+/', ' '); // Nettoyer les espaces
+    //     }
+
+    //     if ($phone) {
+    //         $phone = Str::of($phone)->trim()->replaceMatches('/\s+/', ' '); // Nettoyer les espaces
+    //     }
+
+    //     $users = User::withCount([
+    //         'orders',
+    //         'orders as orders_month_count' => fn($q) => $q
+    //             ->whereMonth('created_at', now()->month)
+    //             ->whereYear('created_at', now()->year),
+    //     ])
+    //         ->where('role', 'client')
+    //         ->when($typeClient, fn($q) => $q->where('type_client', $typeClient))
+    //         ->when($name, fn($q) => $q->where('name', 'like', "%{$name}%"))
+    //         ->when($phone, fn($q) => $q->where('phone', 'like', "%{$phone}%"))
+    //         ->when($dateDebut, fn($q) => $q->whereDate('created_at', '>=', $dateDebut))
+    //         ->when($dateFin,   fn($q) => $q->whereDate('created_at', '<=', $dateFin))
+    //         ->orderBy('created_at', 'DESC')
+    //         ->get();
+
+    //     return view('admin.pages.client.clientList', compact('users', 'dateDebut', 'dateFin'));
+    // }
+
+    //liste des client avec search sans name et phone v1
+    // public function listClient()
+    // {
+    //     $typeClient = request('type');
+    //     $name  = request('name');
+    //     $phone = request('phone');
+
+    //     if ($name) {
+    //         $name = Str::of($name)->trim()->replaceMatches('/\s+/', ' ');
+    //     }
+
+    //     if ($phone) {
+    //         $phone = Str::of($phone)->trim()->replaceMatches('/\s+/', ' ');
+    //     }
+
+    //     // Si recherche par nom ou téléphone → pas de filtre date
+    //     $searchActive = $name || $phone;
+
+    //     $dateDebut = null;
+    //     $dateFin   = null;
+
+    //     if (!$searchActive) {
+    //         $dateDebut = request('date_debut', !request()->has('date_debut') ? now()->startOfMonth()->format('Y-m-d') : null);
+    //         $dateFin   = request('date_fin',   !request()->has('date_fin')   ? now()->endOfMonth()->format('Y-m-d')   : null);
+    //     }
+
+    //     $users = User::withCount([
+    //         'orders',
+    //         'orders as orders_month_count' => fn($q) => $q
+    //             ->whereMonth('created_at', now()->month)
+    //             ->whereYear('created_at', now()->year),
+    //     ])
+    //         ->where('role', 'client')
+    //         ->when($typeClient, fn($q) => $q->where('type_client', $typeClient))
+    //         ->when($name,  fn($q) => $q->where('name',  'like', "%{$name}%"))
+    //         ->when($phone, fn($q) => $q->where('phone', 'like', "%{$phone}%"))
+    //         ->when($dateDebut, fn($q) => $q->whereDate('created_at', '>=', $dateDebut))
+    //         ->when($dateFin,   fn($q) => $q->whereDate('created_at', '<=', $dateFin))
+    //         ->orderBy('created_at', 'DESC')
+    //         ->get();
+
+    //     return view('admin.pages.client.clientList', compact('users', 'dateDebut', 'dateFin'));
+    // }
+
+
+    //liste des client avec search sans name et phone v2
     public function listClient()
     {
         $typeClient = request('type');
+        $allDates   = request()->boolean('all_dates');
+        $name       = request('name');
+        $phone      = request('phone');
 
-        $dateDebut = request('date_debut', !request()->has('date_debut') ? now()->startOfMonth()->format('Y-m-d') : null);
-        $dateFin   = request('date_fin',   !request()->has('date_fin')   ? now()->endOfMonth()->format('Y-m-d')   : null);
+        if ($name) {
+            $name = Str::of($name)->trim()->replaceMatches('/\s+/', ' ');
+        }
+
+        if ($phone) {
+            $phone = Str::of($phone)->trim()->replaceMatches('/\s+/', ' ');
+        }
+
+        $searchActive = $name || $phone;
+
+        $dateDebut = null;
+        $dateFin   = null;
+
+        if (!$searchActive && !$allDates) {
+            $dateDebut = request('date_debut', !request()->has('date_debut') ? now()->startOfMonth()->format('Y-m-d') : null);
+            $dateFin   = request('date_fin',   !request()->has('date_fin')   ? now()->endOfMonth()->format('Y-m-d')   : null);
+        }
 
         $users = User::withCount([
             'orders',
@@ -28,12 +129,14 @@ class ClientController extends Controller
         ])
             ->where('role', 'client')
             ->when($typeClient, fn($q) => $q->where('type_client', $typeClient))
+            ->when($name,      fn($q) => $q->where('name',  'like', "%{$name}%"))
+            ->when($phone,     fn($q) => $q->where('phone', 'like', "%{$phone}%"))
             ->when($dateDebut, fn($q) => $q->whereDate('created_at', '>=', $dateDebut))
             ->when($dateFin,   fn($q) => $q->whereDate('created_at', '<=', $dateFin))
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        return view('admin.pages.client.clientList', compact('users', 'dateDebut', 'dateFin'));
+        return view('admin.pages.client.clientList', compact('users', 'dateDebut', 'dateFin', 'allDates'));
     }
 
     public function detail($id)

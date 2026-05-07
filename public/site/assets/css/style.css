@@ -1878,7 +1878,7 @@ textarea.is-invalid {
 /*------------------- 3.3. Titles -------------------*/
 .sec-title {
     margin-bottom: calc(var(--section-title-space) - 12px);
-    margin-top: -0.23em;
+    /* margin-top: -0.23em; */
 }
 
 .sub-title {

@@ -17,7 +17,7 @@ Petite section de publicité
                 @foreach ($pack as $item)
                     <div class="col-xl-4 col-md-6">
                         <a href="{{ route('detail-produit', $item['slug']) }}">
-                            <div class="offer-card" data-bg-src="{{ $item->getFirstMediaUrl('principal_img') }}">
+                            <div class="offer-card" data-bg-src="{{ $item->getFirstMediaUrl('product_image') }}">
                                 {{-- <h3 class="offer-title box-title">{{$item['title']}} </h3> --}}
                                 {{-- <p class="offer-text">
                                 {{$item['description']}}
@@ -30,9 +30,12 @@ Petite section de publicité
                             <a class="fs-4 text-dark"
                                 href="{{ route('detail-produit', $item['slug']) }}">{{ $item['title'] }} </a>
                             <br>
-                            @if ($item['montant_remise'] !=null && $item['status_remise'] == 'en_cours')
+                             @php
+                                            $new_price = $item['price'] - $item['montant_remise']; //prix promo
+                                        @endphp
+                            @if ($item['montant_remise'] != null && $item['status_remise'] == 'en_cours')
                                 <span class="fs-5 fw-medium " style="color:rgb(249, 135, 5)">
-                                    {{ number_format($item['montant_remise'], 0, ',', ' ') }} <small>FCFA</small>
+                                    {{ format_price($new_price) }} <small>FCFA</small>
                                     <del class="text-dark">
                                         {{ number_format($item['price'], 0, ',', ' ') }} FCFA </del>
                                 </span>

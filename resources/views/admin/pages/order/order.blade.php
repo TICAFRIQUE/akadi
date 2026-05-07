@@ -242,10 +242,25 @@
 
         /* Animation cloche */
         @keyframes ring {
-            0%, 100% { transform: rotate(0deg); }
-            10%, 30% { transform: rotate(-10deg); }
-            20%, 40% { transform: rotate(10deg); }
-            50% { transform: rotate(0deg); }
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            10%,
+            30% {
+                transform: rotate(-10deg);
+            }
+
+            20%,
+            40% {
+                transform: rotate(10deg);
+            }
+
+            50% {
+                transform: rotate(0deg);
+            }
         }
 
         /* Carte nouvelle commande */
@@ -253,7 +268,7 @@
             background: #fff;
             border-radius: 8px;
             padding: 12px 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: all 0.2s;
             border-left: 4px solid #ffc107;
@@ -261,7 +276,7 @@
 
         .new-order-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .new-order-card .order-header {
@@ -456,29 +471,65 @@
                                 </div>
                             </div>
 
-                            <form action="{{ route('order.index') }}" method="get" class="d-flex align-items-end"
-                                style="gap:8px;flex-shrink:0">
-                                <input type="hidden" name="status" value="{{ $currentStatus }}">
-                                <input type="hidden" name="source" value="{{ $currentSource }}">
-                                <div>
-                                    <div class="filter-section-label">Du</div>
-                                    <input type="date" name="date_debut" class="form-control form-control-sm"
-                                        value="{{ $dateDebut }}" style="width:138px">
-                                </div>
-                                <div>
-                                    <div class="filter-section-label">Au</div>
-                                    <input type="date" name="date_fin" class="form-control form-control-sm"
-                                        value="{{ $dateFin }}" style="width:138px">
-                                </div>
-                                <div class="d-flex" style="gap:4px;margin-bottom:1px">
-                                    <button type="submit" class="btn btn-sm btn-primary"><i
-                                            class="fa fa-search"></i></button>
-                                    <a href="{{ route('order.index') }}" class="btn btn-sm btn-outline-secondary"
-                                        title="Réinitialiser"><i class="fa fa-undo"></i></a>
-                                </div>
-                            </form>
+
 
                         </div>
+                        <form action="{{ route('order.index') }}" method="get" class="mt-3">
+                            <input type="hidden" name="status" value="{{ $currentStatus }}">
+                            <input type="hidden" name="source" value="{{ $currentSource }}">
+
+                            <div class="d-flex align-items-end flex-wrap" style="gap: 8px;">
+
+                                {{-- Toggle toutes les dates --}}
+                                <div class="d-flex flex-column justify-content-end" style="margin-bottom: 1px;">
+                                    <div class="filter-section-label">Période</div>
+                                    <div class="d-flex" style="gap: 4px;">
+                                        <a href="{{ route('order.index', ['status' => $currentStatus, 'source' => $currentSource]) }}"
+                                            class="btn btn-sm {{ !$allDates ? 'btn-dark' : 'btn-outline-secondary' }}">
+                                            Ce mois
+                                        </a>
+                                        <a href="{{ route('order.index', ['status' => $currentStatus, 'source' => $currentSource, 'all_dates' => 1]) }}"
+                                            class="btn btn-sm {{ $allDates ? 'btn-dark' : 'btn-outline-secondary' }}">
+                                            Toutes
+                                        </a>
+                                    </div>
+                                </div>
+
+                                {{-- Dates (masquées si all_dates actif) --}}
+                                @if (!$allDates)
+                                    <div>
+                                        <div class="filter-section-label">Du</div>
+                                        <input type="date" name="date_debut" class="form-control form-control-sm"
+                                            value="{{ $dateDebut }}" style="width: 138px">
+                                    </div>
+                                    <div>
+                                        <div class="filter-section-label">Au</div>
+                                        <input type="date" name="date_fin" class="form-control form-control-sm"
+                                            value="{{ $dateFin }}" style="width: 138px">
+                                    </div>
+
+                                    {{-- Boutons submit --}}
+                                    <div class="d-flex" style="gap: 4px; margin-bottom: 1px;">
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                        <a href="{{ route('order.index') }}" class="btn btn-sm btn-outline-secondary"
+                                            title="Réinitialiser">
+                                            <i class="fa fa-undo"></i>
+                                        </a>
+                                    </div>
+                                @else
+                                    {{-- Juste le bouton reset quand toutes les dates --}}
+                                    <div style="margin-bottom: 1px;">
+                                        <a href="{{ route('order.index') }}" class="btn btn-sm btn-outline-secondary"
+                                            title="Réinitialiser">
+                                            <i class="fa fa-undo"></i>
+                                        </a>
+                                    </div>
+                                @endif
+
+                            </div>
+                        </form>
                     </div>
 
                     @include('admin.components.validationMessage')
@@ -492,18 +543,24 @@
 
                         <!-- Zone des nouvelles commandes -->
                         <div id="new-orders-zone" style="display: none; margin-bottom: 20px;">
-                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-                                    <h5 style="margin: 0; color: #fff; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                            <div
+                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+                                <div
+                                    style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                                    <h5
+                                        style="margin: 0; color: #fff; font-weight: 700; display: flex; align-items: center; gap: 10px;">
                                         <i class="fas fa-bell" style="animation: ring 2s ease-in-out infinite;"></i>
                                         <span>Nouvelles Commandes</span>
-                                        <span id="new-orders-count" class="badge badge-warning" style="font-size: 14px; padding: 5px 12px;">0</span>
+                                        <span id="new-orders-count" class="badge badge-warning"
+                                            style="font-size: 14px; padding: 5px 12px;">0</span>
                                     </h5>
-                                    <button id="clear-new-orders" class="btn btn-sm btn-light" style="border-radius: 20px; font-weight: 600; padding: 5px 15px;">
+                                    <button id="clear-new-orders" class="btn btn-sm btn-light"
+                                        style="border-radius: 20px; font-weight: 600; padding: 5px 15px;">
                                         <i class="fas fa-check"></i> Tout marquer comme vu
                                     </button>
                                 </div>
-                                <div id="new-orders-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px;">
+                                <div id="new-orders-list"
+                                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px;">
                                     <!-- Les nouvelles commandes seront insérées ici -->
                                 </div>
                             </div>
@@ -636,7 +693,9 @@
             var table = $('#tableExport').DataTable({
                 // destroy: true,
                 dom: 'Bfrtip',
-                order: [[9, 'desc']], // tri par défaut : Date décroissante (colonne index 9)
+                order: [
+                    [9, 'desc']
+                ], // tri par défaut : Date décroissante (colonne index 9)
                 buttons: [
 
                     // {
@@ -777,13 +836,13 @@
 
 
 
-                }   // fin drawCallback
-            });    // fin DataTable
+                } // fin drawCallback
+            }); // fin DataTable
 
 
-          // URLs injectées par Blade (évite les \' dans interpolations qui causent une erreur PHP)
-            var _orderShowUrl = '{{ url("admin/order/show") }}';
-            var _orderEditUrl = '{{ url("admin/pos") }}';
+            // URLs injectées par Blade (évite les \' dans interpolations qui causent une erreur PHP)
+            var _orderShowUrl = '{{ url('admin/order/show') }}';
+            var _orderEditUrl = '{{ url('admin/pos') }}';
 
             // ── Polling nouvelles commandes ──────────────────────────────────────────
             // IMPORTANT : lancé UNE SEULE FOIS ici (hors drawCallback pour éviter
@@ -805,68 +864,94 @@
                     $.ajax({
                         url: "{{ route('order.checkNewOrder') }}",
                         method: "GET",
-                        data: { since_id: lastSeenId },
+                        data: {
+                            since_id: lastSeenId
+                        },
                         success: function(data) {
                             if (!data.orders || data.orders.length === 0) return;
 
                             // Avancer le curseur immédiatement (évite les doublons si re-poll rapide)
-                            const maxId = Math.max.apply(null, data.orders.map(function(o) { return o.id; }));
+                            const maxId = Math.max.apply(null, data.orders.map(function(o) {
+                                return o.id;
+                            }));
                             if (maxId > lastSeenId) lastSeenId = maxId;
 
                             let inserted = 0;
 
                             // Inverser : les ordres arrivent du + récent au + ancien
                             data.orders.slice().reverse().forEach(function(item) {
-                                if (knownIds.has(item.id)) return; // déjà connu, même si hors DOM
+                                if (knownIds.has(item.id))
+                                    return; // déjà connu, même si hors DOM
                                 knownIds.add(item.id);
 
                                 // 1. AFFICHER AU-DESSUS DU TABLEAU dans la zone dédiée
-                                const cardHtml = 
-                                    '<div class="new-order-card" data-order-id="' + item.id + '" onclick="window.location.href=\'' + _orderShowUrl + '/' + item.id + '\'">' +
-                                        '<div class="order-header">' +
-                                            '<div class="order-code">' +
-                                                '<i class="fas fa-shopping-cart" style="color: #ffc107; margin-right: 5px;"></i>' +
-                                                item.code +
-                                            '</div>' +
-                                            '<div class="order-time"><i class="far fa-clock"></i> ' + item.created_at + '</div>' +
-                                        '</div>' +
-                                        '<div class="order-info">' +
-                                            '<div><i class="fas fa-user"></i> <strong>' + item.nom_client + '</strong></div>' +
-                                            '<div><i class="fas fa-phone"></i> ' + item.tel_client + '</div>' +
-                                            '<div><span class="badge badge-' + item.status_color + '">' + item.status_label + '</span> ' +
-                                            '<i class="fab ' + item.source_icon + '"></i> ' + item.source_label + '</div>' +
-                                        '</div>' +
-                                        '<div class="order-total">' +
-                                            '<i class="fas fa-coins"></i> ' + Number(item.total).toLocaleString('fr-FR') + ' FCFA' +
-                                        '</div>' +
+                                const cardHtml =
+                                    '<div class="new-order-card" data-order-id="' + item
+                                    .id + '" onclick="window.location.href=\'' +
+                                    _orderShowUrl + '/' + item.id + '\'">' +
+                                    '<div class="order-header">' +
+                                    '<div class="order-code">' +
+                                    '<i class="fas fa-shopping-cart" style="color: #ffc107; margin-right: 5px;"></i>' +
+                                    item.code +
+                                    '</div>' +
+                                    '<div class="order-time"><i class="far fa-clock"></i> ' +
+                                    item.created_at + '</div>' +
+                                    '</div>' +
+                                    '<div class="order-info">' +
+                                    '<div><i class="fas fa-user"></i> <strong>' + item
+                                    .nom_client + '</strong></div>' +
+                                    '<div><i class="fas fa-phone"></i> ' + item.tel_client +
+                                    '</div>' +
+                                    '<div><span class="badge badge-' + item.status_color +
+                                    '">' + item.status_label + '</span> ' +
+                                    '<i class="fab ' + item.source_icon + '"></i> ' + item
+                                    .source_label + '</div>' +
+                                    '</div>' +
+                                    '<div class="order-total">' +
+                                    '<i class="fas fa-coins"></i> ' + Number(item.total)
+                                    .toLocaleString('fr-FR') + ' FCFA' +
+                                    '</div>' +
                                     '</div>';
 
                                 $('#new-orders-list').prepend(cardHtml);
                                 $('#new-orders-zone').show();
-                                
+
                                 // 2. AUSSI ajouter dans le tableau DataTables (comme avant)
-                                const soldeClass = item.solde_restant > 0 ? 'text-danger' : 'text-muted';
-                                const rowHtml = '<tr id="row_' + item.id + '" class="table-warning">' +
+                                const soldeClass = item.solde_restant > 0 ? 'text-danger' :
+                                    'text-muted';
+                                const rowHtml = '<tr id="row_' + item.id +
+                                    '" class="table-warning">' +
                                     '<td><span class="badge badge-warning text-dark p-1 px-2" style="white-space:nowrap;font-size:.75rem">&#11088; Nouveau</span></td>' +
-                                    '<td><span class="badge badge-' + item.status_color + ' text-white p-1 px-2" style="white-space:nowrap;font-size:.75rem">' + item.status_label + '</span></td>' +
-                                    '<td><span class="badge-source"><i class="fab ' + item.source_icon + ' mr-1"></i>' + item.source_label + '</span></td>' +
+                                    '<td><span class="badge badge-' + item.status_color +
+                                    ' text-white p-1 px-2" style="white-space:nowrap;font-size:.75rem">' +
+                                    item.status_label + '</span></td>' +
+                                    '<td><span class="badge-source"><i class="fab ' + item
+                                    .source_icon + ' mr-1"></i>' + item.source_label +
+                                    '</span></td>' +
                                     '<td><strong>' + item.code + '</strong></td>' +
                                     '<td>' + item.nom_client + '</td>' +
                                     '<td>' + item.tel_client + '</td>' +
-                                    '<td class="text-right font-weight-bold">' + Number(item.total).toLocaleString('fr-FR') + ' FCFA</td>' +
-                                    '<td class="text-right text-success small">' + Number(item.acompte).toLocaleString('fr-FR') + '</td>' +
-                                    '<td class="text-right small ' + soldeClass + '">' + Number(item.solde_restant).toLocaleString('fr-FR') + '</td>' +
-                                    '<td style="white-space:nowrap;font-size:.82rem">' + item.created_at + '</td>' +
-                                    '<td>' +
-                                        '<div class="dropdown">' +
-                                            '<a href="#" data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle">Options</a>' +
-                                            '<div class="dropdown-menu dropdown-menu-right">' +
-                                                '<a href="' + _orderShowUrl + '/' + item.id + '" class="dropdown-item has-icon"><i class="fas fa-eye"></i> Détail</a>' +
-                                                '<a href="' + _orderEditUrl + '/' + item.id + '/edit" class="dropdown-item has-icon"><i class="fas fa-edit"></i> Modifier</a>' +
-                                            '</div>' +
-                                        '</div>' +
+                                    '<td class="text-right font-weight-bold">' + Number(item
+                                        .total).toLocaleString('fr-FR') + ' FCFA</td>' +
+                                    '<td class="text-right text-success small">' + Number(
+                                        item.acompte).toLocaleString('fr-FR') + '</td>' +
+                                    '<td class="text-right small ' + soldeClass + '">' +
+                                    Number(item.solde_restant).toLocaleString('fr-FR') +
                                     '</td>' +
-                                '</tr>';
+                                    '<td style="white-space:nowrap;font-size:.82rem">' +
+                                    item.created_at + '</td>' +
+                                    '<td>' +
+                                    '<div class="dropdown">' +
+                                    '<a href="#" data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle">Options</a>' +
+                                    '<div class="dropdown-menu dropdown-menu-right">' +
+                                    '<a href="' + _orderShowUrl + '/' + item.id +
+                                    '" class="dropdown-item has-icon"><i class="fas fa-eye"></i> Détail</a>' +
+                                    '<a href="' + _orderEditUrl + '/' + item.id +
+                                    '/edit" class="dropdown-item has-icon"><i class="fas fa-edit"></i> Modifier</a>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</td>' +
+                                    '</tr>';
 
                                 // Utiliser l'API DataTables (tri, pagination, recherche restent cohérents)
                                 // draw() sans argument → va à la page 1 pour montrer la nouvelle ligne
@@ -881,7 +966,9 @@
                             $('#new-orders-count').text(currentCount);
 
                             // Son de notification
-                            try { new Audio('/audio/notification.mp3').play(); } catch (e) {}
+                            try {
+                                new Audio('/audio/notification.mp3').play();
+                            } catch (e) {}
 
                             // Alert div fixée en haut à droite
                             var alertDiv = $('<div>')
@@ -901,9 +988,13 @@
                                     opacity: 0
                                 });
                             $('body').append(alertDiv);
-                            alertDiv.animate({ opacity: 1 }, 300);
+                            alertDiv.animate({
+                                opacity: 1
+                            }, 300);
                             setTimeout(function() {
-                                alertDiv.animate({ opacity: 0 }, 400, function() {
+                                alertDiv.animate({
+                                    opacity: 0
+                                }, 400, function() {
                                     alertDiv.remove();
                                 });
                             }, 30000); // 30 secondes
