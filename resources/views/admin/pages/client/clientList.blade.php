@@ -222,7 +222,7 @@
                                             </tr>
                                         @endforeach --}}
 
-                                          {{-- ✅ Vide, DataTables remplit via Ajax --}}
+                                        {{-- ✅ Vide, DataTables remplit via Ajax --}}
                                     </tbody>
                                 </table>
                             </div>
@@ -316,78 +316,154 @@
     </script> --}}
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-    // Récupère les filtres actifs dans l'URL
-    var params = new URLSearchParams(window.location.search);
+            var params = new URLSearchParams(window.location.search);
+            var ajaxUrl = "{{ route('client.list') }}";
 
-    var table = $('#tableExport').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: '{{ route("client.list") }}',
-            data: function (d) {
-                // ✅ Transmet tes filtres Blade à chaque requête Ajax
-                d.type       = params.get('type') || '';
-                d.all_dates  = params.get('all_dates') || '';
-                d.date_debut = params.get('date_debut') || '';
-                d.date_fin   = params.get('date_fin') || '';
-            }
-        },
-        columns: [
-            { data: 'id', name: 'id' },
-            { data: 'status_badge', name: 'orders_count', orderable: true, searchable: false },
-            { data: 'name', name: 'name' },
-            { data: 'phone', name: 'phone' },
-            { data: 'email', name: 'email' },
-            { data: 'date_anniversaire_fmt', name: 'date_anniversaire', searchable: false },
-            { data: 'type_badge', name: 'type_client', searchable: false },
-            { data: 'orders_count', name: 'orders_count' },
-            { data: 'orders_month_count', name: 'orders_month_count', searchable: false },
-            { data: 'actions', name: 'actions', orderable: false, searchable: false },
-        ],
-        dom: 'Bfrtip',
-        buttons: [
-            { extend: 'copy',  exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-            { extend: 'csv',   exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-            { extend: 'excel', exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-            { extend: 'pdf',   exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-            { extend: 'print', exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-        ],
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
-        },
-        pageLength: 25,
-        drawCallback: function () {
-            // Ton code de suppression reste identique
-            $('.delete').on('click', function (e) {
-                e.preventDefault();
-                var Id = $(this).attr('data-id');
-                swal({
-                    title: "Suppression",
-                    text: "Veuillez confirmer la suppression",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Confirmer",
-                    cancelButtonText: "Annuler",
-                }).then((result) => {
-                    if (result) {
-                        $.ajax({
-                            type: "POST",
-                            url: "/admin/clients/destroy/" + Id,
-                            data: { _token: '{{ csrf_token() }}' },
-                            success: function (response) {
-                                if (response.status === 200) {
-                                    table.row('#row_' + Id).remove().draw();
-                                    // ... ton toast Swal
-                                }
+            var table = $('#tableExport').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: ajaxUrl,
+                    data: function(d) {
+                        d.type = params.get('type') || '';
+                        d.all_dates = params.get('all_dates') || '';
+                        d.date_debut = params.get('date_debut') || '';
+                        d.date_fin = params.get('date_fin') || '';
+                    }
+                },
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'status_badge',
+                        name: 'orders_count',
+                        orderable: true,
+                        searchable: false
+                    },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'phone',
+                        name: 'phone'
+                    },
+                    {
+                        data: 'email',
+                        name: 'email'
+                    },
+                    {
+                        data: 'date_anniversaire_fmt',
+                        name: 'date_anniversaire',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'type_badge',
+                        name: 'type_client',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'orders_count',
+                        name: 'orders_count',
+                        searchable: false
+                    },
+                    {
+                        data: 'orders_month_count',
+                        name: 'orders_month_count',
+                        searchable: false
+                    },
+                    {
+                        data: 'actions',
+                        name: 'actions',
+                        orderable: false,
+                        searchable: false
+                    },
+                ],
+                dom: 'Bfrtip',
+                buttons: [{
+                        extend: 'copy',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    },
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
+                },
+                pageLength: 25,
+                drawCallback: function() {
+                    $('.delete').on('click', function(e) {
+                        e.preventDefault();
+                        var Id = $(this).attr('data-id');
+                        swal({
+                            title: "Suppression",
+                            text: "Veuillez confirmer la suppression",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Confirmer",
+                            cancelButtonText: "Annuler",
+                        }).then((result) => {
+                            if (result) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/admin/clients/destroy/" + Id,
+                                    data: {
+                                        _token: '{{ csrf_token() }}'
+                                    },
+                                    success: function(response) {
+                                        if (response.status === 200) {
+                                            Swal.fire({
+                                                toast: true,
+                                                icon: 'success',
+                                                title: 'Client supprimé avec succès',
+                                                animation: false,
+                                                position: 'top',
+                                                background: '#3da108e0',
+                                                iconColor: '#fff',
+                                                color: '#fff',
+                                                showConfirmButton: false,
+                                                timer: 500,
+                                                timerProgressBar: true,
+                                            });
+                                            table.row('#row_' + Id).remove()
+                                                .draw();
+                                        }
+                                    }
+                                });
                             }
                         });
-                    }
-                });
+                    });
+                }
             });
-        }
-    });
-});
+        });
     </script>
 @endsection
