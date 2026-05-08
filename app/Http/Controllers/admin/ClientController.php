@@ -172,6 +172,7 @@ class ClientController extends Controller
         // Réponse Ajax pour DataTables
         if ($request->ajax()) {
             return DataTables::of($query)
+                ->addIndexColumn()
                 ->addColumn('status_badge', function ($user) {
                     $color = $user->orders_count > 0 ? 'success' : 'primary';
                     $label = $user->orders_count > 0 ? 'A commandé' : 'Aucune commande';

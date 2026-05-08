@@ -328,8 +328,8 @@
                         </a>
                     </div>
 
-                    {{-- ===== STATS CARDS SANS YAJRA DATATABLE ===== --}}
-                    {{-- @php
+                    {{-- ===== STATS CARDS ===== --}}
+                    @php
                         $countAttente = $orders->where('status', 'attente')->count();
                         $countAttenteAcompte = $orders->where('status', 'en_attente_acompte')->count();
                         $countPrecommande = $orders->where('status', 'precommande')->count();
@@ -341,21 +341,6 @@
                         $countAnnulee = $orders->where('status', 'annulée')->count();
                         $montantTotal = $orders->sum('total');
                         $montantSolde = $orders->sum('solde_restant');
-                    @endphp --}}
-
-                    {{-- ===== STATS CARDS AVEC YAJRA DATATABLE ===== --}}
-                    @php
-                        $countAttente = $stats['countAttente'];
-                        $countAttenteAcompte = $stats['countAttenteAcompte'];
-                        $countPrecommande = $stats['countPrecommande'];
-                        $countConfirmee = $stats['countConfirmee'];
-                        $countCuisine = $stats['countCuisine'];
-                        $countCuisineTm = $stats['countCuisineTm'];
-                        $countLivraison = $stats['countLivraison'];
-                        $countLivree = $stats['countLivree'];
-                        $countAnnulee = $stats['countAnnulee'];
-                        $montantTotal = $stats['montantTotal'];
-                        $montantSolde = $stats['montantSolde'];
                     @endphp
                     <div class="card-body pb-0 pt-3">
                         <div class="row" style="row-gap:10px">
@@ -364,9 +349,7 @@
                                     <div class="stat-icon"><i class="fas fa-list-ol"></i></div>
                                     <div>
                                         <div class="stat-label">Total</div>
-                                        {{-- <div class="stat-value">{{ count($orders) }}</div> --}}
-                                        <div class="stat-value">{{ $stats['total'] }}</div>
-
+                                        <div class="stat-value">{{ count($orders) }}</div>
                                         <div class="stat-sub">commandes</div>
                                     </div>
                                 </div>
@@ -428,7 +411,7 @@
 
                     {{-- ===== FILTRE BAR ===== --}}
                     <div class="filter-bar">
-                        {{-- @php
+                        @php
                             $currentStatus = request('status', 'all');
                             $currentSource = request('source', '');
                             $statusCountMap = [
@@ -455,28 +438,8 @@
                                 'livrée' => ['label' => 'Livrée', 'cls' => 'pill-livree'],
                                 'annulée' => ['label' => 'Annulée', 'cls' => 'pill-annulee'],
                             ];
-                        @endphp --}}
-
-                        {{--
-                            ===== FILTRE STATUTS AVEC YAJRA DATATABLE =====
-                         --}}
-                        @php
-                            $currentStatus = request('status', 'all');
-                            $currentSource = request('source', '');
-                            $statusCountMap = array_merge(['all' => $stats['total']], $countMap);
-                            $pillList = [
-                                'all' => ['label' => 'Tous', 'cls' => 'pill-all'],
-                                'attente' => ['label' => 'Attente', 'cls' => 'pill-attente'],
-                                'en_attente_acompte' => ['label' => 'Att. acompte', 'cls' => 'pill-acompte'],
-                                'precommande' => ['label' => 'Précommande', 'cls' => 'pill-precommande'],
-                                'confirmée' => ['label' => 'Confirmée', 'cls' => 'pill-confirmee'],
-                                'en_cuisine' => ['label' => 'En cuisine', 'cls' => 'pill-cuisine'],
-                                'cuisine_terminee' => ['label' => 'Cuisine termin.', 'cls' => 'pill-cuisinetm'],
-                                'en_livraison' => ['label' => 'En livraison', 'cls' => 'pill-livraison'],
-                                'livrée' => ['label' => 'Livrée', 'cls' => 'pill-livree'],
-                                'annulée' => ['label' => 'Annulée', 'cls' => 'pill-annulee'],
-                            ];
                         @endphp
+
                         {{-- Pills statut avec compteur --}}
                         <div class="mb-3">
                             <div class="filter-section-label"><i class="fas fa-filter mr-1"></i>Statut</div>
@@ -622,7 +585,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @foreach ($orders as $key => $item)
+                                    @foreach ($orders as $key => $item)
                                         @php
                                             $statusColors = [
                                                 'attente' => 'warning',
@@ -690,17 +653,28 @@
                                                         <a href="{{ route('pos.edit', $item->id) }}"
                                                             class="dropdown-item has-icon"><i class="fas fa-edit"></i>
                                                             Modifier</a>
-                                                       
+                                                        {{-- @if (!in_array($item->status, ['livrée', 'annulée']))
+                                                            <div class="dropdown-divider"></div>
+                                                            @foreach ($statuts as $stKey => $st)
+                                                                @if ($stKey !== $item->status)
+                                                                    <a href="{{ route('order.changeState') }}?cs={{ $stKey }}&id={{ $item->id }}"
+                                                                        class="dropdown-item has-icon {{ $stKey === 'annulée' ? 'text-danger' : '' }}">
+                                                                        {{ $st['label'] }}
+                                                                    </a>
+                                                                @endif
+                                                            @endforeach
+                                                            <div class="dropdown-divider"></div>
+                                                            <a href="#" role="button"
+                                                                data-id="{{ $item->id }}"
+                                                                class="dropdown-item has-icon text-danger btnCancel">
+                                                                <i data-feather="x-circle"></i> Annuler
+                                                            </a>
+                                                        @endif --}}
                                                     </div>
                                                 </div>
                                             </td>
                                         </tr>
-                                    @endforeach --}}
-
-
-                                    {{--
-                                        ===== BOUCLE AVEC YAJRA DATATABLE =====
-                                     --}}
+                                    @endforeach
 
                                 </tbody>
                             </table>
@@ -714,7 +688,7 @@
     <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.colVis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
 
-    {{-- <script>
+    <script>
         $(document).ready(function() {
             var table = $('#tableExport').DataTable({
                 // destroy: true,
@@ -1036,590 +1010,6 @@
                 });
 
                 setInterval(pollNewOrders, 15000); // toutes les 15 secondes
-            })();
-        });
-    </script> --}}
-
-    {{-- <script>
-        $(document).ready(function() {
-
-            var params = new URLSearchParams(window.location.search);
-            var ajaxUrl = "{{ route('order.index') }}";
-
-            var table = $('#tableExport').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: ajaxUrl,
-                    data: function(d) {
-                        d.status = params.get('status') || 'all';
-                        d.source = params.get('source') || '';
-                        d.all_dates = params.get('all_dates') || '';
-                        d.date_debut = params.get('date_debut') || '';
-                        d.date_fin = params.get('date_fin') || '';
-                    }
-                },
-                columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'status_badge',
-                        name: 'status',
-                        searchable: false
-                    },
-                    {
-                        data: 'source_badge',
-                        name: 'source',
-                        searchable: false
-                    },
-                    {
-                        data: 'code',
-                        name: 'code'
-                    },
-                    {
-                        data: 'client_name',
-                        name: 'client_name'
-                    }, // ✅ corrigé
-                    {
-                        data: 'client_phone',
-                        name: 'client_phone'
-                    }, // ✅ corrigé
-                    {
-                        data: 'total_fmt',
-                        name: 'total',
-                        searchable: false
-                    },
-                    {
-                        data: 'acompte_fmt',
-                        name: 'acompte',
-                        searchable: false
-                    },
-                    {
-                        data: 'solde_fmt',
-                        name: 'solde_restant',
-                        searchable: false
-                    },
-                    {
-                        data: 'date_fmt',
-                        name: 'created_at',
-                        searchable: false
-                    },
-                    {
-                        data: 'actions',
-                        name: 'actions',
-                        orderable: false,
-                        searchable: false
-                    },
-                ],
-                order: [
-                    [9, 'desc']
-                ],
-                dom: 'Bfrtip',
-                buttons: [{
-                        extend: 'copy',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-                        }
-                    },
-                    {
-                        extend: 'csv',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-                        }
-                    },
-                    {
-                        extend: 'excel',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-                        }
-                    },
-                    {
-                        extend: 'pdf',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-                        }
-                    },
-                    {
-                        extend: 'print',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-                        }
-                    },
-                ],
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
-                },
-                pageLength: 25,
-                drawCallback: function() {
-                    $('.motif_autre').hide();
-
-                    $('.btnCancel').on('click', function(e) {
-                        e.preventDefault();
-                        var cmdId = $(this).attr('data-id');
-                        $('#commandeId').val(cmdId);
-                        $('#motif_selected').val('');
-                        $('#_motif_autre').val('');
-                        $('.motif_autre').hide();
-                        $('#_motif_autre').prop('required', false);
-                        $('#modalMotifAnnulation').modal('show');
-                    });
-
-                    $('#motif_selected').on('change', function() {
-                        if ($(this).val() === 'autre') {
-                            $('.motif_autre').show();
-                            $('#_motif_autre').prop('required', true);
-                        } else {
-                            $('.motif_autre').hide();
-                            $('#_motif_autre').prop('required', false);
-                        }
-                    });
-                }
-            });
-
-            // ── Polling nouvelles commandes ──────────────────────────────────
-            var _orderShowUrl = "{{ url('admin/order/show') }}";
-            var _orderEditUrl = "{{ url('admin/pos') }}";
-
-            (function initOrderPolling() {
-                let lastSeenId = 0;
-                const knownIds = new Set();
-
-                $('#tableExport tbody tr[id^="row_"]').each(function() {
-                    const id = parseInt(this.id.replace('row_', ''), 10);
-                    knownIds.add(id);
-                    if (id > lastSeenId) lastSeenId = id;
-                });
-
-                function pollNewOrders() {
-                    $.ajax({
-                        url: "{{ route('order.checkNewOrder') }}",
-                        method: "GET",
-                        data: {
-                            since_id: lastSeenId
-                        },
-                        success: function(data) {
-                            if (!data.orders || data.orders.length === 0) return;
-
-                            const maxId = Math.max(...data.orders.map(o => o.id));
-                            if (maxId > lastSeenId) lastSeenId = maxId;
-
-                            let inserted = 0;
-
-                            data.orders.slice().reverse().forEach(function(item) {
-                                if (knownIds.has(item.id)) return;
-                                knownIds.add(item.id);
-
-                                // Zone nouvelles commandes
-                                const cardHtml =
-                                    '<div class="new-order-card" data-order-id="' + item
-                                    .id +
-                                    '" onclick="window.location.href=\'' + _orderShowUrl +
-                                    '/' + item.id + '\'">' +
-                                    '<div class="order-header">' +
-                                    '<div class="order-code"><i class="fas fa-shopping-cart" style="color:#ffc107;margin-right:5px;"></i>' +
-                                    item.code + '</div>' +
-                                    '<div class="order-time"><i class="far fa-clock"></i> ' +
-                                    item.created_at + '</div>' +
-                                    '</div>' +
-                                    '<div class="order-info">' +
-                                    '<div><i class="fas fa-user"></i> <strong>' + item
-                                    .client_name + '</strong></div>' + // ✅ corrigé
-                                    '<div><i class="fas fa-phone"></i> ' + item
-                                    .client_phone + '</div>' + // ✅ corrigé
-                                    '<div><span class="badge badge-' + item.status_color +
-                                    '">' + item.status_label + '</span> ' +
-                                    '<i class="fab ' + item.source_icon + '"></i> ' + item
-                                    .source_label + '</div>' +
-                                    '</div>' +
-                                    '<div class="order-total"><i class="fas fa-coins"></i> ' +
-                                    Number(item.total).toLocaleString('fr-FR') +
-                                    ' FCFA</div>' +
-                                    '</div>';
-
-                                $('#new-orders-list').prepend(cardHtml);
-                                $('#new-orders-zone').show();
-
-                                // Ajout dans DataTables
-                                table.row.add({
-                                    id: item.id,
-                                    status_badge: '<span class="badge badge-' + item
-                                        .status_color +
-                                        ' text-white p-1 px-2" style="white-space:nowrap;font-size:.75rem">&#11088; ' +
-                                        item.status_label + '</span>',
-                                    source_badge: '<span class="badge-source"><i class="fab ' +
-                                        item.source_icon + ' mr-1"></i>' + item
-                                        .source_label + '</span>',
-                                    code: '<strong>' + item.code + '</strong>',
-                                    client_name: item.client_name, // ✅ corrigé
-                                    client_phone: item.client_phone, // ✅ corrigé
-                                    total_fmt: Number(item.total).toLocaleString(
-                                        'fr-FR') + ' FCFA',
-                                    acompte_fmt: Number(item.acompte)
-                                        .toLocaleString('fr-FR'),
-                                    solde_fmt: '<span class="' + (item
-                                            .solde_restant > 0 ? 'text-danger' :
-                                            'text-muted') + '">' + Number(item
-                                            .solde_restant).toLocaleString(
-                                        'fr-FR') + '</span>',
-                                    date_fmt: item.created_at,
-                                    actions: '<div class="dropdown"><a href="#" data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle">Options</a><div class="dropdown-menu dropdown-menu-right"><a href="' +
-                                        _orderShowUrl + '/' + item.id +
-                                        '" class="dropdown-item has-icon"><i class="fas fa-eye"></i> Détail</a><a href="' +
-                                        _orderEditUrl + '/' + item.id +
-                                        '/edit" class="dropdown-item has-icon"><i class="fas fa-edit"></i> Modifier</a></div></div>',
-                                }).node().id = 'row_' + item.id;
-
-                                table.draw(false);
-                                inserted++;
-                            });
-
-                            if (inserted === 0) return;
-
-                            $('#new-orders-count').text($('#new-orders-list .new-order-card')
-                                .length);
-
-                            try {
-                                new Audio('/audio/notification.mp3').play();
-                            } catch (e) {}
-
-                            var alertDiv = $('<div>').text('🛒 ' + inserted +
-                                ' nouvelle(s) commande(s) reçue(s)').css({
-                                position: 'fixed',
-                                top: '20px',
-                                right: '20px',
-                                zIndex: 99999,
-                                padding: '14px 20px',
-                                background: '#28a745',
-                                color: '#fff',
-                                borderRadius: '6px',
-                                fontWeight: 'bold',
-                                fontSize: '14px',
-                                boxShadow: '0 4px 12px rgba(0,0,0,.25)',
-                                opacity: 0
-                            });
-                            $('body').append(alertDiv);
-                            alertDiv.animate({
-                                opacity: 1
-                            }, 300);
-                            setTimeout(function() {
-                                alertDiv.animate({
-                                    opacity: 0
-                                }, 400, function() {
-                                    alertDiv.remove();
-                                });
-                            }, 30000);
-                        }
-                    });
-                }
-
-                $('#clear-new-orders').on('click', function() {
-                    $('#new-orders-list').empty();
-                    $('#new-orders-zone').fadeOut(300);
-                    $('#new-orders-count').text('0');
-                });
-
-                setInterval(pollNewOrders, 15000);
-            })();
-        });
-    </script> --}}
-
-    <script>
-        $(document).ready(function() {
-
-            var params = new URLSearchParams(window.location.search);
-            var ajaxUrl = "{{ route('order.index') }}";
-            // ✅ Dates par défaut injectées par Blade si absentes de l'URL
-            var defaultDateDebut = "{{ $dateDebut ?? '' }}";
-            var defaultDateFin = "{{ $dateFin ?? '' }}";
-            var defaultAllDates = "{{ $allDates ? '1' : '' }}";
-
-            var table = $('#tableExport').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: ajaxUrl,
-                    data: function(d) {
-                        d.status = params.get('status') || 'all';
-                        d.source = params.get('source') || '';
-                        d.all_dates = params.get('all_dates') || defaultAllDates;
-                        d.date_debut = params.get('date_debut') || defaultDateDebut; // ✅
-                        d.date_fin = params.get('date_fin') || defaultDateFin; // ✅
-                    }
-                },
-                columns: [
-                    {
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
-                    },
-                    
-                    // {
-                    //     data: 'id',
-                    //     name: 'id'
-                    // },
-                    {
-                        data: 'status_badge',
-                        name: 'status',
-                        searchable: false
-                    },
-                    {
-                        data: 'source_badge',
-                        name: 'source',
-                        searchable: false
-                    },
-                    {
-                        data: 'code',
-                        name: 'code'
-                    },
-                    {
-                        data: 'nom_client',
-                        name: 'nom_client',
-                        searchable: true
-                    },
-                    {
-                        data: 'tel_client',
-                        name: 'tel_client',
-                        searchable: true
-                    },
-                    {
-                        data: 'total_fmt',
-                        name: 'total',
-                        searchable: false
-                    },
-                    {
-                        data: 'acompte_fmt',
-                        name: 'acompte',
-                        searchable: false
-                    },
-                    {
-                        data: 'solde_fmt',
-                        name: 'solde_restant',
-                        searchable: false
-                    },
-                    {
-                        data: 'date_fmt',
-                        name: 'created_at',
-                        searchable: false
-                    },
-                    {
-                        data: 'actions',
-                        name: 'actions',
-                        orderable: false,
-                        searchable: false
-                    },
-                ],
-                order: [
-                    [9, 'desc']
-                ],
-                dom: 'Bfrtip',
-                buttons: [{
-                        extend: 'copy',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-                        }
-                    },
-                    {
-                        extend: 'csv',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-                        }
-                    },
-                    {
-                        extend: 'excel',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-                        }
-                    },
-                    {
-                        extend: 'pdf',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-                        }
-                    },
-                    {
-                        extend: 'print',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-                        }
-                    },
-                ],
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
-                },
-                pageLength: 25,
-                drawCallback: function() {
-                    $('.motif_autre').hide();
-
-                    $('.btnCancel').on('click', function(e) {
-                        e.preventDefault();
-                        var cmdId = $(this).attr('data-id');
-                        $('#commandeId').val(cmdId);
-                        $('#motif_selected').val('');
-                        $('#_motif_autre').val('');
-                        $('.motif_autre').hide();
-                        $('#_motif_autre').prop('required', false);
-                        $('#modalMotifAnnulation').modal('show');
-                    });
-
-                    $('#motif_selected').on('change', function() {
-                        if ($(this).val() === 'autre') {
-                            $('.motif_autre').show();
-                            $('#_motif_autre').prop('required', true);
-                        } else {
-                            $('.motif_autre').hide();
-                            $('#_motif_autre').prop('required', false);
-                        }
-                    });
-                }
-            });
-
-            // ── Polling nouvelles commandes ──────────────────────────────────
-            var _orderShowUrl = "{{ url('admin/order/show') }}";
-            var _orderEditUrl = "{{ url('admin/pos') }}";
-
-            (function initOrderPolling() {
-                let lastSeenId = 0;
-                const knownIds = new Set();
-
-                $('#tableExport tbody tr[id^="row_"]').each(function() {
-                    const id = parseInt(this.id.replace('row_', ''), 10);
-                    knownIds.add(id);
-                    if (id > lastSeenId) lastSeenId = id;
-                });
-
-                function pollNewOrders() {
-                    $.ajax({
-                        url: "{{ route('order.checkNewOrder') }}",
-                        method: "GET",
-                        data: {
-                            since_id: lastSeenId
-                        },
-                        success: function(data) {
-                            if (!data.orders || data.orders.length === 0) return;
-
-                            const maxId = Math.max.apply(null, data.orders.map(function(o) {
-                                return o.id;
-                            }));
-                            if (maxId > lastSeenId) lastSeenId = maxId;
-
-                            let inserted = 0;
-
-                            data.orders.slice().reverse().forEach(function(item) {
-                                if (knownIds.has(item.id)) return;
-                                knownIds.add(item.id);
-
-                                // Zone nouvelles commandes
-                                const cardHtml =
-                                    '<div class="new-order-card" data-order-id="' + item
-                                    .id +
-                                    '" onclick="window.location.href=\'' + _orderShowUrl +
-                                    '/' + item.id + '\'">' +
-                                    '<div class="order-header">' +
-                                    '<div class="order-code"><i class="fas fa-shopping-cart" style="color:#ffc107;margin-right:5px;"></i>' +
-                                    item.code + '</div>' +
-                                    '<div class="order-time"><i class="far fa-clock"></i> ' +
-                                    item.created_at + '</div>' +
-                                    '</div>' +
-                                    '<div class="order-info">' +
-                                    '<div><i class="fas fa-user"></i> <strong>' + item
-                                    .nom_client + '</strong></div>' +
-                                    '<div><i class="fas fa-phone"></i> ' + item.tel_client +
-                                    '</div>' +
-                                    '<div><span class="badge badge-' + item.status_color +
-                                    '">' + item.status_label + '</span> ' +
-                                    '<i class="fab ' + item.source_icon + '"></i> ' + item
-                                    .source_label + '</div>' +
-                                    '</div>' +
-                                    '<div class="order-total"><i class="fas fa-coins"></i> ' +
-                                    Number(item.total).toLocaleString('fr-FR') +
-                                    ' FCFA</div>' +
-                                    '</div>';
-
-                                $('#new-orders-list').prepend(cardHtml);
-                                $('#new-orders-zone').show();
-
-                                // Ajout dans DataTables via row.add() avec objet JSON
-                                table.row.add({
-                                    id: item.id,
-                                    status_badge: '<span class="badge badge-' + item
-                                        .status_color +
-                                        ' text-white p-1 px-2" style="white-space:nowrap;font-size:.75rem">&#11088; ' +
-                                        item.status_label + '</span>',
-                                    source_badge: '<span class="badge-source"><i class="fab ' +
-                                        item.source_icon + ' mr-1"></i>' + item
-                                        .source_label + '</span>',
-                                    code: '<strong>' + item.code + '</strong>',
-                                    nom_client: item.nom_client,
-                                    tel_client: item.tel_client,
-                                    total_fmt: Number(item.total).toLocaleString(
-                                        'fr-FR') + ' FCFA',
-                                    acompte_fmt: Number(item.acompte)
-                                        .toLocaleString('fr-FR'),
-                                    solde_fmt: '<span class="' + (item
-                                        .solde_restant > 0 ? 'text-danger' :
-                                        'text-muted') + '">' + Number(item
-                                        .solde_restant).toLocaleString(
-                                        'fr-FR') + '</span>',
-                                    date_fmt: item.created_at,
-                                    actions: '<div class="dropdown"><a href="#" data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle">Options</a><div class="dropdown-menu dropdown-menu-right"><a href="' +
-                                        _orderShowUrl + '/' + item.id +
-                                        '" class="dropdown-item has-icon"><i class="fas fa-eye"></i> Détail</a><a href="' +
-                                        _orderEditUrl + '/' + item.id +
-                                        '/edit" class="dropdown-item has-icon"><i class="fas fa-edit"></i> Modifier</a></div></div>',
-                                }).node().id = 'row_' + item.id;
-
-                                table.draw(false);
-                                inserted++;
-                            });
-
-                            if (inserted === 0) return;
-
-                            $('#new-orders-count').text($('#new-orders-list .new-order-card')
-                                .length);
-
-                            try {
-                                new Audio('/audio/notification.mp3').play();
-                            } catch (e) {}
-
-                            var alertDiv = $('<div>').text('🛒 ' + inserted +
-                                ' nouvelle(s) commande(s) reçue(s)').css({
-                                position: 'fixed',
-                                top: '20px',
-                                right: '20px',
-                                zIndex: 99999,
-                                padding: '14px 20px',
-                                background: '#28a745',
-                                color: '#fff',
-                                borderRadius: '6px',
-                                fontWeight: 'bold',
-                                fontSize: '14px',
-                                boxShadow: '0 4px 12px rgba(0,0,0,.25)',
-                                opacity: 0
-                            });
-                            $('body').append(alertDiv);
-                            alertDiv.animate({
-                                opacity: 1
-                            }, 300);
-                            setTimeout(function() {
-                                alertDiv.animate({
-                                    opacity: 0
-                                }, 400, function() {
-                                    alertDiv.remove();
-                                });
-                            }, 30000);
-                        }
-                    });
-                }
-
-                $('#clear-new-orders').on('click', function() {
-                    $('#new-orders-list').empty();
-                    $('#new-orders-zone').fadeOut(300);
-                    $('#new-orders-count').text('0');
-                });
-
-                setInterval(pollNewOrders, 15000);
             })();
         });
     </script>

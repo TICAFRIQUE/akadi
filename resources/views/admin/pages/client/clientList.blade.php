@@ -321,6 +321,11 @@
             var params = new URLSearchParams(window.location.search);
             var ajaxUrl = "{{ route('client.list') }}";
 
+            // ✅ Dates par défaut injectées par Blade si absentes de l'URL
+            var defaultDateDebut = "{{ $dateDebut ?? '' }}";
+            var defaultDateFin = "{{ $dateFin ?? '' }}";
+            var defaultAllDates = "{{ $allDates ? '1' : '' }}";
+
             var table = $('#tableExport').DataTable({
                 processing: true,
                 serverSide: true,
@@ -328,14 +333,16 @@
                     url: ajaxUrl,
                     data: function(d) {
                         d.type = params.get('type') || '';
-                        d.all_dates = params.get('all_dates') || '';
-                        d.date_debut = params.get('date_debut') || '';
-                        d.date_fin = params.get('date_fin') || '';
+                        d.all_dates = params.get('all_dates') || defaultAllDates;
+                        d.date_debut = params.get('date_debut') || defaultDateDebut;
+                        d.date_fin = params.get('date_fin') || defaultDateFin;
                     }
                 },
                 columns: [{
-                        data: 'id',
-                        name: 'id'
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'status_badge',

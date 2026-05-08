@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PHPMailer\PHPMailer\PHPMailer;
+use Yajra\DataTables\Facades\DataTables;
 
 class OrderController extends Controller
 {
@@ -78,13 +79,206 @@ class OrderController extends Controller
     //     return view('admin.pages.order.order', compact('orders', 'dateDebut', 'dateFin', 'statuts', 'sources'));
     // }
 
+    // public function getAllOrder(Request $request)
+    // {
+    //     $status   = $request->input('status');
+    //     $source   = $request->input('source');
+    //     $allDates = $request->boolean('all_dates');
+
+    //     // Dates seulement si pas "toutes les dates"
+    //     $dateDebut = null;
+    //     $dateFin   = null;
+
+    //     if (!$allDates) {
+    //         $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
+    //         $dateFin   = $request->input('date_fin',   now()->endOfMonth()->format('Y-m-d'));
+    //     }
+
+    //     // Restriction selon permission (p-cuisine, p-livraison, p-confirmation)
+    //     $allowedStatuses = orderStatusesAllowed();
+
+    //     if (is_array($allowedStatuses) && count($allowedStatuses) === 0) {
+    //         abort(403, 'Accès non autorisé.');
+    //     }
+
+    //     $orders = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
+    //         ->orderBy('created_at', 'DESC')
+    //         ->when($allowedStatuses !== null, fn($q) => $q->whereIn('status', $allowedStatuses))
+    //         ->when(request('d'), fn($q) => $q->where('date_order', Carbon::now()->format('Y-m-d')))
+    //         ->when(request('s'), fn($q) => $q->whereStatus(request('s')))
+    //         ->when($source, fn($q) => $q->where('source', $source))
+    //         ->when(
+    //             !request('d') && !request('s'),
+    //             function ($q) use ($allDates, $dateDebut, $dateFin, $status) {
+    //                 if (!$allDates) {
+    //                     $q->whereBetween('date_order', [$dateDebut, $dateFin]);
+    //                 }
+    //                 if ($status && $status !== 'all') {
+    //                     $q->whereStatus($status);
+    //                 }
+    //             }
+    //         )
+    //         ->get();
+
+    //     // Limiter le sélecteur de statuts aux statuts autorisés
+    //     $statuts = $allowedStatuses !== null
+    //         ? array_intersect_key(Order::$statuts, array_flip($allowedStatuses))
+    //         : Order::$statuts;
+    //     $sources = Order::$sources;
+
+    //     return view('admin.pages.order.order', compact('orders', 'dateDebut', 'dateFin', 'statuts', 'sources', 'allDates'));
+    // }
+
+
+    // liste des commandes avec stats et filtre ajax datatables
+    // public function getAllOrder(Request $request)
+    // {
+    //     $status   = $request->input('status');
+    //     $source   = $request->input('source');
+    //     $allDates = $request->boolean('all_dates');
+
+    //     $dateDebut = null;
+    //     $dateFin   = null;
+
+    //     if (!$allDates) {
+    //         $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
+    //         $dateFin   = $request->input('date_fin',   now()->endOfMonth()->format('Y-m-d'));
+    //     }
+
+    //     $allowedStatuses = orderStatusesAllowed();
+
+    //     if (is_array($allowedStatuses) && count($allowedStatuses) === 0) {
+    //         abort(403, 'Accès non autorisé.');
+    //     }
+
+    //     // ✅ Query de base réutilisable (sans get())
+    //     $baseQuery = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
+    //         ->when($allowedStatuses !== null, fn($q) => $q->whereIn('status', $allowedStatuses))
+    //         ->when($source, fn($q) => $q->where('source', $source))
+    //         ->when(!$allDates, fn($q) => $q->whereBetween('date_order', [$dateDebut, $dateFin]));
+
+    //     // ✅ Stats : une seule requête groupée, pas de get()
+    //     $statsRaw = (clone $baseQuery)
+    //         ->selectRaw('status, COUNT(*) as total, SUM(total) as montant, SUM(solde_restant) as solde')
+    //         ->groupBy('status')
+    //         ->get()
+    //         ->keyBy('status');
+
+    //     $countMap = [
+    //         'attente'            => $statsRaw->get('attente')?->total ?? 0,
+    //         'en_attente_acompte' => $statsRaw->get('en_attente_acompte')?->total ?? 0,
+    //         'precommande'        => $statsRaw->get('precommande')?->total ?? 0,
+    //         'confirmée'          => $statsRaw->get('confirmée')?->total ?? 0,
+    //         'en_cuisine'         => $statsRaw->get('en_cuisine')?->total ?? 0,
+    //         'cuisine_terminee'   => $statsRaw->get('cuisine_terminee')?->total ?? 0,
+    //         'en_livraison'       => $statsRaw->get('en_livraison')?->total ?? 0,
+    //         'livrée'             => $statsRaw->get('livrée')?->total ?? 0,
+    //         'annulée'            => $statsRaw->get('annulée')?->total ?? 0,
+    //     ];
+
+    //     $stats = [
+    //         'countAttente'        => $countMap['attente'],
+    //         'countAttenteAcompte' => $countMap['en_attente_acompte'],
+    //         'countPrecommande'    => $countMap['precommande'],
+    //         'countConfirmee'      => $countMap['confirmée'],
+    //         'countCuisine'        => $countMap['en_cuisine'],
+    //         'countCuisineTm'      => $countMap['cuisine_terminee'],
+    //         'countLivraison'      => $countMap['en_livraison'],
+    //         'countLivree'         => $countMap['livrée'],
+    //         'countAnnulee'        => $countMap['annulée'],
+    //         'total'               => $statsRaw->sum('total'),
+    //         'montantTotal'        => $statsRaw->sum('montant'),
+    //         'montantSolde'        => $statsRaw->sum('solde'),
+    //     ];
+
+    //     // ✅ Réponse Ajax DataTables Server-Side
+    //     if ($request->ajax() && $request->has('draw')) {
+    //         $query = (clone $baseQuery)
+    //             ->orderBy('created_at', 'DESC')
+    //             ->when($status && $status !== 'all', fn($q) => $q->whereStatus($status));
+
+    //         return DataTables::of($query)
+    //             ->addColumn('status_badge', function ($item) {
+    //                 $statusColors = [
+    //                     'attente'            => 'warning',
+    //                     'en_attente_acompte' => 'warning',
+    //                     'confirmée'          => 'success',
+    //                     'en_cuisine'         => 'info',
+    //                     'cuisine_terminee'   => 'primary',
+    //                     'en_livraison'       => 'secondary',
+    //                     'livrée'             => 'success',
+    //                     'annulée'            => 'danger',
+    //                     'precommande'        => 'dark',
+    //                 ];
+    //                 $statusLabels = [
+    //                     'attente'            => 'En attente',
+    //                     'en_attente_acompte' => 'Attente acompte',
+    //                     'confirmée'          => 'Confirmée',
+    //                     'en_cuisine'         => 'En cuisine',
+    //                     'cuisine_terminee'   => 'Cuisine terminée',
+    //                     'en_livraison'       => 'En livraison',
+    //                     'livrée'             => 'Livrée',
+    //                     'annulée'            => 'Annulée',
+    //                     'precommande'        => 'Précommande',
+    //                 ];
+    //                 $sc = $statusColors[$item->status] ?? 'secondary';
+    //                 $sl = $statusLabels[$item->status] ?? $item->status;
+    //                 return "<span class='badge badge-{$sc} text-white p-1 px-2' style='white-space:nowrap;font-size:.75rem'>{$sl}</span>";
+    //             })
+    //             ->addColumn('source_badge', function ($item) {
+    //                 $srcIcon  = Order::$sources[$item->source]['icon']  ?? 'fa-question';
+    //                 $srcLabel = Order::$sources[$item->source]['label'] ?? ($item->source ?? '—');
+    //                 return "<span class='badge-source'><i class='fab {$srcIcon} mr-1'></i>{$srcLabel}</span>";
+    //             })
+    //             ->addColumn('total_fmt', fn($item) => number_format($item->total ?? 0, 0, '', ' ') . ' FCFA')
+    //             ->addColumn('acompte_fmt', fn($item) => number_format($item->acompte ?? 0, 0, '', ' '))
+    //             ->addColumn('solde_fmt', function ($item) {
+    //                 $cls = ($item->solde_restant ?? 0) > 0 ? 'text-danger' : 'text-muted';
+    //                 return "<span class='{$cls}'>" . number_format($item->solde_restant ?? 0, 0, '', ' ') . "</span>";
+    //             })
+    //             ->addColumn('date_fmt', fn($item) => Carbon::parse($item->created_at)->format('d/m/Y H:i'))
+    //             ->addColumn('actions', function ($item) {
+    //                 return '
+    //                 <div class="dropdown">
+    //                     <a href="#" data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle">Options</a>
+    //                     <div class="dropdown-menu dropdown-menu-right">
+    //                         <a href="' . route('order.show', $item->id) . '" class="dropdown-item has-icon">
+    //                             <i class="fas fa-eye"></i> Détail
+    //                         </a>
+    //                         <a href="' . route('pos.edit', $item->id) . '" class="dropdown-item has-icon">
+    //                             <i class="fas fa-edit"></i> Modifier
+    //                         </a>
+    //                     </div>
+    //                 </div>
+    //             ';
+    //             })
+    //             ->rawColumns(['status_badge', 'source_badge', 'solde_fmt', 'actions'])
+    //             ->make(true);
+    //     }
+
+    //     $statuts = $allowedStatuses !== null
+    //         ? array_intersect_key(Order::$statuts, array_flip($allowedStatuses))
+    //         : Order::$statuts;
+    //     $sources = Order::$sources;
+
+    //     return view('admin.pages.order.order', compact(
+    //         'stats',
+    //         'countMap',
+    //         'dateDebut',
+    //         'dateFin',
+    //         'statuts',
+    //         'sources',
+    //         'allDates'
+    //     ));
+    // }
+
+
     public function getAllOrder(Request $request)
     {
         $status   = $request->input('status');
         $source   = $request->input('source');
         $allDates = $request->boolean('all_dates');
 
-        // Dates seulement si pas "toutes les dates"
         $dateDebut = null;
         $dateFin   = null;
 
@@ -93,39 +287,147 @@ class OrderController extends Controller
             $dateFin   = $request->input('date_fin',   now()->endOfMonth()->format('Y-m-d'));
         }
 
-        // Restriction selon permission (p-cuisine, p-livraison, p-confirmation)
         $allowedStatuses = orderStatusesAllowed();
 
         if (is_array($allowedStatuses) && count($allowedStatuses) === 0) {
             abort(403, 'Accès non autorisé.');
         }
 
-        $orders = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
-            ->orderBy('created_at', 'DESC')
+        // ✅ Query de base réutilisable
+        $baseQuery = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
             ->when($allowedStatuses !== null, fn($q) => $q->whereIn('status', $allowedStatuses))
-            ->when(request('d'), fn($q) => $q->where('date_order', Carbon::now()->format('Y-m-d')))
-            ->when(request('s'), fn($q) => $q->whereStatus(request('s')))
             ->when($source, fn($q) => $q->where('source', $source))
-            ->when(
-                !request('d') && !request('s'),
-                function ($q) use ($allDates, $dateDebut, $dateFin, $status) {
-                    if (!$allDates) {
-                        $q->whereBetween('date_order', [$dateDebut, $dateFin]);
-                    }
-                    if ($status && $status !== 'all') {
-                        $q->whereStatus($status);
-                    }
-                }
-            )
-            ->get();
+            ->when(!$allDates, fn($q) => $q->whereBetween('date_order', [$dateDebut, $dateFin]));
 
-        // Limiter le sélecteur de statuts aux statuts autorisés
+        // ✅ Stats via GROUP BY — pas de get()
+        $statsRaw = (clone $baseQuery)
+            ->selectRaw('status, COUNT(*) as total, SUM(total) as montant, SUM(solde_restant) as solde')
+            ->groupBy('status')
+            ->get()
+            ->keyBy('status');
+
+        $countMap = [
+            'attente'            => (int) ($statsRaw->get('attente')?->total            ?? 0),
+            'en_attente_acompte' => (int) ($statsRaw->get('en_attente_acompte')?->total ?? 0),
+            'precommande'        => (int) ($statsRaw->get('precommande')?->total        ?? 0),
+            'confirmée'          => (int) ($statsRaw->get('confirmée')?->total          ?? 0),
+            'en_cuisine'         => (int) ($statsRaw->get('en_cuisine')?->total         ?? 0),
+            'cuisine_terminee'   => (int) ($statsRaw->get('cuisine_terminee')?->total   ?? 0),
+            'en_livraison'       => (int) ($statsRaw->get('en_livraison')?->total       ?? 0),
+            'livrée'             => (int) ($statsRaw->get('livrée')?->total             ?? 0),
+            'annulée'            => (int) ($statsRaw->get('annulée')?->total            ?? 0),
+        ];
+
+        $stats = [
+            'countAttente'        => $countMap['attente'],
+            'countAttenteAcompte' => $countMap['en_attente_acompte'],
+            'countPrecommande'    => $countMap['precommande'],
+            'countConfirmee'      => $countMap['confirmée'],
+            'countCuisine'        => $countMap['en_cuisine'],
+            'countCuisineTm'      => $countMap['cuisine_terminee'],
+            'countLivraison'      => $countMap['en_livraison'],
+            'countLivree'         => $countMap['livrée'],
+            'countAnnulee'        => $countMap['annulée'],
+            'total'               => $statsRaw->sum('total'),
+            'montantTotal'        => $statsRaw->sum('montant'),
+            'montantSolde'        => $statsRaw->sum('solde'),
+        ];
+
+        // ✅ Réponse Ajax DataTables Server-Side
+        if ($request->ajax() && $request->has('draw')) {
+            $query = (clone $baseQuery)
+                ->orderBy('created_at', 'DESC')
+                ->when($status && $status !== 'all', fn($q) => $q->whereStatus($status));
+
+            return DataTables::of($query)
+                ->addIndexColumn() //  ajoute DT_RowIndex
+                ->addColumn('status_badge', function ($item) {
+                    $statusColors = [
+                        'attente'            => 'warning',
+                        'en_attente_acompte' => 'warning',
+                        'confirmée'          => 'success',
+                        'en_cuisine'         => 'info',
+                        'cuisine_terminee'   => 'primary',
+                        'en_livraison'       => 'secondary',
+                        'livrée'             => 'success',
+                        'annulée'            => 'danger',
+                        'precommande'        => 'dark',
+                    ];
+                    $statusLabels = [
+                        'attente'            => 'En attente',
+                        'en_attente_acompte' => 'Attente acompte',
+                        'confirmée'          => 'Confirmée',
+                        'en_cuisine'         => 'En cuisine',
+                        'cuisine_terminee'   => 'Cuisine terminée',
+                        'en_livraison'       => 'En livraison',
+                        'livrée'             => 'Livrée',
+                        'annulée'            => 'Annulée',
+                        'precommande'        => 'Précommande',
+                    ];
+                    $sc = $statusColors[$item->status] ?? 'secondary';
+                    $sl = $statusLabels[$item->status] ?? $item->status;
+                    return "<span class='badge badge-{$sc} text-white p-1 px-2' style='white-space:nowrap;font-size:.75rem'>{$sl}</span>";
+                })
+                ->addColumn('source_badge', function ($item) {
+                    $srcIcon  = Order::$sources[$item->source]['icon']  ?? 'fa-question';
+                    $srcLabel = Order::$sources[$item->source]['label'] ?? ($item->source ?? '—');
+                    return "<span class='badge-source'><i class='fab {$srcIcon} mr-1'></i>{$srcLabel}</span>";
+                })
+                ->addColumn('nom_client',  fn($item) => $item->nom_client)
+                ->addColumn('tel_client',  fn($item) => $item->tel_client)
+                ->addColumn('total_fmt',   fn($item) => number_format($item->total ?? 0, 0, '', ' ') . ' FCFA')
+                ->addColumn('acompte_fmt', fn($item) => number_format($item->acompte ?? 0, 0, '', ' '))
+                ->addColumn('solde_fmt', function ($item) {
+                    $cls = ($item->solde_restant ?? 0) > 0 ? 'text-danger' : 'text-muted';
+                    return "<span class='{$cls}'>" . number_format($item->solde_restant ?? 0, 0, '', ' ') . "</span>";
+                })
+                ->addColumn('date_fmt', fn($item) => Carbon::parse($item->created_at)->format('d/m/Y H:i'))
+                ->addColumn('actions', function ($item) {
+                    return '
+                    <div class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle">Options</a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="' . route('order.show', $item->id) . '" class="dropdown-item has-icon">
+                                <i class="fas fa-eye"></i> Détail
+                            </a>
+                            <a href="' . route('pos.edit', $item->id) . '" class="dropdown-item has-icon">
+                                <i class="fas fa-edit"></i> Modifier
+                            </a>
+                        </div>
+                    </div>
+                ';
+                })
+                // ✅ Dire à Yajra sur quelles vraies colonnes SQL chercher
+                ->filterColumn('nom_client', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('client_name', 'like', "%{$keyword}%")
+                            ->orWhere('client_phone', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('tel_client', function ($query, $keyword) {
+                    $query->where('client_phone', 'like', "%{$keyword}%");
+                })
+                ->filterColumn('code', function ($query, $keyword) {
+                    $query->where('code', 'like', "%{$keyword}%");
+                })
+                ->rawColumns(['status_badge', 'source_badge', 'solde_fmt', 'actions'])
+                ->make(true);
+        }
+
         $statuts = $allowedStatuses !== null
             ? array_intersect_key(Order::$statuts, array_flip($allowedStatuses))
             : Order::$statuts;
         $sources = Order::$sources;
 
-        return view('admin.pages.order.order', compact('orders', 'dateDebut', 'dateFin', 'statuts', 'sources', 'allDates'));
+        return view('admin.pages.order.order', compact(
+            'stats',
+            'countMap',
+            'dateDebut',
+            'dateFin',
+            'statuts',
+            'sources',
+            'allDates'
+        ));
     }
     //filter
     public function filter(Request $request)
