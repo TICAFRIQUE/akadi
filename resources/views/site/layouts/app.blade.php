@@ -547,6 +547,7 @@
     @include('site.sections.menu')
     <!-- ========== End menu main and mobile ========== -->
 
+    @include('sweetalert::alert')
 
 
     <!-- ========== Start content ========== -->

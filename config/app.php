@@ -196,7 +196,7 @@ return [
         'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
         // 'Debugbar' => Barryvdh\Debugbar\Facades\Debugbar::class,
-       'PDF' => Barryvdh\DomPDF\Facade\Pdf::class
+        'PDF' => Barryvdh\DomPDF\Facade\Pdf::class
     ])->toArray(),
 
 ];

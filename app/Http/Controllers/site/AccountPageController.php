@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\site;
 
+use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class AccountPageController extends Controller
 {
@@ -37,6 +38,21 @@ class AccountPageController extends Controller
         return back()->withSuccess('Votre commande à été annulée');
     }
 
+
+    //Suivi de commande
+    public function trackingOrder($code)
+    {
+       try {
+            $order = Order::where('code', $code)->with(['user', 'products' => fn ($q) => $q->with('media')])->firstOrFail();
+        } catch (\Exception $e) {
+            Alert::error('Commande non trouvée.');
+             return redirect()->route('page-acceuil');
+        }
+
+          
+        
+        return view('site.pages.auth.suivi-commande', compact('order'));
+    }
 
     //Profil 
     public function profil(){

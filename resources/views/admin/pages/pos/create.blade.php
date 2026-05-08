@@ -184,7 +184,9 @@
             </div>
         @endif
         @if (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
+            <div class="alert alert-danger">
+                {!! session('error') !!}
+            </div>
         @endif
 
         <form action="{{ route('pos.store') }}" method="POST" id="pos-form">
@@ -971,7 +973,7 @@
             if (!userId && phone.length < 8)
                 errors.push("Le téléphone du client est obligatoire (8 chiffres minimum).");
 
-                // SI ACOMPTE OBLIGATOIRE (statut non "attente") → vérifier que acompte > 0 et moyen de paiement sélectionné
+            // SI ACOMPTE OBLIGATOIRE (statut non "attente") → vérifier que acompte > 0 et moyen de paiement sélectionné
             // if (!isAttente) {
             //     const acompte = parseFloat(document.getElementById("acompte").value) || 0;
             //     if (isLivree) {

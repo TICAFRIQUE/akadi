@@ -63,6 +63,7 @@ class Order extends Model
 
     protected $fillable = [
         'code',
+        'signature', // champ pour signature commande pour eviter les doublons
         'quantity_product',
         'subtotal',
         'delivery_price',

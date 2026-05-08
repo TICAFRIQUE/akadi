@@ -338,13 +338,17 @@
                         d.date_fin = params.get('date_fin') || defaultDateFin;
                     }
                 },
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
-                    },
+                columns: [
+
+
                     {
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    }, {
                         data: 'status_badge',
                         name: 'orders_count',
                         orderable: true,

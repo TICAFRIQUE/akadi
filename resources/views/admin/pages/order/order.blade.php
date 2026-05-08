@@ -1347,14 +1347,15 @@
                         d.date_fin = params.get('date_fin') || defaultDateFin; // ✅
                     }
                 },
-                columns: [
-                    {
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
+                columns: [{
+                        data: null,
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
                     },
-                    
+
                     // {
                     //     data: 'id',
                     //     name: 'id'

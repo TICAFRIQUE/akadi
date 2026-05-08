@@ -403,6 +403,7 @@ Route::controller(AuthPageController::class)->group(function () {
 //Authentification user
 Route::controller(AccountPageController::class)->group(function () {
     route::get('/mes-commandes', 'userOrder')->name('user-order')->middleware(['auth']);
+    route::get('/suivi-commande/{code}', 'trackingOrder')->name('suivi-commande');
     route::post('/annuler-commande/{id}', 'cancelOrder')->name('cancel-order')->middleware(['auth']);
     route::get('/mon-profil', 'profil')->name('user-profil')->middleware(['auth']);
 });

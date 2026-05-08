@@ -349,6 +349,9 @@ class PosController extends Controller
     //     }
     // }
 
+
+
+
     public function store(Request $request)
     {
         $status           = $request->input('status', Order::STATUS_ATTENTE);
@@ -495,6 +498,56 @@ class PosController extends Controller
             //     $finalStatus = Order::STATUS_ATTENTE_ACOMPTE;
             // }
 
+            //creer une signature unique pour la commande  pour evter les doublons en cas de rafraichissement de la page ou de soumission multiple
+            $signature = md5(json_encode([
+                'client' => $userId ?: $clientPhone,
+                'source' => $request->source,
+                'total'  => round($total, 2),
+
+                'products' => collect($productsData)
+                    ->map(function ($p) {
+                        return [
+                            'product_id' => $p['product']->id,
+                            'qty'        => $p['quantity'],
+                            'price'      => $p['unit_price'],
+                        ];
+                    })
+                    ->sortBy('product_id')
+                    ->values()
+            ]));
+
+            $duplicateOrder = Order::where('signature', $signature)
+                ->where('created_at', '>=', now()->subHours(24))
+                ->where('status', '!=', Order::STATUS_LIVREE)
+                ->first();
+
+
+            if ($duplicateOrder) {
+
+                DB::rollBack();
+
+                //route pour afficher la commande existante
+                $orderDoublonRoute = route('order.show', $duplicateOrder->id);
+                return redirect()->back()
+                    ->with(
+                        'error',
+                        'Une commande similaire existe déjà : ' .
+                            $duplicateOrder->code .
+                            ' (créée le ' .
+                            $duplicateOrder->created_at->format('d/m/Y H:i') .
+                            ').<br><br>
+
+                        <a href="' . $orderDoublonRoute . '" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        class="btn btn-warning btn-sm">
+                            <i class="fas fa-eye"></i> Voir la commande
+                        </a>'
+                    )
+                    ->withInput();
+            }
+
+            //------------FIN VERIFICATION DOUBLON----------------
             // ── Création commande ─────────────────────────────────────────────────────
             $order = Order::create([
                 'quantity_product'  => $quantityProduct,
@@ -521,6 +574,7 @@ class PosController extends Controller
                 'date_order'        => now()->format('Y-m-d'),
                 'delivery_planned'  => $request->delivery_planned,
                 'available_product' => 'yes',
+                'signature'         => $signature,
             ]);
 
             // ── Pivot produits + snapshot product_bases + décrémentation stock ────────
