@@ -36,11 +36,7 @@
                                     {{ \Carbon\Carbon::parse(now()->startOfMonth())->locale('fr_FR')->isoFormat('MMMM YYYY') }}
                                 @endif
 
-                                {{-- Avant --}}
-                                {{-- <span class="badge badge-primary ml-1">{{ count($users) }}</span> --}}
-
-                                {{-- Après --}}
-                                <span class="badge badge-primary ml-1">{{ $totalCount }}</span>
+                                <span class="badge badge-primary ml-1">{{ count($users) }}</span>
                             </h4>
                             <a href="{{ route('client.createForm') }}" class="btn btn-primary btn-sm">
                                 <i class="fas fa-plus mr-1"></i> Ajouter un client
@@ -156,7 +152,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- @foreach ($users as $key => $item)
+                                        @foreach ($users as $key => $item)
                                             <tr id="row_{{ $item['id'] }}">
                                                 <td>{{ ++$key }}</td>
                                                 <td>
@@ -220,9 +216,7 @@
                                                     </div>
                                                 </td>
                                             </tr>
-                                        @endforeach --}}
-
-                                          {{-- ✅ Vide, DataTables remplit via Ajax --}}
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -233,7 +227,7 @@
         </div>
     </section>
 
-    {{-- <script>
+    <script>
         $(document).ready(function() {
             var table = $('#tableExport').DataTable({
                 dom: 'Bfrtip',
@@ -313,81 +307,5 @@
                 }
             });
         });
-    </script> --}}
-
-    <script>
-        $(document).ready(function () {
-
-    // Récupère les filtres actifs dans l'URL
-    var params = new URLSearchParams(window.location.search);
-
-    var table = $('#tableExport').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: '{{ route("client.list") }}',
-            data: function (d) {
-                // ✅ Transmet tes filtres Blade à chaque requête Ajax
-                d.type       = params.get('type') || '';
-                d.all_dates  = params.get('all_dates') || '';
-                d.date_debut = params.get('date_debut') || '';
-                d.date_fin   = params.get('date_fin') || '';
-            }
-        },
-        columns: [
-            { data: 'id', name: 'id' },
-            { data: 'status_badge', name: 'orders_count', orderable: true, searchable: false },
-            { data: 'name', name: 'name' },
-            { data: 'phone', name: 'phone' },
-            { data: 'email', name: 'email' },
-            { data: 'date_anniversaire_fmt', name: 'date_anniversaire', searchable: false },
-            { data: 'type_badge', name: 'type_client', searchable: false },
-            { data: 'orders_count', name: 'orders_count' },
-            { data: 'orders_month_count', name: 'orders_month_count', searchable: false },
-            { data: 'actions', name: 'actions', orderable: false, searchable: false },
-        ],
-        dom: 'Bfrtip',
-        buttons: [
-            { extend: 'copy',  exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-            { extend: 'csv',   exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-            { extend: 'excel', exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-            { extend: 'pdf',   exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-            { extend: 'print', exportOptions: { columns: [0,1,2,3,4,5,6,7,8] } },
-        ],
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
-        },
-        pageLength: 25,
-        drawCallback: function () {
-            // Ton code de suppression reste identique
-            $('.delete').on('click', function (e) {
-                e.preventDefault();
-                var Id = $(this).attr('data-id');
-                swal({
-                    title: "Suppression",
-                    text: "Veuillez confirmer la suppression",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Confirmer",
-                    cancelButtonText: "Annuler",
-                }).then((result) => {
-                    if (result) {
-                        $.ajax({
-                            type: "POST",
-                            url: "/admin/clients/destroy/" + Id,
-                            data: { _token: '{{ csrf_token() }}' },
-                            success: function (response) {
-                                if (response.status === 200) {
-                                    table.row('#row_' + Id).remove().draw();
-                                    // ... ton toast Swal
-                                }
-                            }
-                        });
-                    }
-                });
-            });
-        }
-    });
-});
     </script>
 @endsection

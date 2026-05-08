@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+    use Yajra\DataTables\Facades\DataTables;
+
 
 class ClientController extends Controller
 {
@@ -96,32 +98,66 @@ class ClientController extends Controller
 
 
     //liste des client avec search sans name et phone v2
-    public function listClient()
+    // public function listClient()
+    // {
+    //     $typeClient = request('type');
+    //     $allDates   = request()->boolean('all_dates');
+    //     $name       = request('name');
+    //     $phone      = request('phone');
+
+    //     if ($name) {
+    //         $name = Str::of($name)->trim()->replaceMatches('/\s+/', ' ');
+    //     }
+
+    //     if ($phone) {
+    //         $phone = Str::of($phone)->trim()->replaceMatches('/\s+/', ' ');
+    //     }
+
+    //     $searchActive = $name || $phone;
+
+    //     $dateDebut = null;
+    //     $dateFin   = null;
+
+    //     if (!$searchActive && !$allDates) {
+    //         $dateDebut = request('date_debut', !request()->has('date_debut') ? now()->startOfMonth()->format('Y-m-d') : null);
+    //         $dateFin   = request('date_fin',   !request()->has('date_fin')   ? now()->endOfMonth()->format('Y-m-d')   : null);
+    //     }
+
+    //     $users = User::withCount([
+    //         'orders',
+    //         'orders as orders_month_count' => fn($q) => $q
+    //             ->whereMonth('created_at', now()->month)
+    //             ->whereYear('created_at', now()->year),
+    //     ])
+    //         ->where('role', 'client')
+    //         ->when($typeClient, fn($q) => $q->where('type_client', $typeClient))
+    //         ->when($name,      fn($q) => $q->where('name',  'like', "%{$name}%"))
+    //         ->when($phone,     fn($q) => $q->where('phone', 'like', "%{$phone}%"))
+    //         ->when($dateDebut, fn($q) => $q->whereDate('created_at', '>=', $dateDebut))
+    //         ->when($dateFin,   fn($q) => $q->whereDate('created_at', '<=', $dateFin))
+    //         ->orderBy('created_at', 'DESC')
+    //         ->get();
+
+    //     return view('admin.pages.client.clientList', compact('users', 'dateDebut', 'dateFin', 'allDates'));
+    // }
+
+
+
+    public function listClient(Request $request)
     {
         $typeClient = request('type');
         $allDates   = request()->boolean('all_dates');
-        $name       = request('name');
-        $phone      = request('phone');
-
-        if ($name) {
-            $name = Str::of($name)->trim()->replaceMatches('/\s+/', ' ');
-        }
-
-        if ($phone) {
-            $phone = Str::of($phone)->trim()->replaceMatches('/\s+/', ' ');
-        }
-
-        $searchActive = $name || $phone;
 
         $dateDebut = null;
         $dateFin   = null;
 
-        if (!$searchActive && !$allDates) {
+        if (!$allDates) {
             $dateDebut = request('date_debut', !request()->has('date_debut') ? now()->startOfMonth()->format('Y-m-d') : null);
             $dateFin   = request('date_fin',   !request()->has('date_fin')   ? now()->endOfMonth()->format('Y-m-d')   : null);
         }
 
-        $users = User::withCount([
+        // ✅ Query builder, pas get()
+        $query = User::withCount([
             'orders',
             'orders as orders_month_count' => fn($q) => $q
                 ->whereMonth('created_at', now()->month)
@@ -129,14 +165,57 @@ class ClientController extends Controller
         ])
             ->where('role', 'client')
             ->when($typeClient, fn($q) => $q->where('type_client', $typeClient))
-            ->when($name,      fn($q) => $q->where('name',  'like', "%{$name}%"))
-            ->when($phone,     fn($q) => $q->where('phone', 'like', "%{$phone}%"))
-            ->when($dateDebut, fn($q) => $q->whereDate('created_at', '>=', $dateDebut))
-            ->when($dateFin,   fn($q) => $q->whereDate('created_at', '<=', $dateFin))
-            ->orderBy('created_at', 'DESC')
-            ->get();
+            ->when($dateDebut,  fn($q) => $q->whereDate('created_at', '>=', $dateDebut))
+            ->when($dateFin,    fn($q) => $q->whereDate('created_at', '<=', $dateFin))
+            ->orderBy('created_at', 'DESC');
 
-        return view('admin.pages.client.clientList', compact('users', 'dateDebut', 'dateFin', 'allDates'));
+        // Réponse Ajax pour DataTables
+        if ($request->ajax()) {
+            return DataTables::of($query)
+                ->addColumn('status_badge', function ($user) {
+                    $color = $user->orders_count > 0 ? 'success' : 'primary';
+                    $label = $user->orders_count > 0 ? 'A commandé' : 'Aucune commande';
+                    return "<span class='badge badge-{$color}'>{$label}</span>";
+                })
+                ->addColumn('type_badge', function ($user) {
+                    $color = match ($user->type_client) {
+                        'fidele'   => 'success',
+                        'prospect' => 'warning',
+                        default    => 'secondary',
+                    };
+                    return "<span class='badge badge-{$color}'>" . ucfirst($user->type_client ?? 'prospect') . "</span>";
+                })
+                ->addColumn('date_anniversaire_fmt', function ($user) {
+                    if (!$user->date_anniversaire) return '-';
+                    $date = \Carbon\Carbon::parse($user->date_anniversaire . '-' . date('Y'))->locale('fr_FR');
+                    return $date->day . ' ' . $date->monthName;
+                })
+                ->addColumn('actions', function ($user) {
+                    return '
+                    <div class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="btn btn-warning btn-sm dropdown-toggle">Options</a>
+                        <div class="dropdown-menu">
+                            <a href="' . route('client.detail', $user->id) . '" class="dropdown-item has-icon">
+                                <i class="far fa-eye"></i> Détail
+                            </a>
+                            <a href="' . route('client.edit', $user->id) . '" class="dropdown-item has-icon">
+                                <i class="far fa-edit"></i> Modifier
+                            </a>
+                            <a href="#" role="button" data-id="' . $user->id . '" class="dropdown-item has-icon text-danger delete">
+                                <i class="far fa-trash-alt"></i> Supprimer
+                            </a>
+                        </div>
+                    </div>
+                ';
+                })
+                ->rawColumns(['status_badge', 'type_badge', 'actions'])
+                ->make(true);
+        }
+
+        // ✅ Compte réel sans charger la collection
+        $totalCount = (clone $query)->count();
+
+        return view('admin.pages.client.clientList', compact('dateDebut', 'dateFin', 'allDates', 'totalCount'));
     }
 
     public function detail($id)
