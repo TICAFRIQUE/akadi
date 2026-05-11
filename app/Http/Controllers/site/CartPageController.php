@@ -450,6 +450,7 @@ class CartPageController extends Controller
                 $discount = $_GET['data']['remise'] ?? 0; //remise
                 //Id du coupon si il y en a
                 $coupon_id = $_GET['data']['coupon_id'] ?? null;
+                $date_order = $_GET['data']['date_order'];
 
                 // Valider le coupon s'il est fourni
                 if (!empty($coupon_id)) {
@@ -469,7 +470,7 @@ class CartPageController extends Controller
                     }
                 }
 
-                // Stocker les informations de livraison dans la session
+                // Stocker les informations de livraison commande dans la session
                 Session::put('delivery_info', [
                     'subTotal' => $subTotal,
                     'name' => $delivery_name,
@@ -483,6 +484,12 @@ class CartPageController extends Controller
                     'code_promo' => $code_promo,
                     'discount' => $discount,
                     'coupon_id' => $coupon_id,
+                    'date_order' => $type_commande === 'cmd_precommande' ? Carbon::createFromFormat('d/m/Y H:i:s', $date_order)->format('Y-m-d ') : Carbon::parse($date_order)->format('Y-m-d'),
+                    // 'delivery_date' => Carbon::createFromFormat(
+                    //     'd/m/Y H:i:s',
+                    //     $date_order
+                    // )->format('Y-m-d H:i:s'),
+
                 ]);
 
                 // Rediriger vers la page de sélection de paiement

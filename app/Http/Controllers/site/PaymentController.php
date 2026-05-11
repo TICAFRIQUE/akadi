@@ -84,8 +84,11 @@ class PaymentController extends Controller
     {
         try {
             // Créer la commande avec paiement en espèces
+            //infos panier
             $cart = Session::get('cart', []);
-            $deliveryInfo = Session::get('delivery_info');
+            //infos commande pour livraison
+            $deliveryInfo = Session::get('delivery_info'); // 
+            // dd($deliveryInfo , $cart);
 
             Log::info('Processing Cash Payment', [
                 'user_id' => Auth::id(),
@@ -140,7 +143,7 @@ class PaymentController extends Controller
                 'source' => 'web', // Important pour checkNewOrder
                 'payment_method_id' => $request->payment_method_id,
                 'payment_status' => 'completed',
-                'date_order' => now()->format('Y-m-d'),
+                'date_order' =>$deliveryInfo['date_order'] ?? now()->format('Y-m-d H:i:s'),
             ]);
 
             // Attacher les produits à la commande et décrémenter les stocks

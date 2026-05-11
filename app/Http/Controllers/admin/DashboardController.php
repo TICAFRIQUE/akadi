@@ -494,10 +494,10 @@ class DashboardController extends Controller
             ->where(function ($query) {
                 // Commandes en attente normale : toujours affichées
                 $query->where('status', 'attente')
-                    // Précommandes : uniquement si la date prévue est aujourd'hui ou passée
+                    // Précommandes : uniquement si la date commande est aujourd'hui ou passée
                     ->orWhere(function ($q) {
                         $q->where('status', 'precommande')
-                            ->whereDate('delivery_planned', '<=', now()->format('Y-m-d'));
+                            ->whereDate('date_order', '<=', now()->format('Y-m-d'));
                     });
             })
             ->get();

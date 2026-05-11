@@ -275,16 +275,16 @@ class OrderController extends Controller
 
     public function getAllOrder(Request $request)
     {
-        $status   = $request->input('status');
-        $source   = $request->input('source');
-        $allDates = $request->boolean('all_dates');
+        $status   = $request->input('status'); // filtre statut
+        $source   = $request->input('source'); // filtre source (web, pos, etc.)
+        $allDates = $request->boolean('all_dates'); // si true, ignorer les filtres de date
 
-        $dateDebut = null;
-        $dateFin   = null;
+        $dateDebut = $request->input('date_debut');
+        $dateFin   = $request->input('date_fin');
 
         if (!$allDates) {
-            $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
-            $dateFin   = $request->input('date_fin',   now()->endOfMonth()->format('Y-m-d'));
+            $dateDebut = $dateDebut ?: now()->startOfMonth()->format('Y-m-d');
+            $dateFin   = $dateFin   ?: now()->endOfMonth()->format('Y-m-d');
         }
 
         $allowedStatuses = orderStatusesAllowed();
@@ -293,10 +293,23 @@ class OrderController extends Controller
             abort(403, 'Accès non autorisé.');
         }
 
-        // ✅ Query de base réutilisable
+        // ✅ Query de base réutilisable 
+        // $baseQuery = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
+        //     ->when($allowedStatuses !== null, fn($q) => $q->whereIn('status', $allowedStatuses))
+        //     ->when($source, fn($q) => $q->where('source', $source))
+        //     ->when(!$allDates, fn($q) => $q->whereBetween('date_order', [$dateDebut, $dateFin]));
         $baseQuery = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
             ->when($allowedStatuses !== null, fn($q) => $q->whereIn('status', $allowedStatuses))
+
+            // ✅ filtre statut
+            ->when($status && $status !== 'all', function ($q) use ($status) {
+                $q->where('status', $status);
+            })
+
+            // ✅ filtre source
             ->when($source, fn($q) => $q->where('source', $source))
+
+            // ✅ filtre date
             ->when(!$allDates, fn($q) => $q->whereBetween('date_order', [$dateDebut, $dateFin]));
 
         // ✅ Stats via GROUP BY — pas de get()
@@ -318,6 +331,18 @@ class OrderController extends Controller
             'annulée'            => (int) ($statsRaw->get('annulée')?->total            ?? 0),
         ];
 
+        // ✅ Montants SANS les commandes annulées
+        $statsNonAnnulee = (clone $baseQuery)
+            ->where('status', '!=', 'annulée')
+            ->selectRaw('SUM(total) as montant_total, SUM(solde_restant) as montant_solde')
+            ->first();
+
+        // ✅ Montant REVENU = uniquement commandes LIVRÉES
+        $revenueStats = (clone $baseQuery)
+            ->where('status', 'livrée')
+            ->selectRaw('SUM(total) as montant_revenu')
+            ->first();
+
         $stats = [
             'countAttente'        => $countMap['attente'],
             'countAttenteAcompte' => $countMap['en_attente_acompte'],
@@ -328,9 +353,10 @@ class OrderController extends Controller
             'countLivraison'      => $countMap['en_livraison'],
             'countLivree'         => $countMap['livrée'],
             'countAnnulee'        => $countMap['annulée'],
-            'total'               => $statsRaw->sum('total'),
-            'montantTotal'        => $statsRaw->sum('montant'),
-            'montantSolde'        => $statsRaw->sum('solde'),
+            'total'               => $statsRaw->sum('total'), //total de toutes les commandes (tous statuts confondus)
+            'montantTotal'        => (float) ($statsNonAnnulee?->montant_total ?? 0), //SANS les annulées
+            'montantSolde'        => (float) ($statsNonAnnulee?->montant_solde ?? 0), //SANS les annulées
+            'montantRevenu'       => (float) ($revenueStats?->montant_revenu ?? 0), //UNIQUEMENT livrées
         ];
 
         // ✅ Réponse Ajax DataTables Server-Side
@@ -338,6 +364,8 @@ class OrderController extends Controller
             $query = (clone $baseQuery)
                 ->orderBy('created_at', 'DESC')
                 ->when($status && $status !== 'all', fn($q) => $q->whereStatus($status));
+            // $query = (clone $baseQuery)
+            //     ->orderBy('created_at', 'DESC');
 
             return DataTables::of($query)
                 ->addIndexColumn() //  ajoute DT_RowIndex
@@ -723,7 +751,16 @@ class OrderController extends Controller
         $sinceId = (int) $request->input('since_id', 0);
 
         $orders_new = Order::with('user')
-            ->whereIn('status', [Order::STATUS_ATTENTE, Order::STATUS_PRECOMMANDE])
+            // ->whereIn('status', [Order::STATUS_ATTENTE, Order::STATUS_PRECOMMANDE])
+            ->where(function ($query) {
+                // Commandes en attente normale : toujours affichées
+                $query->where('status', 'attente')
+                    // Précommandes : uniquement si la date commande est aujourd'hui ou passée
+                    ->orWhere(function ($q) {
+                        $q->where('status', 'precommande')
+                            ->whereDate('date_order', '<=', now()->format('Y-m-d'));
+                    });
+            })
             ->where('source', 'web')
             ->where('payment_status', 'completed')
             ->when($sinceId > 0, fn($q) => $q->where('id', '>', $sinceId))

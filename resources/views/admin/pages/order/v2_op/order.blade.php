@@ -73,10 +73,6 @@
             background: linear-gradient(135deg, #6a3093, #a044ff);
         }
 
-        .bg-revenu {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-        }
-
         /* ─── Filter bar ──────────────────────────────────────────── */
         .filter-bar {
             background: #f8f9fc;
@@ -360,7 +356,6 @@
                         $countAnnulee = $stats['countAnnulee'];
                         $montantTotal = $stats['montantTotal'];
                         $montantSolde = $stats['montantSolde'];
-                        $montantRevenu = $stats['montantRevenu'];
                     @endphp
                     <div class="card-body pb-0 pt-3">
                         <div class="row" style="row-gap:10px">
@@ -428,22 +423,151 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6 col-sm-4 col-md-3 col-xl-2">
-                                <div class="stat-card bg-revenu">
-                                    <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
-                                    <div>
-                                        <div class="stat-label">Revenu</div>
-                                        <div class="stat-value" style="font-size:.9rem">
-                                            {{ number_format($montantRevenu, 0, ',', ' ') }}</div>
-                                        <div class="stat-sub">Commandes livrées
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
-                  @include('admin.pages.order.partials.filter_data')
+                    {{-- ===== FILTRE BAR ===== --}}
+                    <div class="filter-bar">
+                        {{-- @php
+                            $currentStatus = request('status', 'all');
+                            $currentSource = request('source', '');
+                            $statusCountMap = [
+                                'all' => count($orders),
+                                'attente' => $countAttente,
+                                'en_attente_acompte' => $countAttenteAcompte,
+                                'precommande' => $countPrecommande,
+                                'confirmée' => $countConfirmee,
+                                'en_cuisine' => $countCuisine,
+                                'cuisine_terminee' => $countCuisineTm,
+                                'en_livraison' => $countLivraison,
+                                'livrée' => $countLivree,
+                                'annulée' => $countAnnulee,
+                            ];
+                            $pillList = [
+                                'all' => ['label' => 'Tous', 'cls' => 'pill-all'],
+                                'attente' => ['label' => 'Attente', 'cls' => 'pill-attente'],
+                                'en_attente_acompte' => ['label' => 'Att. acompte', 'cls' => 'pill-acompte'],
+                                'precommande' => ['label' => 'Précommande', 'cls' => 'pill-precommande'],
+                                'confirmée' => ['label' => 'Confirmée', 'cls' => 'pill-confirmee'],
+                                'en_cuisine' => ['label' => 'En cuisine', 'cls' => 'pill-cuisine'],
+                                'cuisine_terminee' => ['label' => 'Cuisine termin.', 'cls' => 'pill-cuisinetm'],
+                                'en_livraison' => ['label' => 'En livraison', 'cls' => 'pill-livraison'],
+                                'livrée' => ['label' => 'Livrée', 'cls' => 'pill-livree'],
+                                'annulée' => ['label' => 'Annulée', 'cls' => 'pill-annulee'],
+                            ];
+                        @endphp --}}
+
+                        {{--
+                            ===== FILTRE STATUTS AVEC YAJRA DATATABLE =====
+                         --}}
+                        @php
+                            $currentStatus = request('status', 'all');
+                            $currentSource = request('source', '');
+                            $statusCountMap = array_merge(['all' => $stats['total']], $countMap);
+                            $pillList = [
+                                'all' => ['label' => 'Tous', 'cls' => 'pill-all'],
+                                'attente' => ['label' => 'Attente', 'cls' => 'pill-attente'],
+                                'en_attente_acompte' => ['label' => 'Att. acompte', 'cls' => 'pill-acompte'],
+                                'precommande' => ['label' => 'Précommande', 'cls' => 'pill-precommande'],
+                                'confirmée' => ['label' => 'Confirmée', 'cls' => 'pill-confirmee'],
+                                'en_cuisine' => ['label' => 'En cuisine', 'cls' => 'pill-cuisine'],
+                                'cuisine_terminee' => ['label' => 'Cuisine termin.', 'cls' => 'pill-cuisinetm'],
+                                'en_livraison' => ['label' => 'En livraison', 'cls' => 'pill-livraison'],
+                                'livrée' => ['label' => 'Livrée', 'cls' => 'pill-livree'],
+                                'annulée' => ['label' => 'Annulée', 'cls' => 'pill-annulee'],
+                            ];
+                        @endphp
+
+                         {{-- Provenance + dates sur la même ligne --}}
+                        <div class="d-flex flex-wrap align-items-end mb-4" style="gap:16px">
+                            <div style="flex:1;min-width:180px">
+                                <div class="filter-section-label"><i class="fas fa-globe mr-1"></i>Provenance</div>
+                                <div class="d-flex flex-wrap" style="gap:5px">
+                                    <a href="{{ route('order.index') }}?status={{ $currentStatus }}&date_debut={{ $dateDebut }}&date_fin={{ $dateFin }}"
+                                        class="status-pill pill-all {{ !$currentSource ? 'active' : '' }}">Toutes</a>
+                                    @foreach ($sources as $srcKey => $src)
+                                        <a href="{{ route('order.index') }}?status={{ $currentStatus }}&date_debut={{ $dateDebut }}&date_fin={{ $dateFin }}&source={{ $srcKey }}"
+                                            class="status-pill pill-confirmee {{ $currentSource == $srcKey ? 'active' : '' }}">
+                                            <i class="fab {{ $src['icon'] }}"></i> {{ $src['label'] }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        {{-- Pills statut avec compteur --}}
+                        <div class="mb-3">
+                            <div class="filter-section-label"><i class="fas fa-filter mr-1"></i>Statut</div>
+                            <div class="d-flex flex-wrap" style="gap:6px">
+                                @foreach ($pillList as $val => $opt)
+                                    <a href="{{ route('order.index') }}?status={{ $val }}&date_debut={{ $dateDebut }}&date_fin={{ $dateFin }}&source={{ $currentSource }}"
+                                        class="status-pill {{ $opt['cls'] }} {{ $currentStatus == $val ? 'active' : '' }}">
+                                        {{ $opt['label'] }}
+                                        <span class="pill-count">{{ $statusCountMap[$val] ?? 0 }}</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+
+                       
+
+                        <form action="{{ route('order.index') }}" method="get" class="mt-3">
+                            <input type="hidden" name="status" value="{{ $currentStatus }}">
+                            <input type="hidden" name="source" value="{{ $currentSource }}">
+
+                            <div class="d-flex align-items-end flex-wrap" style="gap: 8px;">
+
+                                {{-- Toggle toutes les dates --}}
+                                <div class="d-flex flex-column justify-content-end" style="margin-bottom: 1px;">
+                                    <div class="filter-section-label">Période</div>
+                                    <div class="d-flex" style="gap: 4px;">
+                                        <a href="{{ route('order.index', ['status' => $currentStatus, 'source' => $currentSource]) }}"
+                                            class="btn btn-sm {{ !$allDates ? 'btn-dark' : 'btn-outline-secondary' }}">
+                                            Ce mois
+                                        </a>
+                                        <a href="{{ route('order.index', ['status' => $currentStatus, 'source' => $currentSource, 'all_dates' => 1]) }}"
+                                            class="btn btn-sm {{ $allDates ? 'btn-dark' : 'btn-outline-secondary' }}">
+                                            Toutes
+                                        </a>
+                                    </div>
+                                </div>
+
+                                {{-- Dates (masquées si all_dates actif) --}}
+                                @if (!$allDates)
+                                    <div>
+                                        <div class="filter-section-label">Du</div>
+                                        <input type="date" name="date_debut" class="form-control form-control-sm"
+                                            value="{{ $dateDebut }}" style="width: 138px">
+                                    </div>
+                                    <div>
+                                        <div class="filter-section-label">Au</div>
+                                        <input type="date" name="date_fin" class="form-control form-control-sm"
+                                            value="{{ $dateFin }}" style="width: 138px">
+                                    </div>
+
+                                    {{-- Boutons submit --}}
+                                    <div class="d-flex" style="gap: 4px; margin-bottom: 1px;">
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                        <a href="{{ route('order.index') }}" class="btn btn-sm btn-outline-secondary"
+                                            title="Réinitialiser">
+                                            <i class="fa fa-undo"></i>
+                                        </a>
+                                    </div>
+                                @else
+                                    {{-- Juste le bouton reset quand toutes les dates --}}
+                                    <div style="margin-bottom: 1px;">
+                                        <a href="{{ route('order.index') }}" class="btn btn-sm btn-outline-secondary"
+                                            title="Réinitialiser">
+                                            <i class="fa fa-undo"></i>
+                                        </a>
+                                    </div>
+                                @endif
+
+                            </div>
+                        </form>
+                    </div>
+
                     @include('admin.components.validationMessage')
 
                     <div class="card-body">
@@ -1201,6 +1325,7 @@
 
     <script>
         $(document).ready(function() {
+
             var params = new URLSearchParams(window.location.search);
             var ajaxUrl = "{{ route('order.index') }}";
             // ✅ Dates par défaut injectées par Blade si absentes de l'URL

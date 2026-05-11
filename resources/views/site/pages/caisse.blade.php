@@ -627,7 +627,8 @@
             //si mode_livraison == yango
             if (mode_livraison == 'yango') {
                 $('#address_yango').show(200)
-                $('.delivery_price').html('les frais sont à votre charge').css('color', 'red').css('font-weight', 'bold');
+                $('.delivery_price').html('les frais sont à votre charge').css('color', 'red').css('font-weight',
+                    'bold');
                 $('.total_order').html(parseInt(subTotal).toLocaleString() + ' FCFA');
                 $('.delivery_name').html('')
                 $('._delivery_price').show()
@@ -668,6 +669,162 @@
         $('#address').prop('required', false)
 
 
+
+
+        //cacher le champs date de precommande par defaut
+        $("#date_precommande").hide();
+
+        // type de commande  ...precommande ou commande normale
+        //si le client choisit precommande on affiche le champs date de precommande sinon on cache le champs
+        //recuperation des valeurs selectionnée
+        $("input[name=type_commande]").on("click", function() {
+            var typeCmd = $('input[name="type_commande"]:checked').val();
+            type_cmd = typeCmd
+
+            if (typeCmd == 'cmd_precommande') {
+                $("#date_precommande").show();
+                // $("#date_precommande").val('');
+
+            } else {
+                type_cmd = 'cmd_normal'
+                $("#date_precommande").hide();
+                $("#date_precommande").val('');
+                let dt = new Date();
+                var hours = dt.getHours();
+                var minute = dt.getMinutes();
+
+                if (hours >= 17 || hours < 8) {
+                    // Après 17h ou avant 8h → livraison lendemain 10h30
+                    dt.setDate(dt.getDate() + 1);
+                    dt.setHours(10, 30, 0, 0);
+                    var dateStr = dt.toISOString().split('T')[0] + ' 10:30:00';
+                    $('#date_livraison').html('Livraison prévue le ' + dt.toLocaleDateString('fr-FR') + ' à 10h30');
+                    $('#date_livraison').data('date', dateStr);
+                    dlp = dt.toLocaleDateString('fr-FR');
+
+                } else {
+                    // Entre 8h et 17h → heure actuelle + 1h30
+                    dt.setMinutes(dt.getMinutes() + 90);
+                    var dateStr = dt.toISOString().replace('T', ' ').split('.')[0];
+                    $('#date_livraison').html('Livraison prévue le ' + dt.toLocaleString('fr-FR'));
+                    $('#date_livraison').data('date', dateStr);
+                    dlp = dt.toLocaleDateString('fr-FR');
+                }
+            }
+
+        })
+
+
+
+        //datepicker
+
+
+        $(".datetimepicker").each(function() {
+
+            let dt = new Date();
+            $(this).datetimepicker({
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                dateFormat: 'yy-mm-dd',
+
+                minDate: dt.setDate(dt.getDate() + 1),
+                //   maxDate : +3,
+                // minTime: '10:00',
+                // maxTime: '18:00',
+                allowTimes: [
+
+                    '10:30', '12:00', '13:30', '15:00', '16:30', '17:30',
+                ],
+
+            });
+
+        });
+
+        //Recuperer l'heure de commande et afficher la date de livraison prevue en fonction de l'heure de commande
+        //si l'heure de commande est superieur à 17h a la date du jour , la date de livraison prevue sera le lendemain à 10h30m
+
+        // let dt = new Date();
+        // var hours = dt.getHours();
+        // var minute = dt.getMinutes();
+
+        // var tomorrow = dt + 1
+        // if (hours >= 17 || hours <= 9) {
+        //     dt.setDate(dt.getDate() + 1);
+        //     var dateStr = dt.toISOString().split('T')[0] + ' 10:30:00';
+        //     $('#date_livraison').html('Livraison prévu le ' + dt.toLocaleDateString() + ' à 10h30m');
+        //     $('#date_livraison').data('date', dateStr);
+        //     dlp = dt.toLocaleDateString()
+
+        // } else if (hours >= 8) {
+        //     dt.setMinutes(dt.getMinutes() + 90);
+        //     var dateStr = dt.toISOString().replace('T', ' ').split('.')[0];
+        //     $('#date_livraison').html(dt.toLocaleString("fr-FR"))
+        //     $('#date_livraison').data('date', dateStr);
+        //     dlp = dt.toLocaleDateString()
+
+        // }
+
+
+        let dt = new Date();
+        var hours = dt.getHours();
+
+        if (hours >= 17 || hours < 8) {
+            // Après 17h ou avant 8h → livraison lendemain 10h30
+            dt.setDate(dt.getDate() + 1);
+            dt.setHours(10, 30, 0, 0);
+            var dateStr = dt.toISOString().split('T')[0] + ' 10:30:00';
+            $('#date_livraison').html('Livraison prévue le ' + dt.toLocaleDateString('fr-FR') + ' à 10h30');
+            $('#date_livraison').data('date', dateStr);
+            dlp = dt.toLocaleDateString('fr-FR');
+
+        } else {
+            // Entre 8h et 17h → heure actuelle + 1h30
+            dt.setMinutes(dt.getMinutes() + 90);
+            var dateStr = dt.toISOString().replace('T', ' ').split('.')[0];
+            $('#date_livraison').html('Livraison prévue le ' + dt.toLocaleString('fr-FR'));
+            $('#date_livraison').data('date', dateStr);
+            dlp = dt.toLocaleDateString('fr-FR');
+        }
+
+
+
+
+        //change date de livraison prevue en fonction de la date precommande choisie
+
+        $('#date_precommande').change(function(e) {
+            e.preventDefault();
+            var date_precommande = $(this).val();
+            // var newDateTime = moment(date_precommande, "YYYY/MM/DD hh:mm:ss")
+            //     .add(10, 'minutes')
+            //     .format('YYYY-MM-DD hh:mm:ss');
+
+            let dt = new Date(date_precommande);
+
+            var hours = dt.getHours();
+            var minute = dt.getMinutes();
+            var days = dt.getDate();
+            var month = dt.getMonth();
+            var fullYear = dt.getFullYear();
+
+            if (hours > 17 || hours <= 9) {
+                // dt.setMinutes(dt.getMinutes() + 1080);
+                var dateStr = dt.toISOString().split('T')[0] + ' 10:30:00';
+                $('#date_livraison').html('Livraison prévu le ' + dt.toLocaleDateString() +
+                    ' à 10h30m');
+                $('#date_livraison').data('date', dateStr);
+            } else if (hours >= 8) {
+                // dt.setMinutes(dt.getMinutes() + 90);
+                var dateStr = dt.toISOString().replace('T', ' ').split('.')[0];
+                $('#date_livraison').html(dt.toLocaleString("fr-FR"))
+                $('#date_livraison').data('date', dateStr);
+            }
+
+        });
+
+
         //Enregistrer les informations de la commande 
         // $('.spinner-grow').hide();
 
@@ -680,6 +837,9 @@
             var address = $('#address').val() // precision du lieu exact de livraison 
             var delivery_mode = $('.delivery_mode').val() // mode de la livraison
             var note = $('#note').val() //commentaire sur le produit du user
+            var date_precommande = $('#date_precommande').val();
+
+
 
 
 
@@ -748,6 +908,22 @@
                     timer: 5000,
                     timerProgressBar: true,
                 });
+            } else if (type_cmd === 'cmd_precommande' && !date_precommande) {
+                $('#date_precommande').prop('required', true)
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    width: '100%',
+                    title: 'Veuillez choisir une date de précommande',
+                    animation: true,
+                    position: 'top-right',
+                    background: '#eb0029',
+                    iconColor: '#fff',
+                    color: '#fff',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                });
             } else {
                 //send data to back
                 $('.btn_loading').show();
@@ -759,12 +935,28 @@
 
                 var total_order = parseFloat(subTotal) + parseFloat(prix_livraison)
                 var type_commande = type_cmd // type de la commande ...precommande , normal
-                var delivery_planned = $('#date_livraison').data('date') || $('#date_livraison').html(); // date de livraison prevue
+                var delivery_planned = $('#date_livraison').data('date') || $('#date_livraison')
+                    .html(); // date de livraison prevue
 
                 // recuperer la remise 
                 var remise = localStorage.getItem('remiseValue') || 0;
                 //recuperer le coupon Id
                 var coupon_id = localStorage.getItem('couponId');
+
+                //date de commande si commande normale on prend la date du jour sinon on prend la date de precommande choisie par le client
+                function formatDateTime(date) {
+                    return date.getFullYear() + '-' +
+                        String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(date.getDate()).padStart(2, '0') + ' ' +
+                        String(date.getHours()).padStart(2, '0') + ':' +
+                        String(date.getMinutes()).padStart(2, '0') + ':' +
+                        String(date.getSeconds()).padStart(2, '0');
+                }
+
+                var date_order = type_commande === 'cmd_precommande' ?
+                    $('#date_livraison')
+                    .html() :
+                    formatDateTime(new Date());
 
                 var data = {
                     subTotal,
@@ -779,7 +971,8 @@
                     delivery_planned,
                     code_promo, // pour chaque produit
                     coupon_id, // Id du code coupon groupe
-                    remise
+                    remise,
+                    date_order
                 }
 
                 $.ajax({
@@ -803,7 +996,8 @@
                                     Swal.showLoading()
                                     const b = Swal.getHtmlContainer().querySelector('b')
                                     timerInterval = setInterval(() => {
-                                        b.textContent = Math.ceil(Swal.getTimerLeft() / 1000)
+                                        b.textContent = Math.ceil(Swal
+                                            .getTimerLeft() / 1000)
                                     }, 100)
                                 },
                                 willClose: () => {
@@ -822,133 +1016,6 @@
 
 
             }
-        });
-
-
-
-        $("#date_precommande").hide();
-
-        // type de commande  ...precommande ou commande normatl
-        //recuperation des valeurs selectionnée
-        $("input[name=type_commande]").on("click", function() {
-            var typeCmd = $('input[name="type_commande"]:checked').val();
-            type_cmd = typeCmd
-
-            if (typeCmd == 'cmd_precommande') {
-                $("#date_precommande").show();
-                // $("#date_precommande").val('');
-
-            } else {
-                type_cmd = 'cmd_normal'
-                $("#date_precommande").hide();
-                $("#date_precommande").val('');
-                let dt = new Date();
-                var hours = dt.getHours();
-                var minute = dt.getMinutes();
-
-                var tomorrow = dt + 1
-                if (hours >= 17 || hours <= 9) {
-                    dt.setDate(dt.getDate() + 1);
-                    var dateStr = dt.toISOString().split('T')[0] + ' 10:30:00';
-                    $('#date_livraison').html('Livraison prévu le ' + dt.toLocaleDateString() + ' à 10h30m');
-                    $('#date_livraison').data('date', dateStr);
-                    dlp = dt.toLocaleDateString()
-                } else if (hours >= 8) {
-                    dt.setMinutes(dt.getMinutes() + 90);
-                    var dateStr = dt.toISOString().replace('T', ' ').split('.')[0];
-                    $('#date_livraison').html(dt.toLocaleString("fr-FR"))
-                    $('#date_livraison').data('date', dateStr);
-                    dlp = dt.toLocaleDateString()
-
-                }
-            }
-
-        })
-
-
-
-        //datepicker
-
-
-        $(".datetimepicker").each(function() {
-
-            let dt = new Date();
-            $(this).datetimepicker({
-                showOtherMonths: true,
-                selectOtherMonths: true,
-                changeMonth: true,
-                changeYear: true,
-                showButtonPanel: true,
-                dateFormat: 'yy-mm-dd',
-
-                minDate: dt.setDate(dt.getDate() + 1),
-                //   maxDate : +3,
-                // minTime: '10:00',
-                // maxTime: '18:00',
-                allowTimes: [
-
-                    '10:30', '12:00', '13:30', '15:00', '16:30', '17:30',
-                ],
-
-            });
-
-        });
-
-        //get date_precommande value
-        //on verifie s'il n'est pas encore 18h
-
-        let dt = new Date();
-        var hours = dt.getHours();
-        var minute = dt.getMinutes();
-
-        var tomorrow = dt + 1
-        if (hours >= 17 || hours <= 9) {
-            dt.setDate(dt.getDate() + 1);
-            var dateStr = dt.toISOString().split('T')[0] + ' 10:30:00';
-            $('#date_livraison').html('Livraison prévu le ' + dt.toLocaleDateString() + ' à 10h30m');
-            $('#date_livraison').data('date', dateStr);
-            dlp = dt.toLocaleDateString()
-
-        } else if (hours >= 8) {
-            dt.setMinutes(dt.getMinutes() + 90);
-            var dateStr = dt.toISOString().replace('T', ' ').split('.')[0];
-            $('#date_livraison').html(dt.toLocaleString("fr-FR"))
-            $('#date_livraison').data('date', dateStr);
-            dlp = dt.toLocaleDateString()
-
-        }
-
-
-
-
-        $('#date_precommande').change(function(e) {
-            e.preventDefault();
-            var date_precommande = $(this).val();
-            // var newDateTime = moment(date_precommande, "YYYY/MM/DD hh:mm:ss")
-            //     .add(10, 'minutes')
-            //     .format('YYYY-MM-DD hh:mm:ss');
-
-            let dt = new Date(date_precommande);
-
-            var hours = dt.getHours();
-            var minute = dt.getMinutes();
-            var days = dt.getDate();
-            var month = dt.getMonth();
-            var fullYear = dt.getFullYear();
-
-            if (hours > 17 || hours <= 9) {
-                // dt.setMinutes(dt.getMinutes() + 1080);
-                var dateStr = dt.toISOString().split('T')[0] + ' 10:30:00';
-                $('#date_livraison').html('Livraison prévu le ' + dt.toLocaleDateString() +
-                    ' à 10h30m');
-                $('#date_livraison').data('date', dateStr);
-            } else if (hours >= 8) {
-                // dt.setMinutes(dt.getMinutes() + 90);
-                var dateStr = dt.toISOString().replace('T', ' ').split('.')[0];
-                $('#date_livraison').html(dt.toLocaleString("fr-FR"))
-                $('#date_livraison').data('date', dateStr);
-            }
-
         });
     </script>
 
