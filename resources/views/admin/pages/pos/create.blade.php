@@ -1002,6 +1002,14 @@
                 if (!paiement)
                     errors.push("Le moyen de paiement est obligatoire pour ce statut.");
             }
+            // ── Vérification delivery_planned obligatoire pour précommande ───────────────
+            const statusVal = document.querySelector('[name="status"]').value;
+            const typeOrderVal = document.querySelector('[name="type_order"]').value;
+            const deliveryPlanned = document.querySelector('[name="delivery_planned"]').value.trim();
+
+            if ((statusVal === 'precommande' || typeOrderVal === 'cmd_precommande') && !deliveryPlanned) {
+                errors.push('La date de livraison prévue est obligatoire pour une précommande.');
+            }
 
             if (errors.length > 0) {
                 Swal.fire({

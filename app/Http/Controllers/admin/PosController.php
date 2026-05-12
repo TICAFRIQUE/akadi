@@ -12,6 +12,7 @@ use App\Models\ProductBase;
 use App\Models\User;
 use App\Services\StockService;
 use App\Services\TicAfriqueService;
+use Carbon\Carbon;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -354,6 +355,7 @@ class PosController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->toArray());
         $status           = $request->input('status', Order::STATUS_ATTENTE);
         $acompteOptionnel = in_array($status, [
             Order::STATUS_ATTENTE,
@@ -571,7 +573,9 @@ class PosController extends Controller
                 'created_by'        => Auth::id(),
                 'note'              => $request->note,
                 'type_order'        => $request->type_order ?? 'normal',
-                'date_order'        => now()->format('Y-m-d'),
+                'date_order' => $request->type_order === 'cmd_precommande' || $request->status === 'precommande'
+                    ? Carbon::parse($request->delivery_planned)->format('Y-m-d')
+                    : now()->format('Y-m-d'),
                 'delivery_planned'  => $request->delivery_planned,
                 'available_product' => 'yes',
                 'signature'         => $signature,
@@ -985,6 +989,9 @@ class PosController extends Controller
                 'payment_method_id' => $request->payment_method_id ?? $order->payment_method_id,
                 'note'              => $request->note,
                 'delivery_planned'  => $request->delivery_planned,
+                // 'date_order' => $request->type_order === 'cmd_precommande' || $request->status === 'precommande'
+                //     ? Carbon::parse($request->delivery_planned)->format('Y-m-d')
+                //     : $order->date_order, // ne pas modifier la date de commande si ce n'est pas une précommande
             ]);
 
             // ── Restaurer le stock depuis les anciens snapshots ───────────────────────
