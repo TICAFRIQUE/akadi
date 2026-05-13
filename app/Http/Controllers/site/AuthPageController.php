@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class AuthPageController extends Controller
 {
@@ -341,6 +342,8 @@ class AuthPageController extends Controller
 
         $url = session('cart') ? 'finaliser-ma-commande' : '/';
 
+        Alert::success('Compte créé avec succès. Bienvenue !');
+
         return redirect()->away($url)->with('success', 'Compte créé avec succès. Bienvenue !');
     }
 
@@ -365,6 +368,7 @@ class AuthPageController extends Controller
             // $url_previous = $request['url_previous'];
 
             if (Auth::attempt($credentials)) {
+                Alert::success('Connexion réussie. Bienvenue !');
                 return redirect()->away($url)->withSuccess('Connexion reussi');
             } else {
                 return redirect()->route('login-form')->withError('Contact ou mot de passe incorrect');
@@ -383,6 +387,7 @@ class AuthPageController extends Controller
     {
         Auth::logout();
         // Session::flush();
+        Alert::success('Déconnexion réussie. À bientôt !');
         return Redirect('/')->withSuccess('deconnexion réussi');
     }
 
