@@ -321,7 +321,7 @@ class AuthPageController extends Controller
         // ── Envoi email de bienvenue ──────────────────────────────────────────────
         if ($user->email) {
             try {
-                SendEmailJob::dispatch(
+                SendEmailJob::dispatchAfterResponse(
                     $user->email,
                     'Bienvenue sur Akadi !',
                     'emails.register-welcome',
@@ -487,7 +487,7 @@ class AuthPageController extends Controller
     // Envoyer l'email via queue
     $url = route('reset.password.get', 'token=' . $token);
 
-    SendEmailJob::dispatch(
+    SendEmailJob::dispatchAfterResponse(
         $request->email,
         'Réinitialisation de votre mot de passe',
         'emails.reset-password',
