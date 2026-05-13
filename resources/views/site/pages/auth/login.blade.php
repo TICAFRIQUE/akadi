@@ -18,6 +18,7 @@
             </div>
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-auto my-3">
+          
             <p class="text-center">Si vous avez un compte connectez-vous avec votre <strong>numéro de téléphone</strong> et <strong>mot de passe</strong></p>
             @include('admin.components.validationMessage')
             <form action="{{ route('login') }}" method="post" class="woocommerce-form-login mb-30">
@@ -34,8 +35,9 @@
                 <input type="text" name="url_previous" value="{{ url()->previous() }}" hidden>
 
                 <div class="form-group text-center">
-                    <button type="submit" class="th-btn rounded-2">Valider  </button> <a href="{{route('forget.password.get')}}">J'ai oublié mon mot de passe</a>
-                    <p class="fs-xs mt-4 mb-0"><a class="text-reset" href="{{ route('register-form') }}">Si vous n'avez pas de
+                    <button type="submit" class="th-btn rounded-2 w-100 mb-3">Valider  </button> 
+                     <a class="mt-2" href="{{route('forget.password.get')}}"> <i class="fas fa-lock-alt"></i> J'ai oublié mon mot de passe</a>
+                    <p class="fs-xs mt-4 mt-0"><a class="text-reset" href="{{ route('register-form') }}">Si vous n'avez pas de
                             compte?
                             <b class="text-danger">Créer un compte </b>
                         </a></p>

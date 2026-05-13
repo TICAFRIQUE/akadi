@@ -31,7 +31,7 @@
                     <label>Email </label>
                     <input type="email" name="email" id="email" class="form-control" required>
                 </div>
-                <button type="submit" class="th-btn rounded-2">Envoyer 
+                <button type="submit" class="th-btn rounded-2 w-100">Envoyer 
                 
                 <div class="spinner-grow text-dark" role="status">
                 <span class="visually-hidden">Loading...</span>

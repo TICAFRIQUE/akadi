@@ -26,17 +26,17 @@
                     <input type="text" name="name" class="form-control" placeholder="Ex: jhonn " required>
                 </div>
                 <div class="form-group">
-                    <label>Telephone </label>
+                    <label>Telephone <span class="text-danger">*</span></label>
                     <input type="number" name="phone" class="form-control" placeholder="Ex: 00000000" required>
                 </div>
                 <div class="form-group">
-                    <label>Email <span class="text-danger">(Facultatif)</span></label>
+                    <label>Email <span class="text-danger">(Facultatif mais recommandé pour la reinitialisation du mot de passe)</span></label>
                     <input type="email" name="email" class="form-control"
                         placeholder="Ex: alex@gmail.com">
                 </div>
                 <div class="form-group">
-                    <label>Mot de passe</label>
-                    <input type="password" class="form-control" name="password" placeholder="de********">
+                    <label>Mot de passe <span class="text-danger">(8 caractères minimum)*</span></label>
+                    <input type="password" class="form-control" name="password" placeholder="de********" required>
                 </div>
 
                 <input type="text" name="role" value="client" hidden>
@@ -89,13 +89,13 @@
                 <input type="text" name="url_previous" value="{{ url()->previous() }}" hidden>
 
                 <div class="form-group">
-                    <button type="submit" class="th-btn rounded-2">Valider
+                    <button type="submit" class="th-btn rounded-2 w-100">Valider
 
                         <div class="spinner-grow text-white" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                     </button>
-                    <p class="fs-xs mt-2 mb-0"><a class="text-reset" href="{{ route('login-form') }}">Vous avez un compte?
+                    <p class="fs-xs mt-2 mb-0 text-center"><a class="text-reset" href="{{ route('login-form') }}">Vous avez un compte?
                             <b class="text-danger">Connectez vous </b>
                         </a></p>
                 </div>
