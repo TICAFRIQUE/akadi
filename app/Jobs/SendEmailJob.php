@@ -37,45 +37,85 @@ class SendEmailJob implements ShouldQueue
     /**
      * Execute the job.
      */
+    // public function handle(): void
+    // {
+    //     try {
+    //         $mail = new PHPMailer(true);
+
+    //         // Email SMTP Settings
+    //         $mail->SMTPDebug = 0;
+    //         $mail->isSMTP();
+    //         $mail->Host = 'mail.akadi.ci';
+    //         $mail->SMTPAuth = true;
+    //         $mail->Username = 'info@akadi.ci';
+    //         $mail->Password = 'S$UBfu.8s(#z';
+    //         $mail->SMTPSecure = 'ssl';
+    //         $mail->Port = 465;
+
+    //         $mail->setFrom($this->from, $this->fromName);
+    //         $mail->addAddress($this->to);
+
+    //         $mail->isHTML(true);
+    //         $mail->CharSet = 'UTF-8';
+    //         $mail->Subject = $this->subject;
+    //         $mail->Body = view($this->view, $this->data)->render();
+
+    //         $mail->send();
+
+    //         Log::info('Email envoyé avec succès via queue', [
+    //             'to' => $this->to,
+    //             'subject' => $this->subject
+    //         ]);
+
+    //     } catch (\Exception $e) {
+    //         Log::error('Erreur envoi email via queue: ' . $e->getMessage(), [
+    //             'to' => $this->to,
+    //             'subject' => $this->subject
+    //         ]);
+
+    //         // Relancer le job en cas d'échec (max 3 tentatives)
+    //         if ($this->attempts() < 3) {
+    //             $this->release(60); // Réessayer après 60 secondes
+    //         }
+    //     }
+    // }
+
+
     public function handle(): void
     {
         try {
             $mail = new PHPMailer(true);
 
-            // Email SMTP Settings
-            $mail->SMTPDebug = 0;
+            $mail->SMTPDebug  = 0;
             $mail->isSMTP();
-            $mail->Host = 'mail.akadi.ci';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'info@akadi.ci';
-            $mail->Password = 'S$UBfu.8s(#z';
-            $mail->SMTPSecure = 'ssl';
-            $mail->Port = 465;
+            $mail->Host       = env('MAIL_HOST');
+            $mail->SMTPAuth   = true;
+            $mail->Username   = env('MAIL_USERNAME');
+            $mail->Password   = env('MAIL_PASSWORD');
+            $mail->SMTPSecure = env('MAIL_ENCRYPTION', 'ssl');
+            $mail->Port       = (int) env('MAIL_PORT', 465);
+            $mail->CharSet    = 'UTF-8';
 
             $mail->setFrom($this->from, $this->fromName);
             $mail->addAddress($this->to);
-
             $mail->isHTML(true);
-            $mail->CharSet = 'UTF-8';
             $mail->Subject = $this->subject;
-            $mail->Body = view($this->view, $this->data)->render();
+            $mail->Body    = view($this->view, $this->data)->render();
 
             $mail->send();
 
             Log::info('Email envoyé avec succès via queue', [
-                'to' => $this->to,
-                'subject' => $this->subject
+                'to'      => $this->to,
+                'subject' => $this->subject,
             ]);
-
         } catch (\Exception $e) {
-            Log::error('Erreur envoi email via queue: ' . $e->getMessage(), [
-                'to' => $this->to,
-                'subject' => $this->subject
+            Log::error('Erreur envoi email via queue : ' . $e->getMessage(), [
+                'to'      => $this->to,
+                'subject' => $this->subject,
             ]);
 
-            // Relancer le job en cas d'échec (max 3 tentatives)
             if ($this->attempts() < 3) {
-                $this->release(60); // Réessayer après 60 secondes
+                $this->release(60);
             }
         }
     }

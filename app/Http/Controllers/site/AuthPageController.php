@@ -2,199 +2,346 @@
 
 namespace App\Http\Controllers\site;
 
-use Carbon\Carbon;
-use App\Models\User;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailJob;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use PHPMailer\PHPMailer\PHPMailer;
+use Illuminate\Support\Str;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class AuthPageController extends Controller
 {
     //
+    // public function register(Request $request)
+    // {
+    //     if (request()->method() == 'GET') {
+    //         return view('site.pages.auth.register');
+    //     } elseif (request()->method() == 'POST') {
+    //         // dd($request->all());
+
+    //         //on verifie si le nouvel utilisateur est déja dans la BD à partir du phone
+    //         $user_verify_phone = User::wherePhone($request->filled('phone'))->first();
+    //         $user_verify_email = User::whereEmail($request->filled('email'))->first();
+    //         if ($user_verify_phone) {
+    //             return back()->withError('Ce numéro de téléphone est déjà associé à un compte, veuillez en utiliser un autre.');
+    //         }
+
+    //         if (!empty($request->email) && $user_verify_email) {
+    //             return back()->withError('Cet email est déjà associé à un compte, veuillez en utiliser un autre.');
+    //         } else {
+    //             $request->validate([
+    //                 'name' => 'required',
+    //                 'phone' => 'required|unique:users',
+    //                 'email' => 'nullable|unique:users',
+    //                 'password' => 'required',
+    //             ]);
+
+
+    //             $date_anniv = '';
+    //             if ($request->jour && $request->mois) {
+    //                 $date_anniv = $request->jour . '-' . $request->mois; //date anniversaire
+
+    //             } else {
+    //                 $date_anniv = '';
+    //             }
+
+
+    //             $user = User::firstOrCreate([
+    //                 'name' => $request['name'],
+    //                 'phone' => $request['phone'],
+    //                 'email' => $request->email,
+    //                 'date_anniversaire' => $date_anniv,
+    //                 'role' => 'client',
+    //                 'password' => Hash::make($request['password']),
+    //             ]);
+
+    //             if ($user) {
+    //                 $user->assignRole('client');
+    //             }
+
+
+
+    //             // en envoi email si le user a renseigné son email
+    //             // if ($request->email) {
+    //             //     $data = [
+    //             //         "email" => $request['email'],
+    //             //         "pwd" => $request['password'],
+    //             //     ];
+
+    //             //     //new send mail with phpMailer
+    //             //     $mail = new PHPMailer(true);
+    //             //     // require base_path("vendor/autoload.php");
+
+    //             //     /* Email SMTP Settings */
+    //             //     $mail->SMTPDebug = 0;
+    //             //     $mail->isSMTP();
+    //             //     $mail->Host = 'mail.akadi.ci';
+    //             //     $mail->SMTPAuth = true;
+    //             //     $mail->Username = 'info@akadi.ci';
+    //             //     $mail->Password = 'S$UBfu.8s(#z';
+    //             //     $mail->SMTPSecure = 'ssl';
+    //             //     $mail->Port = 465;
+
+    //             //     $mail->setFrom('info@akadi.ci', 'Akadi');
+    //             //     $mail->addAddress($request['email'], $request['name']);
+    //             //     $mail->isHTML(true);
+    //             //     $mail->Subject = 'Bienvenue sur Akadi';
+    //             //     $mail->Body = view('site.pages.auth.email', compact('data'));
+    //             //     $mail->send();
+    //             // }
+
+
+
+
+
+    //             //                 //send message after register
+    //             //                 $data = [
+    //             //                     'imagePath' => asset('site/assets/img/custom/AKADI.png'),
+    //             //                 ];
+    //             //                 //new send mail with phpMailer
+    //             //                 $mail = new PHPMailer(true);
+    //             //                 // require base_path("vendor/autoload.php");
+
+    //             //                 /* Email SMTP Settings */
+    //             //                 $mail->SMTPDebug = 0;
+    //             //                 $mail->isSMTP();
+    //             //                 $mail->Host = 'mail.akadi.ci';
+    //             //                 $mail->SMTPAuth = true;
+    //             //                 $mail->Username = 'info@akadi.ci';
+    //             //                 $mail->Password = 'S$UBfu.8s(#z';
+    //             //                 $mail->SMTPSecure = 'ssl';
+    //             //                 $mail->Port = 465;
+
+    //             //                 $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+    //             //                 $mail->addAddress($user->email);
+
+    //             //                 $mail->isHTML(true);
+
+
+    //             //                 $mail->Subject = 'Création de compte';
+    //             //                 $mail->Body =
+    //             //                     '<p style="text-align: center;>  <img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80">
+
+    //             // </p>
+
+    //             // <p style="text-align: center;">Hello, ' . $user->name . ' </p>
+    //             // <p style="text-align: center;">Votre compte à été crée avec success</p>
+    //             // <p style="text-align: center;">Merci pour votre confiance , <a href="http://Akadi.ci" target="_blank" rel="noopener noreferrer">www.akadi.ci</a></p>
+    //             //             ';
+    //             //                 $mail->send();
+
+
+
+    //             if ($user->email) {
+    //                 try {
+    //                     $logo = asset('site/assets/img/custom/AKADI.png');
+
+    //                     $mail = new PHPMailer(true);
+
+    //                     // Configuration SMTP
+    //                     $mail->isSMTP();
+    //                     $mail->Host       = 'mail.akadi.ci';
+    //                     $mail->SMTPAuth   = true;
+    //                     $mail->Username   = 'info@akadi.ci';
+    //                     $mail->Password   = 'S$UBfu.8s(#z'; // 🔐 à stocker dans .env si possible
+    //                     $mail->SMTPSecure = 'ssl';
+    //                     $mail->Port       = 465;
+
+    //                     // Expéditeur et destinataire
+    //                     $mail->setFrom('info@akadi.ci', 'Akadi');
+    //                     $mail->addAddress($user->email);
+
+    //                     // Contenu HTML
+    //                     $mail->isHTML(true);
+    //                     $mail->Subject = 'Création de compte';
+
+    //                     $mail->Body = <<<HTML
+    //                         <div style="text-align: center;">
+    //                             <img src="{$logo}" alt="Akadi logo" width="80">
+    //                             <p>Hello, {$user->name}</p>
+    //                             <p>Votre compte a été créé avec succès.</p>
+    //                             <p>Merci pour votre confiance, <a href="http://akadi.ci" target="_blank">www.akadi.ci</a></p>
+    //                         </div>
+    //                     HTML;
+
+    //                     $mail->send();
+    //                 } catch (Exception $e) {
+    //                     // Log ou gestion d’erreur propre
+    //                     logger()->error("Erreur envoi email : " . $mail->ErrorInfo);
+    //                 }
+    //             }
+
+
+
+
+    //             //redirection apres connexion
+    //             if (session('cart')) {
+    //                 $url = 'finaliser-ma-commande';  // si le panier n'est pas vide on redirige vers la page checkout
+    //             } else {
+    //                 $url = '/';   // sinon on redirige vers l'accueil
+    //             }
+
+    //             // $url_previous = $request['url_previous'];
+
+    //             Auth::login($user);
+
+    //             return redirect()->away($url)->with([
+    //                 'success' => "Connexion réussie",
+    //             ]);
+    //         }
+    //     }
+    // }
+
+    // public function register(Request $request)
+    // {
+    //     if ($request->method() === 'GET') {
+    //         return view('site.pages.auth.register');
+    //     }
+
+    //     // Vérification manuelle doublons
+    //     $user_verify_phone = User::wherePhone($request->phone)->first();
+    //     $user_verify_email = $request->email ? User::whereEmail($request->email)->first() : null;
+
+    //     if ($user_verify_phone) {
+    //         return back()->withError('Ce numéro de téléphone est déjà associé à un compte, veuillez en utiliser un autre.');
+    //     }
+
+    //     if ($user_verify_email) {
+    //         return back()->withError('Cet email est déjà associé à un compte, veuillez en utiliser un autre.');
+    //     }
+
+    //     $request->validate([
+    //         'name'     => 'required',
+    //         'phone'    => 'required|unique:users',
+    //         'email'    => 'nullable|unique:users',
+    //         'password' => 'required',
+    //     ]);
+
+    //     $date_anniv = ($request->jour && $request->mois)
+    //         ? $request->jour . '-' . $request->mois
+    //         : '';
+
+    //     $user = User::create([
+    //         'name'               => $request->name,
+    //         'phone'              => $request->phone,
+    //         'email'              => $request->email,
+    //         'date_anniversaire'  => $date_anniv,
+    //         'role'               => 'client',
+    //         'password'           => Hash::make($request->password),
+    //     ]);
+
+    //     $user->assignRole('client');
+
+    //     // Envoi email si email renseigné
+    //     if ($user->email) {
+    //         try {
+    //             $logo = asset('site/assets/img/custom/AKADI.png');
+    //             $mail = new PHPMailer(true);
+
+    //             $mail->isSMTP();
+    //             $mail->Host       = 'mail.akadi.ci';
+    //             $mail->SMTPAuth   = true;
+    //             $mail->Username   = 'info@akadi.ci';
+    //             $mail->Password   = 'S$UBfu.8s(#z';
+    //             $mail->SMTPSecure = 'ssl';
+    //             $mail->Port       = 465;
+
+    //             $mail->setFrom('info@akadi.ci', 'Akadi');
+    //             $mail->addAddress($user->email);
+    //             $mail->isHTML(true);
+    //             $mail->Subject = 'Création de compte';
+    //             $mail->Body    = <<<HTML
+    //             <div style="text-align: center;">
+    //                 <img src="{$logo}" alt="Akadi logo" width="80">
+    //                 <p>Hello, {$user->name}</p>
+    //                 <p>Votre compte a été créé avec succès.</p>
+    //                 <p>Merci pour votre confiance, <a href="http://akadi.ci" target="_blank">www.akadi.ci</a></p>
+    //             </div>
+    //         HTML;
+
+    //             $mail->send();
+    //         } catch (Exception $e) {
+    //             logger()->error("Erreur envoi email : " . $mail->ErrorInfo);
+    //         }
+    //     }
+
+    //     // Redirection après inscription
+    //     $url = session('cart') ? 'finaliser-ma-commande' : '/';
+    //     Auth::login($user);
+
+    //     return redirect()->away($url)->with('success', 'Connexion réussie');
+    // }
+
+
+    //code optimisé v2
     public function register(Request $request)
     {
-        if (request()->method() == 'GET') {
+        if ($request->method() === 'GET') {
             return view('site.pages.auth.register');
-        } elseif (request()->method() == 'POST') {
-            // dd($request->all());
+        }
 
-            //on verifie si le nouvel utilisateur est déja dans la BD à partir du phone
-            $user_verify_phone = User::wherePhone($request->filled('phone'))->first();
-            $user_verify_email = User::whereEmail($request->filled('email'))->first();
-            if ($user_verify_phone) {
-                return back()->withError('Ce numéro de téléphone est déjà associé à un compte, veuillez en utiliser un autre.');
-            }
+        // ── Validation unique — pas besoin de vérification manuelle en plus ──────
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'phone'    => 'required|string|unique:users,phone',
+            'email'    => 'nullable|email|unique:users,email',
+            'password' => 'required|string|min:6',
+        ], [
+            'phone.unique'    => 'Ce numéro de téléphone est déjà associé à un compte.',
+            'email.unique'    => 'Cet email est déjà associé à un compte.',
+            'name.required'   => 'Le nom est obligatoire.',
+            'phone.required'  => 'Le téléphone est obligatoire.',
+            'password.required' => 'Le mot de passe est obligatoire.',
+            'password.min'    => 'Le mot de passe doit contenir au moins 6 caractères.',
+        ]);
 
-            if (!empty($request->email) && $user_verify_email) {
-                return back()->withError('Cet email est déjà associé à un compte, veuillez en utiliser un autre.');
-            } else {
-                $request->validate([
-                    'name' => 'required',
-                    'phone' => 'required|unique:users',
-                    'email' => 'nullable|unique:users',
-                    'password' => 'required',
-                ]);
+        // ── Date anniversaire ────────────────────────────────────────────────────
+        $date_anniv = ($request->filled('jour') && $request->filled('mois'))
+            ? $request->jour . '-' . $request->mois
+            : null;
 
+        // ── Création utilisateur ─────────────────────────────────────────────────
+        $user = User::create([
+            'name'              => $request->name,
+            'phone'             => $request->phone,
+            'email'             => $request->email,
+            'date_anniversaire' => $date_anniv,
+            'role'              => 'client',
+            'password'          => Hash::make($request->password),
+        ]);
 
-                $date_anniv = '';
-                if ($request->jour && $request->mois) {
-                    $date_anniv = $request->jour . '-' . $request->mois; //date anniversaire
+        $user->assignRole('client');
 
-                } else {
-                    $date_anniv = '';
-                }
-
-
-                $user = User::firstOrCreate([
-                    'name' => $request['name'],
-                    'phone' => $request['phone'],
-                    'email' => $request->email,
-                    'date_anniversaire' => $date_anniv,
-                    'role' => 'client',
-                    'password' => Hash::make($request['password']),
-                ]);
-
-                if ($user) {
-                    $user->assignRole('client');
-                }
-
-
-
-                // en envoi email si le user a renseigné son email
-                // if ($request->email) {
-                //     $data = [
-                //         "email" => $request['email'],
-                //         "pwd" => $request['password'],
-                //     ];
-
-                //     //new send mail with phpMailer
-                //     $mail = new PHPMailer(true);
-                //     // require base_path("vendor/autoload.php");
-
-                //     /* Email SMTP Settings */
-                //     $mail->SMTPDebug = 0;
-                //     $mail->isSMTP();
-                //     $mail->Host = 'mail.akadi.ci';
-                //     $mail->SMTPAuth = true;
-                //     $mail->Username = 'info@akadi.ci';
-                //     $mail->Password = 'S$UBfu.8s(#z';
-                //     $mail->SMTPSecure = 'ssl';
-                //     $mail->Port = 465;
-
-                //     $mail->setFrom('info@akadi.ci', 'Akadi');
-                //     $mail->addAddress($request['email'], $request['name']);
-                //     $mail->isHTML(true);
-                //     $mail->Subject = 'Bienvenue sur Akadi';
-                //     $mail->Body = view('site.pages.auth.email', compact('data'));
-                //     $mail->send();
-                // }
-
-
-
-
-
-                //                 //send message after register
-                //                 $data = [
-                //                     'imagePath' => asset('site/assets/img/custom/AKADI.png'),
-                //                 ];
-                //                 //new send mail with phpMailer
-                //                 $mail = new PHPMailer(true);
-                //                 // require base_path("vendor/autoload.php");
-
-                //                 /* Email SMTP Settings */
-                //                 $mail->SMTPDebug = 0;
-                //                 $mail->isSMTP();
-                //                 $mail->Host = 'mail.akadi.ci';
-                //                 $mail->SMTPAuth = true;
-                //                 $mail->Username = 'info@akadi.ci';
-                //                 $mail->Password = 'S$UBfu.8s(#z';
-                //                 $mail->SMTPSecure = 'ssl';
-                //                 $mail->Port = 465;
-
-                //                 $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-                //                 $mail->addAddress($user->email);
-
-                //                 $mail->isHTML(true);
-
-
-                //                 $mail->Subject = 'Création de compte';
-                //                 $mail->Body =
-                //                     '<p style="text-align: center;>  <img src="' . $data['imagePath'] . '" alt="Akadi logo" width="80">
-
-                // </p>
-
-                // <p style="text-align: center;">Hello, ' . $user->name . ' </p>
-                // <p style="text-align: center;">Votre compte à été crée avec success</p>
-                // <p style="text-align: center;">Merci pour votre confiance , <a href="http://Akadi.ci" target="_blank" rel="noopener noreferrer">www.akadi.ci</a></p>
-                //             ';
-                //                 $mail->send();
-
-
-
-                if ($user->email) {
-                    try {
-                        $logo = asset('site/assets/img/custom/AKADI.png');
-
-                        $mail = new PHPMailer(true);
-
-                        // Configuration SMTP
-                        $mail->isSMTP();
-                        $mail->Host       = 'mail.akadi.ci';
-                        $mail->SMTPAuth   = true;
-                        $mail->Username   = 'info@akadi.ci';
-                        $mail->Password   = 'S$UBfu.8s(#z'; // 🔐 à stocker dans .env si possible
-                        $mail->SMTPSecure = 'ssl';
-                        $mail->Port       = 465;
-
-                        // Expéditeur et destinataire
-                        $mail->setFrom('info@akadi.ci', 'Akadi');
-                        $mail->addAddress($user->email);
-
-                        // Contenu HTML
-                        $mail->isHTML(true);
-                        $mail->Subject = 'Création de compte';
-
-                        $mail->Body = <<<HTML
-                            <div style="text-align: center;">
-                                <img src="{$logo}" alt="Akadi logo" width="80">
-                                <p>Hello, {$user->name}</p>
-                                <p>Votre compte a été créé avec succès.</p>
-                                <p>Merci pour votre confiance, <a href="http://akadi.ci" target="_blank">www.akadi.ci</a></p>
-                            </div>
-                        HTML;
-
-                        $mail->send();
-                    } catch (Exception $e) {
-                        // Log ou gestion d’erreur propre
-                        logger()->error("Erreur envoi email : " . $mail->ErrorInfo);
-                    }
-                }
-
-
-
-
-                //redirection apres connexion
-                if (session('cart')) {
-                    $url = 'finaliser-ma-commande';  // si le panier n'est pas vide on redirige vers la page checkout
-                } else {
-                    $url = '/';   // sinon on redirige vers l'accueil
-                }
-
-                // $url_previous = $request['url_previous'];
-
-                Auth::login($user);
-
-                return redirect()->away($url)->with([
-                    'success' => "Connexion réussie",
-                ]);
+        // ── Envoi email de bienvenue ──────────────────────────────────────────────
+        if ($user->email) {
+            try {
+                SendEmailJob::dispatch(
+                    $user->email,
+                    'Bienvenue sur Akadi !',
+                    'emails.register-welcome',
+                    [
+                        'logo'     => asset('site/assets/img/custom/AKADI.png'),
+                        'userName' => $user->name,
+                    ],
+                    env('MAIL_FROM_ADDRESS'),
+                    env('MAIL_FROM_NAME')
+                );
+            } catch (\Exception $e) {
+                logger()->error('Erreur dispatch email inscription : ' . $e->getMessage());
             }
         }
+        // ── Connexion et redirection ──────────────────────────────────────────────
+        Auth::login($user);
+
+        $url = session('cart') ? 'finaliser-ma-commande' : '/';
+
+        return redirect()->away($url)->with('success', 'Compte créé avec succès. Bienvenue !');
     }
 
     public function login(Request $request)
@@ -250,70 +397,107 @@ class AuthPageController extends Controller
     }
 
     //send  mail with link reset password
-    public function submitForgetPasswordForm(Request $request)
-    {
+    // public function submitForgetPasswordForm(Request $request)
+    // {
 
-        $mail_verify = User::whereEmail($request['email'])
-            ->first();
-        if (!$mail_verify) {
-            return back()->withError('Ce email n\'existe pas');
-        } else {
-            $request->validate([
-                'email' => 'required|email|exists:users',
-            ]);
+    //     $mail_verify = User::whereEmail($request['email'])
+    //         ->first();
+    //     if (!$mail_verify) {
+    //         return back()->withError('Ce email n\'existe pas');
+    //     } else {
+    //         $request->validate([
+    //             'email' => 'required|email|exists:users',
+    //         ]);
 
-            DB::table('password_reset_tokens')->whereEmail($request['email'])->delete();
+    //         DB::table('password_reset_tokens')->whereEmail($request['email'])->delete();
 
-            $token = Str::random(64);
+    //         $token = Str::random(64);
 
-            DB::table('password_reset_tokens')->insert([
-                'email' => $request->email,
-                'token' => $token,
-                'created_at' => Carbon::now()
-            ]);
+    //         DB::table('password_reset_tokens')->insert([
+    //             'email' => $request->email,
+    //             'token' => $token,
+    //             'created_at' => Carbon::now()
+    //         ]);
 
-            ###################   EMAIL SEND ###################
-
-
-            $url = route('reset.password.get', 'token=' . $token);
-
-            //new send mail with phpMailer
-            $mail = new PHPMailer(true);
-            // require base_path("vendor/autoload.php");
-
-            /* Email SMTP Settings */
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = 'mail.akadi.ci';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'info@akadi.ci';
-            $mail->Password = 'S$UBfu.8s(#z';
-            $mail->SMTPSecure = 'ssl';
-            $mail->Port = 465;
-
-            $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-            $mail->addAddress($request->email);
-
-            $mail->isHTML(true);
+    //         ###################   EMAIL SEND ###################
 
 
-            $mail->Subject = 'Email de recuperation de mot de passe';
-            $mail->Body = '
+    //         $url = route('reset.password.get', 'token=' . $token);
+
+    //         //new send mail with phpMailer
+    //         $mail = new PHPMailer(true);
+    //         // require base_path("vendor/autoload.php");
+
+    //         /* Email SMTP Settings */
+    //         $mail->SMTPDebug = 0;
+    //         $mail->isSMTP();
+    //         $mail->Host = 'mail.akadi.ci';
+    //         $mail->SMTPAuth = true;
+    //         $mail->Username = 'info@akadi.ci';
+    //         $mail->Password = 'S$UBfu.8s(#z';
+    //         $mail->SMTPSecure = 'ssl';
+    //         $mail->Port = 465;
+
+    //         $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
+    //         $mail->addAddress($request->email);
+
+    //         $mail->isHTML(true);
+
+
+    //         $mail->Subject = 'Email de recuperation de mot de passe';
+    //         $mail->Body = '
             
-            <h1 style="text-align: center; color: #220072;"><strong>Email de recuperation de mot de passe</strong></h1>
-        <p style="text-align: center;">Vous pouvez réinitialiser votre mot de passe à partir du lien ci-dessous .</p>
-        <p style="text-align: center;"><a
-        style="background: rgb(35, 35, 35); color: #ffffff; padding: 10px 50px; border-radius: 3px;"  
-        href="' . $url . '">Cliquez pour réinitialiser</a></p>
-            ';
-            $mail->send();
+    //         <h1 style="text-align: center; color: #220072;"><strong>Email de recuperation de mot de passe</strong></h1>
+    //     <p style="text-align: center;">Vous pouvez réinitialiser votre mot de passe à partir du lien ci-dessous .</p>
+    //     <p style="text-align: center;"><a
+    //     style="background: rgb(35, 35, 35); color: #ffffff; padding: 10px 50px; border-radius: 3px;"  
+    //     href="' . $url . '">Cliquez pour réinitialiser</a></p>
+    //         ';
+    //         $mail->send();
 
 
-            ###################   EMAIL SEND ###################
+    //         ###################   EMAIL SEND ###################
 
-            return back()->with('success', 'Nous avons envoyé par e-mail le lien de réinitialisation de votre mot de passe !');
-        }
-    }
+    //         return back()->with('success', 'Nous avons envoyé par e-mail le lien de réinitialisation de votre mot de passe !');
+    //     }
+    // }
+
+
+    public function submitForgetPasswordForm(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email|exists:users,email',
+    ], [
+        'email.exists'   => "Cet email n'existe pas dans notre base.",
+        'email.required' => "L'email est obligatoire.",
+        'email.email'    => "L'email n'est pas valide.",
+    ]);
+
+    // Supprimer l'ancien token s'il existe
+    DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+    // Créer un nouveau token
+    $token = Str::random(64);
+    DB::table('password_reset_tokens')->insert([
+        'email'      => $request->email,
+        'token'      => $token,
+        'created_at' => Carbon::now(),
+    ]);
+
+    // Envoyer l'email via queue
+    $url = route('reset.password.get', 'token=' . $token);
+
+    SendEmailJob::dispatch(
+        $request->email,
+        'Réinitialisation de votre mot de passe',
+        'emails.reset-password',
+        ['url' => $url],
+        env('MAIL_FROM_ADDRESS'),
+        env('MAIL_FROM_NAME')
+    );
+
+    return back()->with('success', 'Nous avons envoyé le lien de réinitialisation à votre adresse email.');
+}
 
     //form for new password
 
