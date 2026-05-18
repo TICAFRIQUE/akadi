@@ -148,7 +148,7 @@
                                             <th>Nom</th>
                                             <th>Contact</th>
                                             <th>Email</th>
-                                            <th>Date anniversaire</th>
+                                            {{-- <th>Date anniversaire</th> --}}
                                             <th>Type</th>
                                             <th>Total cmdes</th>
                                             <th>Ce mois</th>
@@ -366,12 +366,12 @@
                         data: 'email',
                         name: 'email'
                     },
-                    {
-                        data: 'date_anniversaire_fmt',
-                        name: 'date_anniversaire',
-                        orderable: false,
-                        searchable: false
-                    },
+                    // {
+                    //     data: 'date_anniversaire_fmt',
+                    //     name: 'date_anniversaire',
+                    //     orderable: false,
+                    //     searchable: false
+                    // },
                     {
                         data: 'type_badge',
                         name: 'type_client',

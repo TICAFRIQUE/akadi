@@ -186,11 +186,11 @@ class ClientController extends Controller
                     };
                     return "<span class='badge badge-{$color}'>" . ucfirst($user->type_client ?? 'prospect') . "</span>";
                 })
-                ->addColumn('date_anniversaire_fmt', function ($user) {
-                    if (!$user->date_anniversaire) return '-';
-                    $date = \Carbon\Carbon::parse($user->date_anniversaire . '-' . date('Y'))->locale('fr_FR');
-                    return $date->day . ' ' . $date->monthName;
-                })
+                // ->addColumn('date_anniversaire_fmt', function ($user) {
+                //     if (!$user->date_anniversaire) return '-';
+                //     $date = \Carbon\Carbon::parse($user->date_anniversaire . '-' . date('Y'))->locale('fr_FR');
+                //     return $date->day . ' ' . $date->monthName;
+                // })
                 ->addColumn('actions', function ($user) {
                     return '
                     <div class="dropdown">
