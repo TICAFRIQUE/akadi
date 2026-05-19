@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-    use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Facades\DataTables;
 
 
 class ClientController extends Controller
@@ -276,6 +276,12 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
+
+        // Bloquer les bots via honeypot
+        if ($request->filled('website')) {
+            return back()->withError('Inscription bloquée.');
+        }
+
         $user_verify_phone = User::wherePhone($request['phone'])->first();
 
         if ($user_verify_phone != null) {
@@ -287,9 +293,10 @@ class ClientController extends Controller
         }
 
         $request->validate([
-            'name'  => 'required',
-            'phone' => 'required',
-            'email' => 'nullable|email',
+            'name'     => 'required|min:3|max:100',
+            'phone'    => 'required|digits_between:8,15|unique:users,phone',
+            'email'    => 'nullable|email',
+            'password' => 'required|min:8',
         ]);
 
         $date_anniv = '';
@@ -299,6 +306,9 @@ class ClientController extends Controller
 
         $pwd_generate = $request->filled('password') ? null : 'password';
         $password     = $request->filled('password') ? $request->password : $pwd_generate;
+
+
+
 
         $user = User::create([
             'name'              => $request['name'],

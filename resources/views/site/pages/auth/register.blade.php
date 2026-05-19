@@ -22,7 +22,7 @@
             <form action="{{ route('register') }}" method="post" class="woocommerce-form-login mb-30">
                 @csrf
                 <div class="form-group">
-                    <label>Nom et prenoms <span class="text-danger">*</span></label> 
+                    <label>Nom et prenoms <span class="text-danger">*</span></label>
                     <input type="text" name="name" class="form-control" placeholder="Ex: jhonn " required>
                 </div>
                 <div class="form-group">
@@ -30,9 +30,9 @@
                     <input type="number" name="phone" class="form-control" placeholder="Ex: 00000000" required>
                 </div>
                 <div class="form-group">
-                    <label>Email <span class="text-danger">(Facultatif mais recommandé pour la reinitialisation du mot de passe)</span></label>
-                    <input type="email" name="email" class="form-control"
-                        placeholder="Ex: alex@gmail.com">
+                    <label>Email <span class="text-danger">(Facultatif mais recommandé pour la reinitialisation du mot de
+                            passe)</span></label>
+                    <input type="email" name="email" class="form-control" placeholder="Ex: alex@gmail.com">
                 </div>
                 <div class="form-group">
                     <label>Mot de passe <span class="text-danger">(8 caractères minimum)*</span></label>
@@ -43,14 +43,16 @@
 
 
                 <div class="form-group">
-                    <label>Votre date d'anniversaire <strong>(Peut-être qu'une surprise vous atteindra le Jour-J)</strong></label>
+                    <label>Votre date d'anniversaire <strong>(Peut-être qu'une surprise vous atteindra le
+                            Jour-J)</strong></label>
                     <div class="row">
 
                         <div class="col-6">
                             <select name="jour" class="form-control">
                                 <option disabled selected>Jour</option>
                                 @for ($i = 1; $i < 32; $i++)
-                                    <option value="{{ str_pad($i,2,"0",STR_PAD_LEFT) }}"> {{str_pad($i,2,"0",STR_PAD_LEFT) }} </option>
+                                    <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}">
+                                        {{ str_pad($i, 2, '0', STR_PAD_LEFT) }} </option>
                                 @endfor
                             </select>
 
@@ -78,7 +80,8 @@
                                 <option disabled selected>Mois</option>
 
                                 @foreach ($month as $key => $item)
-                                    <option value="{{ str_pad(++$key,2,"0",STR_PAD_LEFT) }}">{{ $item }} </option>
+                                    <option value="{{ str_pad(++$key, 2, '0', STR_PAD_LEFT) }}">{{ $item }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -88,6 +91,11 @@
 
                 <input type="text" name="url_previous" value="{{ url()->previous() }}" hidden>
 
+                {{-- Honeypot : champ invisible pour bloquer les bots --}}
+                <div style="display:none !important" aria-hidden="true">
+                    <input type="text" name="website" value="" tabindex="-1" autocomplete="off">
+                </div>
+
                 <div class="form-group">
                     <button type="submit" class="th-btn rounded-2 w-100">Valider
 
@@ -95,7 +103,8 @@
                             <span class="visually-hidden">Loading...</span>
                         </div>
                     </button>
-                    <p class="fs-xs mt-2 mb-0 text-center"><a class="text-reset" href="{{ route('login-form') }}">Vous avez un compte?
+                    <p class="fs-xs mt-2 mb-0 text-center"><a class="text-reset" href="{{ route('login-form') }}">Vous avez
+                            un compte?
                             <b class="text-danger">Connectez vous </b>
                         </a></p>
                 </div>

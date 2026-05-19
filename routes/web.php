@@ -93,7 +93,7 @@ Route::middleware(['admin'])->group(function () {
         Route::get('', 'listClient')->name('client.list');
         Route::get('detail/{id}', 'detail')->name('client.detail');
         Route::get('create', 'create')->name('client.createForm');
-        Route::post('create', 'store')->name('client.store');
+        Route::post('create', 'store')->name('client.store')->middleware('throttle:5,1');
         Route::get('edit/{id}', 'edit')->name('client.edit');
         Route::post('update/{id}', 'update')->name('client.update');
         Route::post('destroy/{id}', 'destroy')->name('client.destroy');
