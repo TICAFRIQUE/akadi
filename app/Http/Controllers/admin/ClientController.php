@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Models\User;
-use App\Models\Order;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
 
@@ -274,59 +275,167 @@ class ClientController extends Controller
         return view('admin.pages.client.create', compact('motifs'));
     }
 
+    // public function store(Request $request)
+    // {
+
+    //     // Bloquer les bots via honeypot
+    //     if ($request->filled('website')) {
+    //         return back()->withError('Inscription bloquée.');
+    //     }
+
+    //     $user_verify_phone = User::wherePhone($request['phone'])->first();
+
+    //     if ($user_verify_phone != null) {
+    //         return back()->withError('Ce numéro de téléphone est déjà associé à un compte, veuillez utiliser un autre');
+    //     }
+
+    //     if ($request->filled('email') && User::whereEmail($request['email'])->exists()) {
+    //         return back()->withError('Cet email est déjà associé à un compte, veuillez utiliser un autre');
+    //     }
+
+    //     $request->validate([
+    //         'name'     => 'required|min:3|max:100',
+    //         'phone'    => 'required|digits_between:8,15|unique:users,phone',
+    //         'email'    => 'nullable|email',
+    //         'password' => 'required|min:8',
+    //     ]);
+
+    //     $date_anniv = '';
+    //     if ($request->jour && $request->mois) {
+    //         $date_anniv = $request->jour . '-' . $request->mois;
+    //     }
+
+    //     $pwd_generate = $request->filled('password') ? null : 'password';
+    //     $password     = $request->filled('password') ? $request->password : $pwd_generate;
+
+
+
+
+    //     $user = User::create([
+    //         'name'              => $request['name'],
+    //         'phone'             => $request['phone'],
+    //         'email'             => $request->filled('email') ? $request->email : null,
+    //         'shop_name'         => $request->shop_name,
+    //         'role'              => 'client',
+    //         'type_client'       => 'prospect',
+    //         'localisation'      => $request->localisation,
+    //         'date_anniversaire' => $date_anniv,
+    //         'password'          => Hash::make($password),
+    //         'motif'             => $request->motif,
+    //         'motif_autre'       => $request->motif == 'autre' ? $request->motif_autre : null,
+    //     ]);
+
+    //     $user->assignRole('client');
+
+    //     return back()->with('success', 'Client ajouté avec succès');
+    // }
+
+    // CONTROLLER COMPLET
+
     public function store(Request $request)
     {
-
-        // Bloquer les bots via honeypot
+        // Honeypot anti-bot
         if ($request->filled('website')) {
+
+            Log::warning('BOT BLOQUÉ - HONEYPOT', [
+                'ip'    => $request->ip(),
+                'agent' => $request->userAgent(),
+                'data'  => $request->all(),
+            ]);
+
             return back()->withError('Inscription bloquée.');
         }
 
-        $user_verify_phone = User::wherePhone($request['phone'])->first();
+        // Vérification temps minimum du formulaire
+        if ((time() - (int)$request->form_time) < 4) {
 
-        if ($user_verify_phone != null) {
-            return back()->withError('Ce numéro de téléphone est déjà associé à un compte, veuillez utiliser un autre');
+            Log::warning('BOT BLOQUÉ - TEMPS TROP RAPIDE', [
+                'ip'    => $request->ip(),
+                'agent' => $request->userAgent(),
+            ]);
+
+            return back()->withError('Activité suspecte détectée.');
         }
 
-        if ($request->filled('email') && User::whereEmail($request['email'])->exists()) {
-            return back()->withError('Cet email est déjà associé à un compte, veuillez utiliser un autre');
-        }
-
+        // Validation
         $request->validate([
-            'name'     => 'required|min:3|max:100',
-            'phone'    => 'required|digits_between:8,15|unique:users,phone',
-            'email'    => 'nullable|email',
-            'password' => 'required|min:8',
+            'name' => [
+                'required',
+                'min:3',
+                'max:100',
+                'regex:/^[\pL\s\-]+$/u'
+            ],
+
+            'phone' => [
+                'required',
+                'digits_between:8,15',
+                'unique:users,phone'
+            ],
+
+            'email' => [
+                'nullable',
+                'email',
+                'unique:users,email'
+            ],
+
+            'password' => [
+                'required',
+                'min:8'
+            ],
+
+            'jour' => [
+                'nullable',
+                'integer',
+                'between:1,31'
+            ],
+
+            'mois' => [
+                'nullable',
+                'integer',
+                'between:1,12'
+            ],
         ]);
 
-        $date_anniv = '';
-        if ($request->jour && $request->mois) {
-            $date_anniv = $request->jour . '-' . $request->mois;
+        // Gestion anniversaire
+        $date_anniv = null;
+
+        if (
+            $request->filled('jour') &&
+            $request->filled('mois')
+        ) {
+
+            $date_anniv =
+                str_pad($request->jour, 2, '0', STR_PAD_LEFT)
+                . '-' .
+                str_pad($request->mois, 2, '0', STR_PAD_LEFT);
         }
 
-        $pwd_generate = $request->filled('password') ? null : 'password';
-        $password     = $request->filled('password') ? $request->password : $pwd_generate;
-
-
-
-
+        // Création utilisateur
         $user = User::create([
-            'name'              => $request['name'],
-            'phone'             => $request['phone'],
-            'email'             => $request->filled('email') ? $request->email : null,
+            'name'              => trim($request->name),
+            'phone'             => trim($request->phone),
+            'email'             => $request->filled('email')
+                ? trim($request->email)
+                : null,
+
             'shop_name'         => $request->shop_name,
             'role'              => 'client',
             'type_client'       => 'prospect',
             'localisation'      => $request->localisation,
             'date_anniversaire' => $date_anniv,
-            'password'          => Hash::make($password),
+
+            'password'          => Hash::make($request->password),
+
             'motif'             => $request->motif,
-            'motif_autre'       => $request->motif == 'autre' ? $request->motif_autre : null,
+
+            'motif_autre'       => $request->motif == 'autre'
+                ? $request->motif_autre
+                : null,
         ]);
 
         $user->assignRole('client');
 
-        return back()->with('success', 'Client ajouté avec succès');
+        return back()->with('success', 'Compte créé avec succès.');
     }
 
     public function edit($id)
@@ -336,11 +445,18 @@ class ClientController extends Controller
         return view('admin.pages.client.edit_client', compact('user', 'typeClientOptions'));
     }
 
+
+
     // public function update(Request $request, $id)
     // {
     //     $date_anniv = '';
     //     if ($request->jour && $request->mois) {
     //         $date_anniv = $request->jour . '-' . $request->mois;
+    //     }
+
+    //     // Rendre motif_autre obligatoire uniquement si "autre" est sélectionné
+    //     if ($request->motif === 'autre') {
+    //         $rules['motif_autre'] = 'required|string|max:255';
     //     }
 
     //     $updateData = [
@@ -351,6 +467,8 @@ class ClientController extends Controller
     //         'type_client'       => $request->type_client,
     //         'date_anniversaire' => $date_anniv,
     //         'localisation'      => $request->localisation,
+    //         'motif'             => $request->motif,
+    //         'motif_autre'       => $request->motif === 'autre' ? $request->motif_autre : null,
     //     ];
 
     //     if ($request->filled('password')) {
@@ -362,37 +480,131 @@ class ClientController extends Controller
     //     return back()->with('success', 'Client modifié avec succès');
     // }
 
+
     public function update(Request $request, $id)
     {
-        $date_anniv = '';
-        if ($request->jour && $request->mois) {
-            $date_anniv = $request->jour . '-' . $request->mois;
+        $user = User::findOrFail($id);
+
+        // Validation
+        $request->validate([
+
+            'name' => [
+                'required',
+                'min:3',
+                'max:100',
+                'regex:/^[\pL\s\-]+$/u'
+            ],
+
+            'phone' => [
+                'required',
+                'digits_between:8,15',
+                'unique:users,phone,' . $user->id
+            ],
+
+            'email' => [
+                'nullable',
+                'email',
+                'unique:users,email,' . $user->id
+            ],
+
+            'password' => [
+                'nullable',
+                'min:8'
+            ],
+
+            'jour' => [
+                'nullable',
+                'integer',
+                'between:1,31'
+            ],
+
+            'mois' => [
+                'nullable',
+                'integer',
+                'between:1,12'
+            ],
+
+            'motif' => [
+                'nullable',
+                'string',
+                'max:255'
+            ],
+
+            'motif_autre' => [
+                'nullable',
+                'string',
+                'max:255'
+            ],
+
+        ]);
+
+        // Motif autre obligatoire si motif = autre
+        if (
+            $request->motif === 'autre' &&
+            !$request->filled('motif_autre')
+        ) {
+
+            return back()
+                ->withErrors([
+                    'motif_autre' => 'Veuillez préciser le motif.'
+                ])
+                ->withInput();
         }
 
-        // Rendre motif_autre obligatoire uniquement si "autre" est sélectionné
-        if ($request->motif === 'autre') {
-            $rules['motif_autre'] = 'required|string|max:255';
+        // Gestion date anniversaire
+        $date_anniv = null;
+
+        if (
+            $request->filled('jour') &&
+            $request->filled('mois')
+        ) {
+
+            $date_anniv =
+                str_pad($request->jour, 2, '0', STR_PAD_LEFT)
+                . '-' .
+                str_pad($request->mois, 2, '0', STR_PAD_LEFT);
         }
 
+        // Données à mettre à jour
         $updateData = [
-            'name'              => $request['name'],
-            'phone'             => $request['phone'],
-            'email'             => $request->email,
-            'role'              => 'client',
-            'type_client'       => $request->type_client,
+
+            'name' => trim($request->name),
+
+            'phone' => trim($request->phone),
+
+            'email' => $request->filled('email')
+                ? trim($request->email)
+                : null,
+
+            'role' => 'client',
+
+            'type_client' => $request->type_client,
+
             'date_anniversaire' => $date_anniv,
-            'localisation'      => $request->localisation,
-            'motif'             => $request->motif,
-            'motif_autre'       => $request->motif === 'autre' ? $request->motif_autre : null,
+
+            'localisation' => $request->localisation,
+
+            'motif' => $request->motif,
+
+            'motif_autre' => $request->motif === 'autre'
+                ? $request->motif_autre
+                : null,
         ];
 
+        // Mise à jour mot de passe si renseigné
         if ($request->filled('password')) {
-            $updateData['password'] = Hash::make($request['password']);
+
+            $updateData['password'] =
+                Hash::make($request->password);
         }
 
-        tap(User::find($id))->update($updateData);
+        // Update
+        $user->update($updateData);
 
-        return back()->with('success', 'Client modifié avec succès');
+        return back()->with(
+            'success',
+            'Client modifié avec succès'
+        );
     }
 
     public function destroy($id)
