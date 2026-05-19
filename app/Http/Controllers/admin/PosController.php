@@ -53,6 +53,7 @@ class PosController extends Controller
         // $products       = Product::with('media')->where('disponibilite', '!=', 'indisponible')->orWhereNull('disponibilite')->orderBy('title')->get();
         $products = Product::with(['productBases', 'categories', 'media'])
             ->orderBy('title')
+            ->where('disponibilite', true)
             ->get()
             ->map(function ($p) {
                 // Calculer le stock disponible selon les productBases multiples

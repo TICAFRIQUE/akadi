@@ -305,7 +305,7 @@
                                         </div>
                                         <div class="form-group mb-0">
                                             <label class="small">Téléphone</label>
-                                            <input type="text" name="client_phone" class="form-control"
+                                            <input type="tel" name="client_phone" class="form-control"
                                                 placeholder="+225 07 …"
                                                 value="{{ old('client_phone', $order->client_phone) }}">
                                         </div>
