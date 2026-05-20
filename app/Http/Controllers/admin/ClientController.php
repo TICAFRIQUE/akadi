@@ -385,14 +385,16 @@ class ClientController extends Controller
 
             'jour' => [
                 'nullable',
-                'integer',
-                'between:1,31'
+                'numeric',
+                'min:1',
+                'max:31'
             ],
 
             'mois' => [
                 'nullable',
-                'integer',
-                'between:1,12'
+                'numeric',
+                'min:1',
+                'max:12'
             ],
         ]);
 

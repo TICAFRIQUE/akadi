@@ -388,7 +388,7 @@ Route::controller(AuthPageController::class)->group(function () {
     route::get('/se-connecter', 'login')->name('login-form');
     route::post('/se-connecter', 'login')->name('login');
     route::get('/inscription', 'register')->name('register-form');
-    route::post('/inscription', 'register')->name('register');
+    route::post('/inscription', 'register')->name('register')->middleware('throttle:3,1');
     route::get('/mes-commandes', 'userOrder')->name('user-order');
     route::get('/se-deconnecter', 'logout')->name('logout');
 

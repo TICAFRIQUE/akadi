@@ -25,16 +25,26 @@
                             <form class="needs-validation" novalidate="" method="POST"
                                 action="{{ route('client.store') }}">
                                 @csrf
+
+                                {{-- ── Honeypot anti-bot (invisible) ── --}}
+                                <div style="display:none !important" aria-hidden="true">
+                                    <input type="text" name="website" value="" tabindex="-1" autocomplete="off">
+                                </div>
+
+                                {{-- ── Temps de soumission anti-bot ── --}}
+                                <input type="hidden" name="form_time" value="{{ time() }}">
+
                                 <div class="row">
                                     <div class="form-group col-6">
                                         <label for="name">Nom & prénoms</label>
-                                        <input id="name" type="text" class="form-control" name="name" autofocus
-                                            required>
-                                        <div class="invalid-feedback">Champs obligatoire</div>
+                                        <input id="name" type="text" class="form-control" name="name"
+                                            value="{{ old('name') }}" autofocus required minlength="3" maxlength="100">
+                                        <div class="invalid-feedback">Champs obligatoire (3 caractères minimum)</div>
                                     </div>
                                     <div class="form-group col-6">
                                         <label for="phone">Téléphone</label>
-                                        <input id="phone" type="number" class="form-control" name="phone" required>
+                                        <input id="phone" type="number" class="form-control" name="phone"
+                                            value="{{ old('phone') }}" required>
                                         <div class="invalid-feedback">Champs obligatoire</div>
                                     </div>
                                 </div>
@@ -42,7 +52,8 @@
                                 <div class="row">
                                     <div class="form-group col-12">
                                         <label for="email">Email</label>
-                                        <input id="email" type="email" class="form-control" name="email">
+                                        <input id="email" type="email" class="form-control" name="email"
+                                            value="{{ old('email') }}">
                                     </div>
                                 </div>
 
@@ -54,7 +65,8 @@
                                             <select name="jour" class="form-control">
                                                 <option disabled selected>Jour</option>
                                                 @for ($i = 1; $i < 32; $i++)
-                                                    <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}">
+                                                    <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}"
+                                                        {{ old('jour') == str_pad($i, 2, '0', STR_PAD_LEFT) ? 'selected' : '' }}>
                                                         {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}
                                                     </option>
                                                 @endfor
@@ -80,7 +92,8 @@
                                                 @endphp
                                                 <option disabled selected>Mois</option>
                                                 @foreach ($month as $key => $item)
-                                                    <option value="{{ str_pad(++$key, 2, '0', STR_PAD_LEFT) }}">
+                                                    <option value="{{ str_pad($key + 1, 2, '0', STR_PAD_LEFT) }}"
+                                                        {{ old('mois') == str_pad($key + 1, 2, '0', STR_PAD_LEFT) ? 'selected' : '' }}>
                                                         {{ $item }}
                                                     </option>
                                                 @endforeach
@@ -104,7 +117,8 @@
                                 </div>
 
                                 {{-- Champ affiché uniquement si "Autres" est sélectionné --}}
-                                <div class="form-group" id="motif_autre_wrapper" style="display: none;">
+                                <div class="form-group" id="motif_autre_wrapper"
+                                    style="display: {{ old('motif') == 'autre' ? 'block' : 'none' }};">
                                     <label for="motif_autre">Préciser le motif</label>
                                     <input id="motif_autre" type="text" class="form-control" name="motif_autre"
                                         placeholder="Décrivez le motif..." value="{{ old('motif_autre') }}">
@@ -113,12 +127,16 @@
 
                                 <div class="row">
                                     <div class="form-group col-8">
-                                        <label for="password" class="d-block">Mot de passe
-                                            <br> Nb : <span class="text-danger" style="font-size: 12px">Laisser vide pour le
-                                                mot de passe par défaut : <code>password</code></span>
+                                        <label for="password" class="d-block">
+                                            Mot de passe
+                                            <br>
+                                            <span class="text-danger" style="font-size:12px">
+                                                Obligatoire — 8 caractères minimum
+                                            </span>
                                         </label>
                                         <input id="password" type="password" class="form-control" name="password"
-                                            aria-autocomplete="none" autocomplete="off">
+                                            aria-autocomplete="none" autocomplete="off" required minlength="8">
+                                        <div class="invalid-feedback">Mot de passe obligatoire (8 caractères minimum)</div>
                                     </div>
                                     <div class="form-group col-4 my-auto">
                                         @include('admin.components.hideshowpwd')
@@ -131,6 +149,8 @@
                                     </button>
                                 </div>
                             </form>
+
+
                         </div>
                     </div>
                 </div>
@@ -142,7 +162,7 @@
 @section('script')
     <script src="{{ asset('admin/assets/bundles/select2/dist/js/select2.full.min.js') }}"></script>
 
-    <script>
+    {{-- <script>
         const motifSelect = document.getElementById('motif');
         const autreWrapper = document.getElementById('motif_autre_wrapper');
         const autreInput = document.getElementById('motif_autre');
@@ -157,5 +177,20 @@
         toggleAutre();
 
         motifSelect.addEventListener('change', toggleAutre);
+    </script> --}}
+
+    <script>
+        $(document).ready(function() {
+            // Afficher/masquer le champ motif_autre
+            $('#motif').on('change', function() {
+                if ($(this).val() === 'autre') {
+                    $('#motif_autre_wrapper').show();
+                    $('#motif_autre').attr('required', true);
+                } else {
+                    $('#motif_autre_wrapper').hide();
+                    $('#motif_autre').removeAttr('required').val('');
+                }
+            });
+        });
     </script>
 @endsection
