@@ -54,7 +54,7 @@ class TicAfriqueService
         $numero = '+225' . $numero;
 
         //lien pour suivre la commande
-        $trackingLink = route('suivi-commande', $order->code);
+        $trackingLink = route('suivi-commande-court', $order->code);
 
         // Le message à envoyer
         // $message = "Bonjour " . $order->user->name .

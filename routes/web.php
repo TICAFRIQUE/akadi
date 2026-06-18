@@ -404,6 +404,7 @@ Route::controller(AuthPageController::class)->group(function () {
 Route::controller(AccountPageController::class)->group(function () {
     route::get('/mes-commandes', 'userOrder')->name('user-order')->middleware(['auth']);
     route::get('/suivi-commande/{code}', 'trackingOrder')->name('suivi-commande');
+    route::get('/s/{code}', 'trackingOrder')->name('suivi-commande-court'); //lien court pour suivi commande dans SMS
     route::post('/annuler-commande/{id}', 'cancelOrder')->name('cancel-order')->middleware(['auth']);
     route::get('/mon-profil', 'profil')->name('user-profil')->middleware(['auth']);
 });
