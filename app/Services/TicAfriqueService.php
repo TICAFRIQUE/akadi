@@ -63,8 +63,8 @@ class TicAfriqueService
         //     "Suivez votre commande ici: " . $trackingLink . " " .
         //     "Merci - AKADI";
 
-        $message = "Bonjour " . $order->user->name . ", commande confirmée.\n\n" .
-            "Livraison imminente.\n\n" .
+        $message = "Bonjour " . $order->user->name . ", commande confirmée.\n" .
+            "Livraison imminente.\n" .
             "Pour suivre : " . $trackingLink;
 
         // Envoyer le SMS
