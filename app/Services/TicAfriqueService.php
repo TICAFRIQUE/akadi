@@ -57,11 +57,15 @@ class TicAfriqueService
         $trackingLink = route('suivi-commande', $order->code);
 
         // Le message à envoyer
-        $message = "Bonjour " . $order->user->name .
-            ", Votre commande #" . $order->code . " a été confirmée avec succès. " .
-            "Vous serez livré dans peu de temps. Pour toute urgence, contactez-nous au 0758838338. " .
-            "Suivez votre commande ici: " . $trackingLink . " " .
-            "Merci - AKADI";
+        // $message = "Bonjour " . $order->user->name .
+        //     ", Votre commande #" . $order->code . " a été confirmée avec succès. " .
+        //     "Vous serez livré dans peu de temps. Pour toute urgence, contactez-nous au 0758838338. " .
+        //     "Suivez votre commande ici: " . $trackingLink . " " .
+        //     "Merci - AKADI";
+
+        $message = "Bonjour " . $order->user->name . ", commande confirmée.\n\n" .
+            "Livraison imminente.\n\n" .
+            "Pour suivre : " . $trackingLink;
 
         // Envoyer le SMS
         $result = $this->sendSms($numero, $message);
