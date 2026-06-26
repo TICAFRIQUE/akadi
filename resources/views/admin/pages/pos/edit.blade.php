@@ -4,160 +4,7 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('admin/assets/bundles/select2/dist/css/select2.min.css') }}">
-    <style>
-        .pos-section-title {
-            font-size: .78rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: #6c757d;
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 6px;
-            margin-bottom: 14px;
-        }
-
-        #tbl-items {
-            min-width: 700px;
-        }
-
-        #tbl-items thead th {
-            background: #f8f9fa;
-            white-space: nowrap;
-            font-size: .82rem;
-            padding: 10px 12px;
-        }
-
-        #tbl-items tbody td {
-            vertical-align: middle;
-            padding: 8px 10px;
-        }
-
-        #tbl-items .input-group-sm .form-control {
-            min-width: 52px;
-        }
-
-        #tbl-items .input-group-sm .btn {
-            min-width: 30px;
-        }
-
-        .btn-remove-row {
-            width: 32px;
-            height: 32px;
-            padding: 0;
-        }
-
-        .recap-line {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-        }
-
-        .recap-line.total-final {
-            font-size: 1.3rem;
-            font-weight: 700;
-            border-top: 2px solid #dee2e6;
-            padding-top: 10px;
-            margin-top: 5px;
-        }
-
-        .recap-line.solde {
-            color: #dc3545;
-            font-weight: 600;
-        }
-
-        .source-btn {
-            cursor: pointer;
-        }
-
-        .source-btn.active {
-            box-shadow: 0 0 0 2px #4e73df;
-        }
-
-        .caisse-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #f0f4ff;
-            border-radius: 8px;
-            padding: 4px 12px;
-            font-size: .85rem;
-            font-weight: 600;
-            color: #4e73df;
-        }
-
-        .client-found {
-            border: 2px solid #28a745;
-            border-radius: 10px;
-            padding: 12px 16px;
-            background: #f6fff8;
-        }
-
-        /* Boutons type remise */
-        .btn-xs {
-            padding: 2px 7px;
-            font-size: .75rem;
-            line-height: 1.4;
-            border-radius: 3px;
-        }
-
-        .type-disc-btn {
-            height: 31px;
-            padding: 0 8px;
-            font-size: .75rem;
-            font-weight: 600;
-            line-height: 29px;
-            border-radius: 0;
-            border: 1px solid #ced4da !important;
-            background: #f8f9fa !important;
-            color: #495057 !important;
-            box-shadow: none !important;
-            transition: background .15s, color .15s, border-color .15s;
-        }
-
-        .type-disc-btn:first-child {
-            border-radius: 0;
-        }
-
-        .type-disc-btn:last-child {
-            border-radius: 0 4px 4px 0;
-        }
-
-        .type-disc-btn.active-pct,
-        .type-disc-btn.active-pct:focus,
-        .type-disc-btn.active-pct:active {
-            background: #4e73df !important;
-            border-color: #4e73df !important;
-            color: #fff !important;
-            box-shadow: none !important;
-        }
-
-        .type-disc-btn.active-fixed,
-        .type-disc-btn.active-fixed:focus,
-        .type-disc-btn.active-fixed:active {
-            background: #fd7e14 !important;
-            border-color: #fd7e14 !important;
-            color: #fff !important;
-            box-shadow: none !important;
-        }
-
-        .global-disc-btn {
-            font-size: .75rem;
-            font-weight: 600;
-            padding: 2px 8px;
-        }
-
-        .global-disc-btn.active-pct {
-            background: #4e73df !important;
-            border-color: #4e73df !important;
-            color: #fff !important;
-        }
-
-        .global-disc-btn.active-fixed {
-            background: #fd7e14 !important;
-            border-color: #fd7e14 !important;
-            color: #fff !important;
-        }
-    </style>
+    @include('admin.components.pos-styles')
 @endsection
 
 @section('content')
@@ -173,7 +20,7 @@
             </div>
         @endif
         @if (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
+            <div class="alert alert-danger">{!! session('error') !!}</div>
         @endif
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -223,12 +70,11 @@
                                 <table class="table table-hover mb-0" id="tbl-items">
                                     <thead>
                                         <tr>
-                                            <th>Prod</th>
+                                            <th>Produit</th>
                                             <th class="text-center">Stock</th>
                                             <th class="text-center">P.U</th>
                                             <th class="text-center">Qté</th>
-                                            <th class="text-center">Remise <small class="text-muted">(% ou FCFA)</small>
-                                            </th>
+                                            <th class="text-center">Remise <small class="text-muted">(% ou FCFA)</small></th>
                                             <th class="text-center">Total</th>
                                             <th></th>
                                         </tr>
@@ -394,8 +240,7 @@
                                     <div class="d-flex align-items-center">
                                         <input type="number" name="discount" id="discount"
                                             class="form-control form-control-sm text-right" style="width:110px"
-                                            value="{{ old('discount', $order->discount ?? 0) }}" min="0"
-                                            step="any">
+                                            value="{{ old('discount', $order->discount ?? 0) }}" min="0" step="any">
                                         <span id="global-disc-unit"
                                             class="ml-1 small text-muted">{{ ($order->type_discount ?? 'fixed') === 'percent' ? '%' : 'FCFA' }}</span>
                                     </div>
@@ -406,8 +251,7 @@
                                     <span>Frais de livraison</span>
                                     <input type="number" name="delivery_price" id="delivery_price"
                                         class="form-control form-control-sm text-right" style="width:140px"
-                                        value="{{ old('delivery_price', $order->delivery_price ?? 0) }}" min="0"
-                                        step="any">
+                                        value="{{ old('delivery_price', $order->delivery_price ?? 0) }}" min="0" step="any">
                                 </div>
                                 <div class="recap-line total-final">
                                     <span>TOTAL</span>
@@ -417,8 +261,7 @@
                                     <span class="font-weight-bold">Acompte reçu</span>
                                     <input type="number" name="acompte" id="acompte"
                                         class="form-control form-control-sm text-right" style="width:140px"
-                                        value="{{ old('acompte', $order->acompte ?? 0) }}" min="0"
-                                        step="any">
+                                        value="{{ old('acompte', $order->acompte ?? 0) }}" min="0" step="any">
                                 </div>
                                 <div class="recap-line solde">
                                     <span>Solde restant</span>
@@ -447,7 +290,8 @@
                                 </div>
                                 <div class="form-group mb-0">
                                     <label class="small">Adresse précise si livraison Yango</label>
-                                    <textarea name="address" class="form-control" rows="2" placeholder="Quartier, rue…">{{ old('address', $order->address) }}</textarea>
+                                    <textarea name="address" class="form-control" rows="2"
+                                        placeholder="Quartier, rue…">{{ old('address', $order->address) }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -489,7 +333,7 @@
                     {{-- Boutons --}}
                     <div class="row mb-4">
                         <div class="col-12 col-md-12">
-                            <button type="submit" class="btn btn-success btn-lg btn-block mb-2">
+                            <button type="submit" class="btn btn-success btn-lg btn-block mb-2" id="btn-confirm">
                                 <i class="fas fa-save mr-1"></i> Enregistrer les modifications
                             </button>
                             <a href="{{ route('order.show', $order->id) }}" class="btn btn-outline-secondary btn-block">
@@ -543,8 +387,6 @@
         });
     @endphp
 
-
-
     <script>
         let cartItems = {};
         let currentTotal = 0;
@@ -566,8 +408,7 @@
                     id: val,
                     title: opt.attr('data-title') || opt.text().split('—')[0].trim(),
                     price: parseFloat(opt.attr('data-price')) || 0,
-                    stock: (rawStock !== undefined && rawStock !== '' && !isNaN(rawStock)) ? parseInt(
-                        rawStock) : null,
+                    stock: (rawStock !== undefined && rawStock !== '' && !isNaN(rawStock)) ? parseInt(rawStock) : null,
                     stockInsuffisant: opt.attr('data-stock-insuffisant') === '1',
                     stockInfo: stockInfo,
                     img: opt.attr('data-img') || null,
@@ -603,13 +444,10 @@
             const tbody = document.getElementById('items-body');
             const tr = document.createElement('tr');
             tr.id = 'row-' + p.id;
-
             const isRupture = p.stockInsuffisant || (p.stock !== null && p.stock <= 0);
             if (isRupture) tr.classList.add('table-danger');
-
             tr.innerHTML = buildRowHtml(p, qty, discountVal, typeDiscount, isRupture);
             tbody.appendChild(tr);
-
             if (!isRupture) recalcRow(p.id);
         }
 
@@ -625,19 +463,15 @@
                 recalcRow(p.id);
                 return;
             }
-
             cartItems[p.id] = p;
             document.getElementById('empty-row')?.remove();
-
             const tbody = document.getElementById('items-body');
             const tr = document.createElement('tr');
             tr.id = 'row-' + p.id;
             const isRupture = p.stockInsuffisant || (p.stock !== null && p.stock <= 0);
             if (isRupture) tr.classList.add('table-danger');
-
             tr.innerHTML = buildRowHtml(p, 1, 0, 'percent', isRupture);
             tbody.appendChild(tr);
-
             if (!isRupture) recalcRow(p.id.toString());
         }
 
@@ -664,8 +498,7 @@
                 <i class="fas fa-layer-group" style="font-size:.7rem"></i>
             </button>` : '';
 
-            const ruptureLabel = isRupture ?
-                `<br><small class="text-danger font-weight-bold">Stock insuffisant</small>` : '';
+            const ruptureLabel = isRupture ? `<br><small class="text-danger font-weight-bold">Stock insuffisant</small>` : '';
             const disabledAttr = isRupture ? 'disabled' : '';
             const maxAttr = p.stock !== null ? `max="${p.stock}"` : '';
             const pctActive = typeDiscount === 'percent' ? 'active-pct' : '';
@@ -680,10 +513,7 @@
             ${ruptureLabel}
             <input type="hidden" name="products[${p.id}][product_id]" value="${p.id}">
         </td>
-        <td class="text-center">
-            ${stockBadge}
-            ${btnDetail}
-        </td>
+        <td class="text-center">${stockBadge}${btnDetail}</td>
         <td style="width:110px">
             <input type="number" name="products[${p.id}][unit_price]"
                 class="form-control form-control-sm unit-price-input bg-light text-right"
@@ -697,10 +527,8 @@
                 </div>
                 <input type="number" name="products[${p.id}][quantity]"
                     class="form-control form-control-sm qty-input text-center"
-                    style="min-width:56px"
-                    value="${qty}" min="1" ${maxAttr}
-                    onchange="recalcRow('${p.id}')"
-                    ${disabledAttr}>
+                    style="min-width:56px" value="${qty}" min="1" ${maxAttr}
+                    onchange="recalcRow('${p.id}')" ${disabledAttr}>
                 <div class="input-group-append">
                     <button type="button" class="btn btn-sm btn-outline-secondary px-1"
                         onclick="changeQty('${p.id}', 1)" ${disabledAttr}>+</button>
@@ -714,15 +542,12 @@
                     style="min-width:100px"
                     value="${discountVal}" min="0"
                     max="${typeDiscount === 'percent' ? 100 : p.price}" step="1"
-                    onchange="recalcRow('${p.id}')"
-                    ${disabledAttr}>
+                    onchange="recalcRow('${p.id}')" ${disabledAttr}>
                 <div class="input-group-append">
                     <button type="button" class="btn type-disc-btn type-disc-pct ${pctActive}"
-                        onclick="setDiscountType('${p.id}', 'percent', this)"
-                        ${disabledAttr}>%</button>
+                        onclick="setDiscountType('${p.id}', 'percent', this)" ${disabledAttr}>%</button>
                     <button type="button" class="btn type-disc-btn type-disc-fixed ${fixedActive}"
-                        onclick="setDiscountType('${p.id}', 'fixed', this)"
-                        ${disabledAttr}>FCFA</button>
+                        onclick="setDiscountType('${p.id}', 'fixed', this)" ${disabledAttr}>FCFA</button>
                 </div>
                 <input type="hidden" name="products[${p.id}][type_discount]"
                     class="type-discount-input" value="${typeDiscount}">
@@ -798,35 +623,17 @@
             let discountVal = parseFloat(row.querySelector('.discount-input').value) || 0;
             const typeDiscount = row.querySelector('.type-discount-input').value || 'percent';
 
-            if (discountVal < 0) {
-                discountVal = 0;
-                row.querySelector('.discount-input').value = 0;
-            }
-            if (typeDiscount === 'percent' && discountVal > 100) {
-                discountVal = 100;
-                row.querySelector('.discount-input').value = 100;
-            }
-            if (typeDiscount === 'fixed' && discountVal > unitPrice) {
-                discountVal = unitPrice;
-                row.querySelector('.discount-input').value = unitPrice;
-            }
+            if (discountVal < 0) { discountVal = 0; row.querySelector('.discount-input').value = 0; }
+            if (typeDiscount === 'percent' && discountVal > 100) { discountVal = 100; row.querySelector('.discount-input').value = 100; }
+            if (typeDiscount === 'fixed' && discountVal > unitPrice) { discountVal = unitPrice; row.querySelector('.discount-input').value = unitPrice; }
 
             if (p && p.stock !== null && qty > p.stock) {
                 qty = p.stock;
                 qtyInput.value = p.stock;
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Stock insuffisant',
-                    text: `Stock disponible : ${p.stock}`,
-                    timer: 2000,
-                    showConfirmButton: false
-                });
+                Swal.fire({ icon: 'warning', title: 'Stock insuffisant', text: `Stock disponible : ${p.stock}`, timer: 2000, showConfirmButton: false });
             }
 
-            const prixApres = typeDiscount === 'percent' ?
-                unitPrice * (1 - discountVal / 100) :
-                unitPrice - discountVal;
-
+            const prixApres = typeDiscount === 'percent' ? unitPrice * (1 - discountVal / 100) : unitPrice - discountVal;
             const total = Math.round(Math.max(0, prixApres) * qty);
             document.getElementById('total-' + pid).textContent = formatMoney(total) + ' FCFA';
             recalcTotals();
@@ -851,35 +658,24 @@
         // ── Recalcul totaux globaux ──────────────────────────────────────────────────
         function recalcTotals() {
             let subtotal = 0;
-
             Object.keys(cartItems).forEach(pid => {
                 const row = document.getElementById('row-' + pid);
-                if (!row) return;
-                if (row.classList.contains('table-danger')) return;
-
+                if (!row || row.classList.contains('table-danger')) return;
                 const qty = parseInt(row.querySelector('.qty-input').value) || 1;
                 const unitPrice = parseFloat(row.querySelector('.unit-price-input').value) || 0;
                 const discountVal = parseFloat(row.querySelector('.discount-input').value) || 0;
                 const typeDiscount = row.querySelector('.type-discount-input').value || 'percent';
-                const prixApres = typeDiscount === 'percent' ?
-                    unitPrice * (1 - discountVal / 100) :
-                    unitPrice - discountVal;
+                const prixApres = typeDiscount === 'percent' ? unitPrice * (1 - discountVal / 100) : unitPrice - discountVal;
                 subtotal += Math.max(0, prixApres) * qty;
             });
 
-            // Arrondir le subtotal pour éviter les virgules flottantes
             subtotal = Math.round(subtotal);
-
             const globalDiscountVal = parseFloat(document.getElementById('discount').value) || 0;
             const globalDiscountType = document.getElementById('type_discount').value || 'fixed';
             const globalDiscountAmount = globalDiscountType === 'percent' ?
-                Math.round(subtotal * Math.min(globalDiscountVal, 100) / 100) :
-                Math.round(globalDiscountVal);
-
+                Math.round(subtotal * Math.min(globalDiscountVal, 100) / 100) : Math.round(globalDiscountVal);
             const delivery = Math.round(parseFloat(document.getElementById('delivery_price').value) || 0);
             const acompte = parseFloat(document.getElementById('acompte').value) || 0;
-
-            // Total arrondi AVANT de calculer le solde
             const total = Math.round(Math.max(0, subtotal - globalDiscountAmount + delivery));
             const solde = Math.max(0, total - acompte);
 
@@ -897,52 +693,22 @@
         function showStockDetail(pid) {
             const p = cartItems[pid];
             if (!p || !p.stockInfo || !p.stockInfo.length) return;
-
             const lignes = p.stockInfo.map(b => `
             <tr>
                 <td><strong>${b.nom}</strong></td>
-                <td class="text-center">
-                    <span class="badge badge-${b.stock <= 0 ? 'danger' : b.stock <= 5 ? 'warning' : 'success'}">
-                        ${b.stock}
-                    </span>
-                </td>
+                <td class="text-center"><span class="badge badge-${b.stock <= 0 ? 'danger' : b.stock <= 5 ? 'warning' : 'success'}">${b.stock}</span></td>
                 <td class="text-center">${b.coefficient}</td>
-                <td class="text-center">
-                    <span class="badge badge-${b.possible <= 0 ? 'danger' : b.possible <= 5 ? 'warning' : 'info'}">
-                        ${b.possible}
-                    </span>
-                </td>
-                <td class="text-center">
-                    ${b.insuffisant
-                        ? '<span class="badge badge-danger">Rupture</span>'
-                        : '<span class="badge badge-success">OK</span>'}
-                </td>
+                <td class="text-center"><span class="badge badge-${b.possible <= 0 ? 'danger' : b.possible <= 5 ? 'warning' : 'info'}">${b.possible}</span></td>
+                <td class="text-center">${b.insuffisant ? '<span class="badge badge-danger">Rupture</span>' : '<span class="badge badge-success">OK</span>'}</td>
             </tr>`).join('');
-
             Swal.fire({
                 title: `<i class="fas fa-layer-group mr-2"></i>${p.title}`,
-                html: `
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered mb-0" style="font-size:.85rem">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>Produit de base</th>
-                                <th class="text-center">Stock</th>
-                                <th class="text-center">Coefficient</th>
-                                <th class="text-center">Vendable</th>
-                                <th class="text-center">Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody>${lignes}</tbody>
-                    </table>
-                </div>`,
+                html: `<div class="table-responsive"><table class="table table-sm table-bordered mb-0" style="font-size:.85rem"><thead class="thead-light"><tr><th>Produit de base</th><th class="text-center">Stock</th><th class="text-center">Coefficient</th><th class="text-center">Vendable</th><th class="text-center">Statut</th></tr></thead><tbody>${lignes}</tbody></table></div>`,
                 width: 600,
                 showConfirmButton: true,
                 confirmButtonText: 'Fermer',
                 confirmButtonColor: '#6c757d',
-                customClass: {
-                    htmlContainer: 'text-left'
-                }
+                customClass: { htmlContainer: 'text-left' }
             });
         }
 
@@ -954,18 +720,12 @@
             csEl.addEventListener('input', function() {
                 clearTimeout(clientTimer);
                 const q = this.value.trim();
-                if (q.length < 2) {
-                    clientResults.style.display = 'none';
-                    return;
-                }
+                if (q.length < 2) { clientResults.style.display = 'none'; return; }
                 clientTimer = setTimeout(() => {
                     fetch(`{{ route('pos.searchClient') }}?q=${encodeURIComponent(q)}`)
                         .then(r => r.json())
                         .then(users => {
-                            if (!users.length) {
-                                clientResults.style.display = 'none';
-                                return;
-                            }
+                            if (!users.length) { clientResults.style.display = 'none'; return; }
                             clientResults.innerHTML = users.map(u => `
                             <a href="#" class="list-group-item list-group-item-action"
                                 onclick="selectClient(event, ${u.id}, '${u.name.replace(/'/g,"\\'")}', '${(u.phone||'').replace(/'/g,"\\'")}')">
@@ -976,14 +736,12 @@
                         });
                 }, 300);
             });
-
             document.getElementById('btn-clear-client')?.addEventListener('click', function() {
                 document.getElementById('user_id').value = '';
                 document.getElementById('client-found-box').classList.add('d-none');
                 document.getElementById('new-client-box').classList.remove('d-none');
                 csEl.value = '';
             });
-
             document.addEventListener('click', e => {
                 if (!e.target.closest('#client-search') && !e.target.closest('#client-results'))
                     clientResults.style.display = 'none';
@@ -1028,51 +786,34 @@
             if (phoneEl && uidEl && !uidEl.value && phoneEl.value.trim().length < 8)
                 errors.push('Le téléphone du client est obligatoire (8 chiffres minimum).');
 
-                //  SI ACOMPTE OBLIGATOIRE (statut différent de "attente") → vérifier que acompte > 0 et moyen de paiement sélectionné
-            // if (!isAttente) {
-            //     const acompte = parseFloat(document.getElementById('acompte').value) || 0;
-            //     if (isLivree) {
-            //         if (Math.round(acompte) !== Math.round(currentTotal))
-            //             errors.push(`Pour une commande livrée, l'acompte (${formatMoney(acompte)} FCFA) doit être égal au total (${formatMoney(currentTotal)} FCFA).`);
-            //     } else if (acompte <= 0) {
-            //         errors.push("L'acompte doit être supérieur à 0 pour ce statut.");
-            //     }
-            //     const pm = document.querySelector('[name="payment_method_id"]').value;
-            //     if (!pm) errors.push('Le moyen de paiement est obligatoire pour ce statut.');
-            // }
-
-            //  SI ACOMPTE PAS OBLIGATOIRE (statut "attente") → verifier que moyen de paiement selectionne
             if (!isAttente) {
                 const acompte = parseFloat(document.getElementById("acompte").value) || 0;
                 if (isLivree) {
                     if (Math.round(acompte) !== Math.round(currentTotal))
-                        errors.push(
-                            `Pour une commande livrée, l'acompte (${formatMoney(acompte)} FCFA) doit être égal au total (${formatMoney(currentTotal)} FCFA).`
-                        );
+                        errors.push(`Pour une commande livrée, l'acompte (${formatMoney(acompte)} FCFA) doit être égal au total (${formatMoney(currentTotal)} FCFA).`);
                 }
                 const paiement = document.querySelector('[name="payment_method_id"]').value;
-                if (!paiement)
-                    errors.push("Le moyen de paiement est obligatoire pour ce statut.");
+                if (!paiement) errors.push("Le moyen de paiement est obligatoire pour ce statut.");
             }
 
             if (errors.length) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Vérifiez le formulaire',
-                    html: '<ul class="text-left mb-0">' + errors.map(err => `<li>${err}</li>`).join('') +
-                        '</ul>',
+                    html: '<ul class="text-left mb-0">' + errors.map(err => `<li>${err}</li>`).join('') + '</ul>',
                     confirmButtonText: 'Corriger',
                     confirmButtonColor: '#4e73df'
                 });
                 return;
             }
 
-            // Supprimer les inputs des lignes rupture avant envoi
             document.querySelectorAll('tr.table-danger').forEach(function(row) {
-                row.querySelectorAll('input[name], select[name]').forEach(function(el) {
-                    el.remove();
-                });
+                row.querySelectorAll('input[name], select[name]').forEach(function(el) { el.remove(); });
             });
+
+            const btn = document.getElementById('btn-confirm');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span> Enregistrement...';
 
             this.submit();
         });

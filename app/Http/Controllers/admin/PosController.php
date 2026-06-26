@@ -46,48 +46,12 @@ class PosController extends Controller
             abort(403, 'Vous devez avoir la permission p-confirmation pour créer une commande.');
         }
 
-        // if (!session('caisse_id')) {
-        //     return redirect()->route('caisse.selection')->with('error', 'Veuillez d\'abord sélectionner une caisse.');
-        // }
-
-        // $products       = Product::with('media')->where('disponibilite', '!=', 'indisponible')->orWhereNull('disponibilite')->orderBy('title')->get();
-        $products = Product::with(['productBases', 'categories', 'media'])
-            ->orderBy('title')
-            ->where('disponibilite', true)
-            ->get()
-            ->map(function ($p) {
-                // Calculer le stock disponible selon les productBases multiples
-                $stockInfo = [];
-                $stockDisponible = null; // null = infini
-
-                if ($p->productBases->count() > 0) {
-                    foreach ($p->productBases as $base) {
-                        $coeff = $base->pivot->coefficient ?? 0;
-                        if ($coeff > 0) {
-                            $qtyPossible = floor($base->stock / $coeff);
-                            $stockInfo[] = [
-                                'nom'        => $base->nom,
-                                'stock'      => $base->stock,
-                                'coefficient' => $coeff,
-                                'possible'   => $qtyPossible,
-                                'insuffisant' => $qtyPossible <= 0,
-                            ];
-                            // Le stock dispo du produit = le minimum possible parmi tous les bases
-                            if ($stockDisponible === null) {
-                                $stockDisponible = $qtyPossible;
-                            } else {
-                                $stockDisponible = min($stockDisponible, $qtyPossible);
-                            }
-                        }
-                    }
-                }
-
-                $p->stock_disponible  = $stockDisponible; // null = infini, int = calculé
-                $p->stock_info        = $stockInfo;        // détail par base
-                $p->stock_insuffisant = $stockDisponible !== null && $stockDisponible <= 0;
-
-                return $p;
-            });
+        $products = $this->mapProductsWithStock(
+            Product::with(['productBases', 'categories', 'media'])
+                ->orderBy('title')
+                ->where('disponibilite', true)
+                ->get()
+        );
 
         $paymentMethods = PaymentMethod::actif()->get();
         $deliveries     = Delivery::orderBy('zone')->get();
@@ -384,12 +348,8 @@ class PosController extends Controller
 
         if ($acompteOptionnel) {
             $rules['acompte'] = 'nullable|numeric|min:0';
-        } elseif ($isLivree) {
-            $rules['acompte']           = 'required|numeric|min:0';
-            $rules['payment_method_id'] = 'required|exists:payment_methods,id';
         } else {
-            // $rules['acompte']           = 'required|numeric|min:1'; // Ancienne règle : acompte doit être > 0
-            $rules['acompte']           = 'required|numeric|min:0'; // Permettre acompte = 0 pour les commandes confirmées, en cuisine, etc. (le statut attente_acompte sera appliqué automatiquement dans ce cas)
+            $rules['acompte']           = 'required|numeric|min:0';
             $rules['payment_method_id'] = 'required|exists:payment_methods,id';
         }
 
@@ -663,38 +623,11 @@ class PosController extends Controller
             return $key !== Order::STATUS_ANNULEE;
         }, ARRAY_FILTER_USE_KEY);
 
-        $products = Product::with(['productBases', 'media'])
-            ->orderBy('title')
-            ->get()
-            ->map(function ($p) {
-                $stockInfo       = [];
-                $stockDisponible = null;
-
-                if ($p->productBases->count() > 0) {
-                    foreach ($p->productBases as $base) {
-                        $coeff = $base->pivot->coefficient ?? 0;
-                        if ($coeff > 0) {
-                            $qtyPossible = floor($base->stock / $coeff);
-                            $stockInfo[] = [
-                                'nom'         => $base->nom,
-                                'stock'       => $base->stock,
-                                'coefficient' => $coeff,
-                                'possible'    => $qtyPossible,
-                                'insuffisant' => $qtyPossible <= 0,
-                            ];
-                            $stockDisponible = $stockDisponible === null
-                                ? $qtyPossible
-                                : min($stockDisponible, $qtyPossible);
-                        }
-                    }
-                }
-
-                $p->stock_disponible  = $stockDisponible;
-                $p->stock_info        = $stockInfo;
-                $p->stock_insuffisant = $stockDisponible !== null && $stockDisponible <= 0;
-
-                return $p;
-            });
+        $products = $this->mapProductsWithStock(
+            Product::with(['productBases', 'media'])
+                ->orderBy('title')
+                ->get()
+        );
 
         return view('admin.pages.pos.edit', compact(
             'order',
@@ -889,12 +822,8 @@ class PosController extends Controller
 
         if ($acompteOptionnel) {
             $rules['acompte'] = 'nullable|numeric|min:0';
-        } elseif ($isLivree) {
-            $rules['acompte']           = 'required|numeric|min:0';
-            $rules['payment_method_id'] = 'required|exists:payment_methods,id';
         } else {
-            // $rules['acompte']           = 'required|numeric|min:1'; //si acompte est obligatoire alors il doit être > 0
-            $rules['acompte']           = 'required|numeric|min:0'; // Permettre acompte = 0 pour les commandes confirmées, en cuisine, etc. (le statut attente_acompte sera appliqué automatiquement dans ce cas)
+            $rules['acompte']           = 'required|numeric|min:0';
             $rules['payment_method_id'] = 'required|exists:payment_methods,id';
         }
 
@@ -1064,6 +993,37 @@ class PosController extends Controller
     }
 
 
+
+    private function mapProductsWithStock(\Illuminate\Support\Collection $products): \Illuminate\Support\Collection
+    {
+        return $products->map(function ($p) {
+            $stockInfo       = [];
+            $stockDisponible = null;
+
+            foreach ($p->productBases as $base) {
+                $coeff = $base->pivot->coefficient ?? 0;
+                if ($coeff > 0) {
+                    $qtyPossible     = floor($base->stock / $coeff);
+                    $stockInfo[]     = [
+                        'nom'         => $base->nom,
+                        'stock'       => $base->stock,
+                        'coefficient' => $coeff,
+                        'possible'    => $qtyPossible,
+                        'insuffisant' => $qtyPossible <= 0,
+                    ];
+                    $stockDisponible = $stockDisponible === null
+                        ? $qtyPossible
+                        : min($stockDisponible, $qtyPossible);
+                }
+            }
+
+            $p->stock_disponible  = $stockDisponible;
+            $p->stock_info        = $stockInfo;
+            $p->stock_insuffisant = $stockDisponible !== null && $stockDisponible <= 0;
+
+            return $p;
+        });
+    }
 
     /**
      * Enregistrer un acompte supplémentaire sur une commande (AJAX)

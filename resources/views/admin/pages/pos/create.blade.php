@@ -4,170 +4,7 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('admin/assets/bundles/select2/dist/css/select2.min.css') }}">
-    <style>
-        /* ── Layout POS ── */
-        .pos-section-title {
-            font-size: .78rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: #6c757d;
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 6px;
-            margin-bottom: 14px;
-        }
-
-        /* Tableau produits */
-        #tbl-items {
-            min-width: 700px;
-        }
-
-        #tbl-items thead th {
-            background: #f8f9fa;
-            white-space: nowrap;
-            font-size: .82rem;
-            padding: 10px 12px;
-        }
-
-        #tbl-items tbody td {
-            vertical-align: middle;
-            padding: 8px 10px;
-        }
-
-        #tbl-items .input-group-sm .form-control {
-            min-width: 52px;
-        }
-
-        #tbl-items .input-group-sm .btn {
-            min-width: 30px;
-        }
-
-        .btn-remove-row {
-            width: 32px;
-            height: 32px;
-            padding: 0;
-        }
-
-        /* Totaux */
-        .recap-line {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-        }
-
-        .recap-line.total-final {
-            font-size: 1.3rem;
-            font-weight: 700;
-            border-top: 2px solid #dee2e6;
-            padding-top: 10px;
-            margin-top: 5px;
-        }
-
-        .recap-line.solde {
-            color: #dc3545;
-            font-weight: 600;
-        }
-
-        /* Source badges */
-        .source-btn {
-            cursor: pointer;
-        }
-
-        .source-btn.active {
-            box-shadow: 0 0 0 2px #4e73df;
-        }
-
-        /* Caisse badge */
-        .caisse-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #f0f4ff;
-            border-radius: 8px;
-            padding: 4px 12px;
-            font-size: .85rem;
-            font-weight: 600;
-            color: #4e73df;
-        }
-
-        /* Boutons type remise */
-        .btn-xs {
-            padding: 2px 7px;
-            font-size: .75rem;
-            line-height: 1.4;
-            border-radius: 3px;
-        }
-
-        .type-disc-btn {
-            height: 31px;
-            /* aligne avec .form-control-sm */
-            padding: 0 8px;
-            font-size: .75rem;
-            font-weight: 600;
-            line-height: 29px;
-            border-radius: 0;
-            border: 1px solid #ced4da !important;
-            background: #f8f9fa !important;
-            color: #495057 !important;
-            box-shadow: none !important;
-            transition: background .15s, color .15s, border-color .15s;
-        }
-
-        .type-disc-btn:first-child {
-            border-radius: 0;
-        }
-
-        .type-disc-btn:last-child {
-            border-radius: 0 4px 4px 0;
-        }
-
-        /* État actif % → bleu */
-        .type-disc-btn.active-pct,
-        .type-disc-btn.active-pct:focus,
-        .type-disc-btn.active-pct:active {
-            background: #4e73df !important;
-            border-color: #4e73df !important;
-            color: #fff !important;
-            box-shadow: none !important;
-        }
-
-        /* État actif FCFA → orange */
-        .type-disc-btn.active-fixed,
-        .type-disc-btn.active-fixed:focus,
-        .type-disc-btn.active-fixed:active {
-            background: #fd7e14 !important;
-            border-color: #fd7e14 !important;
-            color: #fff !important;
-            box-shadow: none !important;
-        }
-
-        /* Boutons globaux remise */
-        .global-disc-btn {
-            font-size: .75rem;
-            font-weight: 600;
-            padding: 2px 8px;
-        }
-
-        .global-disc-btn.active-pct {
-            background: #4e73df !important;
-            border-color: #4e73df !important;
-            color: #fff !important;
-        }
-
-        .global-disc-btn.active-fixed {
-            background: #fd7e14 !important;
-            border-color: #fd7e14 !important;
-            color: #fff !important;
-        }
-
-        /* Client card */
-        .client-found {
-            border: 2px solid #28a745;
-            border-radius: 10px;
-            padding: 12px 16px;
-            background: #f6fff8;
-        }
-    </style>
+    @include('admin.components.pos-styles')
 @endsection
 
 @section('content')
@@ -233,12 +70,11 @@
                                 <table class="table table-hover mb-0" id="tbl-items">
                                     <thead>
                                         <tr>
-                                            <th>Prod</th>
+                                            <th>Produit</th>
                                             <th class="text-center">Stock</th>
                                             <th class="text-center">P.U</th>
                                             <th class="text-center">Qté</th>
-                                            <th class="text-center">Remise <small class="text-muted">(% ou FCFA)</small>
-                                            </th>
+                                            <th class="text-center">Remise <small class="text-muted">(% ou FCFA)</small></th>
                                             <th class="text-center">Total</th>
                                             <th></th>
                                         </tr>
@@ -262,6 +98,7 @@
 
             <div class="row">
                 <div class="col-md-6">
+
                     {{-- Client --}}
                     <div class="col-12 col-md-12">
                         <div class="card mb-3">
@@ -429,29 +266,12 @@
                                     <label class="small">Mode de livraison <span class="text-danger">*</span></label>
                                     <select name="mode_livraison" class="form-control" required>
                                         <option value="">— Sélectionner —</option>
-                                        {{-- <option value="sur_place" {{ old('mode_livraison') == 'sur_place' ? 'selected' : '' }}>Sur place</option> --}}
                                         <option value="Je passe récupérer"
-                                            {{ old('mode_livraison') == 'Je passe récupérer' ? 'selected' : '' }}>Récupérer
-                                            sur
-                                            place</option>
+                                            {{ old('mode_livraison') == 'Je passe récupérer' ? 'selected' : '' }}>Récupérer sur place</option>
                                         <option value="Livraison Yango Moto"
-                                            {{ old('mode_livraison') == 'Livraison Yango Moto' ? 'selected' : '' }}>
-                                            Livraison
-                                            Yango</option>
+                                            {{ old('mode_livraison') == 'Livraison Yango Moto' ? 'selected' : '' }}>Livraison Yango</option>
                                     </select>
                                 </div>
-                                {{-- <div class="form-group">
-                                <label class="small">Zone</label>
-                                <select name="delivery_name" class="form-control">
-                                    <option value="">— Sélectionner —</option>
-                                    @foreach ($deliveries as $d)
-                                        <option value="{{ $d->zone }}"
-                                            {{ old('delivery_name') == $d->zone ? 'selected' : '' }}>
-                                            {{ $d->zone }} — {{ number_format($d->tarif, 0, ',', ' ') }} FCFA
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div> --}}
                                 <div class="form-group mb-0">
                                     <label class="small">Adresse précise si livraison Yango</label>
                                     <textarea name="address" class="form-control" rows="2" placeholder="Quartier, rue…">{{ old('address') }}</textarea>
@@ -468,7 +288,6 @@
                                 <div class="form-group">
                                     <label class="small">Moyen de paiement</label>
                                     <select name="payment_method_id" class="form-control">
-                                        {{-- <option value="">— Sélectionner —</option> --}}
                                         @foreach ($paymentMethods as $pm)
                                             <option value="{{ $pm->id }}"
                                                 {{ old('payment_method_id') == $pm->id ? 'selected' : '' }}>
@@ -482,7 +301,6 @@
                                     <select name="status" class="form-control" required>
                                         <option value="">— Sélectionner —</option>
                                         @foreach ($statuts as $key => $st)
-                                            {{-- {{ old('status', 'attente') == $key ? 'selected' : '' }} --}}
                                             <option value="{{ $key }}">
                                                 {{ $st['label'] }}
                                             </option>
@@ -493,26 +311,17 @@
                         </div>
                     </div>
 
-                    {{-- ══ Boutons de validation ══ --}}
+                    {{-- Boutons de validation --}}
                     <div class="row mb-4">
                         <div class="col-12 col-md-12">
                             <button type="submit" class="btn btn-success btn-lg btn-block mb-2" id="btn-confirm">
                                 <i class="fas fa-check-circle mr-1"></i> Enregistrer la commande
                             </button>
-                            {{-- <button type="submit" name="status" value="attente" class="btn btn-warning btn-block">
-                                <i class="fas fa-pause-circle mr-1"></i> Mettre en attente
-                            </button> --}}
                         </div>
                     </div>
                 </div>
 
-
-
             </div>{{-- /row 2 --}}
-
-
-
-
 
         </form>
     </div>
@@ -769,7 +578,6 @@
                 unitPrice * (1 - discountVal / 100) :
                 unitPrice - discountVal;
 
-            // ← Math.round pour éviter les décimales flottantes
             const total = Math.round(Math.max(0, prixApres) * qty);
             document.getElementById("total-" + pid).textContent = formatMoney(total) + " FCFA";
             recalcTotals();
@@ -810,7 +618,6 @@
                 subtotal += Math.max(0, prixApres) * qty;
             });
 
-            // ← Arrondir subtotal AVANT tout calcul suivant
             subtotal = Math.round(subtotal);
 
             const globalDiscountVal = parseFloat(document.getElementById("discount").value) || 0;
@@ -822,7 +629,6 @@
             const delivery = Math.round(parseFloat(document.getElementById("delivery_price").value) || 0);
             const acompte = parseFloat(document.getElementById("acompte").value) || 0;
 
-            // ← Total arrondi AVANT de calculer le solde — c'est le fix du -1
             const total = Math.round(Math.max(0, subtotal - globalDiscountAmount + delivery));
             const solde = Math.max(0, total - acompte);
 
@@ -973,23 +779,6 @@
             if (!userId && phone.length < 8)
                 errors.push("Le téléphone du client est obligatoire (8 chiffres minimum).");
 
-            // SI ACOMPTE OBLIGATOIRE (statut non "attente") → vérifier que acompte > 0 et moyen de paiement sélectionné
-            // if (!isAttente) {
-            //     const acompte = parseFloat(document.getElementById("acompte").value) || 0;
-            //     if (isLivree) {
-            //         if (Math.round(acompte) !== Math.round(currentTotal))
-            //             errors.push(
-            //                 `Pour une commande livrée, l'acompte (${formatMoney(acompte)} FCFA) doit être égal au total (${formatMoney(currentTotal)} FCFA).`
-            //             );
-            //     } else if (acompte <= 0) {
-            //         errors.push("L'acompte doit être supérieur à 0 pour ce statut.");
-            //     }
-            //     const paiement = document.querySelector('[name="payment_method_id"]').value;
-            //     if (!paiement)
-            //         errors.push("Le moyen de paiement est obligatoire pour ce statut.");
-            // }
-
-            //  SI ACOMPTE PAS OBLIGATOIRE (statut "attente") → verifier que moyen de paiement selectionne
             if (!isAttente) {
                 const acompte = parseFloat(document.getElementById("acompte").value) || 0;
                 if (isLivree) {
@@ -1002,7 +791,7 @@
                 if (!paiement)
                     errors.push("Le moyen de paiement est obligatoire pour ce statut.");
             }
-            // ── Vérification delivery_planned obligatoire pour précommande ───────────────
+
             const statusVal = document.querySelector('[name="status"]').value;
             const typeOrderVal = document.querySelector('[name="type_order"]').value;
             const deliveryPlanned = document.querySelector('[name="delivery_planned"]').value.trim();
@@ -1029,6 +818,10 @@
                     el.remove();
                 });
             });
+
+            const btn = document.getElementById("btn-confirm");
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span> Enregistrement...';
 
             this.submit();
         });

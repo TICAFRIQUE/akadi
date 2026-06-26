@@ -294,11 +294,22 @@
         </div>
 
         @foreach ($orders->products as $item)
-            @php $lineTotal = $item->pivot->quantity * $item->pivot->unit_price; @endphp
+            @php
+                $hasLineDiscount = ($item->pivot->discount ?? 0) > 0;
+                $pu              = $item->pivot->prix_apres_remise ?? $item->pivot->unit_price;
+                $lineTotal       = $item->pivot->total ?? ($item->pivot->quantity * $pu);
+            @endphp
             <div class="item-line">
-                <span class="i-name">{{ $item->title }}</span>
+                <span class="i-name">
+                    {{ $item->title }}
+                    @if ($hasLineDiscount)
+                        <br><span style="font-size:8px;color:#666;font-weight:normal">
+                            remise {{ $item->pivot->type_discount === 'percent' ? $item->pivot->discount . '%' : format_price($item->pivot->discount) . ' F' }}
+                        </span>
+                    @endif
+                </span>
                 <span class="i-qty">{{ $item->pivot->quantity }}</span>
-                <span class="i-pu">{{ format_price($item->pivot->unit_price) }}</span>
+                <span class="i-pu">{{ format_price($pu) }}</span>
                 <span class="i-tot">{{ format_price($lineTotal) }}</span>
             </div>
         @endforeach
@@ -310,6 +321,17 @@
             <span>SOUS-TOTAL</span>
             <span>{{ format_price($orders->subtotal) }} F</span>
         </div>
+        @if (($orders->discount ?? 0) > 0)
+            @php
+                $discountAmount = $orders->type_discount === 'percent'
+                    ? round($orders->subtotal * $orders->discount / 100)
+                    : $orders->discount;
+            @endphp
+            <div class="total-row">
+                <span>REMISE{{ $orders->type_discount === 'percent' ? ' (' . $orders->discount . '%)' : '' }}</span>
+                <span>- {{ format_price($discountAmount) }} F</span>
+            </div>
+        @endif
         <div class="total-row">
             <span>LIVRAISON</span>
             <span>{{ format_price($orders->delivery_price) }} F</span>
