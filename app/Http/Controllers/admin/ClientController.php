@@ -396,6 +396,9 @@ class ClientController extends Controller
                 'min:1',
                 'max:12'
             ],
+        ], [
+            'phone.unique' => 'Ce numéro de téléphone est déjà associé à un compte, veuillez en utiliser un autre.',
+            'email.unique' => 'Cet email est déjà associé à un compte, veuillez en utiliser un autre.',
         ]);
 
         // Gestion anniversaire
@@ -527,7 +530,7 @@ class ClientController extends Controller
                 'min:1',
                 'max:12'
             ],
-            
+
             'motif' => [
                 'nullable',
                 'string',
@@ -540,6 +543,9 @@ class ClientController extends Controller
                 'max:255'
             ],
 
+        ], [
+            'phone.unique' => 'Ce numéro de téléphone est déjà associé à un autre compte, veuillez en utiliser un autre.',
+            'email.unique' => 'Cet email est déjà associé à un autre compte, veuillez en utiliser un autre.',
         ]);
 
         // Motif autre obligatoire si motif = autre

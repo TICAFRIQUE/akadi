@@ -43,8 +43,11 @@
                                     </div>
                                     <div class="form-group col-6">
                                         <label for="phone">Téléphone</label>
-                                        <input id="phone" type="number" class="form-control" name="phone"
+                                        <input id="phone" type="number" class="form-control @error('phone') is-invalid @enderror" name="phone"
                                             value="{{ old('phone') }}" required>
+                                        @error('phone')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                         <div class="invalid-feedback">Champs obligatoire</div>
                                     </div>
                                 </div>
@@ -52,8 +55,11 @@
                                 <div class="row">
                                     <div class="form-group col-12">
                                         <label for="email">Email</label>
-                                        <input id="email" type="email" class="form-control" name="email"
+                                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email"
                                             value="{{ old('email') }}">
+                                        @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
 

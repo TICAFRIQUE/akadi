@@ -1,5 +1,17 @@
 
 
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible text-white show fade msg" style="background-color: rgb(202, 36, 36)">
+                <div class="alert-body">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
         @if ($message = Session::get('success'))
             <div class="alert alert-success text-white alert-dismissible show fade msg" style="background-color:rgb(9, 156, 9)">
                 <div class="alert-body">
