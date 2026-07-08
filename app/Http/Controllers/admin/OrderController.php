@@ -316,6 +316,9 @@ class OrderController extends Controller
         }
         // ventes.periode.tout ou aucune permission de période → aucune restriction
 
+        // Date plancher pour clamper le filtre manuel (format Y-m-d pour comparaison string)
+        $periodMinDate = $hasPeriodRestriction ? $periodFrom->format('Y-m-d') : null;
+
         // Par défaut : mois en cours (uniquement si pas de restriction glissante et pas "toutes dates")
         if (!$hasPeriodRestriction && !$allDates) {
             $dateDebut = $dateDebut ?: now()->startOfMonth()->format('Y-m-d');
@@ -325,19 +328,22 @@ class OrderController extends Controller
         // ✅ Query de base réutilisable
         $baseQuery = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
             ->when($allowedStatuses !== null, fn($q) => $q->whereIn('status', $allowedStatuses))
-
-            // filtre statut
             ->when($status && $status !== 'all', fn($q) => $q->where('status', $status))
+            ->when($source, fn($q) => $q->where('source', $source));
 
-            // filtre source
-            ->when($source, fn($q) => $q->where('source', $source))
-
-            // restriction période (permission) — prioritaire sur le filtre date
-            ->when($hasPeriodRestriction, fn($q) => $q->where('created_at', '>=', $periodFrom))
-
-            // filtre date manuel (uniquement si l'utilisateur a la permission et les deux dates sont fournies)
-            ->when(!$hasPeriodRestriction && !$allDates && $dateDebut && $dateFin,
-                fn($q) => $q->whereBetween('date_order', [$dateDebut, $dateFin]));
+        // Application filtre de date avec bridage sur la période autorisée
+        if ($hasPeriodRestriction) {
+            if ($canFilter && $dateDebut && $dateFin) {
+                // L'utilisateur a filtré manuellement → clamper le début à la période autorisée
+                $clampedDebut = $dateDebut < $periodMinDate ? $periodMinDate : $dateDebut;
+                $baseQuery->whereBetween('date_order', [$clampedDebut, $dateFin]);
+            } else {
+                // Pas de filtre fourni → appliquer la fenêtre glissante
+                $baseQuery->where('created_at', '>=', $periodFrom);
+            }
+        } elseif (!$allDates && $dateDebut && $dateFin) {
+            $baseQuery->whereBetween('date_order', [$dateDebut, $dateFin]);
+        }
 
         // ✅ Stats via GROUP BY — pas de get()
         $statsRaw = (clone $baseQuery)
@@ -482,7 +488,8 @@ class OrderController extends Controller
             'statuts',
             'sources',
             'allDates',
-            'canFilter'
+            'canFilter',
+            'periodMinDate'
         ));
     }
     //filter

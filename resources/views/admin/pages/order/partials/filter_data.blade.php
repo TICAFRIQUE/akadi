@@ -55,7 +55,8 @@
 
             </div>
 
-            {{-- PÉRIODE --}}
+            {{-- PÉRIODE — masquée si la période est bridée par permission --}}
+            @if (!($periodMinDate ?? false))
             <div class="filter-group">
 
                 <label>Période</label>
@@ -69,14 +70,18 @@
                 </select>
 
             </div>
+            @else
+                <input type="hidden" name="all_dates" value="0">
+            @endif
 
             {{-- DATE DEBUT --}}
             <div class="filter-group date-range-group">
 
-                <label>Du</label>
+                <label>Du {{ ($periodMinDate ?? false) ? '(min : ' . \Carbon\Carbon::parse($periodMinDate)->format('d/m/Y') . ')' : '' }}</label>
 
                 <input type="date" name="date_debut"
-                    value="{{ $dateDebut ?: now()->startOfMonth()->format('Y-m-d') }}"
+                    value="{{ $dateDebut ?: ($periodMinDate ?? now()->startOfMonth()->format('Y-m-d')) }}"
+                    min="{{ $periodMinDate ?? '' }}"
                     class="form-control form-control-sm">
 
             </div>
@@ -87,7 +92,8 @@
                 <label>Au</label>
 
                 <input type="date" name="date_fin"
-                    value="{{ $dateFin ?: now()->endOfMonth()->format('Y-m-d') }}"
+                    value="{{ $dateFin ?: now()->format('Y-m-d') }}"
+                    max="{{ now()->format('Y-m-d') }}"
                     class="form-control form-control-sm">
 
             </div>
