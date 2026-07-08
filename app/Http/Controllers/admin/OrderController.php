@@ -304,7 +304,7 @@ class OrderController extends Controller
         $hasPeriodRestriction = false;
         if (!$user->hasPermissionTo('ventes.periode.tout')) {
             if ($user->hasPermissionTo('ventes.periode.jour')) {
-                $periodFrom           = now()->subHours(48);
+                $periodFrom           = now()->subHours(24);
                 $hasPeriodRestriction = true;
             } elseif ($user->hasPermissionTo('ventes.periode.semaine')) {
                 $periodFrom           = now()->subDays(7);
