@@ -358,9 +358,9 @@ class OrderController extends Controller
             'annulée'            => (int) ($statsRaw->get('annulée')?->total            ?? 0),
         ];
 
-        // ✅ Montants SANS les commandes annulées
+        // ✅ Montants SANS annulées ni précommandes (non encore actives)
         $statsNonAnnulee = (clone $baseQuery)
-            ->where('status', '!=', 'annulée')
+            ->whereNotIn('status', ['annulée', 'precommande'])
             ->selectRaw('SUM(total) as montant_total, SUM(solde_restant) as montant_solde')
             ->first();
 

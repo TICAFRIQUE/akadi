@@ -20,6 +20,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('mail:birthday')
             ->everySixHours();
 
+        $schedule->command('orders:activate-precommandes')
+            ->dailyAt('00:05');
+
         $schedule->command('app:update-site-status')
             ->everyMinute();
 

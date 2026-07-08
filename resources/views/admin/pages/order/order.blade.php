@@ -77,6 +77,10 @@
             background: linear-gradient(135deg, #f093fb, #f5576c);
         }
 
+        .bg-precommande {
+            background: linear-gradient(135deg, #4b2d8a, #7c4dff);
+        }
+
         /* ─── Filter bar ──────────────────────────────────────────── */
         .filter-bar {
             background: #f8f9fc;
@@ -384,6 +388,20 @@
                                 </div>
                             </div>
 
+                            {{-- PRÉCOMMANDES — p-confirmation ou accès complet --}}
+                            @if ($showAll)
+                            <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                                <div class="stat-card bg-precommande">
+                                    <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+                                    <div>
+                                        <div class="stat-label">Précommandes</div>
+                                        <div class="stat-value">{{ $countPrecommande }}</div>
+                                        <div class="stat-sub">en attente de date</div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+
                             {{-- ATTENTE — p-confirmation ou accès complet --}}
                             @if ($showAll)
                             <div class="col-6 col-sm-4 col-md-3 col-xl-2">
@@ -392,7 +410,7 @@
                                     <div>
                                         <div class="stat-label">Attente</div>
                                         <div class="stat-value">{{ $countAttente + $countAttenteAcompte }}</div>
-                                        <div class="stat-sub">{{ $countAttenteAcompte }} acompte &bull; {{ $countPrecommande }} précmd</div>
+                                        <div class="stat-sub">{{ $countAttenteAcompte }} acompte</div>
                                     </div>
                                 </div>
                             </div>
