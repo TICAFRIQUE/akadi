@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Observers\AchatObserver;
+use App\Observers\OrderObserver;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -104,6 +105,8 @@ class Order extends Model
     public static function boot()
     {
         parent::boot();
+        self::observe(OrderObserver::class);
+
         self::creating(function ($model) {
             $model->id   = IdGenerator::generate(['table' => 'orders', 'length' => 10, 'prefix' => mt_rand()]);
             $model->code = IdGenerator::generate(['table' => 'orders', 'field' => 'code', 'length' => 10, 'prefix' => mt_rand()]);
@@ -126,6 +129,11 @@ class Order extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function statusHistories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(OrderStatusHistory::class)->orderBy('created_at', 'asc');
     }
 
     public function caisse(): BelongsTo

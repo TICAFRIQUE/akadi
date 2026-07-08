@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendEmailJob;
 use App\Models\Order;
+use App\Models\OrderStatusHistory;
 use App\Models\PaymentMethod;
 use App\Services\StockService;
 use App\Services\TicAfriqueService;
@@ -517,7 +518,8 @@ class OrderController extends Controller
                 'paymentMethod',
                 'caisse',
                 'createdBy',
-                'products' => fn($q) => $q->with('media')
+                'products' => fn($q) => $q->with('media'),
+                'statusHistories.user',
             ])
             ->orderBy('created_at', 'DESC')->first();
 
@@ -635,7 +637,15 @@ class OrderController extends Controller
             }
         }
 
+        $oldStatus = $order->status;
         Order::whereId($orderId)->update(['status' => $state, 'created_by' => Auth::id()]);
+
+        OrderStatusHistory::create([
+            'order_id'   => $orderId,
+            'old_status' => $oldStatus,
+            'new_status' => $state,
+            'user_id'    => Auth::id(),
+        ]);
 
         // Envoyer SMS seulement si confirmée
         if ($state === Order::STATUS_CONFIRMEE) {
@@ -740,13 +750,20 @@ class OrderController extends Controller
             ? $request['motif_autre']
             : $request['motif'];
 
+        $order = Order::with('user')->whereId($request['commandeId'])->first();
+        $oldStatus = $order?->status;
+
         Order::whereId($request['commandeId'])->update([
             'status'                 => 'annulée',
             'raison_annulation_cmd'  => $motif
         ]);
 
-        // Charger la commande avec user pour l'email
-        $order = Order::with('user')->whereId($request['commandeId'])->first();
+        OrderStatusHistory::create([
+            'order_id'   => $request['commandeId'],
+            'old_status' => $oldStatus,
+            'new_status' => 'annulée',
+            'user_id'    => Auth::id(),
+        ]);
 
         if ($order) {
             $this->stockService->reincrementStockOnCancellation($order);

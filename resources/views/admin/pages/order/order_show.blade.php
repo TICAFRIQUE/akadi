@@ -115,6 +115,61 @@
             font-weight: 600;
             display: inline-block;
         }
+
+        /* ── Timeline historique ── */
+        .order-timeline {
+            position: relative;
+            padding-left: 28px;
+        }
+        .order-timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #dee2e6;
+        }
+        .tl-item {
+            position: relative;
+            margin-bottom: 18px;
+        }
+        .tl-item:last-child { margin-bottom: 0; }
+        .tl-dot {
+            position: absolute;
+            left: -23px;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 2px currentColor;
+        }
+        .tl-body {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+        .tl-meta {
+            font-size: .75rem;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+        .tl-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            font-size: .85rem;
+        }
+        .tl-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: .75rem;
+            font-weight: 700;
+            color: #fff;
+        }
     </style>
 @endsection
 
@@ -416,6 +471,67 @@
 
             </div>
         </div>
+
+        {{-- ── Historique des statuts ── --}}
+        @if ($orders->statusHistories->isNotEmpty())
+            @php
+                $tlColors = [
+                    'attente'            => '#ffc107',
+                    'precommande'        => '#6f42c1',
+                    'en_attente_acompte' => '#fd7e14',
+                    'confirmée'          => '#28a745',
+                    'en_cuisine'         => '#17a2b8',
+                    'cuisine_terminee'   => '#007bff',
+                    'en_livraison'       => '#6c757d',
+                    'livrée'             => '#198754',
+                    'annulée'            => '#dc3545',
+                ];
+                $tlLabels = [
+                    'attente'            => 'En attente',
+                    'precommande'        => 'Précommande',
+                    'en_attente_acompte' => 'Attente acompte',
+                    'confirmée'          => 'Confirmée',
+                    'en_cuisine'         => 'En cuisine',
+                    'cuisine_terminee'   => 'Cuisine terminée',
+                    'en_livraison'       => 'En livraison',
+                    'livrée'             => 'Livrée',
+                    'annulée'            => 'Annulée',
+                ];
+            @endphp
+            <div class="info-section mt-4">
+                <h6><i class="fas fa-history mr-1"></i>Historique des statuts</h6>
+                <div class="order-timeline">
+                    @foreach ($orders->statusHistories as $entry)
+                        @php
+                            $color = $tlColors[$entry->new_status] ?? '#6c757d';
+                            $label = $tlLabels[$entry->new_status] ?? ucfirst($entry->new_status);
+                            $oldLabel = $entry->old_status ? ($tlLabels[$entry->old_status] ?? ucfirst($entry->old_status)) : null;
+                        @endphp
+                        <div class="tl-item">
+                            <div class="tl-dot" style="color:{{ $color }};background:{{ $color }}"></div>
+                            <div class="tl-body">
+                                <div class="tl-meta">
+                                    {{ $entry->created_at->format('d/m/Y à H:i') }}
+                                    @if ($entry->user)
+                                        &nbsp;·&nbsp; <strong>{{ $entry->user->name }}</strong>
+                                    @endif
+                                </div>
+                                <div class="tl-status">
+                                    @if ($oldLabel)
+                                        <span class="tl-badge" style="background:{{ $tlColors[$entry->old_status] ?? '#6c757d' }}">{{ $oldLabel }}</span>
+                                        <i class="fas fa-arrow-right text-muted" style="font-size:.7rem"></i>
+                                    @endif
+                                    <span class="tl-badge" style="background:{{ $color }}">{{ $label }}</span>
+                                    @if ($entry->note)
+                                        <span class="text-muted small">— {{ $entry->note }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
 
         @include('admin.pages.order.motif_annulation')
     </div>

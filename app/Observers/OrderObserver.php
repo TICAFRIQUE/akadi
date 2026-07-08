@@ -3,6 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Order;
+use App\Models\OrderStatusHistory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class OrderObserver
@@ -13,8 +15,24 @@ class OrderObserver
      */
     public function created(Order $order)
     {
-        // La décrémentation se fera lors de l'attachement des produits
-        // via saved() qui est appelé après l'association
+        OrderStatusHistory::create([
+            'order_id'   => $order->id,
+            'old_status' => null,
+            'new_status' => $order->status,
+            'user_id'    => Auth::id(),
+        ]);
+    }
+
+    public function updated(Order $order)
+    {
+        if ($order->isDirty('status')) {
+            OrderStatusHistory::create([
+                'order_id'   => $order->id,
+                'old_status' => $order->getOriginal('status'),
+                'new_status' => $order->status,
+                'user_id'    => Auth::id(),
+            ]);
+        }
     }
 
     /**
