@@ -287,8 +287,8 @@ class OrderController extends Controller
             abort(403, 'Accès non autorisé.');
         }
 
-        $user         = auth()->user();
-        $isPrivileged = in_array($user->role ?? '', ['developpeur', 'administrateur', 'webmaster', 'gestionnaire']);
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
 
         // Permission filtre date — basé uniquement sur la permission, sans bypass de rôle
         $canFilter = $user->hasPermissionTo('ventes.filtre');
@@ -299,6 +299,7 @@ class OrderController extends Controller
         }
 
         // Restriction de période glissante — aucun bypass de rôle
+        // Aucune permission de période = aucune restriction (accès complet)
         $periodFrom           = null;
         $hasPeriodRestriction = false;
         if ($user->hasPermissionTo('ventes.periode.jour')) {
@@ -310,12 +311,8 @@ class OrderController extends Controller
         } elseif ($user->hasPermissionTo('ventes.periode.mois')) {
             $periodFrom           = now()->subDays(30);
             $hasPeriodRestriction = true;
-        } elseif (!$user->hasPermissionTo('ventes.periode.tout')) {
-            // Aucune permission de période → restriction par défaut : aujourd'hui
-            $periodFrom           = now()->startOfDay();
-            $hasPeriodRestriction = true;
         }
-        // ventes.periode.tout → aucune restriction glissante
+        // ventes.periode.tout ou aucune permission → aucune restriction
 
         // ✅ Query de base réutilisable
         $baseQuery = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
