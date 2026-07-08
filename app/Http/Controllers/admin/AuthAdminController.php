@@ -76,14 +76,31 @@ class AuthAdminController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        $permissions     = Permission::orderBy('name')->get();
+        $allPermissions  = Permission::orderBy('name')->get();
         $userPermissions = $user->permissions->pluck('name')->toArray();
 
-        // dd($userPermissions);
+        // Grouper les permissions selon la structure du seeder
+        $seederGroups = \Database\Seeders\PermissionSeeder::$permissions;
+        $groupedPermissions = [];
+        $seederAllNames = collect($seederGroups)->flatten()->toArray();
+        foreach ($seederGroups as $groupName => $permNames) {
+            $group = $allPermissions->whereIn('name', $permNames);
+            if ($group->isNotEmpty()) {
+                $groupedPermissions[$groupName] = $group;
+            }
+        }
+        // Permissions hors seeder (créées manuellement)
+        $ungrouped = $allPermissions->whereNotIn('name', $seederAllNames);
+        if ($ungrouped->isNotEmpty()) {
+            $groupedPermissions['Autres'] = $ungrouped;
+        }
+
+        $permissions = $allPermissions; // conservé pour la compatibilité
+
         return view('admin.pages.user.userDetail', compact(
             'user', 'orders', 'orders_livre', 'orders_annule',
             'orders_en_cours', 'ca_total', 'ca_mois', 'orders_mois',
-            'dateDebut', 'dateFin', 'permissions', 'userPermissions'
+            'dateDebut', 'dateFin', 'permissions', 'userPermissions', 'groupedPermissions'
         ));
     }
 

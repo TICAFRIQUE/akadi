@@ -40,6 +40,16 @@ class PermissionSeeder extends Seeder
             'p-livraison',         // voir uniquement les commandes cuisine_terminee
         ],
 
+        // ── Permissions spéciales ventes ──────────────────────────────────────
+        'Permissions spéciales ventes' => [
+            'ventes.chiffre-affaires', // voir les montants CA / revenu / solde
+            'ventes.filtre',           // utiliser le filtre par date
+            'ventes.periode.jour',     // liste restreinte aux 24 dernières heures
+            'ventes.periode.semaine',  // liste restreinte aux 7 derniers jours
+            'ventes.periode.mois',     // liste restreinte aux 30 derniers jours
+            'ventes.periode.tout',     // aucune restriction de période
+        ],
+
         // ── Caisse ────────────────────────────────────────────────────────────────
         'Caisse' => [
             'caisse.voir',

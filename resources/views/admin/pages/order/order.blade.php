@@ -349,44 +349,57 @@
 
                     {{-- ===== STATS CARDS AVEC YAJRA DATATABLE ===== --}}
                     @php
-                        $countAttente = $stats['countAttente'];
+                        $countAttente        = $stats['countAttente'];
                         $countAttenteAcompte = $stats['countAttenteAcompte'];
-                        $countPrecommande = $stats['countPrecommande'];
-                        $countConfirmee = $stats['countConfirmee'];
-                        $countCuisine = $stats['countCuisine'];
-                        $countCuisineTm = $stats['countCuisineTm'];
-                        $countLivraison = $stats['countLivraison'];
-                        $countLivree = $stats['countLivree'];
-                        $countAnnulee = $stats['countAnnulee'];
-                        $montantTotal = $stats['montantTotal'];
-                        $montantSolde = $stats['montantSolde'];
-                        $montantRevenu = $stats['montantRevenu'];
+                        $countPrecommande    = $stats['countPrecommande'];
+                        $countConfirmee      = $stats['countConfirmee'];
+                        $countCuisine        = $stats['countCuisine'];
+                        $countCuisineTm      = $stats['countCuisineTm'];
+                        $countLivraison      = $stats['countLivraison'];
+                        $countLivree         = $stats['countLivree'];
+                        $countAnnulee        = $stats['countAnnulee'];
+                        $montantTotal        = $stats['montantTotal'];
+                        $montantSolde        = $stats['montantSolde'];
+                        $montantRevenu       = $stats['montantRevenu'];
+
+                        $u              = auth()->user();
+                        $isConfirmation = $u->hasPermissionTo('p-confirmation');
+                        $isCuisine      = $u->hasPermissionTo('p-cuisine');
+                        $isLivraison    = $u->hasPermissionTo('p-livraison');
+                        // Accès complet = p-confirmation ou aucun des 3 rôles spéciaux
+                        $showAll        = $isConfirmation || (!$isCuisine && !$isLivraison);
                     @endphp
                     <div class="card-body pb-0 pt-3">
                         <div class="row" style="row-gap:10px">
+
+                            {{-- TOTAL — visible par tous --}}
                             <div class="col-6 col-sm-4 col-md-3 col-xl-2">
                                 <div class="stat-card bg-total">
                                     <div class="stat-icon"><i class="fas fa-list-ol"></i></div>
                                     <div>
                                         <div class="stat-label">Total</div>
-                                        {{-- <div class="stat-value">{{ count($orders) }}</div> --}}
                                         <div class="stat-value">{{ $stats['total'] }}</div>
-
                                         <div class="stat-sub">commandes</div>
                                     </div>
                                 </div>
                             </div>
+
+                            {{-- ATTENTE — p-confirmation ou accès complet --}}
+                            @if ($showAll)
                             <div class="col-6 col-sm-4 col-md-3 col-xl-2">
                                 <div class="stat-card bg-attente">
                                     <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
                                     <div>
                                         <div class="stat-label">Attente</div>
                                         <div class="stat-value">{{ $countAttente + $countAttenteAcompte }}</div>
-                                        <div class="stat-sub">{{ $countAttenteAcompte }} acompte &bull;
-                                            {{ $countPrecommande }} précmd</div>
+                                        <div class="stat-sub">{{ $countAttenteAcompte }} acompte &bull; {{ $countPrecommande }} précmd</div>
                                     </div>
                                 </div>
                             </div>
+                            @endif
+
+                            {{-- CONFIRMÉES — p-confirmation ou accès complet --}}
+                            @if ($showAll)
                             <div class="col-6 col-sm-4 col-md-3 col-xl-2">
                                 <div class="stat-card bg-confirmee">
                                     <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
@@ -397,6 +410,24 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
+
+                            {{-- EN CUISINE — p-cuisine, p-confirmation, accès complet --}}
+                            @if ($showAll || $isCuisine)
+                            <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                                <div class="stat-card" style="background:linear-gradient(135deg,#17a2b8,#48d1cc)">
+                                    <div class="stat-icon"><i class="fas fa-utensils"></i></div>
+                                    <div>
+                                        <div class="stat-label">En cuisine</div>
+                                        <div class="stat-value">{{ $countCuisine }}</div>
+                                        <div class="stat-sub">{{ $countCuisineTm }} terminées</div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+
+                            {{-- LIVRAISON — p-livraison, p-confirmation, accès complet --}}
+                            @if ($showAll || $isLivraison)
                             <div class="col-6 col-sm-4 col-md-3 col-xl-2">
                                 <div class="stat-card bg-livree">
                                     <div class="stat-icon"><i class="fas fa-shipping-fast"></i></div>
@@ -407,6 +438,10 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
+
+                            {{-- ANNULÉES — p-confirmation ou accès complet --}}
+                            @if ($showAll)
                             <div class="col-6 col-sm-4 col-md-3 col-xl-2">
                                 <div class="stat-card bg-annulee">
                                     <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
@@ -416,15 +451,17 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
+
+                            {{-- CA TOTAL + REVENU — permission ventes.chiffre-affaires --}}
+                            @can('ventes.chiffre-affaires')
                             <div class="col-6 col-sm-4 col-md-3 col-xl-2">
                                 <div class="stat-card bg-montant">
                                     <div class="stat-icon"><i class="fas fa-coins"></i></div>
                                     <div>
                                         <div class="stat-label">CA Total</div>
-                                        <div class="stat-value" style="font-size:.9rem">
-                                            {{ number_format($montantTotal, 0, ',', ' ') }}</div>
-                                        <div class="stat-sub">Solde: {{ number_format($montantSolde, 0, ',', ' ') }} F
-                                        </div>
+                                        <div class="stat-value" style="font-size:.9rem">{{ number_format($montantTotal, 0, ',', ' ') }}</div>
+                                        <div class="stat-sub">Solde: {{ number_format($montantSolde, 0, ',', ' ') }} F</div>
                                     </div>
                                 </div>
                             </div>
@@ -433,13 +470,13 @@
                                     <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
                                     <div>
                                         <div class="stat-label">Revenu</div>
-                                        <div class="stat-value" style="font-size:.9rem">
-                                            {{ number_format($montantRevenu, 0, ',', ' ') }}</div>
-                                        <div class="stat-sub">Commandes livrées
-                                        </div>
+                                        <div class="stat-value" style="font-size:.9rem">{{ number_format($montantRevenu, 0, ',', ' ') }}</div>
+                                        <div class="stat-sub">Commandes livrées</div>
                                     </div>
                                 </div>
                             </div>
+                            @endcan
+
                         </div>
                     </div>
 

@@ -303,20 +303,19 @@
                         @endif
 
                         @php
-                            $groupLabels = [
-                                'dashboard'      => ['label' => 'Dashboard',       'icon' => 'fas fa-tachometer-alt'],
-                                'catalogue'      => ['label' => 'Catalogue',       'icon' => 'fas fa-tags'],
-                                'ventes'         => ['label' => 'Ventes',          'icon' => 'fas fa-shopping-cart'],
-                                'caisse'         => ['label' => 'Caisse',          'icon' => 'fas fa-cash-register'],
-                                'contenu'        => ['label' => 'Contenu',         'icon' => 'fas fa-photo-video'],
-                                'depenses'       => ['label' => 'Dépenses',        'icon' => 'fas fa-file-invoice-dollar'],
-                                'rapports'       => ['label' => 'Rapports',        'icon' => 'fas fa-chart-bar'],
-                                'administration' => ['label' => 'Administration',  'icon' => 'fas fa-cogs'],
-                                'p'              => ['label' => 'Spécial ventes',  'icon' => 'fas fa-star'],
+                            $groupMeta = [
+                                'Tableau de bord'               => ['icon' => 'fas fa-tachometer-alt'],
+                                'Catalogue'                     => ['icon' => 'fas fa-tags'],
+                                'Ventes'                        => ['icon' => 'fas fa-shopping-cart'],
+                                'Permissions spéciales ventes'  => ['icon' => 'fas fa-star'],
+                                'Caisse'                        => ['icon' => 'fas fa-cash-register'],
+                                'Contenu'                       => ['icon' => 'fas fa-photo-video'],
+                                'Dépenses'                      => ['icon' => 'fas fa-file-invoice-dollar'],
+                                'Rapports'                      => ['icon' => 'fas fa-chart-bar'],
+                                'Administration'                => ['icon' => 'fas fa-cogs'],
+                                'Gestion-de-stock '             => ['icon' => 'fas fa-boxes'],
+                                'Autres'                        => ['icon' => 'fas fa-key'],
                             ];
-                            $grouped = $permissions->groupBy(function($p) {
-                                return str_contains($p->name, '.') ? explode('.', $p->name)[0] : explode('-', $p->name)[0];
-                            });
                         @endphp
 
                         <form action="{{ route('user.permissions.sync', $user->id) }}" method="POST" id="formPermissions">
@@ -348,17 +347,17 @@
                                 <p id="noSearchResult" class="text-muted small d-none">Aucune permission ne correspond à la recherche.</p>
 
                                 {{-- Groupes --}}
-                                @foreach ($grouped as $prefix => $group)
+                                @foreach ($groupedPermissions as $groupName => $group)
                                     @php
-                                        $meta  = $groupLabels[$prefix] ?? ['label' => ucfirst($prefix), 'icon' => 'fas fa-key'];
-                                        $gId   = 'group_' . $prefix;
+                                        $meta = $groupMeta[$groupName] ?? ['icon' => 'fas fa-key'];
+                                        $gId  = 'group_' . preg_replace('/[^a-z0-9]+/', '-', strtolower($groupName));
                                     @endphp
                                     <div class="perm-group mb-3" id="{{ $gId }}">
                                         <div class="d-flex align-items-center justify-content-between mb-1
                                                     border-bottom pb-1">
                                             <span class="font-weight-bold text-dark" style="font-size:.9rem;">
                                                 <i class="{{ $meta['icon'] }} mr-1 text-primary"></i>
-                                                {{ $meta['label'] }}
+                                                {{ $groupName }}
                                                 <span class="badge badge-light text-muted ml-1 group-count">{{ $group->count() }}</span>
                                             </span>
                                             <div style="gap:4px;" class="d-flex">

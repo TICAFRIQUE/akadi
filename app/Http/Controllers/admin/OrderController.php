@@ -275,17 +275,11 @@ class OrderController extends Controller
 
     public function getAllOrder(Request $request)
     {
-        $status   = $request->input('status'); // filtre statut
-        $source   = $request->input('source'); // filtre source (web, pos, etc.)
-        $allDates = $request->boolean('all_dates'); // si true, ignorer les filtres de date
-
+        $status    = $request->input('status');
+        $source    = $request->input('source');
         $dateDebut = $request->input('date_debut');
         $dateFin   = $request->input('date_fin');
-
-        if (!$allDates) {
-            $dateDebut = $dateDebut ?: now()->startOfMonth()->format('Y-m-d');
-            $dateFin   = $dateFin   ?: now()->endOfMonth()->format('Y-m-d');
-        }
+        $allDates  = $request->boolean('all_dates');
 
         $allowedStatuses = orderStatusesAllowed();
 
@@ -293,24 +287,52 @@ class OrderController extends Controller
             abort(403, 'Accès non autorisé.');
         }
 
-        // ✅ Query de base réutilisable 
-        // $baseQuery = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
-        //     ->when($allowedStatuses !== null, fn($q) => $q->whereIn('status', $allowedStatuses))
-        //     ->when($source, fn($q) => $q->where('source', $source))
-        //     ->when(!$allDates, fn($q) => $q->whereBetween('date_order', [$dateDebut, $dateFin]));
+        $user         = auth()->user();
+        $isPrivileged = in_array($user->role ?? '', ['developpeur', 'administrateur', 'webmaster', 'gestionnaire']);
+
+        // Permission filtre date — basé uniquement sur la permission, sans bypass de rôle
+        $canFilter = $user->hasPermissionTo('ventes.filtre');
+        if (!$canFilter) {
+            $allDates  = true;
+            $dateDebut = null;
+            $dateFin   = null;
+        }
+
+        // Restriction de période glissante — aucun bypass de rôle
+        $periodFrom           = null;
+        $hasPeriodRestriction = false;
+        if ($user->hasPermissionTo('ventes.periode.jour')) {
+            $periodFrom           = now()->subHours(24);
+            $hasPeriodRestriction = true;
+        } elseif ($user->hasPermissionTo('ventes.periode.semaine')) {
+            $periodFrom           = now()->subDays(7);
+            $hasPeriodRestriction = true;
+        } elseif ($user->hasPermissionTo('ventes.periode.mois')) {
+            $periodFrom           = now()->subDays(30);
+            $hasPeriodRestriction = true;
+        } elseif (!$user->hasPermissionTo('ventes.periode.tout')) {
+            // Aucune permission de période → restriction par défaut : aujourd'hui
+            $periodFrom           = now()->startOfDay();
+            $hasPeriodRestriction = true;
+        }
+        // ventes.periode.tout → aucune restriction glissante
+
+        // ✅ Query de base réutilisable
         $baseQuery = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
             ->when($allowedStatuses !== null, fn($q) => $q->whereIn('status', $allowedStatuses))
 
-            // ✅ filtre statut
-            ->when($status && $status !== 'all', function ($q) use ($status) {
-                $q->where('status', $status);
-            })
+            // filtre statut
+            ->when($status && $status !== 'all', fn($q) => $q->where('status', $status))
 
-            // ✅ filtre source
+            // filtre source
             ->when($source, fn($q) => $q->where('source', $source))
 
-            // ✅ filtre date
-            ->when(!$allDates, fn($q) => $q->whereBetween('date_order', [$dateDebut, $dateFin]));
+            // restriction période (permission) — prioritaire sur le filtre date
+            ->when($hasPeriodRestriction, fn($q) => $q->where('created_at', '>=', $periodFrom))
+
+            // filtre date manuel (uniquement si l'utilisateur a la permission et les deux dates sont fournies)
+            ->when(!$hasPeriodRestriction && !$allDates && $dateDebut && $dateFin,
+                fn($q) => $q->whereBetween('date_order', [$dateDebut, $dateFin]));
 
         // ✅ Stats via GROUP BY — pas de get()
         $statsRaw = (clone $baseQuery)
@@ -454,7 +476,8 @@ class OrderController extends Controller
             'dateFin',
             'statuts',
             'sources',
-            'allDates'
+            'allDates',
+            'canFilter'
         ));
     }
     //filter

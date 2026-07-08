@@ -1,5 +1,7 @@
 {{-- ================= FILTRE TOOLBAR ================= --}}
 
+@if ($canFilter ?? false)
+
 @php
     $currentStatus = request('status', 'all');
     $currentSource = request('source', '');
@@ -60,15 +62,15 @@
 
                 <select name="all_dates" id="periodeSelect" class="form-control form-control-sm">
 
-                    <option value="0" {{ !$allDates ? 'selected' : '' }}>
-
-                        Mois en cours
-
-                    </option>
-
                     <option value="1" {{ $allDates ? 'selected' : '' }}>
 
                         Toutes
+
+                    </option>
+
+                    <option value="0" {{ !$allDates && $dateDebut ? 'selected' : '' }}>
+
+                        Personnalisée
 
                     </option>
 
@@ -95,10 +97,6 @@
 
             </div>
 
-
-
-            
-
             {{-- ACTIONS --}}
             <div class="filter-actions">
 
@@ -122,6 +120,8 @@
     </form>
 
 </div>
+
+@endif
 
 {{-- ================= STYLE ================= --}}
 
