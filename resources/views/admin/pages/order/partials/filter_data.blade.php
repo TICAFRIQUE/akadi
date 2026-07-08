@@ -62,17 +62,9 @@
 
                 <select name="all_dates" id="periodeSelect" class="form-control form-control-sm">
 
-                    <option value="1" {{ $allDates ? 'selected' : '' }}>
+                    <option value="0" {{ !$allDates ? 'selected' : '' }}>Mois en cours</option>
 
-                        Toutes
-
-                    </option>
-
-                    <option value="0" {{ !$allDates && $dateDebut ? 'selected' : '' }}>
-
-                        Personnalisée
-
-                    </option>
+                    <option value="1" {{ $allDates ? 'selected' : '' }}>Toutes</option>
 
                 </select>
 
@@ -83,7 +75,8 @@
 
                 <label>Du</label>
 
-                <input type="date" name="date_debut" value="{{ $dateDebut }}"
+                <input type="date" name="date_debut"
+                    value="{{ $dateDebut ?: now()->startOfMonth()->format('Y-m-d') }}"
                     class="form-control form-control-sm">
 
             </div>
@@ -93,7 +86,9 @@
 
                 <label>Au</label>
 
-                <input type="date" name="date_fin" value="{{ $dateFin }}" class="form-control form-control-sm">
+                <input type="date" name="date_fin"
+                    value="{{ $dateFin ?: now()->endOfMonth()->format('Y-m-d') }}"
+                    class="form-control form-control-sm">
 
             </div>
 

@@ -298,21 +298,28 @@ class OrderController extends Controller
             $dateFin   = null;
         }
 
-        // Restriction de période glissante — aucun bypass de rôle
-        // Aucune permission de période = aucune restriction (accès complet)
+        // Restriction de période glissante — ventes.periode.tout vérifié en premier (plus permissif)
         $periodFrom           = null;
         $hasPeriodRestriction = false;
-        if ($user->hasPermissionTo('ventes.periode.jour')) {
-            $periodFrom           = now()->subHours(24);
-            $hasPeriodRestriction = true;
-        } elseif ($user->hasPermissionTo('ventes.periode.semaine')) {
-            $periodFrom           = now()->subDays(7);
-            $hasPeriodRestriction = true;
-        } elseif ($user->hasPermissionTo('ventes.periode.mois')) {
-            $periodFrom           = now()->subDays(30);
-            $hasPeriodRestriction = true;
+        if (!$user->hasPermissionTo('ventes.periode.tout')) {
+            if ($user->hasPermissionTo('ventes.periode.jour')) {
+                $periodFrom           = now()->subHours(24);
+                $hasPeriodRestriction = true;
+            } elseif ($user->hasPermissionTo('ventes.periode.semaine')) {
+                $periodFrom           = now()->subDays(7);
+                $hasPeriodRestriction = true;
+            } elseif ($user->hasPermissionTo('ventes.periode.mois')) {
+                $periodFrom           = now()->subDays(30);
+                $hasPeriodRestriction = true;
+            }
         }
-        // ventes.periode.tout ou aucune permission → aucune restriction
+        // ventes.periode.tout ou aucune permission de période → aucune restriction
+
+        // Par défaut : mois en cours (uniquement si pas de restriction glissante et pas "toutes dates")
+        if (!$hasPeriodRestriction && !$allDates) {
+            $dateDebut = $dateDebut ?: now()->startOfMonth()->format('Y-m-d');
+            $dateFin   = $dateFin   ?: now()->endOfMonth()->format('Y-m-d');
+        }
 
         // ✅ Query de base réutilisable
         $baseQuery = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
