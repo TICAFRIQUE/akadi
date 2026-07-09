@@ -93,7 +93,6 @@
 
                 <input type="date" name="date_fin"
                     value="{{ $dateFin ?: now()->format('Y-m-d') }}"
-                    max="{{ now()->format('Y-m-d') }}"
                     class="form-control form-control-sm">
 
             </div>

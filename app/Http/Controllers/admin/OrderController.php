@@ -319,7 +319,8 @@ class OrderController extends Controller
         // Date plancher pour clamper le filtre manuel (format Y-m-d pour comparaison string)
         $periodMinDate = $hasPeriodRestriction ? $periodFrom->format('Y-m-d') : null;
 
-        // Par défaut : mois en cours (uniquement si pas de restriction glissante et pas "toutes dates")
+        // Par défaut : mois en cours (si pas de restriction glissante et pas "toutes dates")
+        // ventes.periode.tout → même défaut que les autres (mois en cours), mais filtre manuel sans bridage
         if (!$hasPeriodRestriction && !$allDates) {
             $dateDebut = $dateDebut ?: now()->startOfMonth()->format('Y-m-d');
             $dateFin   = $dateFin   ?: now()->endOfMonth()->format('Y-m-d');
