@@ -143,8 +143,17 @@
                                     </div>
                                     <div class="form-group mb-0">
                                         <label class="small">Téléphone</label>
-                                        <input type="tel" name="client_phone" class="form-control"
-                                            placeholder="+225 07 …" value="{{ old('client_phone') }}">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+225</span>
+                                            </div>
+                                            <input type="tel" name="client_phone" class="form-control"
+                                                placeholder="0701020304" value="{{ old('client_phone') }}"
+                                                maxlength="10" minlength="10">
+                                        </div>
+                                        <small class="text-muted" style="font-size:.75rem">
+                                            <i class="fas fa-info-circle"></i> Ce numéro sera le mot de passe initial.
+                                        </small>
                                     </div>
                                 </div>
                             </div>

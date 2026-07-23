@@ -368,7 +368,7 @@ class ClientController extends Controller
 
             'phone' => [
                 'required',
-                'digits_between:8,15',
+                'digits:10',
                 'unique:users,phone'
             ],
 
@@ -376,11 +376,6 @@ class ClientController extends Controller
                 'nullable',
                 'email',
                 'unique:users,email'
-            ],
-
-            'password' => [
-                'required',
-                'min:8'
             ],
 
             'jour' => [
@@ -429,7 +424,7 @@ class ClientController extends Controller
             'localisation'      => $request->localisation,
             'date_anniversaire' => $date_anniv,
 
-            'password'          => Hash::make($request->password),
+            'password'          => Hash::make($request->phone),
 
             'motif'             => $request->motif,
 
@@ -502,7 +497,7 @@ class ClientController extends Controller
 
             'phone' => [
                 'required',
-                'digits_between:8,15',
+                'digits:10',
                 'unique:users,phone,' . $user->id
             ],
 
@@ -510,11 +505,6 @@ class ClientController extends Controller
                 'nullable',
                 'email',
                 'unique:users,email,' . $user->id
-            ],
-
-            'password' => [
-                'nullable',
-                'min:8'
             ],
 
             'jour' => [
@@ -601,11 +591,9 @@ class ClientController extends Controller
                 : null,
         ];
 
-        // Mise à jour mot de passe si renseigné
-        if ($request->filled('password')) {
-
-            $updateData['password'] =
-                Hash::make($request->password);
+        // Réinitialiser le mot de passe au numéro si coché
+        if ($request->boolean('reset_password')) {
+            $updateData['password'] = Hash::make($request->phone);
         }
 
         // Update

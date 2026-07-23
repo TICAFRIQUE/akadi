@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html class="no-js" lang="{{ Config::get('app.locale') }}">
 
 <head>
@@ -83,6 +83,73 @@
     <link rel="stylesheet" href="{{ asset('site/assets/css/style.css') }}">
 
     <style>
+        /* ── Palette Akadi (logo) ── */
+        :root {
+            --ak-orange:  #f85d05;   /* orange arc logo – CTA primaire  */
+            --ak-red:     #eb0029;   /* rouge logo – secondaire/alertes */
+            --ak-dark:    #0a0000;   /* noir chaud – fonds sombres       */
+            --ak-orange-hover: #d44d00;
+            --ak-red-hover:    #c4001f;
+            --ak-gradient: linear-gradient(90deg, #eb0029, #f85d05);
+        }
+
+        /* ── Breadcrumb global Akadi ── */
+        .ak-breadcrumb {
+            background: linear-gradient(135deg, #1a0000 0%, #3d0010 100%);
+            padding: 28px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .ak-breadcrumb::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #eb0029, #f85d05);
+        }
+        .ak-breadcrumb-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ak-breadcrumb-icon {
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            background: rgba(255,255,255,.1);
+            display: flex; align-items: center; justify-content: center;
+            font-size: .9rem;
+            flex-shrink: 0;
+        }
+        .ak-breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+            margin: 0; padding: 0;
+            flex-wrap: wrap;
+        }
+        .ak-breadcrumb-nav li { font-size: .8rem; color: rgba(255,255,255,.5); }
+        .ak-breadcrumb-nav li a {
+            color: rgba(255,255,255,.7);
+            text-decoration: none;
+            transition: color .15s;
+        }
+        .ak-breadcrumb-nav li a:hover { color: var(--ak-orange, #f85d05); }
+        .ak-breadcrumb-nav li.active { color: var(--ak-orange, #f85d05); font-weight: 600; }
+        .ak-breadcrumb-sep { color: rgba(255,255,255,.3); font-size: .65rem; }
+        .ak-breadcrumb-badge {
+            font-size: .82rem;
+            font-weight: 700;
+            background: #eb0029;
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 50px;
+        }
+
         /* Empêcher le scroll horizontal */
         html,
         body {
@@ -162,16 +229,45 @@
         .whatsapp-float {
             position: fixed;
             bottom: 90px;
-            right: 20px;
+            right: 16px;
             background-color: #25d366;
             color: white;
             border-radius: 50%;
-            padding: 16px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 1000;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            font-size: 24px;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.25);
+            font-size: 18px;
             transition: transform 0.3s;
+            text-decoration: none;
+        }
+
+        .facebook-float {
+            position: fixed;
+            bottom: 144px;
+            right: 16px;
+            background-color: #1877f2;
+            color: white;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.25);
+            font-size: 16px;
+            transition: transform 0.3s;
+            text-decoration: none;
+        }
+
+        .facebook-float:hover {
+            transform: scale(1.1);
+            color: white;
+            text-decoration: none;
         }
 
         /* Menu mobile en bas */
@@ -364,10 +460,20 @@
                 display: block;
             }
 
-            /* Ajuster WhatsApp float pour ne pas chevaucher */
+            /* Ajuster WhatsApp et Facebook float pour ne pas chevaucher */
             .whatsapp-float {
-                bottom: 150px;
-                right: 15px;
+                bottom: 140px;
+                right: 12px;
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            .facebook-float {
+                bottom: 190px;
+                right: 12px;
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
             }
 
             /* Ajouter padding en bas pour éviter que le contenu soit caché */
@@ -520,6 +626,130 @@
         .whatsapp-icon {
             font-size: 28px;
         }
+
+        /* ── Footer Akadi ── */
+        .ak-footer {
+            background: #100000;
+            color: rgba(255,255,255,.7);
+            font-size: .88rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .ak-footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #eb0029, #f85d05, #eb0029);
+        }
+        .ak-footer-main { padding: 60px 0 40px; }
+        .ak-footer-brand { max-width: 280px; }
+        .ak-footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            text-decoration: none;
+        }
+        .ak-footer-logo img { width: 52px; height: 52px; }
+        .ak-footer-logo-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: .04em;
+        }
+        .ak-footer-logo-name span { color: #eb0029; }
+        .ak-footer-desc {
+            font-size: .84rem;
+            line-height: 1.75;
+            color: rgba(255,255,255,.55);
+            margin-bottom: 20px;
+        }
+        .ak-footer-socials { display: flex; gap: 8px; }
+        .ak-footer-social {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,.65);
+            font-size: .8rem;
+            text-decoration: none;
+            transition: all .2s;
+        }
+        .ak-footer-social:hover { text-decoration: none; }
+        .ak-footer-social.fb:hover { background: #1877f2; border-color: #1877f2; color: #fff; }
+        .ak-footer-social.wa:hover { background: #25d366; border-color: #25d366; color: #fff; }
+        .ak-footer-col-title {
+            font-size: .78rem;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ak-footer-col-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,.1);
+        }
+        .ak-footer-links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+        .ak-footer-links li a {
+            color: rgba(255,255,255,.55);
+            text-decoration: none;
+            font-size: .85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all .2s;
+        }
+        .ak-footer-links li a::before {
+            content: '';
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: #eb0029;
+            flex-shrink: 0;
+            transition: transform .2s;
+        }
+        .ak-footer-links li a:hover { color: #f85d05; padding-left: 4px; }
+        .ak-footer-links li a:hover::before { transform: scale(1.5); }
+        .ak-footer-contacts { display: flex; flex-direction: column; gap: 14px; }
+        .ak-footer-contact-item { display: flex; align-items: flex-start; gap: 12px; }
+        .ak-footer-contact-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: rgba(235,0,41,.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #eb0029;
+            font-size: .8rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .ak-footer-contact-text { color: rgba(255,255,255,.55); font-size: .83rem; line-height: 1.5; }
+        .ak-footer-contact-text a { color: rgba(255,255,255,.7); text-decoration: none; transition: color .15s; }
+        .ak-footer-contact-text a:hover { color: #f85d05; text-decoration: none; }
+        .ak-footer-map { border-radius: 12px; overflow: hidden; height: 180px; border: 1px solid rgba(255,255,255,.08); }
+        .ak-footer-map iframe { width: 100%; height: 100%; border: 0; display: block; }
+        .ak-footer-divider { height: 1px; background: rgba(255,255,255,.08); margin: 0; }
+        .ak-footer-bottom { padding: 18px 0; }
+        .ak-footer-bottom-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+        .ak-footer-copyright { font-size: .78rem; color: rgba(255,255,255,.35); }
+        .ak-footer-copyright a { color: rgba(255,255,255,.5); text-decoration: none; }
+        .ak-footer-copyright a:hover { color: #f85d05; }
+        .ak-footer-made { font-size: .75rem; color: rgba(255,255,255,.25); display: flex; align-items: center; gap: 5px; }
+        .ak-footer-made i { color: #eb0029; }
+        @media (max-width: 767px) {
+            .ak-footer-main { padding: 40px 0 24px; }
+            .ak-footer-brand { max-width: 100%; margin-bottom: 32px; }
+        }
     </style>
 
 </head>
@@ -556,137 +786,103 @@
 
 
 
-    <footer class="footer-wrapper footer-layout5" data-bg-src="">
-        <div class="widget-area">
+    <footer class="ak-footer">
+
+        <div class="ak-footer-main">
             <div class="container">
-                <div class="row justify-content-between">
-                    <div class="col-md-3 col-xl-3">
-                        <div class="widget footer-widget">
-                            <h3 class="widget_title">A propos de AKADI</h3>
-                            <div class="th-widget-about">
-                                <p class="about-text" style="font-size: 14px; line-height: 1.6;">
-                                    AKADI Restaurant est un restaurant en ligne spécialisé dans le poulet fumé braisé et
-                                    les saveurs locales revisitées.
+                <div class="row gy-4">
 
-                                    Notre mission est de créer des moments de plaisir à travers des repas savoureux,
-                                    préparés avec soin et passion.
-
-                                    Chez AKADI, nous mettons un point d’honneur sur la qualité, l’hygiène, le goût et
-                                    une expérience client simple et agréable, de la commande à la livraison.
-
-                                    Nous proposons une sélection de plats gourmands adaptés aux envies de nos clients,
-                                    avec un service pensé pour allier praticité et satisfaction.
-
-                                    AKADI, c’est le goût du partage et de la convivialité… livré directement chez vous.
-                                </p>
-                                <div class="th-social">
-                                    <a href="https://www.facebook.com/CvraimentDoux" target="blank"><i
-                                            class="fab fa-facebook-f"></i></a>
-                                    {{-- <a href="https://www.twitter.com/"><i class="fab fa-twitter"></i></a>
-                                    <a href="https://www.linkedin.com/"><i class="fab fa-linkedin-in"></i></a> --}}
-
-                                    <a href="https://wa.me/+2250758838338?text=Bonjour Akadi, je peux passer ma commande ?"
-                                        target="blank"><i class="fab fa-whatsapp"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-xl-auto">
-                        <div class="widget widget_nav_menu footer-widget">
-                            <h3 class="widget_title">MENU</h3>
-                            <div class="menu-all-pages-container">
-                                <ul class="menu">
-                                    @foreach ($categories as $item)
-                                        <li><a href="/produit?categorie={{ $item['id'] }}">{{ $item['name'] }}</a>
-                                        </li>
-                                    @endforeach
-                                </ul>
+                    {{-- Col 1 : Brand --}}
+                    <div class="col-lg-3 col-md-6">
+                        <div class="ak-footer-brand">
+                            <a href="{{ route('page-acceuil') }}" class="ak-footer-logo">
+                                <img src="{{ asset('site/assets/img/custom/AKADI.png') }}" alt="Akadi">
+                                <span class="ak-footer-logo-name">AK<span>ADI</span></span>
+                            </a>
+                            <p class="ak-footer-desc">
+                                Restaurant en ligne spécialisé dans le poulet fumé braisé et les saveurs locales revisitées. Livré directement chez vous.
+                            </p>
+                            <div class="ak-footer-socials">
+                                <a href="https://www.facebook.com/CvraimentDoux" target="_blank" class="ak-footer-social fb" title="Facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="https://wa.me/+2250758838338?text=Bonjour Akadi, je peux passer ma commande ?" target="_blank" class="ak-footer-social wa" title="WhatsApp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-3 col-xl-auto">
-                        <div class="widget footer-widget">
-                            <h3 class="widget_title">Nous contacter</h3>
-                            <div class="th-widget-contact">
-                                <div class="info-box">
-                                    <div class="info-box_icon">
-                                        <i class="fal fa-location-dot"></i>
-                                    </div>
-                                    <a href="https://maps.app.goo.gl/sDP5zuFWbu4CLivk8" target="blank">
-                                        <p class="info-box_text">
-                                            Angré derrière la pharmacie Arcade
+                    {{-- Col 2 : Menu --}}
+                    <div class="col-lg-2 col-md-6">
+                        <h4 class="ak-footer-col-title">Menu</h4>
+                        <ul class="ak-footer-links">
+                            <li><a href="{{ route('page-acceuil') }}">Accueil</a></li>
+                            @foreach ($categories as $item)
+                                <li><a href="/produit?categorie={{ $item['id'] }}">{{ $item['name'] }}</a></li>
+                            @endforeach
+                        </ul>
+                    </div>
 
-                                        </p>
+                    {{-- Col 3 : Contact --}}
+                    <div class="col-lg-3 col-md-6">
+                        <h4 class="ak-footer-col-title">Contact</h4>
+                        <div class="ak-footer-contacts">
+                            <div class="ak-footer-contact-item">
+                                <div class="ak-footer-contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                <div class="ak-footer-contact-text">
+                                    <a href="https://maps.app.goo.gl/sDP5zuFWbu4CLivk8" target="_blank">
+                                        Angré, derrière la pharmacie Arcade, Abidjan
                                     </a>
                                 </div>
-                                <div class="info-box">
-                                    <div class="info-box_icon">
-                                        <i class="fal fa-mobile-button"></i>
-                                    </div>
-                                    <p class="info-box_text">
-                                        <a href="tel:+(225) 07 58 83 83 38" class="info-box_link">+(225) 07 58 83 83
-                                            38</a>
-                                        {{-- <a href="tel:+10987654321" class="info-box_link">+(1) 098 765 4321</a> --}}
-                                    </p>
+                            </div>
+                            <div class="ak-footer-contact-item">
+                                <div class="ak-footer-contact-icon"><i class="fas fa-phone-alt"></i></div>
+                                <div class="ak-footer-contact-text">
+                                    <a href="tel:+2250758838338">+(225) 07 58 83 83 38</a>
                                 </div>
-                                <div class="info-box">
-                                    <div class="info-box_icon">
-                                        <i class="fal fa-envelope"></i>
-                                    </div>
-                                    <p class="info-box_text">
-                                        <a href="mailto:info@akadi.ci" class="info-box_link">info@akadi.ci</a>
-                                    </p>
+                            </div>
+                            <div class="ak-footer-contact-item">
+                                <div class="ak-footer-contact-icon"><i class="fas fa-envelope"></i></div>
+                                <div class="ak-footer-contact-text">
+                                    <a href="mailto:info@akadi.ci">info@akadi.ci</a>
                                 </div>
-
-                                <div class="info-box">
-                                    <div class="info-box_icon">
-                                        <i class="fal fa-watch"></i>
-                                    </div>
-                                    <p class="info-box_text">
-                                        <a href="#" class="info-box_link">Ouverture : 10H30 - 18H</a>
-                                    </p>
+                            </div>
+                            <div class="ak-footer-contact-item">
+                                <div class="ak-footer-contact-icon"><i class="fas fa-clock"></i></div>
+                                <div class="ak-footer-contact-text">
+                                    Lun – Sam : <strong style="color:rgba(255,255,255,.75)">10h30 – 18h00</strong>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 col-xl-3">
-                        <div class="widget footer-widget">
-                            <h3 class="widget_title">Où nous retrouver</h3>
-                            <div class="th-widget-about">
 
-                                <div
-                                    style="text-decoration:none; overflow:hidden;max-width:100%;width:500px;height:200px;">
-                                    <div id="embed-map-display" style="height:100%; width:100%;max-width:100%;">
-                                        <iframe style="height:100%;width:100%;border:0;" frameborder="0"
-                                            src="https://www.google.com/maps/embed/v1/place?q=AKADI+RESTAURANT,+Akadi+Restaurant,+Abidjan,+Côte+d'Ivoire&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"></iframe>
-                                    </div><a class="googlecoder" href="https://www.bootstrapskins.com/themes"
-                                        id="authorize-maps-data"></a>
-                                    <style>
-                                        #embed-map-display img {
-                                            max-width: none !important;
-                                            background: none !important;
-                                            font-size: inherit;
-                                            font-weight: inherit;
-                                        }
-                                    </style>
-                                </div>
-                            </div>
+                    {{-- Col 4 : Map --}}
+                    <div class="col-lg-4 col-md-6">
+                        <h4 class="ak-footer-col-title">Localisation</h4>
+                        <div class="ak-footer-map">
+                            <iframe
+                                src="https://www.google.com/maps/embed/v1/place?q=AKADI+RESTAURANT,+Akadi+Restaurant,+Abidjan,+Côte+d’Ivoire&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
+                                loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
-        <div class="container">
-            <div class="copyright-wrap border-top">
-                <div class="row justify-content-between align-items-center">
-                    <div class="col-lg-6">
-                        <p class="copyright-text">Copyright <i class="fal fa-copyright"></i> @php
-                        echo date('Y'); @endphp Akadi
-                            All Rights
-                            Reserved.</p>
-                    </div>
 
+        <div class="ak-footer-divider"></div>
+
+        <div class="ak-footer-bottom">
+            <div class="container">
+                <div class="ak-footer-bottom-inner">
+                    <p class="ak-footer-copyright">
+                        &copy; {{ date('Y') }} <a href="{{ route('page-acceuil') }}">Akadi Restaurant</a>. Tous droits réservés.
+                    </p>
+                    <p class="ak-footer-made">
+                        Fait avec <i class="fas fa-heart"></i> à Abidjan
+                    </p>
                 </div>
             </div>
         </div>
@@ -698,6 +894,10 @@
         $message = 'Bonjour, je souhaite avoir votre menu.';
         $urlWhatsapp = 'https://wa.me/' . $numero . '?text=' . urlencode($message);
     @endphp
+
+    <a href="https://www.facebook.com/CvraimentDoux/?locale=fr_FR" class="facebook-float" target="_blank" title="Suivez-nous sur Facebook">
+        <i class="fab fa-facebook-f"></i>
+    </a>
 
     <a href="{{ $urlWhatsapp }}" class="whatsapp-float" target="_blank" title="Discuter sur WhatsApp">
         <i class="fab fa-whatsapp whatsapp-icon"></i>

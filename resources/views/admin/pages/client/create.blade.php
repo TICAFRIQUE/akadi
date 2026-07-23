@@ -43,12 +43,21 @@
                                     </div>
                                     <div class="form-group col-6">
                                         <label for="phone">Téléphone</label>
-                                        <input id="phone" type="number" class="form-control @error('phone') is-invalid @enderror" name="phone"
-                                            value="{{ old('phone') }}" required>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+225</span>
+                                            </div>
+                                            <input id="phone" type="tel" class="form-control @error('phone') is-invalid @enderror"
+                                                name="phone" value="{{ old('phone') }}" placeholder="0701020304"
+                                                maxlength="10" minlength="10" required>
+                                        </div>
                                         @error('phone')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="text-danger" style="font-size:.85em">{{ $message }}</div>
                                         @enderror
-                                        <div class="invalid-feedback">Champs obligatoire</div>
+                                        <small class="form-text text-muted">
+                                            <i class="fas fa-info-circle"></i>
+                                            Ce numéro sera utilisé comme mot de passe initial.
+                                        </small>
                                     </div>
                                 </div>
 
@@ -131,22 +140,9 @@
                                     <div class="invalid-feedback">Veuillez préciser le motif</div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="form-group col-8">
-                                        <label for="password" class="d-block">
-                                            Mot de passe
-                                            <br>
-                                            <span class="text-danger" style="font-size:12px">
-                                                Obligatoire — 8 caractères minimum
-                                            </span>
-                                        </label>
-                                        <input id="password" type="password" class="form-control" name="password"
-                                            aria-autocomplete="none" autocomplete="off" required minlength="8">
-                                        <div class="invalid-feedback">Mot de passe obligatoire (8 caractères minimum)</div>
-                                    </div>
-                                    <div class="form-group col-4 my-auto">
-                                        @include('admin.components.hideshowpwd')
-                                    </div>
+                                <div class="alert alert-info py-2" role="alert">
+                                    <i class="fas fa-lock mr-1"></i>
+                                    Le <strong>numéro de téléphone</strong> sera automatiquement utilisé comme mot de passe initial.
                                 </div>
 
                                 <div class="form-group">

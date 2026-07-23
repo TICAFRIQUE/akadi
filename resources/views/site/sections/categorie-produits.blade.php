@@ -1,288 +1,290 @@
-<!--==============================
-Categorie and products
-==============================-->
+﻿@once
+<style>
+/* ── Section produits ── */
+.ak-products-section { padding: 64px 0; background: #fafafa; }
 
-{{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"> --}}
+/* ── Tab filter pills ── */
+.ak-filter-tabs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 36px;
+}
+.ak-filter-tabs button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: 50px;
+    border: 1.5px solid #e8e8e8;
+    background: #fff;
+    color: #555;
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+}
+.ak-filter-tabs button img {
+    width: 22px;
+    height: 22px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.ak-filter-tabs button:hover {
+    border-color: var(--ak-orange, #f85d05);
+    color: var(--ak-orange, #f85d05);
+    background: rgba(248,93,5,.05);
+}
+.ak-filter-tabs button.active {
+    background: var(--ak-orange, #f85d05);
+    border-color: var(--ak-orange, #f85d05);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(248,93,5,.35);
+}
+.ak-filter-tabs button.active img { filter: brightness(0) invert(1); }
 
-@once
-    <style>
-        /* Amélioration des boutons produits */
-        .actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
+/* ── Product card redesign ── */
+.ak-product-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    transition: transform .25s, box-shadow .25s;
+    height: 100%;
+    display: flex;
+}
+.ak-product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,.12); }
 
-        .actions .icon-btn {
-            flex: 1;
-            min-width: 120px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            white-space: nowrap;
-        }
+.ak-product-img {
+    width: 180px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    background: #f3f3f3;
+}
+.ak-product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .4s;
+}
+.ak-product-card:hover .ak-product-img img { transform: scale(1.07); }
 
-        .actions .icon-btn i {
-            font-size: 16px;
-            transition: transform 0.3s ease;
-        }
+.ak-product-body {
+    flex: 1;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.ak-product-cat {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ak-orange, #f85d05);
+    text-decoration: none;
+}
+.ak-product-cat:hover { color: var(--ak-red, #eb0029); text-decoration: none; }
+.ak-product-name {
+    font-size: .95rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.3;
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.ak-product-name:hover { color: var(--ak-red, #eb0029); text-decoration: none; }
+.ak-product-desc {
+    font-size: .78rem;
+    color: #888;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+}
+.ak-product-price {
+    margin-top: auto;
+    padding-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.ak-price-current {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--ak-red, #eb0029);
+}
+.ak-price-old {
+    font-size: .8rem;
+    color: #bbb;
+    text-decoration: line-through;
+}
+.ak-product-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+.ak-btn-detail, .ak-btn-cart {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: .78rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+    white-space: nowrap;
+}
+.ak-btn-detail {
+    background: rgba(235,0,41,.08);
+    color: var(--ak-red, #eb0029);
+}
+.ak-btn-detail:hover { background: var(--ak-red, #eb0029); color: #fff; text-decoration: none; }
+.ak-btn-cart {
+    background: var(--ak-orange, #f85d05);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(248,93,5,.3);
+}
+.ak-btn-cart:hover { background: #d44d00; color: #fff; box-shadow: 0 4px 12px rgba(248,93,5,.4); }
 
-        .actions .icon-btn span {
-            position: relative;
-            z-index: 1;
-        }
+/* ── CTA voir tout ── */
+.ak-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: var(--ak-orange, #f85d05);
+    color: #fff;
+    font-size: .88rem;
+    font-weight: 700;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all .2s;
+    margin-top: 48px;
+    box-shadow: 0 4px 16px rgba(248,93,5,.35);
+}
+.ak-view-all:hover { background: #d44d00; color: #fff; text-decoration: none; transform: translateY(-2px); }
+.ak-view-all i { font-size: .75rem; }
 
-        /* Bouton Détail - Utilisation de la couleur principale du site */
-        .actions .btn-detail {
-            background: linear-gradient(135deg, #eb0029 0%, #c4001f 100%);
-            color: white;
-            box-shadow: 0 4px 10px rgba(235, 0, 41, 0.3);
-        }
-
-        .actions .btn-detail:hover {
-            background: linear-gradient(135deg, #c4001f 0%, #eb0029 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(235, 0, 41, 0.4);
-            color: white;
-        }
-
-        .actions .btn-detail:hover i {
-            transform: scale(1.1);
-        }
-
-        /* Bouton Ajouter au panier - Utilisation de la couleur secondaire */
-        .actions .btn-add-cart {
-            background: linear-gradient(135deg, #ff9d2d 0%, #ff8800 100%);
-            color: white;
-            box-shadow: 0 4px 10px rgba(255, 157, 45, 0.3);
-        }
-
-        .actions .btn-add-cart:hover {
-            background: linear-gradient(135deg, #ff8800 0%, #ff9d2d 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(255, 157, 45, 0.4);
-            color: white;
-        }
-
-        .actions .btn-add-cart:hover i {
-            transform: scale(1.1) rotate(15deg);
-        }
-
-        .actions .btn-add-cart:active {
-            transform: scale(0.95);
-        }
-
-        /* Effet ripple */
-        .actions .icon-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            transform: translate(-50%, -50%);
-            transition: width 0.5s, height 0.5s;
-        }
-
-        .actions .icon-btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        /* Responsive Desktop */
-        @media (min-width: 992px) {
-            .actions {
-                justify-content: flex-start;
-            }
-
-            .actions .icon-btn {
-                flex: 0 1 auto;
-            }
-        }
-
-        /* Responsive Mobile */
-        @media (max-width: 991px) {
-            .actions {
-                flex-direction: row;
-                gap: 8px;
-            }
-
-            .actions .icon-btn {
-                flex: 1 1 calc(50% - 4px);
-                padding: 10px 14px;
-                font-size: 13px;
-                min-width: 100px;
-            }
-
-            .actions .icon-btn i {
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .actions {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .actions .icon-btn {
-                width: 100%;
-                flex: 1 1 100%;
-                padding: 4px 16px;
-                font-size: 13px;
-            }
-
-            .actions .icon-btn i {
-                font-size: 14px;
-            }
-
-            .actions .icon-btn span {
-                display: inline;
-            }
-        }
-    </style>
+/* Responsive */
+@media (max-width: 576px) {
+    .ak-product-img { width: 120px; }
+    .ak-product-body { padding: 12px 14px; }
+    .ak-product-actions { flex-wrap: wrap; }
+}
+</style>
 @endonce
 
-<section class="space bg-smoke2" data-bg-src="">
+<section class="ak-products-section">
     <div class="container">
-        <div class="title-area text-center">
-            <span class="sub-title">
-                <img class="icon" src="{{ asset('site/assets/img/icon/title_icon.svg') }}" alt="icon">
-                Decouvrir nos menus
-            </span>
-            <h2 class="sec-title">Tu testes, tu restes <span class="font-style text-theme"> toujours</span></h2>
-
+        <div class="title-area" style="text-align:center;margin-bottom:32px;">
+            <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#eb0029;margin-bottom:10px;">
+                <span style="display:block;width:28px;height:2px;background:#eb0029;border-radius:2px;"></span>
+                Découvrir nos menus
+                <span style="display:block;width:28px;height:2px;background:#eb0029;border-radius:2px;"></span>
+            </div>
+            <h2 class="ak-section-title" style="text-align:center;">
+                Tu testes, tu restes <span class="accent" style="color:#eb0029;font-style:italic;">toujours</span>
+            </h2>
         </div>
 
         <div class="tab-content">
-            <!-- Single item -->
             <div class="tab-pane fade show active" id="nav-one" role="tabpanel" aria-labelledby="nav-one-tab">
-                <div class="tab-menu2 filter-menu-active">
+
+                {{-- Filter tabs --}}
+                <div class="ak-filter-tabs filter-menu-active">
                     <button data-filter="*" class="active" type="button">
                         <img src="{{ asset('site/assets/img/icon/menu_1_1.svg') }}" alt="Icon">
                         Tous les menus
                     </button>
-
                     @foreach ($categories as $item)
                         <button data-filter=".cat{{ $item['id'] }}" type="button">
-                            <img src="{{ $item->getFirstMediaUrl('category_image') }}" width="60%" alt="Icon">
+                            <img src="{{ $item->getFirstMediaUrl('category_image') }}" alt="Icon">
                             {{ $item['name'] }}
                         </button>
                     @endforeach
                 </div>
-                <div class="row gy-4 filter-active">
+
+                {{-- Products grid --}}
+                <div class="row gy-4 filter-active justify-content-center">
                     @php $waNumero = '2250758838338'; @endphp
                     @foreach ($categories as $categorie)
                         @foreach ($categorie['products'] as $product)
                             @php
-                                $detailUrl = route('detail-produit', $product->slug);
-                                $waMessage =
-                                    'Bonjour, je souhaite commander le produit *' .
-                                    $product->title .
-                                    "*.\nVoici le lien : " .
-                                    $detailUrl;
+                                $detailUrl  = route('detail-produit', $product->slug);
+                                $waMessage  = 'Bonjour, je souhaite commander le produit *' . $product->title . "*.\nVoici le lien : " . $detailUrl;
                                 $urlWhatsapp = 'https://wa.me/' . $waNumero . '?text=' . urlencode($waMessage);
+                                $hasRemise  = $product['montant_remise'] != null && $product['status_remise'] == 'en_cours';
+                                $newPrice   = $product['price'] - ($product['montant_remise'] ?? 0);
                             @endphp
                             <div class="col-lg-6 filter-item cat{{ $product['pivot']['category_id'] }}">
-                                <div class="th-product list-view">
-                                    <div class="product-img">
-                                        {{-- <a href="{{ $detailUrl }}">
-                                            <img src="{{ asset($product->getFirstMediaUrl('product_image')) }}"
-                                                alt="Product Image">
-                                        </a> --}}
-                                        <a href="{{ $detailUrl }}">
+                                <div class="ak-product-card">
+                                    {{-- Image --}}
+                                    <div class="ak-product-img">
+                                        <a href="{{ $detailUrl }}" style="display:block;height:100%;">
                                             <img src="{{ $product->getFirstMediaUrl('product_image') }}"
-                                                alt="{{ $product->title }}" loading="lazy">
+                                                 alt="{{ $product->title }}" loading="lazy">
                                         </a>
-                                        {{-- @if ($product['montant_remise'])
-                                            <div class="th-menu_discount w-10">
-                                                <span class="sale">{{ $product['pourcentage_remise'] }}% OFF</span>
-                                            </div>
-                                        @endif --}}
                                     </div>
-                                    <div class="product-content">
-                                        {{-- <div class="star-rating" role="img" aria-label="Rated 5.00 out of 5">
-                                            <span>Rated <strong class="rating">5.00</strong> out of 5 based on <span
-                                                    class="rating">1</span> customer rating</span>
-                                        </div> --}}
-                                        <h3 class="product-title"><a
-                                                href="{{ $detailUrl }}">{{ $product['title'] }}</a>
-                                        </h3>
-
+                                    {{-- Contenu --}}
+                                    <div class="ak-product-body">
                                         @if ($product['subcategorie'])
                                             <a href="/produit?sous-categorie={{ $product['subcategorie']['id'] }}"
-                                                class="category text-danger">{{ $product['subcategorie'] ? $product['subcategorie']['name'] : $product['categories'][0]['name'] }}</a>
+                                               class="ak-product-cat">{{ $product['subcategorie']['name'] }}</a>
                                         @else
                                             <a href="/produit?categorie={{ $product['categories'][0]['id'] }}"
-                                                class="category text-danger">{{ $product['subcategorie'] ? $product['subcategorie']['name'] : $product['categories'][0]['name'] }}</a>
-                                        @endif
-                                        {{-- <p class="product-text"> {!! substr(strip_tags($product->description), 0, 50) !!}.... </p> --}}
-                                        <p class="product-text">
-                                            {{ Str::limit(strip_tags($product->description ?? ''), 50, '...') }}
-                                        </p>
-                                        @if ($product['montant_remise'] != null && $product['status_remise'] == 'en_cours')
-                                            <span class="price">
-                                                @php
-                                                    $new_price = $product['price'] - $product['montant_remise']; //prix promo
-                                                @endphp
-                                                {{ number_format($new_price, 0, ',', ' ') }} FCFA
-                                                <del> {{ number_format($product['price'], 0, ',', ' ') }} FCFA </del>
-                                            </span>
-                                        @else
-                                            <span class="price"> {{ number_format($product['price'], 0, ',', ' ') }}
-                                                FCFA
-                                                <del></del>
-                                            </span>
+                                               class="ak-product-cat">{{ $product['categories'][0]['name'] }}</a>
                                         @endif
 
+                                        <a href="{{ $detailUrl }}" class="ak-product-name">{{ $product['title'] }}</a>
+                                        <p class="ak-product-desc">{{ Str::limit(strip_tags($product->description ?? ''), 60, '...') }}</p>
 
-                                        <div class="actions">
-
-                                            <a href="{{ $detailUrl }}" class="icon-btn btn-detail">
-                                                <i class="far fa-eye"></i>
-                                                <span>Détails</span>
-                                            </a>
-
-                                            <button class="icon-btn btn-add-cart addCart"
-                                                data-id="{{ $product['id'] }}">
-                                                <i class="fa fa-cart-plus"></i>
-                                               Ajouter
-                                            </button>
-
+                                        <div class="ak-product-price">
+                                            @if ($hasRemise)
+                                                <span class="ak-price-current">{{ number_format($newPrice, 0, ',', ' ') }} FCFA</span>
+                                                <span class="ak-price-old">{{ number_format($product['price'], 0, ',', ' ') }} FCFA</span>
+                                            @else
+                                                <span class="ak-price-current">{{ number_format($product['price'], 0, ',', ' ') }} FCFA</span>
+                                            @endif
                                         </div>
 
-
+                                        <div class="ak-product-actions">
+                                            <a href="{{ $detailUrl }}" class="ak-btn-detail">
+                                                <i class="far fa-eye"></i> Détails
+                                            </a>
+                                            <button class="ak-btn-cart addCart" data-id="{{ $product['id'] }}">
+                                                <i class="fa fa-cart-plus"></i> Ajouter
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     @endforeach
-
                 </div>
-                <div class="text-center mt-5">
-                    <a href="{{ route('liste-produit') }}" class="th-btn">Voir tous nos produits</a>
+
+                <div class="text-center">
+                    <a href="{{ route('liste-produit') }}" class="ak-view-all">
+                        Voir tous nos plats <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
-
         </div>
     </div>
     @include('site.components.ajouter-au-panier')
-
 </section>
-<!--==============================
-Categorie and products
-==============================-->

@@ -3,15 +3,19 @@
 @section('title', 'Paiement en cours')
 
 @section('content')
-    <div class="breadcumb-wrapper" data-bg-src="">
-        <div class="container z-index-common">
-            <div class="breadcumb-content">
-                <h1 class="breadcumb-title">Paiement en cours</h1>
-                <ul class="breadcumb-menu">
-                    <li><a href="{{ route('page-acceuil') }}">Accueil</a></li>
-                    <li>Paiement</li>
-                </ul>
-            </div>
+    <div class="ak-breadcrumb">
+        <div class="container">
+            <h1 class="ak-breadcrumb-title">
+                <span class="ak-breadcrumb-icon"><i class="fas fa-spinner fa-spin"></i></span>
+                Paiement en cours
+            </h1>
+            <ul class="ak-breadcrumb-nav">
+                <li><a href="{{ route('page-acceuil') }}">Accueil</a></li>
+                <li class="ak-breadcrumb-sep"><i class="fas fa-chevron-right"></i></li>
+                <li><a href="{{ route('panier') }}">Panier</a></li>
+                <li class="ak-breadcrumb-sep"><i class="fas fa-chevron-right"></i></li>
+                <li class="active">Paiement</li>
+            </ul>
         </div>
     </div>
 

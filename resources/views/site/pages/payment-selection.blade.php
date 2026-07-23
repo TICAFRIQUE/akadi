@@ -1,453 +1,519 @@
-@extends('site.layouts.app')
-
-@section('title', 'Sélection du moyen de paiement')
+﻿@extends('site.layouts.app')
+@section('title', 'Paiement')
 
 @section('content')
-    <style>
-        :root {
-            --primary-color: #eb0029;
-            --secondary-color: #ff9d2d;
-            --success-color: #28a745;
-            --dark-color: #2c3e50;
-            --light-bg: #f8f9fa;
-            --border-color: #e0e0e0;
-        }
 
-        /* En-tête */
-        .payment-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(235, 0, 41, 0.3);
-        }
+<div class="ak-breadcrumb">
+    <div class="container">
+        <h1 class="ak-breadcrumb-title">
+            <span class="ak-breadcrumb-icon"><i class="fas fa-credit-card"></i></span>
+            Paiement
+        </h1>
+        <ul class="ak-breadcrumb-nav">
+            <li><a href="{{ route('page-acceuil') }}">Accueil</a></li>
+            <li class="ak-breadcrumb-sep"><i class="fas fa-chevron-right"></i></li>
+            <li><a href="{{ route('panier') }}">Panier</a></li>
+            <li class="ak-breadcrumb-sep"><i class="fas fa-chevron-right"></i></li>
+            <li class="active">Paiement</li>
+        </ul>
+    </div>
+</div>
 
-        .payment-icon i {
-            font-size: 36px;
-            color: white;
-        }
+<section class="pay-section">
+    <div class="container">
 
-        .payment-title {
-            color: var(--dark-color);
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
+        @include('admin.components.validationMessage')
 
-        /* Card principale */
-        .card {
-            border-radius: 15px;
-            overflow: hidden;
-        }
-
-        /* Méthodes de paiement */
-        .payment-method-card {
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .payment-method-radio {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .payment-method-label {
-            display: block;
-            padding: 0;
-            margin: 0;
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
-            overflow: hidden;
-        }
-
-        .payment-method-label:hover {
-            border-color: var(--secondary-color);
-            box-shadow: 0 4px 15px rgba(255, 157, 45, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .payment-method-radio:checked+.payment-method-label {
-            border-color: var(--primary-color);
-            background: linear-gradient(to right, rgba(235, 0, 41, 0.05), rgba(255, 157, 45, 0.05));
-            box-shadow: 0 4px 20px rgba(235, 0, 41, 0.3);
-        }
-
-        .payment-method-content {
-            display: flex;
-            align-items: center;
-            padding: 20px;
-            gap: 20px;
-        }
-
-        .payment-method-icon {
-            width: 60px;
-            height: 60px;
-            min-width: 60px;
-            background: linear-gradient(135deg, var(--light-bg), white);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .payment-method-radio:checked+.payment-method-label .payment-method-icon {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-color: var(--primary-color);
-        }
-
-        .payment-method-icon i {
-            font-size: 28px;
-            color: var(--dark-color);
-            transition: all 0.3s ease;
-        }
-
-        .payment-method-radio:checked+.payment-method-label .payment-method-icon i {
-            color: white;
-        }
-
-        .payment-method-info {
-            flex: 1;
-        }
-
-        .payment-method-name {
-            margin: 0 0 5px 0;
-            color: var(--dark-color);
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .payment-method-desc {
-            margin: 0;
-        }
-
-        .badge-secure,
-        .badge-cash {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .badge-secure {
-            background: rgba(40, 167, 69, 0.1);
-            color: var(--success-color);
-        }
-
-        .badge-cash {
-            background: rgba(255, 157, 45, 0.1);
-            color: var(--secondary-color);
-        }
-
-        .payment-method-check {
-            width: 30px;
-            height: 30px;
-            min-width: 30px;
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .payment-method-check i {
-            font-size: 30px;
-            color: var(--success-color);
-        }
-
-        .payment-method-radio:checked+.payment-method-label .payment-method-check {
-            opacity: 1;
-        }
-
-        /* Résumé de commande */
-        .order-summary-card {
-            background: var(--light-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid var(--border-color);
-        }
-
-        .order-summary-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: white;
-        }
-
-        .order-summary-header i {
-            font-size: 20px;
-        }
-
-        .order-summary-header h5 {
-            margin: 0;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .order-summary-body {
-            padding: 20px;
-            background: white;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 1rem;
-        }
-
-        .summary-divider {
-            height: 2px;
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            margin: 15px 0;
-        }
-
-        .total-row {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-
-        .total-amount {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        /* Boutons */
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .btn-back {
-            padding: 12px 30px;
-            border: 2px solid var(--border-color);
-            background: white;
-            color: var(--dark-color);
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .btn-back:hover {
-            background: var(--light-bg);
-            border-color: var(--dark-color);
-            color: var(--dark-color);
-        }
-
-        .btn-pay {
-            flex: 1;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px rgba(235, 0, 41, 0.3);
-        }
-
-        .btn-pay:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(235, 0, 41, 0.4);
-        }
-
-        .security-info {
-            padding: 15px;
-            background: rgba(40, 167, 69, 0.05);
-            border-radius: 8px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .payment-method-content {
-                padding: 15px;
-                gap: 15px;
-            }
-
-            .payment-method-icon {
-                width: 50px;
-                height: 50px;
-                min-width: 50px;
-            }
-
-            .payment-method-icon i {
-                font-size: 24px;
-            }
-
-            .payment-method-name {
-                font-size: 1rem;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            .btn-back,
-            .btn-pay {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-    </style>
-
-
-    <div class="breadcumb-wrapper " data-bg-src="">
-        <div class="container z-index-common">
-            <div class="breadcumb-content">
-                <h1 class="breadcumb-title">Paiement</h1>
-                <ul class="breadcumb-menu">
-                    <li><a href="{{ route('page-acceuil') }}">Accueil</a></li>
-                    <li><a href="{{ route('panier') }}">Panier</a></li>
-                    <li>Paiement</li>
-                </ul>
+        {{-- Stepper --}}
+        <div class="pay-stepper">
+            <div class="pay-step done">
+                <div class="pay-step-dot"><i class="fas fa-check"></i></div>
+                <span>Panier</span>
+            </div>
+            <div class="pay-step-line done"></div>
+            <div class="pay-step active">
+                <div class="pay-step-dot"><i class="fas fa-credit-card"></i></div>
+                <span>Paiement</span>
+            </div>
+            <div class="pay-step-line"></div>
+            <div class="pay-step">
+                <div class="pay-step-dot"><i class="fas fa-check-circle"></i></div>
+                <span>Confirmation</span>
             </div>
         </div>
-    </div>
 
-    <div class="th-checkout-wrapper space-top space-extra-bottom">
-        <div class="container">
-            @include('admin.components.validationMessage')
+        <div class="pay-grid">
 
-            <div class="row justify-content-center">
-                <div class="col-lg-9">
-                    <!-- En-tête avec icône -->
-                    <div class="text-center mb-5">
-                        <div class="payment-icon mb-3">
-                            <i class="fas fa-credit-card"></i>
-                        </div>
-                        <h2 class="payment-title">Choisissez votre moyen de paiement</h2>
-                        <p class="text-muted">Sélectionnez la méthode de paiement qui vous convient</p>
+            {{-- ══════ COLONNE GAUCHE — Méthodes ══════ --}}
+            <div class="pay-left">
+                <div class="pay-block">
+                    <div class="pay-block-header">
+                        <i class="fas fa-wallet"></i>
+                        <h2>Moyen de paiement</h2>
                     </div>
 
-                    <div class="card shadow-lg border-0 rounded-lg">
-                        <div class="card-body p-4 p-md-5">
-                            <form action="{{ route('payment.process') }}" method="POST" id="payment-form">
-                                @csrf
+                    <form action="{{ route('payment.process') }}" method="POST" id="payment-form">
+                        @csrf
 
-                                <div class="payment-methods mb-4">
-                                    @foreach ($paymentMethods as $index => $method)
-                                        <div class="payment-method-card mb-3" data-method="{{ $method->code }}">
-                                            <input type="radio" class="payment-method-radio" name="payment_method_id"
-                                                id="payment_{{ $method->id }}" value="{{ $method->id }}"
-                                                {{ $loop->first ? 'checked' : '' }} required>
-                                            <label for="payment_{{ $method->id }}" class="payment-method-label">
-                                                <div class="payment-method-content">
-                                                    <div class="payment-method-icon">
-                                                        @if ($method->code === 'wave')
-                                                            <img src="{{ asset('admin/assets/img/wave.png') }}" alt="Wave" style="width: 48px; height: 48px; object-fit: contain;">
-                                                        @elseif ($method->icone)
-                                                            <i class="{{ $method->icone }}"></i>
-                                                        @else
-                                                            <i class="fas fa-wallet"></i>
-                                                        @endif
-                                                    </div>
-                                                    <div class="payment-method-info">
-                                                        <h5 class="payment-method-name">{{ $method->nom }}</h5>
-                                                        <p class="payment-method-desc">
-                                                            @if ($method->code === 'wave')
-                                                                <span class="badge-secure"><i class="fas fa-shield-alt"></i>
-                                                                    Paiement sécurisé</span>
-                                                                <small class="d-block text-muted mt-1">Mobile Money
-                                                                    Wave</small>
-                                                            @elseif($method->code === 'cash' || $method->code === 'espece')
-                                                                <span class="badge-cash"><i
-                                                                        class="fas fa-hand-holding-usd"></i> À la
-                                                                    livraison</span>
-                                                                <small class="d-block text-muted mt-1">Payez en espèces lors
-                                                                    de la réception</small>
-                                                            @endif
-                                                        </p>
-                                                    </div>
-                                                    <div class="payment-method-check">
-                                                        <i class="fas fa-check-circle"></i>
-                                                    </div>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-
-                                <!-- Résumé de la commande -->
-                                <div class="order-summary-card">
-                                    <div class="order-summary-header">
-                                        <i class="fas fa-shopping-bag"></i>
-                                        <h5>Résumé de la commande</h5>
+                        <div class="pay-methods">
+                            @foreach ($paymentMethods as $method)
+                                <label class="pay-method {{ $loop->first ? 'is-selected' : '' }}" for="payment_{{ $method->id }}">
+                                    <input
+                                        type="radio"
+                                        class="pay-method-radio"
+                                        name="payment_method_id"
+                                        id="payment_{{ $method->id }}"
+                                        value="{{ $method->id }}"
+                                        {{ $loop->first ? 'checked' : '' }}
+                                        required
+                                    >
+                                    <div class="pay-method-icon">
+                                        @if ($method->code === 'wave')
+                                            <img src="{{ asset('admin/assets/img/wave.png') }}" alt="Wave">
+                                        @elseif ($method->icone)
+                                            <i class="{{ $method->icone }}"></i>
+                                        @else
+                                            <i class="fas fa-wallet"></i>
+                                        @endif
                                     </div>
-                                    <div class="order-summary-body">
-                                        <div class="summary-row">
-                                            <span>Sous-total:</span>
-                                            <span class="fw-bold">{{ number_format($subtotal, 0, '', ' ') }} FCFA</span>
-                                        </div>
-                                        <div class="summary-row">
-                                            <span>Livraison:</span>
-                                            <span class="fw-bold">{{ number_format($deliveryPrice, 0, '', ' ') }}
-                                                FCFA</span>
-                                        </div>
-                                        <div class="summary-divider"></div>
-                                        <div class="summary-row total-row">
-                                            <span>Total à payer:</span>
-                                            <span class="total-amount">{{ number_format($total, 0, '', ' ') }} FCFA</span>
-                                        </div>
+                                    <div class="pay-method-body">
+                                        <span class="pay-method-name">{{ $method->nom }}</span>
+                                        @if ($method->code === 'wave')
+                                            <span class="pay-method-tag tag-secure"><i class="fas fa-shield-alt"></i> Sécurisé</span>
+                                            <small class="pay-method-hint">Mobile Money Wave</small>
+                                        @elseif (in_array($method->code, ['cash','espece']))
+                                            <span class="pay-method-tag tag-cash"><i class="fas fa-hand-holding-usd"></i> À la livraison</span>
+                                            <small class="pay-method-hint">Payez en espèces à la réception</small>
+                                        @else
+                                            <small class="pay-method-hint">{{ $method->description ?? '' }}</small>
+                                        @endif
                                     </div>
-                                </div>
-
-                                <!-- Boutons d'action -->
-                                <div class="action-buttons mt-4">
-                                    <a href="{{ route('checkout') }}" class="btn btn-back">
-                                        <i class="fas fa-arrow-left"></i> Retour
-                                    </a>
-                                    <button type="submit" class="btn btn-pay">
-                                        <span class="btn-text">Confirmer le paiement</span>
-                                        <i class="fas fa-arrow-right"></i>
-                                    </button>
-                                </div>
-                            </form>
+                                    <div class="pay-method-check">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                </label>
+                            @endforeach
                         </div>
-                    </div>
 
-                    <!-- Info sécurité -->
-                    <div class="security-info text-center mt-4">
-                        <i class="fas fa-lock text-success me-2"></i>
-                        <small class="text-muted">Vos informations de paiement sont sécurisées et cryptées</small>
-                    </div>
+                        {{-- CTA --}}
+                        <div class="pay-actions">
+                            <a href="{{ route('panier') }}" class="pay-btn-back">
+                                <i class="fas fa-arrow-left"></i> Retour
+                            </a>
+                            <button type="submit" class="pay-btn-submit" id="pay-submit">
+                                <span class="pay-btn-text"><i class="fas fa-lock"></i> Confirmer le paiement</span>
+                                <span class="pay-btn-loading" style="display:none">
+                                    <span class="pay-spin"></span> Traitement…
+                                </span>
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="pay-security">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Paiement 100% sécurisé — vos données sont protégées</span>
                 </div>
             </div>
+
+            {{-- ══════ COLONNE DROITE — Résumé ══════ --}}
+            <div class="pay-right">
+                <div class="pay-block">
+                    <div class="pay-block-header">
+                        <i class="fas fa-receipt"></i>
+                        <h2>Récapitulatif</h2>
+                    </div>
+
+                    <div class="pay-summary">
+                        <div class="pay-summary-row">
+                            <span>Sous-total</span>
+                            <span class="fw-bold">{{ number_format($subtotal, 0, ',', ' ') }} FCFA</span>
+                        </div>
+                        <div class="pay-summary-row">
+                            <span>Livraison</span>
+                            <span class="fw-bold">
+                                @if ($deliveryPrice == 0)
+                                    <span class="free-tag">Gratuit</span>
+                                @else
+                                    {{ number_format($deliveryPrice, 0, ',', ' ') }} FCFA
+                                @endif
+                            </span>
+                        </div>
+                        @if (isset($discount) && $discount > 0)
+                        <div class="pay-summary-row">
+                            <span>Remise</span>
+                            <span class="discount-tag">–{{ number_format($discount, 0, ',', ' ') }} FCFA</span>
+                        </div>
+                        @endif
+                        <div class="pay-summary-divider"></div>
+                        <div class="pay-summary-row pay-summary-total">
+                            <span>Total à payer</span>
+                            <span class="pay-total-amount">{{ number_format($total, 0, ',', ' ') }} FCFA</span>
+                        </div>
+                    </div>
+
+                    {{-- Infos livraison --}}
+                    @if (Session::has('delivery_info'))
+                    @php $info = Session::get('delivery_info'); @endphp
+                    <div class="pay-delivery-info">
+                        <div class="pay-delivery-row">
+                            <i class="fas fa-truck"></i>
+                            <span>{{ $info['mode'] ?? '—' }}</span>
+                        </div>
+                        @if (!empty($info['name']))
+                        <div class="pay-delivery-row">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{{ $info['name'] }}</span>
+                        </div>
+                        @endif
+                        @if (!empty($info['address']))
+                        <div class="pay-delivery-row">
+                            <i class="fas fa-home"></i>
+                            <span>{{ $info['address'] }}</span>
+                        </div>
+                        @endif
+                    </div>
+                    @endif
+                </div>
+            </div>
+
         </div>
     </div>
+</section>
 
+{{-- ══════════════ STYLES ══════════════ --}}
+<style>
+/* ── Layout ── */
+.pay-section {
+    padding: 48px 0 80px;
+    background: #f4f5f7;
+    min-height: 70vh;
+}
+.pay-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+}
+@media (max-width: 992px) {
+    .pay-grid { grid-template-columns: 1fr; }
+    .pay-right { order: -1; }
+}
 
+/* ── Stepper ── */
+.pay-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 36px;
+}
+.pay-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+.pay-step-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    color: #bbb;
+    transition: all .3s;
+}
+.pay-step span {
+    font-size: .75rem;
+    font-weight: 600;
+    color: #bbb;
+    white-space: nowrap;
+}
+.pay-step.done .pay-step-dot {
+    background: var(--theme-color, #e74c3c);
+    border-color: var(--theme-color, #e74c3c);
+    color: #fff;
+}
+.pay-step.done span { color: var(--theme-color, #e74c3c); }
+.pay-step.active .pay-step-dot {
+    background: #fff;
+    border-color: var(--theme-color, #e74c3c);
+    color: var(--theme-color, #e74c3c);
+    box-shadow: 0 0 0 4px rgba(231,76,60,.12);
+}
+.pay-step.active span { color: #1a1a1a; font-weight: 700; }
+.pay-step-line {
+    height: 2px;
+    width: 60px;
+    background: #ddd;
+    flex-shrink: 0;
+    margin: 0 4px;
+    margin-bottom: 24px;
+    transition: background .3s;
+}
+.pay-step-line.done { background: var(--theme-color, #e74c3c); }
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animation lors de la sélection
-            const radios = document.querySelectorAll('.payment-method-radio');
-            radios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    // Ajouter une petite animation
-                    const label = this.nextElementSibling;
-                    label.style.transform = 'scale(1.02)';
-                    setTimeout(() => {
-                        label.style.transform = 'scale(1)';
-                    }, 200);
-                });
+/* ── Block ── */
+.pay-block {
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+.pay-block-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.pay-block-header i {
+    color: var(--theme-color, #e74c3c);
+    font-size: 1.1rem;
+}
+.pay-block-header h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+/* ── Méthodes de paiement ── */
+.pay-methods { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+.pay-method {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all .25s;
+    background: #fff;
+    user-select: none;
+}
+.pay-method:hover {
+    border-color: #bbb;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.pay-method.is-selected {
+    border-color: var(--theme-color, #e74c3c);
+    background: #fff8f8;
+    box-shadow: 0 2px 16px rgba(231,76,60,.12);
+}
+.pay-method-radio { display: none; }
+.pay-method-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 10px;
+    background: #f5f5f5;
+    border: 1.5px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .25s;
+    overflow: hidden;
+}
+.is-selected .pay-method-icon {
+    background: linear-gradient(135deg, var(--theme-color, #e74c3c), #ff8a65);
+    border-color: transparent;
+}
+.pay-method-icon img { width: 36px; height: 36px; object-fit: contain; }
+.pay-method-icon i { font-size: 1.4rem; color: #555; }
+.is-selected .pay-method-icon i { color: #fff; }
+.pay-method-body { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.pay-method-name {
+    font-weight: 700;
+    font-size: .95rem;
+    color: #1a1a1a;
+}
+.pay-method-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: .75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    width: fit-content;
+}
+.tag-secure { background: rgba(40,167,69,.1); color: #28a745; }
+.tag-cash { background:  "rgba(248,93,5,$($args[0].Groups[1].Value))" ; color: #f59e0b; }
+.pay-method-hint { font-size: .78rem; color: #999; }
+.pay-method-check {
+    font-size: 1.4rem;
+    color: var(--theme-color, #e74c3c);
+    opacity: 0;
+    transition: opacity .25s;
+}
+.is-selected .pay-method-check { opacity: 1; }
+
+/* ── Actions ── */
+.pay-actions {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+}
+.pay-btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: .88rem;
+    font-weight: 600;
+    color: #555;
+    text-decoration: none;
+    padding: 13px 18px;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    transition: all .2s;
+    white-space: nowrap;
+}
+.pay-btn-back:hover { border-color: #aaa; color: #1a1a1a; text-decoration: none; }
+.pay-btn-submit {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 10px;
+    background: var(--theme-color, #e74c3c);
+    color: #fff;
+    font-size: .95rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all .2s;
+    letter-spacing: .2px;
+}
+.pay-btn-submit:hover { filter: brightness(.92); transform: translateY(-1px); }
+.pay-btn-submit:disabled { opacity: .7; cursor: not-allowed; transform: none; filter: none; }
+.pay-btn-loading {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.pay-spin {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: pay-spin .7s linear infinite;
+    flex-shrink: 0;
+}
+@keyframes pay-spin { to { transform: rotate(360deg); } }
+@media (max-width: 576px) {
+    .pay-actions { flex-direction: column; }
+    .pay-btn-back { justify-content: center; }
+}
+
+/* ── Sécurité ── */
+.pay-security {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: .8rem;
+    color: #888;
+    padding: 10px;
+}
+.pay-security i { color: #28a745; }
+
+/* ── Résumé ── */
+.pay-summary { display: flex; flex-direction: column; }
+.pay-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 0;
+    font-size: .9rem;
+    color: #555;
+    border-bottom: 1px solid #f5f5f5;
+}
+.pay-summary-row:last-child { border-bottom: none; }
+.pay-summary-divider {
+    height: 2px;
+    background: linear-gradient(to right, var(--theme-color, #e74c3c), #ff8a65);
+    border-radius: 2px;
+    margin: 4px 0;
+}
+.pay-summary-total {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1a1a1a;
+    padding-top: 12px;
+    border-bottom: none;
+}
+.pay-total-amount {
+    color: var(--theme-color, #e74c3c);
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+.free-tag {
+    background: #d4edda;
+    color: #28a745;
+    font-size: .75rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+}
+.discount-tag { color: #28a745; font-weight: 700; }
+
+/* ── Infos livraison ── */
+.pay-delivery-info {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.pay-delivery-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: .83rem;
+    color: #666;
+}
+.pay-delivery-row i {
+    color: var(--theme-color, #e74c3c);
+    font-size: .85rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+    width: 14px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Toggle selected state on method cards
+    document.querySelectorAll('.pay-method-radio').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            document.querySelectorAll('.pay-method').forEach(function (m) {
+                m.classList.remove('is-selected');
             });
+            this.closest('.pay-method').classList.add('is-selected');
         });
-    </script>
+    });
+
+    // Spinner on submit
+    document.getElementById('payment-form').addEventListener('submit', function () {
+        var btn = document.getElementById('pay-submit');
+        btn.disabled = true;
+        btn.querySelector('.pay-btn-text').style.display = 'none';
+        btn.querySelector('.pay-btn-loading').style.display = 'inline-flex';
+    });
+});
+</script>
+
 @endsection

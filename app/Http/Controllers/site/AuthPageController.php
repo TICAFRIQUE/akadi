@@ -224,12 +224,6 @@ class AuthPageController extends Controller
                 'unique:users,email'
             ],
 
-            'password' => [
-                'required',
-                'string',
-                'min:8'
-            ],
-
             'jour' => [
                 'nullable',
                 'numeric',
@@ -259,12 +253,6 @@ class AuthPageController extends Controller
 
             'phone.required' =>
             'Le téléphone est obligatoire.',
-
-            'password.required' =>
-            'Le mot de passe est obligatoire.',
-
-            'password.min' =>
-            'Le mot de passe doit contenir au moins 8 caractères.',
         ]);
 
         /*
@@ -306,7 +294,7 @@ class AuthPageController extends Controller
 
             'type_client' => 'prospect',
 
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->phone),
         ]);
 
         $user->assignRole('client');
@@ -371,26 +359,34 @@ class AuthPageController extends Controller
 
             return view('site.pages.auth.login');
         } elseif (request()->method() == 'POST') {
-            $credentials = $request->validate([
-                'phone' => ['required'],
-                'password' => ['required'],
+            $request->validate([
+                'phone' => ['required', 'string'],
             ]);
 
-            //redirection apres connexion
-            if (session('cart')) {
-                $url = 'finaliser-ma-commande';  // si le panier n'est pas vide on redirige vers la page checkout
-            } else {
-                $url = '/';   // sinon on redirige vers l'accueil
-            }
+            $phone = trim($request->phone);
 
-            // $url_previous = $request['url_previous'];
+            $url = session('cart') ? 'finaliser-ma-commande' : '/';
 
-            if (Auth::attempt($credentials)) {
+            // Tentative normale : numéro = identifiant ET mot de passe
+            if (Auth::attempt(['phone' => $phone, 'password' => $phone])) {
                 Alert::success('Connexion réussie. Bienvenue !');
-                return redirect()->away($url)->withSuccess('Connexion reussi');
-            } else {
-                return redirect()->route('login-form')->withError('Contact ou mot de passe incorrect');
+                return redirect()->away($url);
             }
+
+            // Fallback pour les anciens comptes clients uniquement
+            $user = \App\Models\User::where('phone', $phone)
+                ->where('role', 'client')
+                ->first();
+
+            if ($user) {
+                // Mettre à jour le password avec le numéro pour les prochaines connexions
+                $user->update(['password' => Hash::make($phone)]);
+                Auth::login($user);
+                Alert::success('Connexion réussie. Bienvenue !');
+                return redirect()->away($url);
+            }
+
+            return redirect()->route('login-form')->withError('Numéro de téléphone introuvable.');
         }
     }
 

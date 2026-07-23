@@ -8,15 +8,17 @@
     @endphp
 
     <div class="row">
-        <div class="breadcumb-wrapper " data-bg-src="">
-            <div class="container z-index-common">
-                <div class="breadcumb-content">
-                    <h1 class="breadcumb-title">Reinitialisation de mot de passe</h1>
-                    <ul class="breadcumb-menu">
-                        <li><a href="i{{ route('page-acceuil') }}">Accueil</a></li>
-                        <li>Recuperer mon mot de passe</li>
-                    </ul>
-                </div>
+        <div class="ak-breadcrumb" style="width:100%">
+            <div class="container">
+                <h1 class="ak-breadcrumb-title">
+                    <span class="ak-breadcrumb-icon"><i class="fas fa-lock"></i></span>
+                    Nouveau mot de passe
+                </h1>
+                <ul class="ak-breadcrumb-nav">
+                    <li><a href="{{ route('page-acceuil') }}">Accueil</a></li>
+                    <li class="ak-breadcrumb-sep"><i class="fas fa-chevron-right"></i></li>
+                    <li class="active">Réinitialisation</li>
+                </ul>
             </div>
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 m-auto my-3">

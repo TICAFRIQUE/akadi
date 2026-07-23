@@ -19,7 +19,7 @@ class AccountPageController extends Controller
                 'products'
                 => fn ($q) => $q->with('media')
             ])
-            ->orderBy('created_at', 'DESC')->get();
+            ->orderBy('created_at', 'DESC')->paginate(8);
         return view('site.pages.auth.mes-commandes', compact('orders'));
     }
 

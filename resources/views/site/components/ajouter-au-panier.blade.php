@@ -14,26 +14,22 @@
             success: function(response) {
                 console.log(response);
                 
-                // Mettre à jour tous les badges du panier (header et menu mobile)
+                // Mettre à jour tous les badges du panier
                 $('.badge').html(response.totalQte);
-                
-                // Afficher une alerte Bootstrap
+                // Afficher badge desktop si caché
+                if (response.totalQte > 0) {
+                    $('.ak-cart-badge.badge').css('display', 'flex');
+                }
+
+                // Toast succès
                 var alertHtml = `
-                    <div class="alert alert-success alert-dismissible fade show position-fixed" 
-                         style="top: 80px; right: 20px; z-index: 9999; min-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" 
-                         role="alert">
-                        <strong><i class="fas fa-check-circle"></i> Succès !</strong> Produit ajouté au panier avec succès.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div style="position:fixed;top:80px;right:20px;z-index:9999;background:#3da108;color:#fff;padding:14px 20px;border-radius:10px;font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:0 6px 20px rgba(0,0,0,.15);animation:slideInRight .3s ease;">
+                        <i class="fas fa-check-circle"></i> Plat ajouté au panier !
                     </div>
                 `;
-                
                 $('body').append(alertHtml);
-                
-                // Disparaît automatiquement après 3 secondes
                 setTimeout(function() {
-                    $('.alert-success').fadeOut(400, function() {
-                        $(this).remove();
-                    });
+                    $('body').find('[style*="Plat ajouté"]').fadeOut(300, function() { $(this).remove(); });
                 }, 2000);
             }
         });

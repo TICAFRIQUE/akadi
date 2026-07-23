@@ -5,16 +5,17 @@
 
 @section('content')
     <div class="row">
-        <div class="breadcumb-wrapper " data-bg-src="">
-            <div class="container z-index-common">
-                <div class="breadcumb-content">
-                    <h1 class="breadcumb-title">Mon profil</h1>
-                    <ul class="breadcumb-menu">
-                        <li><a href="{{ route('liste-produit') }}">Liste des plats</a></li>
-                        <li><a href="i{{ route('page-acceuil') }}">Accueil</a></li>
-                        <li>Mon profil</li>
-                    </ul>
-                </div>
+        <div class="ak-breadcrumb" style="width:100%">
+            <div class="container">
+                <h1 class="ak-breadcrumb-title">
+                    <span class="ak-breadcrumb-icon"><i class="fas fa-user-circle"></i></span>
+                    Mon profil
+                </h1>
+                <ul class="ak-breadcrumb-nav">
+                    <li><a href="{{ route('page-acceuil') }}">Accueil</a></li>
+                    <li class="ak-breadcrumb-sep"><i class="fas fa-chevron-right"></i></li>
+                    <li class="active">Mon profil</li>
+                </ul>
             </div>
         </div>
 

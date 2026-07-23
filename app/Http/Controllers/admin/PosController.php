@@ -378,7 +378,7 @@ class PosController extends Controller
                     ['phone' => $request->client_phone],
                     [
                         'name'     => $request->client_name ?? 'Client anonyme',
-                        'password' => Hash::make('password'),
+                        'password' => Hash::make($request->client_phone),
                         'role'     => 'client',
                         'motif'    => 'passer_commande',
                     ]

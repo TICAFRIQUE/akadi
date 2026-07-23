@@ -178,23 +178,22 @@
                                     {{-- Téléphone --}}
                                     <div class="form-group col-6">
 
-                                        <label for="phone">
-                                            Téléphone
-                                        </label>
+                                        <label for="phone">Téléphone</label>
 
-                                        <input id="phone" type="tel"
-                                            class="form-control @error('phone') is-invalid @enderror" name="phone"
-                                            value="{{ old('phone', $user['phone']) }}" minlength="8" maxlength="15"
-                                            required>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+225</span>
+                                            </div>
+                                            <input id="phone" type="tel"
+                                                class="form-control @error('phone') is-invalid @enderror" name="phone"
+                                                value="{{ old('phone', $user['phone']) }}" minlength="10" maxlength="10"
+                                                required>
+                                        </div>
 
                                         @error('phone')
-                                            <div class="invalid-feedback d-block">
-                                                {{ $message }}
-                                            </div>
+                                            <div class="text-danger" style="font-size:.85em">{{ $message }}</div>
                                         @else
-                                            <div class="invalid-feedback">
-                                                Téléphone invalide
-                                            </div>
+                                            <div class="invalid-feedback">Téléphone invalide</div>
                                         @enderror
 
                                     </div>
@@ -381,37 +380,18 @@
 
                                 </div>
 
-                                {{-- Mot de passe --}}
-                                <div class="row">
-
-                                    <div class="form-group col-8">
-
-                                        <label for="password" class="d-block">
-
-                                            Mot de passe
-
-                                            <small class="text-danger">
-                                                (Laisser vide pour ne pas modifier)
-                                            </small>
-
+                                {{-- Réinitialisation mot de passe --}}
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="reset_password" name="reset_password" value="1">
+                                        <label class="custom-control-label" for="reset_password">
+                                            Réinitialiser le mot de passe au numéro de téléphone
                                         </label>
-
-                                        <input id="password" type="password"
-                                            class="form-control @error('password') is-invalid @enderror" name="password"
-                                            minlength="8">
-
-                                        @error('password')
-                                            <div class="invalid-feedback d-block">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-
                                     </div>
-
-                                    <div class="form-group col-4 my-auto">
-                                        @include('admin.components.hideshowpwd')
-                                    </div>
-
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle"></i>
+                                        Si coché, le mot de passe sera remplacé par le numéro de téléphone saisi.
+                                    </small>
                                 </div>
 
                                 {{-- Bouton --}}

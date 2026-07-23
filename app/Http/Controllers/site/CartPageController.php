@@ -80,7 +80,7 @@ class CartPageController extends Controller
             return response()->json([
                 'cart' => session()->get('cart'),
                 'totalQte' => $totalQuantity,
-                "sousTotal" => number_format($sousTotal),
+                "sousTotal" => $sousTotal,
             ]);
         }
     }
@@ -153,7 +153,7 @@ class CartPageController extends Controller
             'cart' => session()->get('cart'),
             'totalQte' => $totalQuantity,
             'countCart' => $countCart,
-            "sousTotal" => number_format($sousTotal)
+            "sousTotal" => $sousTotal
         ]);
     }
 
