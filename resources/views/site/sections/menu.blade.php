@@ -559,6 +559,46 @@ a.ak-info-item:hover { color: var(--ak-orange); text-decoration: none; }
     #slider + * { margin-top: 0 !important; }
 }
 
+/* ══ PANEL COMPTE MOBILE ══ */
+.ak-bn-account-panel {
+    position: fixed;
+    bottom: 60px;
+    left: 0; right: 0;
+    background: #fff;
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -8px 32px rgba(0,0,0,.15);
+    z-index: 1049;
+    transform: translateY(100%);
+    transition: transform .28s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 6px 8px 12px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+}
+.ak-bn-account-panel.open {
+    transform: translateY(0);
+}
+.ak-bn-account-inner {
+    max-width: 420px;
+    margin: 0 auto;
+}
+/* Poignée en haut */
+.ak-bn-account-inner::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    margin: 6px auto 14px;
+}
+.ak-bn-account-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 1048;
+}
+.ak-bn-account-backdrop.open { display: block; }
+
 /* ══ BOTTOM NAV MOBILE ══ */
 .ak-bottom-nav {
     position: fixed;
@@ -680,18 +720,52 @@ button.ak-bottom-nav-item {
         <span>Chercher</span>
     </button>
 
-    <a href="{{ Auth::check() ? route('user-profil') : route('login') }}"
-       class="ak-bottom-nav-item {{ request()->routeIs('user-profil','login') ? 'active' : '' }}">
-        <i class="far {{ Auth::check() ? 'fa-user-check' : 'fa-user' }}"></i>
-        <span>{{ Auth::check() ? 'Compte' : 'Connexion' }}</span>
-    </a>
+    @auth
+        <button type="button" class="ak-bottom-nav-item {{ request()->routeIs('user-profil','user-order') ? 'active' : '' }}"
+                id="ak-bn-account-btn">
+            <i class="far fa-user-check"></i>
+            <span>Compte</span>
+        </button>
+    @else
+        <a href="{{ route('login') }}"
+           class="ak-bottom-nav-item {{ request()->routeIs('login') ? 'active' : '' }}">
+            <i class="far fa-user"></i>
+            <span>Connexion</span>
+        </a>
+    @endauth
 
 </nav>
+
+{{-- ── Panel compte (mobile) ── --}}
+@auth
+<div class="ak-bn-account-panel" id="ak-bn-account-panel" aria-hidden="true">
+    <div class="ak-bn-account-inner">
+        <div class="ak-user-header">
+            <div class="ak-user-avatar"><i class="fas fa-user"></i></div>
+            <div>
+                <strong>{{ Auth::user()->name }}</strong>
+                <small>{{ Auth::user()->phone }}</small>
+            </div>
+        </div>
+        <a href="{{ route('user-profil') }}" class="ak-user-item">
+            <i class="far fa-user"></i> Mon compte
+        </a>
+        <a href="{{ route('user-order') }}" class="ak-user-item">
+            <i class="far fa-list-alt"></i> Mes commandes
+        </a>
+        <div class="ak-user-divider"></div>
+        <a href="{{ route('logout') }}" class="ak-user-item ak-user-logout">
+            <i class="far fa-sign-out"></i> Déconnexion
+        </a>
+    </div>
+</div>
+<div class="ak-bn-account-backdrop" id="ak-bn-account-backdrop"></div>
+@endauth
 
 {{-- ─────────────────── SCRIPT HEADER ─────────────────── --}}
 <script>
 (function () {
-    // Dropdown utilisateur
+    // Dropdown utilisateur (desktop)
     var btn = document.getElementById('ak-user-btn');
     var menu = document.getElementById('ak-user-menu');
     if (btn && menu) {
@@ -703,6 +777,27 @@ button.ak-bottom-nav-item {
             menu.classList.remove('show');
         });
     }
+
+    // Panel compte (mobile bottom nav)
+    var bnBtn      = document.getElementById('ak-bn-account-btn');
+    var bnPanel    = document.getElementById('ak-bn-account-panel');
+    var bnBackdrop = document.getElementById('ak-bn-account-backdrop');
+    function openBnPanel() {
+        if (bnPanel)    { bnPanel.classList.add('open'); bnPanel.setAttribute('aria-hidden','false'); }
+        if (bnBackdrop) bnBackdrop.classList.add('open');
+    }
+    function closeBnPanel() {
+        if (bnPanel)    { bnPanel.classList.remove('open'); bnPanel.setAttribute('aria-hidden','true'); }
+        if (bnBackdrop) bnBackdrop.classList.remove('open');
+    }
+    if (bnBtn) {
+        bnBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            bnPanel && bnPanel.classList.contains('open') ? closeBnPanel() : openBnPanel();
+        });
+    }
+    if (bnBackdrop) bnBackdrop.addEventListener('click', closeBnPanel);
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeBnPanel(); });
 
     // Sticky shadow
     var navbar = document.querySelector('.ak-navbar');
