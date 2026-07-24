@@ -1,6 +1,12 @@
 <style>
 /* ── Section catégories ── */
-.ak-cats-section { padding: 10px 0; background: #fff; }
+.ak-cats-section {
+    padding: 10px 0;
+    background-color: #fff;
+    /* Pattern fourchette + cuillère SVG inline — 0 requête HTTP */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cg fill='%23f85d05' opacity='.06' transform='translate(12,10)'%3E%3Crect x='0' y='0' width='2.5' height='12' rx='1.25'/%3E%3Crect x='5' y='0' width='2.5' height='12' rx='1.25'/%3E%3Crect x='10' y='0' width='2.5' height='12' rx='1.25'/%3E%3Cpath d='M1.25 11 C4 14 9 14 11.25 11 L11.25 26 C9 28 4 28 1.25 26 Z'/%3E%3C/g%3E%3Cg fill='%23eb0029' opacity='.045' transform='translate(55,48) rotate(25)'%3E%3Cellipse cx='5' cy='5' rx='4.5' ry='5.5'/%3E%3Crect x='3.5' y='9' width='3' height='17' rx='1.5'/%3E%3C/g%3E%3Ccircle cx='72' cy='15' r='2.5' fill='%23f85d05' opacity='.04'/%3E%3Ccircle cx='25' cy='78' r='2' fill='%23eb0029' opacity='.035'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+}
 .ak-section-label {
     display: inline-flex;
     align-items: center;

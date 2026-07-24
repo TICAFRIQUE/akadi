@@ -1,7 +1,13 @@
 ﻿@once
 <style>
 /* ── Section produits ── */
-.ak-products-section { padding: 64px 0; background: #fafafa; }
+.ak-products-section {
+    padding: 64px 0;
+    background-color: #fafafa;
+    /* Pattern pastilles food — 0 requête HTTP */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='2' fill='%23f85d05' opacity='.055'/%3E%3Ccircle cx='0' cy='0' r='1.2' fill='%23f85d05' opacity='.035'/%3E%3Ccircle cx='48' cy='0' r='1.2' fill='%23f85d05' opacity='.035'/%3E%3Ccircle cx='0' cy='48' r='1.2' fill='%23f85d05' opacity='.035'/%3E%3Ccircle cx='48' cy='48' r='1.2' fill='%23f85d05' opacity='.035'/%3E%3Ccircle cx='24' cy='0' r='.8' fill='%23eb0029' opacity='.025'/%3E%3Ccircle cx='0' cy='24' r='.8' fill='%23eb0029' opacity='.025'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+}
 
 /* ── Tab filter pills ── */
 .ak-filter-tabs {

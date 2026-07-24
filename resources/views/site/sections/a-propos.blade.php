@@ -2,7 +2,12 @@
 /* ── About section ── */
 .ak-about-section {
     padding: 80px 0;
-    background: linear-gradient(135deg, #fff 60%, #fff8f8 100%);
+    /* Gradient + pattern assiette/étoile — 0 requête HTTP */
+    background-color: #fff;
+    background-image:
+        linear-gradient(135deg, rgba(255,255,255,0) 60%, rgba(255,245,245,.9) 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Ccircle cx='60' cy='60' r='18' fill='none' stroke='%23f85d05' stroke-width='1.5' opacity='.045'/%3E%3Ccircle cx='60' cy='60' r='10' fill='none' stroke='%23f85d05' stroke-width='1' opacity='.03'/%3E%3Ccircle cx='0' cy='0' r='12' fill='none' stroke='%23eb0029' stroke-width='1' opacity='.035'/%3E%3Ccircle cx='120' cy='120' r='12' fill='none' stroke='%23eb0029' stroke-width='1' opacity='.035'/%3E%3Ccircle cx='120' cy='0' r='8' fill='none' stroke='%23f85d05' stroke-width='1' opacity='.025'/%3E%3Ccircle cx='0' cy='120' r='8' fill='none' stroke='%23f85d05' stroke-width='1' opacity='.025'/%3E%3C/svg%3E");
+    background-repeat: repeat;
     overflow: hidden;
     position: relative;
 }
