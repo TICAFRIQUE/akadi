@@ -540,8 +540,153 @@ a.ak-info-item:hover { color: var(--ak-orange); text-decoration: none; }
     .ak-nav-inner { height: 60px; }
     .ak-logo img { height: 44px; }
     .ak-topbar-infos { display: none; }
+    body { padding-bottom: 68px; }
+}
+
+/* ── Slider mobile : hauteur réduite + suppression espace blanc ── */
+@media (max-width: 767px) {
+    .sticky-wrapper { height: auto !important; }
+    #slider.ls-wp-container {
+        height: 160px !important;
+        min-height: 160px !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+    #slider .ls-slide { height: 160px !important; }
+    /* Supprimer l'espace au-dessus de la section produits */
+    .ak-products-section { padding-top: 24px !important; }
+    /* Supprimer tout gap résiduel après le slider */
+    #slider + * { margin-top: 0 !important; }
+}
+
+/* ══ BOTTOM NAV MOBILE ══ */
+.ak-bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: #fff;
+    border-top: 1px solid #efefef;
+    box-shadow: 0 -4px 20px rgba(0,0,0,.09);
+    display: flex;
+    align-items: stretch;
+    z-index: 1050;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.ak-bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: #aaa;
+    text-decoration: none;
+    font-size: .6rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    transition: color .15s;
+    position: relative;
+}
+.ak-bottom-nav-item i {
+    font-size: 1.15rem;
+    line-height: 1;
+}
+/* Reset bouton natif */
+button.ak-bottom-nav-item {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+}
+.ak-bottom-nav-item:hover,
+.ak-bottom-nav-item.active {
+    color: var(--ak-orange, #f85d05);
+    text-decoration: none;
+}
+.ak-bottom-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 2.5px;
+    background: var(--ak-orange, #f85d05);
+    border-radius: 0 0 3px 3px;
+}
+/* Bouton central panier mis en avant */
+.ak-bottom-nav-item.ak-bn-cart {
+    color: #fff;
+}
+.ak-bottom-nav-item.ak-bn-cart .ak-bn-cart-bubble {
+    width: 44px;
+    height: 44px;
+    background: var(--ak-orange, #f85d05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(248,93,5,.4);
+    position: relative;
+    margin-bottom: 2px;
+    transition: transform .15s;
+}
+.ak-bottom-nav-item.ak-bn-cart:hover .ak-bn-cart-bubble { transform: scale(1.08); }
+.ak-bottom-nav-item.ak-bn-cart i { font-size: 1.1rem; }
+.ak-bn-badge {
+    position: absolute;
+    top: -3px; right: -3px;
+    width: 17px; height: 17px;
+    background: var(--ak-red, #eb0029);
+    color: #fff;
+    font-size: .55rem;
+    font-weight: 800;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    line-height: 1;
 }
 </style>
+
+{{-- ═══════════════ BOTTOM NAV MOBILE ═══════════════ --}}
+@php $qty = Session::get('totalQuantity') ?? 0; @endphp
+<nav class="ak-bottom-nav d-lg-none">
+
+    <a href="{{ route('page-acceuil') }}"
+       class="ak-bottom-nav-item {{ request()->routeIs('page-acceuil') ? 'active' : '' }}">
+        <i class="fas fa-home"></i>
+        <span>Accueil</span>
+    </a>
+
+    <a href="{{ route('liste-produit') }}"
+       class="ak-bottom-nav-item {{ request()->routeIs('liste-produit') ? 'active' : '' }}">
+        <i class="fas fa-utensils"></i>
+        <span>Nos plats</span>
+    </a>
+
+    <a href="{{ route('panier') }}" class="ak-bottom-nav-item ak-bn-cart">
+        <div class="ak-bn-cart-bubble">
+            <i class="far fa-shopping-bag"></i>
+            @if($qty > 0)
+                <span class="ak-bn-badge badge">{{ $qty }}</span>
+            @endif
+        </div>
+        <span style="color:#555;font-size:.6rem;font-weight:700;letter-spacing:.02em;">Panier</span>
+    </a>
+
+    <button type="button" class="ak-bottom-nav-item searchBoxToggler">
+        <i class="far fa-search"></i>
+        <span>Chercher</span>
+    </button>
+
+    <a href="{{ Auth::check() ? route('user-profil') : route('login') }}"
+       class="ak-bottom-nav-item {{ request()->routeIs('user-profil','login') ? 'active' : '' }}">
+        <i class="far {{ Auth::check() ? 'fa-user-check' : 'fa-user' }}"></i>
+        <span>{{ Auth::check() ? 'Compte' : 'Connexion' }}</span>
+    </a>
+
+</nav>
 
 {{-- ─────────────────── SCRIPT HEADER ─────────────────── --}}
 <script>

@@ -1,6 +1,6 @@
 <style>
 /* ── Section catégories ── */
-.ak-cats-section { padding: 64px 0; background: #fff; }
+.ak-cats-section { padding: 10px 0; background: #fff; }
 .ak-section-label {
     display: inline-flex;
     align-items: center;

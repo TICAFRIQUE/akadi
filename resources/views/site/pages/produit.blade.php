@@ -138,8 +138,29 @@
     padding: 12px 16px;
     border-top: 1px solid #f5f5f5;
 }
+.ak-plat-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.ak-plat-detail {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(248,93,5,.1);
+    color: var(--ak-orange, #f85d05);
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: .9rem;
+    transition: all .2s;
+    border: none;
+}
+.ak-plat-detail:hover { background: var(--ak-orange,#f85d05); color: #fff; text-decoration: none; }
 .ak-plat-add {
-    width: 100%;
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -302,9 +323,14 @@
                                 </div>
                             </div>
                             <div class="ak-plat-footer">
-                                <button class="ak-plat-add addCart" data-id="{{ $item['id'] }}">
-                                    <i class="fa fa-cart-plus"></i> Ajouter au panier
-                                </button>
+                                <div class="ak-plat-actions">
+                                    <a href="{{ route('detail-produit', $item->slug) }}" class="ak-plat-detail" title="Voir les détails">
+                                        <i class="far fa-eye"></i>
+                                    </a>
+                                    <button class="ak-plat-add addCart" data-id="{{ $item['id'] }}">
+                                        <i class="fa fa-cart-plus"></i> Ajouter au panier
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

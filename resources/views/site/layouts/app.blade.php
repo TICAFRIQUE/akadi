@@ -446,10 +446,10 @@
             display: block;
         }
 
-        /* Afficher uniquement sur mobile */
+        /* Remplacé par .ak-bottom-nav dans menu.blade.php */
         @media (max-width: 991px) {
             .mobile-bottom-nav {
-                display: block;
+                display: none !important;
             }
 
             .mobile-account-dropdown {

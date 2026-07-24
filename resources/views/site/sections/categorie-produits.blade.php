@@ -183,9 +183,19 @@
 
 /* Responsive */
 @media (max-width: 576px) {
-    .ak-product-img { width: 120px; }
-    .ak-product-body { padding: 12px 14px; }
-    .ak-product-actions { flex-wrap: wrap; }
+    .ak-product-img { width: 110px; }
+    .ak-product-body { padding: 10px 12px; }
+    .ak-product-actions { flex-wrap: nowrap; gap: 6px; }
+    /* Icônes only sur mobile, prennent toute la largeur à parts égales */
+    .ak-btn-detail .btn-label,
+    .ak-btn-cart .btn-label { display: none; }
+    .ak-btn-detail, .ak-btn-cart {
+        flex: 1;
+        height: 38px;
+        padding: 0;
+        border-radius: 8px;
+        justify-content: center;
+    }
 }
 </style>
 @endonce
@@ -264,11 +274,11 @@
                                         </div>
 
                                         <div class="ak-product-actions">
-                                            <a href="{{ $detailUrl }}" class="ak-btn-detail">
-                                                <i class="far fa-eye"></i> Détails
+                                            <a href="{{ $detailUrl }}" class="ak-btn-detail" title="Voir les détails">
+                                                <i class="far fa-eye"></i> <span class="btn-label">Détails</span>
                                             </a>
-                                            <button class="ak-btn-cart addCart" data-id="{{ $product['id'] }}">
-                                                <i class="fa fa-cart-plus"></i> Ajouter
+                                            <button class="ak-btn-cart addCart" data-id="{{ $product['id'] }}" title="Ajouter au panier">
+                                                <i class="fa fa-cart-plus"></i> <span class="btn-label">Ajouter</span>
                                             </button>
                                         </div>
                                     </div>
