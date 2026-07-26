@@ -89,9 +89,31 @@
                     </div>
                     @endforeach
 
-                    @if ($item['products']->count() > 3)
+                    @foreach ($item->menuProduits->take(3) as $plat)
+                    <div class="histo-product">
+                        <div class="histo-product-img" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--ak-orange,#f85d05),var(--ak-red,#eb0029));">
+                            <i class="fas fa-utensils" style="color:#fff;"></i>
+                        </div>
+                        <div class="histo-product-body">
+                            <span class="histo-product-name">
+                                {{ $plat->nom }}
+                                <span class="badge" style="background:var(--ak-orange,#f85d05);color:#fff;font-size:.6rem;">Menu du jour</span>
+                            </span>
+                            <span class="histo-product-meta">
+                                {{ number_format($plat->pivot->unit_price, 0, ',', ' ') }} FCFA
+                                &times; {{ $plat->pivot->quantity }}
+                            </span>
+                        </div>
+                        <span class="histo-product-total">
+                            {{ number_format($plat->pivot->unit_price * $plat->pivot->quantity, 0, ',', ' ') }} FCFA
+                        </span>
+                    </div>
+                    @endforeach
+
+                    @php $totalItems = $item['products']->count() + $item->menuProduits->count(); @endphp
+                    @if ($totalItems > 3)
                     <div class="histo-more">
-                        + {{ $item['products']->count() - 3 }} autre{{ $item['products']->count() - 3 > 1 ? 's' : '' }} article{{ $item['products']->count() - 3 > 1 ? 's' : '' }}
+                        + {{ $totalItems - 3 }} autre{{ $totalItems - 3 > 1 ? 's' : '' }} article{{ $totalItems - 3 > 1 ? 's' : '' }}
                     </div>
                     @endif
                 </div>

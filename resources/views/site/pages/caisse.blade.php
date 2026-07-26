@@ -25,9 +25,10 @@
 <section class="checkout-section">
     <div class="container">
 
-        @if (session('cart'))
+        @if (session('cart') || session('cart_menu'))
 
         @php $sousTotal = 0; @endphp
+        @php $sousTotalMenu = 0; @endphp
 
         <div class="checkout-grid">
 
@@ -37,7 +38,7 @@
                 <div class="checkout-block">
                     <div class="checkout-block-header">
                         <i class="fas fa-shopping-bag"></i>
-                        <h2>Mon panier <span class="cart-count quantityProduct">{{ count((array) session('cart')) }}</span></h2>
+                        <h2>Mon panier <span class="cart-count quantityProduct">{{ count((array) session('cart')) + count((array) session('cart_menu')) }}</span></h2>
                     </div>
 
                     <div class="cart-items">
@@ -84,6 +85,34 @@
                                             @endif
                                         @endforeach
                                     @endif
+                                </div>
+                            </div>
+                        @endforeach
+
+                        @foreach (session('cart_menu', []) as $id => $details)
+                            @php $sousTotal += $details['price'] * $details['quantity']; @endphp
+                            @php $sousTotalMenu += $details['price'] * $details['quantity']; @endphp
+                            @php $lineTotal = $details['price'] * $details['quantity']; @endphp
+
+                            <div class="cart-item" id="menu_row_{{ $id }}">
+                                <div class="cart-item-img-wrap">
+                                    <div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--ak-orange,#f85d05),var(--ak-red,#eb0029));">
+                                        <i class="fas fa-utensils" style="color:#fff;font-size:1.3rem;"></i>
+                                    </div>
+                                </div>
+                                <div class="cart-item-body">
+                                    <span class="cart-item-name">
+                                        {{ $details['nom'] }}
+                                        <span class="badge" style="background:var(--ak-orange,#f85d05);color:#fff;font-size:.65rem;">Menu du jour</span>
+                                    </span>
+                                    <div class="cart-item-meta">
+                                        <span class="cart-item-price">{{ number_format($details['price'], 0, ',', ' ') }} FCFA</span>
+                                        <span class="cart-item-sep">×</span>
+                                        <span class="cart-item-qty">{{ $details['quantity'] }}</span>
+                                    </div>
+                                    <div class="cart-item-total">
+                                        <span id="totalPriceQtyMenu{{ $id }}">{{ number_format($lineTotal, 0, ',', ' ') }}</span> FCFA
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -214,7 +243,7 @@
 
                     <div class="price-row">
                         <span>Sous-total</span>
-                        <span class="sousTotal" data-subTotal="{{ $sousTotal }}">
+                        <span class="sousTotal" data-subTotal="{{ $sousTotal }}" data-subTotalMenu="{{ $sousTotalMenu }}">
                             {{ number_format($sousTotal, 0, ',', ' ') }} FCFA
                         </span>
                     </div>
@@ -691,6 +720,8 @@
 
     var sousTotal = $('.sousTotal').attr('data-subTotal');
     localStorage.setItem('sousTotal', sousTotal);
+    var sousTotalMenu = $('.sousTotal').attr('data-subTotalMenu') || 0;
+    localStorage.setItem('sousTotalMenu', sousTotalMenu);
 
     $('.applyCoupon').click(function(e) {
         e.preventDefault();
@@ -909,6 +940,7 @@
             $('.confirmOrder').hide();
 
             var subTotal = localStorage.getItem('sousTotal') || 0;
+            var subTotalMenu = localStorage.getItem('sousTotalMenu') || 0;
             var code_promo = localStorage.getItem('code-promo') || 0;
             var total_order = parseFloat(subTotal) + parseFloat(prix_livraison);
             var type_commande = type_cmd;
@@ -947,7 +979,7 @@
                 delivery_planned = formatDateTime(dpNow);
                 date_order = formatDateTime(new Date());
             }
-            var data = { subTotal, address, address_yango, prix_livraison, lieu_livraison, delivery_mode, total_order, note, type_commande, delivery_planned, code_promo, coupon_id, remise, date_order };
+            var data = { subTotal, subTotalMenu, address, address_yango, prix_livraison, lieu_livraison, delivery_mode, total_order, note, type_commande, delivery_planned, code_promo, coupon_id, remise, date_order };
 
             $.ajax({
                 type: "GET",

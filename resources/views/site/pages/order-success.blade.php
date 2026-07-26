@@ -199,7 +199,7 @@
             <div class="confirm-block">
                 <div class="confirm-block-hd">
                     <i class="fas fa-shopping-bag"></i>
-                    <h2>Articles commandés <span class="items-count">{{ $order->products->count() }}</span></h2>
+                    <h2>Articles commandés <span class="items-count">{{ $order->products->count() + $order->menuProduits->count() }}</span></h2>
                 </div>
                 <div class="confirm-products">
                     @foreach ($order->products as $product)
@@ -216,6 +216,22 @@
                             <span class="cp-meta">{{ number_format($product->pivot->unit_price, 0, ',', ' ') }} FCFA × {{ $product->pivot->quantity }}</span>
                         </div>
                         <span class="cp-total">{{ number_format($product->pivot->total, 0, ',', ' ') }} FCFA</span>
+                    </div>
+                    @endforeach
+                    @foreach ($order->menuProduits as $plat)
+                    <div class="cp-item">
+                        <div class="cp-img">
+                            <div class="cp-img-placeholder" style="background:linear-gradient(135deg,var(--ak-orange,#f85d05),var(--ak-red,#eb0029));color:#fff;">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                        </div>
+                        <div class="cp-body">
+                            <span class="cp-name">{{ $plat->nom }}
+                                <span class="badge" style="background:var(--ak-orange,#f85d05);color:#fff;font-size:.65rem;">Menu du jour</span>
+                            </span>
+                            <span class="cp-meta">{{ number_format($plat->pivot->unit_price, 0, ',', ' ') }} FCFA × {{ $plat->pivot->quantity }}</span>
+                        </div>
+                        <span class="cp-total">{{ number_format($plat->pivot->total, 0, ',', ' ') }} FCFA</span>
                     </div>
                     @endforeach
                 </div>

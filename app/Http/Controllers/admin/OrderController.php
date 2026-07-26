@@ -430,6 +430,9 @@ class OrderController extends Controller
                     $sl = $statusLabels[$item->status] ?? $item->status;
                     return "<span class='badge badge-{$sc} text-white p-1 px-2' style='white-space:nowrap;font-size:.75rem'>{$sl}</span>";
                 })
+                ->addColumn('type_vente_badge', function ($item) {
+                    return "<span class='badge badge-{$item->type_vente_color}' style='white-space:nowrap;font-size:.75rem'>{$item->type_vente_label}</span>";
+                })
                 ->addColumn('source_badge', function ($item) {
                     $srcIcon  = Order::$sources[$item->source]['icon']  ?? 'fa-question';
                     $srcLabel = Order::$sources[$item->source]['label'] ?? ($item->source ?? '—');

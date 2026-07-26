@@ -35,13 +35,17 @@ class PaymentController extends Controller
 
         // Vérifier si l'utilisateur a des articles dans le panier
         $cart = Session::get('cart', []);
-        if (empty($cart)) {
+        $cartMenu = Session::get('cart_menu', []);
+        if (empty($cart) && empty($cartMenu)) {
             return redirect()->route('panier')->with('error', 'Votre panier est vide');
         }
 
-        // Calculer le total du panier
+        // Calculer le total du panier (produits + menu du jour)
         $subtotal = 0;
         foreach ($cart as $item) {
+            $subtotal += $item['price'] * $item['quantity'];
+        }
+        foreach ($cartMenu as $item) {
             $subtotal += $item['price'] * $item['quantity'];
         }
 
@@ -86,8 +90,9 @@ class PaymentController extends Controller
             // Créer la commande avec paiement en espèces
             //infos panier
             $cart = Session::get('cart', []);
+            $cartMenu = Session::get('cart_menu', []);
             //infos commande pour livraison
-            $deliveryInfo = Session::get('delivery_info'); // 
+            $deliveryInfo = Session::get('delivery_info'); //
             // dd($deliveryInfo , $cart);
 
             Log::info('Processing Cash Payment', [
@@ -97,7 +102,7 @@ class PaymentController extends Controller
                 'cart_count' => count($cart)
             ]);
 
-            if (empty($cart)) {
+            if (empty($cart) && empty($cartMenu)) {
                 Log::warning('Cash Payment - Empty Cart', ['user_id' => Auth::id()]);
                 return redirect()->route('panier')->with('error', 'Votre panier est vide');
             }
@@ -112,7 +117,8 @@ class PaymentController extends Controller
 
             // Calculer les totaux
             $subtotal = $deliveryInfo['subTotal'];
-            $quantityTotal = count($cart);
+            $totalMenu = (float) ($deliveryInfo['subTotalMenu'] ?? 0);
+            $quantityTotal = count($cart) + count($cartMenu);
             $deliveryPrice = $deliveryInfo['price'];
             $total = $subtotal + $deliveryPrice;
 
@@ -129,6 +135,7 @@ class PaymentController extends Controller
                 'client_phone' => $user->phone ?? '',
                 'quantity_product' => $quantityTotal,
                 'subtotal' => $subtotal,
+                'total_menu' => $totalMenu,
                 'total' => $total,
                 'delivery_price' => $deliveryPrice,
                 'delivery_name' => $deliveryInfo['name'],
@@ -148,6 +155,11 @@ class PaymentController extends Controller
 
             // Attacher les produits à la commande et décrémenter les stocks
             $this->stockService->attachCartAndDecrementStock($order, $cart);
+
+            // Attacher les plats du menu du jour (pas de gestion de stock)
+            if (!empty($cartMenu)) {
+                $this->stockService->attachMenuCartToOrder($order, $cartMenu);
+            }
 
 
             //------------------ SNAPSHOT insertion des product_base  ----------------------------
@@ -192,6 +204,7 @@ class PaymentController extends Controller
 
             // Vider le panier et les infos de livraison
             Session::forget('cart');
+            Session::forget('cart_menu');
             Session::forget('delivery_info');
             Session::forget('totalQuantity');
 
@@ -222,6 +235,7 @@ class PaymentController extends Controller
 
             $userId = Auth::id();
             $cart = Session::get('cart', []);
+            $cartMenu = Session::get('cart_menu', []);
             $deliveryInfo = Session::get('delivery_info');
 
             Log::info('Wave Payment Start', [
@@ -230,7 +244,7 @@ class PaymentController extends Controller
                 'has_delivery_info' => !empty($deliveryInfo)
             ]);
 
-            if (empty($cart)) {
+            if (empty($cart) && empty($cartMenu)) {
                 return redirect()->route('panier')->with('error', 'Votre panier est vide');
             }
 
@@ -240,7 +254,8 @@ class PaymentController extends Controller
 
             // Calculer les totaux
             $subtotal = $deliveryInfo['subTotal'];
-            $quantityTotal = count($cart);
+            $totalMenu = (float) ($deliveryInfo['subTotalMenu'] ?? 0);
+            $quantityTotal = count($cart) + count($cartMenu);
             $deliveryPrice = $deliveryInfo['price'];
             $total = $subtotal + $deliveryPrice;
 
@@ -263,6 +278,7 @@ class PaymentController extends Controller
                 'client_phone' => $user->phone ?? '',
                 'quantity_product' => $quantityTotal,
                 'subtotal' => $subtotal,
+                'total_menu' => $totalMenu,
                 'total' => $total,
                 'delivery_price' => $deliveryPrice,
                 'delivery_name' => $deliveryInfo['name'],
@@ -287,6 +303,11 @@ class PaymentController extends Controller
 
             // Attacher les produits à la commande et décrémenter les stocks
             $this->stockService->attachCartAndDecrementStock($order, $cart);
+
+            // Attacher les plats du menu du jour (pas de gestion de stock)
+            if (!empty($cartMenu)) {
+                $this->stockService->attachMenuCartToOrder($order, $cartMenu);
+            }
 
             //------─────────────────────── Insertion des bases de produits dans la table order_product_base ────────────────────────────────────────────────────────
             // 3️⃣ reload de la commande pour s'assurer d'avoir les relations à jour (OBLIGATOIRE avant de faire le snapshot)
@@ -659,7 +680,7 @@ class PaymentController extends Controller
         // Si le paiement est déjà confirmé, rediriger vers la page de succès
         if ($order->payment_status === 'completed') {
             // Vider le panier maintenant que le paiement est confirmé
-            Session::forget(['cart', 'delivery_info', 'totalQuantity']);
+            Session::forget(['cart', 'cart_menu', 'delivery_info', 'totalQuantity']);
 
             return redirect()->route('order.success', $order->id)
                 ->with('success', 'Votre paiement a été effectué avec succès');
@@ -672,7 +693,7 @@ class PaymentController extends Controller
 
             if ($order->payment_status === 'completed') {
                 // Vider le panier maintenant que le paiement est confirmé
-                Session::forget(['cart', 'delivery_info', 'totalQuantity']);
+                Session::forget(['cart', 'cart_menu', 'delivery_info', 'totalQuantity']);
 
                 return redirect()->route('order.success', $order->id)
                     ->with('success', 'Votre paiement a été effectué avec succès');
@@ -738,7 +759,7 @@ class PaymentController extends Controller
     public function orderSuccess($orderId)
     {
         try {
-            $order = Order::with(['products', 'paymentMethod'])
+            $order = Order::with(['products', 'menuProduits', 'paymentMethod'])
                 ->where('id', $orderId)
                 ->where('user_id', Auth::id())
                 ->first();
@@ -752,7 +773,7 @@ class PaymentController extends Controller
             }
 
             // Vider le panier si ce n'est pas déjà fait (sécurité)
-            Session::forget(['cart', 'delivery_info', 'totalQuantity']);
+            Session::forget(['cart', 'cart_menu', 'delivery_info', 'totalQuantity']);
 
             return view('site.pages.order-success', compact('order'));
         } catch (Exception $e) {

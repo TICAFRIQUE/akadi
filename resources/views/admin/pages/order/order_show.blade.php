@@ -278,6 +278,7 @@
                                     \App\Models\Order::$sources[$orders->source]['label'] ?? ($orders->source ?? '—');
                             @endphp
                             <span class="source-badge"><i class="fab {{ $srcIcon }}"></i> {{ $srcLabel }}</span>
+                            <span class="badge badge-{{ $orders->type_vente_color }}">{{ $orders->type_vente_label }}</span>
                             @if ($orders->caisse)
                                 <span class="caisse-badge"><i class="fas fa-cash-register mr-1"></i>
                                     {{ $orders->caisse->nom }}</span>
@@ -304,7 +305,9 @@
                                         <div class="no-img"><i class="fas fa-box text-muted"></i></div>
                                     @endif
                                     <div class="flex-grow-1">
-                                        <div class="font-weight-bold">{{ $item->title }}</div>
+                                        <div class="font-weight-bold">{{ $item->title }}
+                                            <span class="badge badge-light border ml-1">Produit</span>
+                                        </div>
                                         <div class="text-muted small mt-1">
                                             Qté&nbsp;: <strong>{{ $pivot->quantity }}</strong>
                                             &nbsp;·&nbsp; PU&nbsp;: {{ number_format($pivot->unit_price, 0, '', ' ') }}
@@ -314,6 +317,39 @@
                                                 @php $typeDisc = $pivot->type_discount ?? 'percent'; @endphp
                                                 <span class="text-danger">Remise&nbsp;:
                                                     –{{ number_format($pivot->discount, 0, '', ' ') }} {{ $typeDisc === 'percent' ? '%' : 'FCFA' }}</span>
+                                                &nbsp;·&nbsp; Net&nbsp;: {{ number_format($netPrice, 0, '', ' ') }} FCFA
+                                            @endif
+                                        </div>
+                                        <div class="font-weight-bold text-dark mt-1">
+                                            {{ number_format($lineTotal, 0, '', ' ') }} FCFA
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        @foreach ($orders->menuProduits as $item)
+                            @php
+                                $pivot = $item->pivot;
+                                $netPrice = $pivot->prix_apres_remise ?? $pivot->unit_price - ($pivot->discount ?? 0);
+                                $lineTotal = $pivot->total ?? $netPrice * $pivot->quantity;
+                            @endphp
+                            <div class="col-12 col-md-6 mb-3">
+                                <div class="product-card">
+                                    <div class="no-img"><i class="fas fa-utensils text-info"></i></div>
+                                    <div class="flex-grow-1">
+                                        <div class="font-weight-bold">{{ $item->nom }}
+                                            <span class="badge badge-info ml-1">Menu du jour</span>
+                                        </div>
+                                        <div class="text-muted small mt-1">
+                                            Qté&nbsp;: <strong>{{ $pivot->quantity }}</strong>
+                                            &nbsp;·&nbsp; PU&nbsp;: {{ number_format($pivot->unit_price, 0, '', ' ') }}
+                                            FCFA
+                                            @if (($pivot->discount ?? 0) > 0)
+                                                <br>
+                                                @php $typeDisc = $pivot->type_discount ?? 'percent'; @endphp
+                                                <span class="text-danger">Remise&nbsp;:
+                                                    –{{ number_format($pivot->discount, 0, '', ' ') }} {{ $typeDisc === 'percent' ? '%' : 'FCFA' }}</span>
                                                 &nbsp;·&nbsp; Net&nbsp;: {{ number_format($netPrice, 0, '', ' ') }} FCFA
                                             @endif
                                         </div>
@@ -389,6 +425,14 @@
                         <div class="line">
                             <span>Sous-total</span><span>{{ number_format($orders->subtotal ?? 0, 0, '', ' ') }}
                                 FCFA</span></div>
+                        @if (($orders->total_menu ?? 0) > 0)
+                            <div class="line text-muted small">
+                                <span>&nbsp;&nbsp;dont produits</span><span>{{ number_format($orders->total_produits, 0, '', ' ') }} FCFA</span>
+                            </div>
+                            <div class="line text-muted small">
+                                <span>&nbsp;&nbsp;dont menu du jour</span><span>{{ number_format($orders->total_menu, 0, '', ' ') }} FCFA</span>
+                            </div>
+                        @endif
                         @if (($orders->discount ?? 0) > 0)
                             @php $globalTypeDisc = $orders->type_discount ?? 'fixed'; @endphp
                             <div class="line text-warning"><span>Remise</span><span>–

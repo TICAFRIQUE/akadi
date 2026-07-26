@@ -17,7 +17,8 @@ class AccountPageController extends Controller
         $orders = Order::where('user_id', Auth::user()->id)
             ->with(['user',
                 'products'
-                => fn ($q) => $q->with('media')
+                => fn ($q) => $q->with('media'),
+                'menuProduits'
             ])
             ->orderBy('created_at', 'DESC')->paginate(8);
         return view('site.pages.auth.mes-commandes', compact('orders'));
@@ -43,7 +44,7 @@ class AccountPageController extends Controller
     public function trackingOrder($code)
     {
        try {
-            $order = Order::where('code', $code)->with(['user', 'products' => fn ($q) => $q->with('media')])->firstOrFail();
+            $order = Order::where('code', $code)->with(['user', 'products' => fn ($q) => $q->with('media'), 'menuProduits'])->firstOrFail();
         } catch (\Exception $e) {
             Alert::error('Commande non trouvée.');
              return redirect()->route('page-acceuil');

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Models\Caisse;
 use App\Models\Delivery;
+use App\Models\MenuJour;
+use App\Models\MenuProduit;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Models\Product;
@@ -53,6 +55,10 @@ class PosController extends Controller
                 ->get()
         );
 
+        $menuJour = MenuJour::with(['menuProduits' => fn($q) => $q->where('disponible', true)])
+            ->whereDate('date', today())
+            ->first();
+
         $paymentMethods = PaymentMethod::actif()->get();
         $deliveries     = Delivery::orderBy('zone')->get();
         $sources        = Order::$sources;
@@ -69,6 +75,7 @@ class PosController extends Controller
 
         return view('admin.pages.pos.create', compact(
             'products',
+            'menuJour',
             'paymentMethods',
             'deliveries',
             'sources',
@@ -331,12 +338,18 @@ class PosController extends Controller
         $isLivree = $status === Order::STATUS_LIVREE;
 
         $rules = [
-            'products'                 => 'required|array|min:1',
-            'products.*.product_id'    => 'required|exists:products,id',
-            'products.*.quantity'      => 'required|integer|min:1',
-            'products.*.unit_price'    => 'required|numeric|min:0',
-            'products.*.discount'      => 'nullable|numeric|min:0',
-            'products.*.type_discount' => 'nullable|in:percent,fixed',
+            'products'                      => 'sometimes|array',
+            'products.*.product_id'         => 'required|exists:products,id',
+            'products.*.quantity'           => 'required|integer|min:1',
+            'products.*.unit_price'         => 'required|numeric|min:0',
+            'products.*.discount'           => 'nullable|numeric|min:0',
+            'products.*.type_discount'      => 'nullable|in:percent,fixed',
+            'menu_produits'                 => 'sometimes|array',
+            'menu_produits.*.menu_produit_id' => 'required|exists:menu_produits,id',
+            'menu_produits.*.quantity'         => 'required|integer|min:1',
+            'menu_produits.*.unit_price'       => 'required|numeric|min:0',
+            'menu_produits.*.discount'         => 'nullable|numeric|min:0',
+            'menu_produits.*.type_discount'    => 'nullable|in:percent,fixed',
             'type_discount'            => 'nullable|in:percent,fixed',
             'source'                   => 'required|in:' . implode(',', array_keys(Order::$sources)),
             'status'                   => 'required|string',
@@ -359,10 +372,13 @@ class PosController extends Controller
             'acompte.required'           => "L'acompte est obligatoire pour le statut « {$status} ».",
             'acompte.min'                => "L'acompte doit être supérieur à 0 pour le statut « {$status} ».",
             'payment_method_id.required' => 'Le moyen de paiement est obligatoire pour ce statut.',
-            'products.required'          => 'Le panier est vide.',
         ];
 
         $request->validate($rules, $messages);
+
+        if (empty($request->products) && empty($request->menu_produits)) {
+            return redirect()->back()->with('error', 'Le panier est vide.')->withInput();
+        }
 
         DB::beginTransaction();
         try {
@@ -393,11 +409,13 @@ class PosController extends Controller
             }
 
             // ── Calcul des totaux ─────────────────────────────────────────────────────
-            $subtotal        = 0;
-            $quantityProduct = 0;
-            $productsData    = [];
+            $subtotalProduits = 0;
+            $subtotalMenu     = 0;
+            $quantityProduct  = 0;
+            $productsData     = [];
+            $menuProduitsData = [];
 
-            foreach ($request->products as $item) {
+            foreach ($request->products ?? [] as $item) {
                 $product      = Product::with('productBases')->findOrFail($item['product_id']);
                 $qty          = (int) $item['quantity'];
                 $unitPrice    = (float) $item['unit_price'];
@@ -423,9 +441,9 @@ class PosController extends Controller
                     }
                 }
 
-                $subtotal        += $lineTotal;
-                $quantityProduct += $qty;
-                $productsData[]   = [
+                $subtotalProduits += $lineTotal;
+                $quantityProduct  += $qty;
+                $productsData[]    = [
                     'product'           => $product,
                     'quantity'          => $qty,
                     'unit_price'        => $unitPrice,
@@ -436,6 +454,37 @@ class PosController extends Controller
                     'options'           => $item['options'] ?? null,
                 ];
             }
+
+            // ── Plats du menu du jour ─────────────────────────────────────────────────
+            foreach ($request->menu_produits ?? [] as $item) {
+                $menuProduit  = MenuProduit::findOrFail($item['menu_produit_id']);
+                $qty          = (int) $item['quantity'];
+                $unitPrice    = (float) $item['unit_price'];
+                $discountVal  = (float) ($item['discount'] ?? 0);
+                $typeDiscount = $item['type_discount'] ?? 'percent';
+
+                if ($typeDiscount === 'percent') {
+                    $prixApres = $unitPrice * (1 - min($discountVal, 100) / 100);
+                } else {
+                    $prixApres = $unitPrice - min($discountVal, $unitPrice);
+                }
+                $prixApres = max(0, $prixApres);
+                $lineTotal = $prixApres * $qty;
+
+                $subtotalMenu      += $lineTotal;
+                $quantityProduct   += $qty;
+                $menuProduitsData[] = [
+                    'menuProduit'       => $menuProduit,
+                    'quantity'          => $qty,
+                    'unit_price'        => $unitPrice,
+                    'discount'          => $discountVal,
+                    'type_discount'     => $typeDiscount,
+                    'prix_apres_remise' => $prixApres,
+                    'total'             => $lineTotal,
+                ];
+            }
+
+            $subtotal = $subtotalProduits + $subtotalMenu;
 
             $globalDiscountVal  = (float) ($request->discount ?? 0);
             $globalDiscountType = $request->input('type_discount', 'fixed');
@@ -476,7 +525,18 @@ class PosController extends Controller
                         ];
                     })
                     ->sortBy('product_id')
-                    ->values()
+                    ->values(),
+
+                'menu_produits' => collect($menuProduitsData)
+                    ->map(function ($p) {
+                        return [
+                            'menu_produit_id' => $p['menuProduit']->id,
+                            'qty'             => $p['quantity'],
+                            'price'           => $p['unit_price'],
+                        ];
+                    })
+                    ->sortBy('menu_produit_id')
+                    ->values(),
             ]));
 
             $duplicateOrder = Order::where('signature', $signature)
@@ -515,6 +575,7 @@ class PosController extends Controller
             $order = Order::create([
                 'quantity_product'  => $quantityProduct,
                 'subtotal'          => $subtotal,
+                'total_menu'        => $subtotalMenu,
                 'delivery_price'    => $deliveryPrice,
                 'delivery_name'     => $request->delivery_name,
                 'address'           => $request->address,
@@ -583,6 +644,18 @@ class PosController extends Controller
                 }
             }
 
+            // ── Pivot plats du menu du jour (pas de gestion de stock) ──────────────────
+            foreach ($menuProduitsData as $d) {
+                $order->menuProduits()->attach($d['menuProduit']->id, [
+                    'quantity'          => $d['quantity'],
+                    'unit_price'        => $d['unit_price'],
+                    'discount'          => $d['discount'],
+                    'type_discount'     => $d['type_discount'],
+                    'prix_apres_remise' => $d['prix_apres_remise'],
+                    'total'             => $d['total'],
+                ]);
+            }
+
             // si status est confirmée alors on envoi le sms
             if ($order->status == Order::STATUS_CONFIRMEE) {
                 $this->sendSms($order);
@@ -611,6 +684,7 @@ class PosController extends Controller
 
         $order = Order::with([
             'products.productBases',
+            'menuProduits',
             'user',
             'paymentMethod',
             'caisse'
@@ -629,9 +703,14 @@ class PosController extends Controller
                 ->get()
         );
 
+        $menuJour = MenuJour::with(['menuProduits' => fn($q) => $q->where('disponible', true)])
+            ->whereDate('date', today())
+            ->first();
+
         return view('admin.pages.pos.edit', compact(
             'order',
             'products',
+            'menuJour',
             'paymentMethods',
             'deliveries',
             'sources',
@@ -798,7 +877,7 @@ class PosController extends Controller
     //version 2
     public function update(Request $request, $id)
     {
-        $order = Order::with('products')->findOrFail($id);
+        $order = Order::with(['products', 'menuProduits'])->findOrFail($id);
 
         $status           = $request->input('status', $order->status);
         $acompteOptionnel = in_array($status, [
@@ -810,12 +889,18 @@ class PosController extends Controller
         $isLivree = $status === Order::STATUS_LIVREE;
 
         $rules = [
-            'products'                 => 'required|array|min:1',
-            'products.*.product_id'    => 'required|exists:products,id',
-            'products.*.quantity'      => 'required|integer|min:1',
-            'products.*.unit_price'    => 'required|numeric|min:0',
-            'products.*.discount'      => 'nullable|numeric|min:0',
-            'products.*.type_discount' => 'nullable|in:percent,fixed',
+            'products'                         => 'sometimes|array',
+            'products.*.product_id'            => 'required|exists:products,id',
+            'products.*.quantity'              => 'required|integer|min:1',
+            'products.*.unit_price'            => 'required|numeric|min:0',
+            'products.*.discount'              => 'nullable|numeric|min:0',
+            'products.*.type_discount'         => 'nullable|in:percent,fixed',
+            'menu_produits'                    => 'sometimes|array',
+            'menu_produits.*.menu_produit_id'  => 'required|exists:menu_produits,id',
+            'menu_produits.*.quantity'         => 'required|integer|min:1',
+            'menu_produits.*.unit_price'       => 'required|numeric|min:0',
+            'menu_produits.*.discount'         => 'nullable|numeric|min:0',
+            'menu_produits.*.type_discount'    => 'nullable|in:percent,fixed',
             'type_discount'            => 'nullable|in:percent,fixed',
             'status'                   => 'required|string',
         ];
@@ -831,17 +916,22 @@ class PosController extends Controller
             'acompte.required'           => "L'acompte est obligatoire pour le statut « {$status} ».",
             'acompte.min'                => "L'acompte doit être supérieur à 0 pour le statut « {$status} ».",
             'payment_method_id.required' => 'Le moyen de paiement est obligatoire pour ce statut.',
-            'products.required'          => 'Le panier est vide.',
         ]);
+
+        if (empty($request->products) && empty($request->menu_produits)) {
+            return redirect()->back()->with('error', 'Le panier est vide.')->withInput();
+        }
 
         DB::beginTransaction();
         try {
             // ── Recalcul ──────────────────────────────────────────────────────────────
-            $subtotal        = 0;
-            $quantityProduct = 0;
-            $productsData    = [];
+            $subtotalProduits = 0;
+            $subtotalMenu     = 0;
+            $quantityProduct  = 0;
+            $productsData     = [];
+            $menuProduitsData = [];
 
-            foreach ($request->products as $item) {
+            foreach ($request->products ?? [] as $item) {
                 $product      = Product::with('productBases')->findOrFail($item['product_id']);
                 $qty          = (int) $item['quantity'];
                 $unitPrice    = (float) $item['unit_price'];
@@ -868,9 +958,9 @@ class PosController extends Controller
                     }
                 }
 
-                $subtotal        += $lineTotal;
-                $quantityProduct += $qty;
-                $productsData[]   = compact(
+                $subtotalProduits += $lineTotal;
+                $quantityProduct  += $qty;
+                $productsData[]    = compact(
                     'product',
                     'qty',
                     'unitPrice',
@@ -883,6 +973,36 @@ class PosController extends Controller
                     'diff'
                 );
             }
+
+            // ── Plats du menu du jour ─────────────────────────────────────────────────
+            foreach ($request->menu_produits ?? [] as $item) {
+                $menuProduit  = MenuProduit::findOrFail($item['menu_produit_id']);
+                $qty          = (int) $item['quantity'];
+                $unitPrice    = (float) $item['unit_price'];
+                $discountVal  = (float) ($item['discount'] ?? 0);
+                $typeDiscount = $item['type_discount'] ?? 'percent';
+
+                if ($typeDiscount === 'percent') {
+                    $prixApres = max(0, $unitPrice * (1 - min($discountVal, 100) / 100));
+                } else {
+                    $prixApres = max(0, $unitPrice - min($discountVal, $unitPrice));
+                }
+                $lineTotal = $prixApres * $qty;
+
+                $subtotalMenu      += $lineTotal;
+                $quantityProduct   += $qty;
+                $menuProduitsData[] = [
+                    'menuProduit'       => $menuProduit,
+                    'quantity'          => $qty,
+                    'unit_price'        => $unitPrice,
+                    'discount'          => $discountVal,
+                    'type_discount'     => $typeDiscount,
+                    'prix_apres_remise' => $prixApres,
+                    'total'             => $lineTotal,
+                ];
+            }
+
+            $subtotal = $subtotalProduits + $subtotalMenu;
 
             $globalDiscountVal    = (float) ($request->discount ?? 0);
             $globalDiscountType   = $request->input('type_discount', 'fixed');
@@ -905,6 +1025,7 @@ class PosController extends Controller
             $order->update([
                 'quantity_product'  => $quantityProduct,
                 'subtotal'          => $subtotal,
+                'total_menu'        => $subtotalMenu,
                 'delivery_price'    => $deliveryPrice,
                 'delivery_name'     => $request->delivery_name,
                 'address'           => $request->address,
@@ -979,6 +1100,20 @@ class PosController extends Controller
             }
 
             $order->products()->sync($syncData);
+
+            // ── Resync pivot plats du menu du jour (pas de gestion de stock) ──────────
+            $syncDataMenu = [];
+            foreach ($menuProduitsData as $d) {
+                $syncDataMenu[$d['menuProduit']->id] = [
+                    'quantity'          => $d['quantity'],
+                    'unit_price'        => $d['unit_price'],
+                    'discount'          => $d['discount'],
+                    'type_discount'     => $d['type_discount'],
+                    'prix_apres_remise' => $d['prix_apres_remise'],
+                    'total'             => $d['total'],
+                ];
+            }
+            $order->menuProduits()->sync($syncDataMenu);
 
             DB::commit();
 

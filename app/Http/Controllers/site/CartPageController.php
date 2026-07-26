@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Coupon;
 use App\Models\Product;
+use App\Models\MenuProduit;
 use Twilio\Rest\Client;
 use App\Models\Delivery;
 use App\Jobs\SendEmailJob;
@@ -67,10 +68,15 @@ class CartPageController extends Controller
             $cart[$request->id]["quantity"] = $request->quantity;
             session()->put('cart', $cart);
 
+            $cartMenu = session()->get('cart_menu', []);
 
             $totalQuantity = 0;
             $sousTotal = 0;
             foreach ($cart as $value) {
+                $totalQuantity += $value['quantity'];
+                $sousTotal += $value['quantity'] * $value['price'];
+            }
+            foreach ($cartMenu as $value) {
                 $totalQuantity += $value['quantity'];
                 $sousTotal += $value['quantity'] * $value['price'];
             }
@@ -81,6 +87,39 @@ class CartPageController extends Controller
                 'cart' => session()->get('cart'),
                 'totalQte' => $totalQuantity,
                 "sousTotal" => $sousTotal,
+            ]);
+        }
+    }
+
+    //modifier et mettre à jour le panier des plats du menu du jour
+    public function updateMenu(Request $request)
+    {
+        if ($request->id && $request->quantity) {
+            $cartMenu = session()->get('cart_menu', []);
+            if (isset($cartMenu[$request->id])) {
+                $cartMenu[$request->id]['quantity'] = $request->quantity;
+            }
+            session()->put('cart_menu', $cartMenu);
+
+            $cart = session()->get('cart', []);
+
+            $totalQuantity = 0;
+            $sousTotal = 0;
+            foreach ($cart as $value) {
+                $totalQuantity += $value['quantity'];
+                $sousTotal += $value['quantity'] * $value['price'];
+            }
+            foreach ($cartMenu as $value) {
+                $totalQuantity += $value['quantity'];
+                $sousTotal += $value['quantity'] * $value['price'];
+            }
+
+            session()->put('totalQuantity', $totalQuantity);
+
+            return response()->json([
+                'cartMenu' => $cartMenu,
+                'totalQte' => $totalQuantity,
+                'sousTotal' => $sousTotal,
             ]);
         }
     }
@@ -114,13 +153,45 @@ class CartPageController extends Controller
         // Mise à jour du panier en session
         session()->put('cart', $cart);
 
-        // Calcul du total des quantités
-        $totalQuantity = collect($cart)->sum('quantity');
+        // Calcul du total des quantités (produits + plats du menu du jour)
+        $totalQuantity = collect($cart)->sum('quantity') + collect(session()->get('cart_menu', []))->sum('quantity');
         session()->put('totalQuantity', $totalQuantity);
 
         return response()->json([
             'countCart' => count($cart),
             'cart'      => $cart,
+            'totalQte'  => $totalQuantity,
+        ]);
+    }
+
+    //ajouter un plat du menu du jour au panier
+    public function addMenuToCart($id)
+    {
+        $menuProduit = MenuProduit::where('disponible', true)
+            ->whereHas('menuJour', fn($q) => $q->whereDate('date', today()))
+            ->findOrFail($id);
+
+        $cartMenu = session()->get('cart_menu', []);
+
+        if (isset($cartMenu[$id])) {
+            $cartMenu[$id]['quantity']++;
+        } else {
+            $cartMenu[$id] = [
+                'id'       => $menuProduit->id,
+                'nom'      => $menuProduit->nom,
+                'quantity' => 1,
+                'price'    => $menuProduit->prix,
+            ];
+        }
+
+        session()->put('cart_menu', $cartMenu);
+
+        $totalQuantity = collect(session()->get('cart', []))->sum('quantity') + collect($cartMenu)->sum('quantity');
+        session()->put('totalQuantity', $totalQuantity);
+
+        return response()->json([
+            'countCart' => count($cartMenu),
+            'cartMenu'  => $cartMenu,
             'totalQte'  => $totalQuantity,
         ]);
     }
@@ -136,9 +207,15 @@ class CartPageController extends Controller
                 session()->put('cart', $cart);
             }
 
+            $cartMenu = session()->get('cart_menu', []);
+
             $totalQuantity = 0;
             $sousTotal = 0;
             foreach ($cart as $value) {
+                $totalQuantity += $value['quantity'];
+                $sousTotal += $value['quantity'] * $value['price'];
+            }
+            foreach ($cartMenu as $value) {
                 $totalQuantity += $value['quantity'];
                 $sousTotal += $value['quantity'] * $value['price'];
             }
@@ -152,6 +229,45 @@ class CartPageController extends Controller
             'url' => '/panier',
             'cart' => session()->get('cart'),
             'totalQte' => $totalQuantity,
+            'countCart' => $countCart,
+            "sousTotal" => $sousTotal
+        ]);
+    }
+
+    //Supprimer un plat du menu du jour du panier
+    public function removeMenu(Request $request)
+    {
+        if ($request->id) {
+            $cartMenu = session()->get('cart_menu', []);
+            if (isset($cartMenu[$request->id])) {
+                unset($cartMenu[$request->id]);
+                session()->put('cart_menu', $cartMenu);
+            }
+
+            $cart = session()->get('cart', []);
+
+            $totalQuantity = 0;
+            $sousTotal = 0;
+            foreach ($cart as $value) {
+                $totalQuantity += $value['quantity'];
+                $sousTotal += $value['quantity'] * $value['price'];
+            }
+            foreach ($cartMenu as $value) {
+                $totalQuantity += $value['quantity'];
+                $sousTotal += $value['quantity'] * $value['price'];
+            }
+
+            session()->put('totalQuantity', $totalQuantity);
+            $countCartMenu = count($cartMenu);
+            $countCart = count($cart);
+        }
+        return response()->json([
+            'id' => $request->id,
+            'message' => 'plat menu delete',
+            'url' => '/panier',
+            'cartMenu' => session()->get('cart_menu'),
+            'totalQte' => $totalQuantity,
+            'countCartMenu' => $countCartMenu,
             'countCart' => $countCart,
             "sousTotal" => $sousTotal
         ]);
@@ -434,10 +550,11 @@ class CartPageController extends Controller
     {
         if (Auth::check()) {
 
-            if (session('cart')) {
+            if (session('cart') || session('cart_menu')) {
 
-                //informations depuis le front ajax    
+                //informations depuis le front ajax
                 $subTotal = $_GET['data']['subTotal'];
+                $subTotalMenu = $_GET['data']['subTotalMenu'] ?? 0;
                 $delivery_name = $_GET['data']['lieu_livraison'];
                 $delivery_price = $_GET['data']['prix_livraison'];
                 $delivery_mode = $_GET['data']['delivery_mode'];
@@ -473,6 +590,7 @@ class CartPageController extends Controller
                 // Stocker les informations de livraison commande dans la session
                 Session::put('delivery_info', [
                     'subTotal' => $subTotal,
+                    'subTotalMenu' => $subTotalMenu,
                     'name' => $delivery_name,
                     'price' => $delivery_price,
                     'mode' => $delivery_mode,

@@ -540,6 +540,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Statut</th>
+                                        <th>Type</th>
                                         <th>Provenance</th>
                                         <th>Code</th>
                                         <th>Client</th>
@@ -650,7 +651,7 @@
                 // destroy: true,
                 dom: 'Bfrtip',
                 order: [
-                    [9, 'desc']
+                    [10, 'desc']
                 ], // tri par défaut : Date décroissante (colonne index 9)
                 buttons: [
 
@@ -1043,37 +1044,37 @@
                     },
                 ],
                 order: [
-                    [9, 'desc']
+                    [10, 'desc']
                 ],
                 dom: 'Bfrtip',
                 buttons: [{
                         extend: 'copy',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                     {
                         extend: 'csv',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                     {
                         extend: 'excel',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                     {
                         extend: 'pdf',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                     {
                         extend: 'print',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                 ],
@@ -1295,6 +1296,12 @@
                         searchable: false
                     },
                     {
+                        data: 'type_vente_badge',
+                        name: 'type_vente',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
                         data: 'source_badge',
                         name: 'source',
                         searchable: false
@@ -1341,37 +1348,37 @@
                     },
                 ],
                 order: [
-                    [9, 'desc']
+                    [10, 'desc']
                 ],
                 dom: 'Bfrtip',
                 buttons: [{
                         extend: 'copy',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                     {
                         extend: 'csv',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                     {
                         extend: 'excel',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                     {
                         extend: 'pdf',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                     {
                         extend: 'print',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                         }
                     },
                 ],

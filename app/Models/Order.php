@@ -62,11 +62,23 @@ class Order extends Model
 
     ];
 
+    // ─── Types de vente (Normal / Menu du jour / Mixte) ──────────────────────────
+    const TYPE_VENTE_NORMAL = 'normal';
+    const TYPE_VENTE_MENU   = 'menu';
+    const TYPE_VENTE_MIXTE  = 'mixte';
+
+    public static array $typesVente = [
+        self::TYPE_VENTE_NORMAL => ['label' => 'Normal',     'color' => 'secondary'],
+        self::TYPE_VENTE_MENU   => ['label' => 'Menu du jour', 'color' => 'info'],
+        self::TYPE_VENTE_MIXTE  => ['label' => 'Mixte',      'color' => 'dark'],
+    ];
+
     protected $fillable = [
         'code',
         'signature', // champ pour signature commande pour eviter les doublons
         'quantity_product',
         'subtotal',
+        'total_menu', // sous-total des lignes "menu du jour" (voir order_menu_produit)
         'delivery_price',
         'delivery_name',
         'address',
@@ -153,6 +165,14 @@ class Order extends Model
             ->withTimestamps();
     }
 
+    /** Plats du menu du jour vendus dans cette commande */
+    public function menuProduits(): BelongsToMany
+    {
+        return $this->belongsToMany(MenuProduit::class, 'order_menu_produit')
+            ->withPivot(['quantity', 'unit_price', 'discount', 'type_discount', 'prix_apres_remise', 'total'])
+            ->withTimestamps();
+    }
+
 /**
  * Relation avec les produits de base liés à cette commande via la table pivot
  * 
@@ -197,5 +217,34 @@ class Order extends Model
     public function getTelClientAttribute(): string
     {
         return $this->user?->phone ?? $this->client_phone ?? '';
+    }
+
+    /** Sous-total des produits normaux (déduit du sous-total global) */
+    public function getTotalProduitsAttribute(): float
+    {
+        return max(0, (float) $this->subtotal - (float) $this->total_menu);
+    }
+
+    /** Type de vente : normal, menu (uniquement menu du jour) ou mixte */
+    public function getTypeVenteAttribute(): string
+    {
+        $hasMenu     = (float) $this->total_menu > 0;
+        $hasProduits = $this->total_produits > 0;
+
+        if ($hasMenu && $hasProduits) {
+            return self::TYPE_VENTE_MIXTE;
+        }
+
+        return $hasMenu ? self::TYPE_VENTE_MENU : self::TYPE_VENTE_NORMAL;
+    }
+
+    public function getTypeVenteLabelAttribute(): string
+    {
+        return self::$typesVente[$this->type_vente]['label'] ?? ucfirst($this->type_vente);
+    }
+
+    public function getTypeVenteColorAttribute(): string
+    {
+        return self::$typesVente[$this->type_vente]['color'] ?? 'secondary';
     }
 }

@@ -34,6 +34,8 @@ use App\Http\Controllers\admin\depense\DepenseController;
 use App\Http\Controllers\admin\depense\LibelleDepenseController;
 use App\Http\Controllers\admin\depense\CategorieDepenseController;
 use App\Http\Controllers\InventaireController;
+use App\Http\Controllers\MenuJourController;
+use App\Http\Controllers\site\MenuPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -140,6 +142,16 @@ Route::middleware(['admin'])->group(function () {
         route::post('update/{id}', 'update')->name('product.update');
         route::post('destroy/{id}', 'destroy')->name('product.destroy');
         route::post('availableProduct/{id}', 'availableProduct')->name('product.available');
+    });
+
+    /** Menu du jour **/
+    Route::prefix('admin/menu-jour')->middleware('can:catalogue.produits')->controller(MenuJourController::class)->group(function () {
+        route::get('', 'index')->name('menu-jour.index');
+        route::get('create', 'create')->name('menu-jour.create');
+        route::post('', 'store')->name('menu-jour.store');
+        route::get('edit/{menuJour}', 'edit')->name('menu-jour.edit');
+        route::post('update/{menuJour}', 'update')->name('menu-jour.update');
+        route::delete('destroy/{menuJour}', 'destroy')->name('menu-jour.destroy');
     });
 
     /** Product Bases (Produits de base) **/
@@ -355,12 +367,20 @@ Route::controller(ProductPageController::class)->group(function () {
     Route::get('produit/q', 'recherche')->name('recherche');
 });
 
+// Menu du jour (site public)
+Route::get('menu-du-jour', [MenuPageController::class, 'menuDuJour'])->name('menu-du-jour');
+
 
 // //Cart route
 Route::get('panier', [CartPageController::class, 'panier'])->name('panier');
 Route::get('add-to-cart/{id}', [CartPageController::class, 'addToCart'])->name('add.to.cart');
 Route::patch('update-cart', [CartPageController::class, 'update'])->name('update.cart');
 Route::delete('remove-from-cart', [CartPageController::class, 'remove'])->name('remove.from.cart');
+
+// Cart route - menu du jour
+Route::get('add-menu-to-cart/{id}', [CartPageController::class, 'addMenuToCart'])->name('add.menu.to.cart');
+Route::patch('update-cart-menu', [CartPageController::class, 'updateMenu'])->name('update.cart.menu');
+Route::delete('remove-from-cart-menu', [CartPageController::class, 'removeMenu'])->name('remove.cart.menu');
 Route::get('finaliser-ma-commande', [CartPageController::class, 'checkout'])->name('checkout')->middleware(['auth']);
 Route::get('refresh-shipping/{id}', [CartPageController::class, 'refreshShipping'])->middleware(['auth']);
 Route::get('refresh-coupon/{id}', [CartPageController::class, 'refreshCoupon'])->middleware(['auth']);

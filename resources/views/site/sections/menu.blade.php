@@ -10,6 +10,9 @@
                 <li class="menu-item-has-children">
                     <a href="{{ route('page-acceuil') }}">Accueil</a>
                 </li>
+                <li class="menu-item-has-children">
+                    <a href="{{ route('menu-du-jour') }}">Menu du jour</a>
+                </li>
                 @foreach ($categories as $item)
                     <li class="menu-item-has-children">
                         <a href="/produit?categorie={{ $item['id'] }}">{{ $item['name'] }}</a>
@@ -84,6 +87,10 @@
                         <a href="{{ route('page-acceuil') }}"
                            class="ak-nav-link {{ request()->routeIs('page-acceuil') ? 'ak-nav-active' : '' }}">
                             Accueil
+                        </a>
+                        <a href="{{ route('menu-du-jour') }}"
+                           class="ak-nav-link {{ request()->routeIs('menu-du-jour') ? 'ak-nav-active' : '' }}">
+                            <i class="fas fa-utensils" style="font-size:.75rem"></i> Menu du jour
                         </a>
                         @foreach ($categories as $item)
                             <div class="ak-nav-dropdown">

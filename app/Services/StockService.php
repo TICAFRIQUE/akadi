@@ -126,6 +126,28 @@ class StockService
     }
 
     /**
+     * Attacher les plats du menu du jour du panier public à une commande.
+     * Pas de gestion de stock : les plats du menu du jour sont disponibles sans limite.
+     *
+     * @param Order $order
+     * @param array $cartMenu Format: ['menu_produit_id' => ['id', 'nom', 'quantity', 'price'], ...]
+     * @return void
+     */
+    public function attachMenuCartToOrder(Order $order, array $cartMenu)
+    {
+        foreach ($cartMenu as $menuProduitId => $item) {
+            $order->menuProduits()->attach($menuProduitId, [
+                'quantity'          => $item['quantity'],
+                'unit_price'        => $item['price'],
+                'discount'          => 0,
+                'type_discount'     => 'percent',
+                'prix_apres_remise' => $item['price'],
+                'total'             => $item['price'] * $item['quantity'],
+            ]);
+        }
+    }
+
+    /**
      * Réincrémenter le stock lors de l'annulation d'une commande
      * 
      * @param Order $order

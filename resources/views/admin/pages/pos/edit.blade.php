@@ -43,23 +43,57 @@
                         </a>
                     </div>
 
-                    {{-- Sélecteur de produit --}}
+                    {{-- Sélecteur de produit / menu du jour --}}
                     <div class="card mb-3" style="overflow:visible">
                         <div class="card-body pb-2" style="overflow:visible">
-                            <p class="pos-section-title"><i class="fas fa-search mr-1"></i>Ajouter un produit</p>
-                            <select id="product-select" class="form-control select2" style="width:100%">
-                                <option value="">Rechercher un produit…</option>
-                                @foreach ($products as $p)
-                                    <option value="{{ $p->id }}" data-price="{{ $p->price }}"
-                                        data-title="{{ $p->title }}"
-                                        data-img="{{ $p->getFirstMediaUrl('principal_img') }}"
-                                        data-stock="{{ $p->stock_disponible ?? '' }}"
-                                        data-stock-insuffisant="{{ $p->stock_insuffisant ? '1' : '0' }}"
-                                        data-stock-info="{{ json_encode($p->stock_info) }}">
-                                        {{ $p->title }} — {{ number_format($p->price, 0, ',', ' ') }} FCFA
-                                    </option>
-                                @endforeach
-                            </select>
+                            <ul class="nav nav-tabs mb-3" id="add-item-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="tab-produits-link" data-toggle="tab" href="#tab-produits" role="tab">
+                                        <i class="fas fa-box mr-1"></i>Produits
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="tab-menu-link" data-toggle="tab" href="#tab-menu" role="tab">
+                                        <i class="fas fa-utensils mr-1"></i>Menu du jour
+                                        @if ($menuJour && $menuJour->menuProduits->count())
+                                            <span class="badge badge-info ml-1">{{ $menuJour->menuProduits->count() }}</span>
+                                        @endif
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="tab-produits" role="tabpanel">
+                                    <select id="product-select" class="form-control select2" style="width:100%">
+                                        <option value="">Rechercher un produit…</option>
+                                        @foreach ($products as $p)
+                                            <option value="{{ $p->id }}" data-price="{{ $p->price }}"
+                                                data-title="{{ $p->title }}"
+                                                data-img="{{ $p->getFirstMediaUrl('principal_img') }}"
+                                                data-stock="{{ $p->stock_disponible ?? '' }}"
+                                                data-stock-insuffisant="{{ $p->stock_insuffisant ? '1' : '0' }}"
+                                                data-stock-info="{{ json_encode($p->stock_info) }}">
+                                                {{ $p->title }} — {{ number_format($p->price, 0, ',', ' ') }} FCFA
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="tab-pane fade" id="tab-menu" role="tabpanel">
+                                    @if ($menuJour && $menuJour->menuProduits->count())
+                                        <select id="menu-select" class="form-control select2" style="width:100%">
+                                            <option value="">Choisir un plat du menu du jour…</option>
+                                            @foreach ($menuJour->menuProduits as $m)
+                                                <option value="{{ $m->id }}" data-price="{{ $m->prix }}" data-title="{{ $m->nom }}">
+                                                    {{ $m->nom }} — {{ number_format($m->prix, 0, ',', ' ') }} FCFA
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <p class="text-muted mb-0">
+                                            <i class="fas fa-info-circle mr-1"></i>Aucun menu du jour n'a été créé pour aujourd'hui.
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -220,6 +254,14 @@
                         <div class="card mb-3">
                             <div class="card-body">
                                 <p class="pos-section-title"><i class="fas fa-calculator mr-1"></i>Récapitulatif</p>
+                                <div class="recap-line">
+                                    <span>Sous-total produits</span>
+                                    <strong id="display-subtotal-produits">0 FCFA</strong>
+                                </div>
+                                <div class="recap-line">
+                                    <span><i class="fas fa-utensils mr-1 text-info"></i>Sous-total menu du jour</span>
+                                    <strong id="display-subtotal-menu">0 FCFA</strong>
+                                </div>
                                 <div class="recap-line">
                                     <span>Sous-total</span>
                                     <strong id="display-subtotal">0 FCFA</strong>
@@ -385,6 +427,17 @@
                 'type_discount' => $p->pivot->type_discount ?? 'percent',
             ];
         });
+
+        $existingMenuItemsJson = $order->menuProduits->map(function ($m) {
+            return [
+                'id' => $m->id,
+                'title' => $m->nom,
+                'price' => $m->pivot->unit_price,
+                'qty' => $m->pivot->quantity,
+                'discount' => (float) ($m->pivot->discount ?? 0),
+                'type_discount' => $m->pivot->type_discount ?? 'percent',
+            ];
+        });
     @endphp
 
     <script>
@@ -434,6 +487,33 @@
                 cartItems[p.id] = p;
                 addProductRow(p, item.qty, item.discount, item.type_discount || 'percent');
             });
+
+            // ── Select2 plat du menu du jour ─────────────────────────────────────────
+            $('#menu-select').on('change', function() {
+                var val = $(this).val();
+                if (!val) return;
+                var opt = $(this).find('option[value="' + val + '"]');
+
+                var m = {
+                    id: val,
+                    title: opt.attr('data-title') || opt.text().split('—')[0].trim(),
+                    price: parseFloat(opt.attr('data-price')) || 0,
+                };
+
+                $(this).select2('close');
+                $(this).val(null).trigger('change');
+                addMenuProduit(m);
+            });
+
+            // ── Pré-chargement des plats du menu du jour existants ───────────────────
+            const EXISTING_MENU_ITEMS = @json($existingMenuItemsJson);
+            EXISTING_MENU_ITEMS.forEach(item => {
+                const m = { id: item.id, title: item.title, price: item.price };
+                const key = 'menu_' + m.id;
+                cartItems[key] = { ...m, kind: 'menu', stock: null };
+                addMenuProduitRow(m, item.qty, item.discount, item.type_discount || 'percent');
+            });
+
             document.getElementById('empty-row')?.remove();
             recalcTotals();
 
@@ -564,6 +644,93 @@
         </td>`;
         }
 
+        // ── Ajouter / pré-charger un plat du menu du jour ────────────────────────────
+        function addMenuProduit(m) {
+            const key = 'menu_' + m.id;
+            if (cartItems[key]) {
+                const row = document.getElementById('row-' + key);
+                const qtyInput = row.querySelector('.qty-input');
+                qtyInput.value = parseInt(qtyInput.value) + 1;
+                recalcRow(key);
+                return;
+            }
+            cartItems[key] = { ...m, kind: 'menu', stock: null };
+            document.getElementById('empty-row')?.remove();
+            addMenuProduitRow(m, 1, 0, 'percent');
+            recalcRow(key);
+        }
+
+        function addMenuProduitRow(m, qty, discountVal, typeDiscount) {
+            const key = 'menu_' + m.id;
+            const tbody = document.getElementById('items-body');
+            const tr = document.createElement('tr');
+            tr.id = 'row-' + key;
+            tr.innerHTML = buildMenuRowHtml(m, qty, discountVal, typeDiscount);
+            tbody.appendChild(tr);
+        }
+
+        function buildMenuRowHtml(m, qty, discountVal, typeDiscount) {
+            typeDiscount = typeDiscount || 'percent';
+            const key = 'menu_' + m.id;
+            const pctActive = typeDiscount === 'percent' ? 'active-pct' : '';
+            const fixedActive = typeDiscount === 'fixed' ? 'active-fixed' : '';
+
+            return `
+        <td>
+            <span class="font-weight-600">${m.title}</span>
+            <span class="badge badge-info ml-1"><i class="fas fa-utensils"></i> Menu du jour</span>
+            <input type="hidden" name="menu_produits[${m.id}][menu_produit_id]" value="${m.id}">
+        </td>
+        <td class="text-center"><span class="badge badge-light border">∞</span></td>
+        <td style="width:110px">
+            <input type="number" name="menu_produits[${m.id}][unit_price]"
+                class="form-control form-control-sm unit-price-input bg-light text-right"
+                style="width:100px" value="${m.price}" readonly>
+        </td>
+        <td style="width:100px; padding-left:20px">
+            <div class="input-group input-group-sm" style="width:96px;flex-wrap:nowrap">
+                <div class="input-group-prepend">
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-1"
+                        onclick="changeQty('${key}', -1)">−</button>
+                </div>
+                <input type="number" name="menu_produits[${m.id}][quantity]"
+                    class="form-control form-control-sm qty-input text-center"
+                    style="min-width:56px" value="${qty}" min="1"
+                    onchange="recalcRow('${key}')">
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-1"
+                        onclick="changeQty('${key}', 1)">+</button>
+                </div>
+            </div>
+        </td>
+        <td style="width:150px; padding-left:35px">
+            <div class="input-group input-group-sm" style="width:140px;flex-wrap:nowrap">
+                <input type="number" name="menu_produits[${m.id}][discount]"
+                    class="form-control form-control-sm discount-input text-center"
+                    style="min-width:100px" value="${discountVal}" min="0"
+                    max="${typeDiscount === 'percent' ? 100 : m.price}" step="1"
+                    onchange="recalcRow('${key}')">
+                <div class="input-group-append">
+                    <button type="button" class="btn type-disc-btn type-disc-pct ${pctActive}"
+                        onclick="setDiscountType('${key}', 'percent', this)">%</button>
+                    <button type="button" class="btn type-disc-btn type-disc-fixed ${fixedActive}"
+                        onclick="setDiscountType('${key}', 'fixed', this)">FCFA</button>
+                </div>
+                <input type="hidden" name="menu_produits[${m.id}][type_discount]"
+                    class="type-discount-input" value="${typeDiscount}">
+            </div>
+        </td>
+        <td class="text-right">
+            <span id="total-${key}" class="font-weight-bold">${formatMoney(m.price * qty)} FCFA</span>
+        </td>
+        <td class="text-center">
+            <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row"
+                onclick="removeRow('${key}')">
+                <i class="fas fa-times"></i>
+            </button>
+        </td>`;
+        }
+
         // ── Changer quantité via boutons ─────────────────────────────────────────────
         function changeQty(pid, delta) {
             const row = document.getElementById('row-' + pid);
@@ -657,7 +824,8 @@
 
         // ── Recalcul totaux globaux ──────────────────────────────────────────────────
         function recalcTotals() {
-            let subtotal = 0;
+            let subtotalProduits = 0;
+            let subtotalMenu = 0;
             Object.keys(cartItems).forEach(pid => {
                 const row = document.getElementById('row-' + pid);
                 if (!row || row.classList.contains('table-danger')) return;
@@ -666,10 +834,19 @@
                 const discountVal = parseFloat(row.querySelector('.discount-input').value) || 0;
                 const typeDiscount = row.querySelector('.type-discount-input').value || 'percent';
                 const prixApres = typeDiscount === 'percent' ? unitPrice * (1 - discountVal / 100) : unitPrice - discountVal;
-                subtotal += Math.max(0, prixApres) * qty;
+                const lineTotal = Math.max(0, prixApres) * qty;
+
+                if (cartItems[pid] && cartItems[pid].kind === 'menu') {
+                    subtotalMenu += lineTotal;
+                } else {
+                    subtotalProduits += lineTotal;
+                }
             });
 
-            subtotal = Math.round(subtotal);
+            subtotalProduits = Math.round(subtotalProduits);
+            subtotalMenu = Math.round(subtotalMenu);
+            const subtotal = subtotalProduits + subtotalMenu;
+
             const globalDiscountVal = parseFloat(document.getElementById('discount').value) || 0;
             const globalDiscountType = document.getElementById('type_discount').value || 'fixed';
             const globalDiscountAmount = globalDiscountType === 'percent' ?
@@ -680,6 +857,8 @@
             const solde = Math.max(0, total - acompte);
 
             currentTotal = total;
+            document.getElementById('display-subtotal-produits').textContent = formatMoney(subtotalProduits) + ' FCFA';
+            document.getElementById('display-subtotal-menu').textContent = formatMoney(subtotalMenu) + ' FCFA';
             document.getElementById('display-subtotal').textContent = formatMoney(subtotal) + ' FCFA';
             document.getElementById('display-total').textContent = formatMoney(total) + ' FCFA';
             document.getElementById('display-solde').textContent = formatMoney(solde) + ' FCFA';

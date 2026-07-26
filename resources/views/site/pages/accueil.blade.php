@@ -31,6 +31,10 @@
     @include('site.sections.pub.top_promo')
     <!-- ========== End top promo ========== -->
 
+    <!-- ========== Start menu du jour ========== -->
+    @include('site.sections.menu-du-jour')
+    <!-- ========== End menu du jour ========== -->
+
 
     <!-- ========== Start categorie-with-plats-recent ========== -->
     @include('site.sections.categorie-produits')

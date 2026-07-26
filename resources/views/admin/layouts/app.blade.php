@@ -289,7 +289,7 @@
                                         <i data-feather="package"></i><span>Catalogue</span>
                                     </a>
                                     <ul
-                                        class="dropdown-menu {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') ? 'show' : '' }}">
+                                        class="dropdown-menu {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') || Route::is('menu-jour.*') ? 'show' : '' }}">
                                         @canany(['catalogue.categories', 'catalogue.sous-categories'])
                                             @can('catalogue.categories')
                                                 <li class="nav-item {{ Route::is('category.*') ? 'active' : '' }}">
@@ -306,6 +306,9 @@
                                         @can('catalogue.produits')
                                             <li class="nav-item {{ Route::is('product.*') ? 'active' : '' }}">
                                                 <a href="{{ route('product.index') }}" class="nav-link">Produits</a>
+                                            </li>
+                                            <li class="nav-item {{ Route::is('menu-jour.*') ? 'active' : '' }}">
+                                                <a href="{{ route('menu-jour.index') }}" class="nav-link">Menu du jour</a>
                                             </li>
                                         @endcan
                                     </ul>

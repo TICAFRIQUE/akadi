@@ -266,7 +266,7 @@
     <div class="container">
         <h1 class="ak-breadcrumb-title">
             Mon panier
-            <span class="ak-breadcrumb-count quantityProduct">{{ count((array) session('cart')) }}</span>
+            <span class="ak-breadcrumb-count quantityProduct">{{ count((array) session('cart')) + count((array) session('cart_menu')) }}</span>
         </h1>
         <ul class="ak-breadcrumb-nav">
             <li><a href="{{ route('page-acceuil') }}">Accueil</a></li>
@@ -283,9 +283,12 @@
     <div class="container">
         @include('admin.components.validationMessage')
 
-        @if (session('cart'))
+        @if (session('cart') || session('cart_menu'))
             @php $sousTotal = 0; @endphp
             @foreach (session('cart') as $id => $details)
+                @php $sousTotal += $details['price'] * $details['quantity']; @endphp
+            @endforeach
+            @foreach (session('cart_menu', []) as $id => $details)
                 @php $sousTotal += $details['price'] * $details['quantity']; @endphp
             @endforeach
 
@@ -344,6 +347,52 @@
                                 </div>
                                 {{-- Remove --}}
                                 <a href="#" class="ak-cart-remove remove-from-cart" data-id="{{ $id }}" title="Retirer">
+                                    <i class="fal fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        @endforeach
+
+                        @foreach (session('cart_menu', []) as $id => $details)
+                            @php $itemTotal = $details['price'] * $details['quantity']; @endphp
+                            <div class="ak-cart-item" id="menu_row_{{ $id }}">
+                                {{-- Icône (pas d'image pour les plats du menu du jour) --}}
+                                <div class="ak-cart-item-img" style="flex-shrink:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--ak-orange,#f85d05),var(--ak-red,#eb0029));">
+                                    <i class="fas fa-utensils" style="color:#fff;font-size:1.4rem;"></i>
+                                </div>
+                                {{-- Name + unit price --}}
+                                <div class="ak-cart-item-info">
+                                    <span class="ak-cart-item-name">
+                                        {{ $details['nom'] }}
+                                        <span class="badge" style="background:var(--ak-orange,#f85d05);color:#fff;font-size:.65rem;vertical-align:middle;">Menu du jour</span>
+                                    </span>
+                                    <div class="ak-cart-item-unit">
+                                        Prix unitaire : <span>{{ number_format($details['price'], 0, ',', ' ') }} FCFA</span>
+                                    </div>
+                                    <div class="ak-cart-item-unit">
+                                        En panier : <span id="qteMenu{{ $id }}">{{ $details['quantity'] }}</span>
+                                    </div>
+                                </div>
+                                {{-- Qty controls --}}
+                                <div class="ak-qty-ctrl">
+                                    <button class="ak-qty-btn qte-decrease-menu_{{ $id }}" onclick="decreaseValueMenu({{ $id }})"
+                                            {{ $details['quantity'] <= 1 ? 'disabled' : '' }}>
+                                        <i class="far fa-minus"></i>
+                                    </button>
+                                    <input type="number"
+                                           id="menu{{ $id }}"
+                                           class="ak-qty-input qty-input-menu{{ $id }} qte-input"
+                                           value="{{ $details['quantity'] }}"
+                                           min="1" max="99" readonly>
+                                    <button class="ak-qty-btn qte-increase-menu_{{ $id }}" onclick="increaseValueMenu({{ $id }})">
+                                        <i class="far fa-plus"></i>
+                                    </button>
+                                </div>
+                                {{-- Total --}}
+                                <div class="ak-cart-item-total">
+                                    <span id="totalPriceQtyMenu{{ $id }}">{{ number_format($itemTotal) }}</span> FCFA
+                                </div>
+                                {{-- Remove --}}
+                                <a href="#" class="ak-cart-remove remove-from-cart-menu" data-id="{{ $id }}" title="Retirer">
                                     <i class="fal fa-trash-alt"></i>
                                 </a>
                             </div>
@@ -462,6 +511,84 @@
             }
         });
     }
+
+    function increaseValueMenu(id) {
+        var value = parseInt(document.getElementById('menu' + id).value);
+        value = isNaN(value) ? 0 : value;
+        value++;
+        document.getElementById('menu' + id).value = value;
+        if (value > 1) { $('.qte-decrease-menu_' + id).attr('disabled', false); }
+        $.ajax({
+            url: '{{ route('update.cart.menu') }}',
+            method: "patch",
+            data: { _token: '{{ csrf_token() }}', id: id, quantity: value },
+            success: function(response) {
+                $('.qty-input-menu' + id).val(response.cartMenu[id].quantity);
+                $('#qteMenu' + id).html(response.cartMenu[id].quantity);
+                var itemTotal = (response.cartMenu[id].quantity * response.cartMenu[id].price).toLocaleString('fr-FR');
+                $('#totalPriceQtyMenu' + id).html(itemTotal);
+                updateSummary(response.sousTotal);
+                $('.badge').not('.ak-cart-item-name .badge').html(response.totalQte);
+                Swal.fire({ toast:true, icon:'success', title:'Quantité mise à jour', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1500, timerProgressBar:true });
+            }
+        });
+    }
+
+    function decreaseValueMenu(id) {
+        var value = parseInt(document.getElementById('menu' + id).value, 10);
+        value = isNaN(value) ? 1 : value;
+        if (value <= 1) return;
+        value--;
+        document.getElementById('menu' + id).value = value;
+        if (value <= 1) { $('.qte-decrease-menu_' + id).attr('disabled', true); }
+        $.ajax({
+            url: '{{ route('update.cart.menu') }}',
+            method: "patch",
+            data: { _token: '{{ csrf_token() }}', id: id, quantity: value },
+            success: function(response) {
+                $('.qty-input-menu' + id).val(response.cartMenu[id].quantity);
+                $('#qteMenu' + id).html(response.cartMenu[id].quantity);
+                var itemTotal = (response.cartMenu[id].quantity * response.cartMenu[id].price).toLocaleString('fr-FR');
+                $('#totalPriceQtyMenu' + id).html(itemTotal);
+                updateSummary(response.sousTotal);
+                $('.badge').not('.ak-cart-item-name .badge').html(response.totalQte);
+                Swal.fire({ toast:true, icon:'success', title:'Panier mis à jour', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1500, timerProgressBar:true });
+            }
+        });
+    }
+
+    $(".remove-from-cart-menu").click(function(e) {
+        e.preventDefault();
+        var menuProduitId = $(this).attr('data-id');
+        Swal.fire({
+            title: 'Retirer du panier',
+            text: "Voulez-vous retirer ce plat du panier ?",
+            width: '360px',
+            showCancelButton: true,
+            cancelButtonText: 'Annuler',
+            confirmButtonColor: '#eb0029',
+            cancelButtonColor: '#aaa',
+            confirmButtonText: 'Oui, retirer'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route('remove.cart.menu') }}',
+                    method: "DELETE",
+                    data: { _token: '{{ csrf_token() }}', id: menuProduitId },
+                    success: function(response) {
+                        updateSummary(response.sousTotal);
+                        $('.badge').not('.ak-cart-item-name .badge').html(response.totalQte);
+                        $('.quantityProduct').html((response.totalQte));
+                        $('#menu_row_' + menuProduitId).fadeOut(300, function() { $(this).remove(); });
+                        Swal.fire({ toast:true, icon:'success', title:'Plat retiré du panier', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1200, timerProgressBar:true });
+                        if (response.totalQte == 0) {
+                            setTimeout(function() { window.location.href = "{{ route('panier') }}"; }, 1400);
+                        }
+                    }
+                });
+            }
+        });
+    });
 
     $(".remove-from-cart").click(function(e) {
         e.preventDefault();
