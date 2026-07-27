@@ -102,7 +102,8 @@
         <div class="row th-carousel category-carousel" id="categoryCarousel"
              data-slide-show="4" data-ml-slide-show="4" data-lg-slide-show="4"
              data-md-slide-show="3" data-sm-slide-show="2" data-xs-slide-show="1.5"
-             data-arrows="true" data-dots="true" style="visibility:hidden;">
+             data-arrows="true" data-dots="true" data-speed="400" data-autoplay="false"
+             style="visibility:hidden;">
             @foreach ($categories as $item)
                 <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6 category-item">
                     <a href="/produit?categorie={{ $item['id'] }}" class="ak-cat-card">

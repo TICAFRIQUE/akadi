@@ -66,7 +66,9 @@
 
 .ak-product-img {
     width: 180px;
+    aspect-ratio: 1/1;
     flex-shrink: 0;
+    align-self: flex-start;
     position: relative;
     overflow: hidden;
     background: #f3f3f3;
@@ -189,7 +191,7 @@
 
 /* Responsive */
 @media (max-width: 576px) {
-    .ak-product-img { width: 110px; }
+    .ak-product-img { width: 130px; aspect-ratio: 1/1; }
     .ak-product-body { padding: 10px 12px; }
     .ak-product-actions { flex-wrap: nowrap; gap: 6px; }
     /* Icônes only sur mobile, prennent toute la largeur à parts égales */
