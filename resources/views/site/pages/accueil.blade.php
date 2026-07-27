@@ -5,10 +5,13 @@
 @section('content')
 
 
-  
+
 
     {{-- @includeWhen(!Auth::check(), 'site.sections.popup-register' ) --}}
 
+    <!-- ========== Start bandeau menu du jour ========== -->
+    @include('site.sections.bandeau-menu-jour')
+    <!-- ========== End bandeau menu du jour ========== -->
 
     <!-- ========== Start slider ========== -->
     @include('site.sections.slider')

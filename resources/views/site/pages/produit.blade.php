@@ -3,6 +3,7 @@
 @section('title', 'Liste des plats')
 
 @section('content')
+@include('site.sections.bandeau-menu-jour')
 @includeWhen(!Auth::check(), 'site.sections.popup-register')
 
 <style>
