@@ -575,7 +575,10 @@ a.ak-info-item:hover { color: var(--ak-orange); text-decoration: none; }
     border-radius: 18px 18px 0 0;
     box-shadow: 0 -8px 32px rgba(0,0,0,.15);
     z-index: 1049;
-    transform: translateY(100%);
+    /* +60px = compense le "bottom: 60px" (espace laissé pour la bottom-nav) : sinon
+       translateY(100%) ne pousse le panneau que de sa propre hauteur, laissant un
+       filet de 60px (poignée + nom de l'utilisateur) visible en permanence. */
+    transform: translateY(calc(100% + 60px));
     transition: transform .28s cubic-bezier(0.4, 0, 0.2, 1);
     padding: 6px 8px 12px;
     padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));

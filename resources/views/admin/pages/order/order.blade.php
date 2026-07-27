@@ -81,6 +81,10 @@
             background: linear-gradient(135deg, #4b2d8a, #7c4dff);
         }
 
+        .bg-menu {
+            background: linear-gradient(135deg, #ff9a44, #fc6076);
+        }
+
         /* ─── Filter bar ──────────────────────────────────────────── */
         .filter-bar {
             background: #f8f9fc;
@@ -365,6 +369,8 @@
                         $montantTotal        = $stats['montantTotal'];
                         $montantSolde        = $stats['montantSolde'];
                         $montantRevenu       = $stats['montantRevenu'];
+                        $montantTotalNormal  = $stats['montantTotalNormal'];
+                        $montantTotalMenu    = $stats['montantTotalMenu'];
 
                         $u              = auth()->user();
                         $isConfirmation = $u->hasPermissionTo('p-confirmation');
@@ -471,15 +477,25 @@
                             </div>
                             @endif
 
-                            {{-- CA TOTAL + REVENU — permission ventes.chiffre-affaires --}}
+                            {{-- CA TOTAL dissocié produits classiques / menu du jour, puis REVENU (total combiné) en dernier — permission ventes.chiffre-affaires --}}
                             @can('ventes.chiffre-affaires')
                             <div class="col-6 col-sm-4 col-md-3 col-xl-2">
                                 <div class="stat-card bg-montant">
                                     <div class="stat-icon"><i class="fas fa-coins"></i></div>
                                     <div>
                                         <div class="stat-label">CA Total</div>
-                                        <div class="stat-value" style="font-size:.9rem">{{ number_format($montantTotal, 0, ',', ' ') }}</div>
-                                        <div class="stat-sub">Solde: {{ number_format($montantSolde, 0, ',', ' ') }} F</div>
+                                        <div class="stat-value" style="font-size:.9rem">{{ number_format($montantTotalNormal, 0, ',', ' ') }}</div>
+                                        <div class="stat-sub">Produits classiques</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                                <div class="stat-card bg-menu">
+                                    <div class="stat-icon"><i class="fas fa-utensils"></i></div>
+                                    <div>
+                                        <div class="stat-label">CA Total</div>
+                                        <div class="stat-value" style="font-size:.9rem">{{ number_format($montantTotalMenu, 0, ',', ' ') }}</div>
+                                        <div class="stat-sub">Menu du jour</div>
                                     </div>
                                 </div>
                             </div>
@@ -1272,6 +1288,7 @@
                     data: function(d) {
                         d.status = params.get('status') || 'all';
                         d.source = params.get('source') || '';
+                        d.type_vente = params.get('type_vente') || '';
                         d.all_dates = params.get('all_dates') || defaultAllDates;
                         d.date_debut = params.get('date_debut') || defaultDateDebut; // ✅
                         d.date_fin = params.get('date_fin') || defaultDateFin; // ✅
@@ -1484,6 +1501,10 @@
                                         .status_color +
                                         ' text-white p-1 px-2" style="white-space:nowrap;font-size:.75rem">&#11088; ' +
                                         item.status_label + '</span>',
+                                    type_vente_badge: '<span class="badge badge-' + item
+                                        .type_vente_color +
+                                        ' text-white p-1 px-2" style="white-space:nowrap;font-size:.75rem">' +
+                                        item.type_vente_label + '</span>',
                                     source_badge: '<span class="badge-source"><i class="fab ' +
                                         item.source_icon + ' mr-1"></i>' + item
                                         .source_label + '</span>',

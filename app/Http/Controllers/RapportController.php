@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Depense;
 use App\Models\Product;
+use App\Models\MenuProduit;
 use Illuminate\Http\Request;
 use App\Models\CategorieDepense;
 use Illuminate\Support\Facades\DB;
@@ -324,6 +325,97 @@ class RapportController extends Controller
                 'dateDebut',
                 'dateFin',
                 'listeProduitsVendus'
+            ));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Erreur lors de la génération du rapport: ' . $e->getMessage());
+        }
+    }
+
+    // rapport ventes menu du jour
+    public function rapportVenteMenu(Request $request)
+    {
+        try {
+            // 1. Gestion des dates
+            $dateDebut = $request->filled('date_debut') ? Carbon::parse($request->date_debut)->startOfDay() : null;
+            $dateFin = $request->filled('date_fin') ? Carbon::parse($request->date_fin)->endOfDay() : null;
+
+            // 2. Query Orders contenant du menu du jour, selon les dates ou toutes les ventes
+            $venteQuery = Order::query()->where('status', '!=', 'annule')->where('total_menu', '>', 0);
+            if ($dateDebut && $dateFin) {
+                $venteQuery->whereBetween('created_at', [$dateDebut, $dateFin]);
+            } elseif ($dateDebut) {
+                $venteQuery->where('created_at', '>=', $dateDebut);
+            } elseif ($dateFin) {
+                $venteQuery->where('created_at', '<=', $dateFin);
+            }
+            // Sinon, toutes les ventes contenant du menu du jour
+
+            // 3. Plats du menu du jour vendus avec Eloquent
+            $platsVendus = MenuProduit::whereHas('orders', function ($q) use ($dateDebut, $dateFin) {
+                $q->where('orders.status', '!=', 'annule');
+                if ($dateDebut && $dateFin) {
+                    $q->whereBetween('orders.created_at', [$dateDebut, $dateFin]);
+                } elseif ($dateDebut) {
+                    $q->where('orders.created_at', '>=', $dateDebut);
+                } elseif ($dateFin) {
+                    $q->where('orders.created_at', '<=', $dateFin);
+                }
+            })
+                ->with(['orders' => function ($q) use ($dateDebut, $dateFin) {
+                    $q->where('orders.status', '!=', 'annule');
+                    if ($dateDebut && $dateFin) {
+                        $q->whereBetween('orders.created_at', [$dateDebut, $dateFin]);
+                    } elseif ($dateDebut) {
+                        $q->where('orders.created_at', '>=', $dateDebut);
+                    } elseif ($dateFin) {
+                        $q->where('orders.created_at', '<=', $dateFin);
+                    }
+                }])
+                ->get()
+                ->map(function ($plat) {
+                    $total_quantite = $plat->orders->sum(function ($order) {
+                        return $order->pivot->quantity;
+                    });
+                    $total_chiffre_affaires = $plat->orders->sum(function ($order) {
+                        return $order->pivot->quantity * $order->pivot->unit_price;
+                    });
+
+                    return [
+                        'id'                     => $plat->id,
+                        'nom'                    => $plat->nom,
+                        'prix'                   => $plat->prix,
+                        'total_quantite'         => $total_quantite,
+                        'total_chiffre_affaires' => $total_chiffre_affaires,
+                    ];
+                })
+                ->sortByDesc('total_quantite')
+                ->values();
+
+            // 4. Top 10 plats vendus
+            $top10PlatsVendus = $platsVendus->take(10);
+
+            // 5. Statistiques générales
+            $totalCommandesMenu = $venteQuery->count();
+            $totalVenteMenu     = $venteQuery->sum('total_menu');
+            $panierMoyenMenu    = $totalCommandesMenu > 0 ? $totalVenteMenu / $totalCommandesMenu : 0;
+
+            // 6. Plat le plus vendu et le moins vendu parmi le top 10
+            $platPlusVendu  = $top10PlatsVendus->first();
+            $platMoinsVendu = $top10PlatsVendus->last();
+
+            //Liste des plats vendus sur la période choisie
+            $listePlatsVendus = $platsVendus;
+
+            return view('admin.pages.rapport.vente_menu', compact(
+                'totalCommandesMenu',
+                'totalVenteMenu',
+                'panierMoyenMenu',
+                'platPlusVendu',
+                'platMoinsVendu',
+                'top10PlatsVendus',
+                'dateDebut',
+                'dateFin',
+                'listePlatsVendus'
             ));
         } catch (\Exception $e) {
             return back()->with('error', 'Erreur lors de la génération du rapport: ' . $e->getMessage());

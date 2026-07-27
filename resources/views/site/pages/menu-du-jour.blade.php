@@ -69,17 +69,38 @@
 }
 .ak-menu-empty h3 { font-size: 1.1rem; font-weight: 700; color: #333; margin-bottom: 8px; }
 .ak-menu-empty p { font-size: .88rem; color: #888; margin-bottom: 24px; }
+.ak-menu-welcome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0 0;
+    font-size: .92rem;
+    font-weight: 500;
+    color: rgba(255,255,255,.82);
+}
+.ak-menu-welcome i { color: var(--ak-orange, #f85d05); }
 </style>
 
 {{-- ── Breadcrumb ── --}}
+@php
+    $aujourdhui = \Carbon\Carbon::now()->locale('fr');
+@endphp
 <div class="ak-breadcrumb">
     <div class="container">
-        <h1 class="ak-breadcrumb-title">Menu du jour</h1>
+        <h1 class="ak-breadcrumb-title">
+            <span class="ak-breadcrumb-icon"><i class="fas fa-utensils"></i></span>
+            Menu du jour
+            <span class="ak-breadcrumb-badge">{{ ucfirst($aujourdhui->isoFormat('dddd')) }}</span>
+        </h1>
         <ul class="ak-breadcrumb-nav">
             <li><a href="{{ route('page-acceuil') }}">Accueil</a></li>
             <li class="ak-breadcrumb-sep"><i class="fas fa-chevron-right"></i></li>
             <li class="active">Menu du jour</li>
         </ul>
+        <p class="ak-menu-welcome">
+            <i class="fas fa-hand-sparkles"></i>
+            Bienvenue sur le menu du {{ $aujourdhui->isoFormat('dddd D MMMM') }}
+        </p>
     </div>
 </div>
 

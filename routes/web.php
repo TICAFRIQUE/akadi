@@ -35,6 +35,7 @@ use App\Http\Controllers\admin\depense\LibelleDepenseController;
 use App\Http\Controllers\admin\depense\CategorieDepenseController;
 use App\Http\Controllers\InventaireController;
 use App\Http\Controllers\MenuJourController;
+use App\Http\Controllers\PlatController;
 use App\Http\Controllers\site\MenuPageController;
 
 /*
@@ -152,6 +153,14 @@ Route::middleware(['admin'])->group(function () {
         route::get('edit/{menuJour}', 'edit')->name('menu-jour.edit');
         route::post('update/{menuJour}', 'update')->name('menu-jour.update');
         route::delete('destroy/{menuJour}', 'destroy')->name('menu-jour.destroy');
+    });
+
+    /** Plats (catalogue réutilisable pour le menu du jour) **/
+    Route::prefix('admin/plats')->middleware('can:catalogue.produits')->controller(PlatController::class)->group(function () {
+        route::get('', 'index')->name('plats.index');
+        route::post('', 'store')->name('plats.store');
+        route::post('update/{plat}', 'update')->name('plats.update');
+        route::post('destroy/{plat}', 'destroy')->name('plats.destroy');
     });
 
     /** Product Bases (Produits de base) **/
@@ -305,6 +314,7 @@ Route::middleware(['admin'])->group(function () {
         route::get('', 'exploitation')->name('rapport.exploitation');
         route::get('detail-depense', 'detail_depense')->name('rapport.detail');
         route::get('vente', 'rapportVente')->name('rapport.vente');
+        route::get('vente-menu', 'rapportVenteMenu')->name('rapport.venteMenu');
     });
 
     /** Caisses **/

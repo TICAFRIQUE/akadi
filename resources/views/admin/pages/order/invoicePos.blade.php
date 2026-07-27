@@ -314,6 +314,28 @@
             </div>
         @endforeach
 
+        @foreach ($orders->menuProduits as $item)
+            @php
+                $hasLineDiscount = ($item->pivot->discount ?? 0) > 0;
+                $pu              = $item->pivot->prix_apres_remise ?? $item->pivot->unit_price;
+                $lineTotal       = $item->pivot->total ?? ($item->pivot->quantity * $pu);
+            @endphp
+            <div class="item-line">
+                <span class="i-name">
+                    {{ $item->nom }}
+                    <br><span style="font-size:8px;color:#666;font-weight:normal">menu du jour</span>
+                    @if ($hasLineDiscount)
+                        <br><span style="font-size:8px;color:#666;font-weight:normal">
+                            remise {{ $item->pivot->type_discount === 'percent' ? $item->pivot->discount . '%' : format_price($item->pivot->discount) . ' F' }}
+                        </span>
+                    @endif
+                </span>
+                <span class="i-qty">{{ $item->pivot->quantity }}</span>
+                <span class="i-pu">{{ format_price($pu) }}</span>
+                <span class="i-tot">{{ format_price($lineTotal) }}</span>
+            </div>
+        @endforeach
+
         <div class="sep"></div>
 
         {{-- Totaux --}}

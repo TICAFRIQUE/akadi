@@ -285,11 +285,11 @@
                                 <li class="dropdown">
                                     <a href="#"
                                         class="menu-toggle nav-link has-dropdown
-                                    {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') ? 'active' : '' }}">
+                                    {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') || Route::is('menu-jour.*') || Route::is('plats.*') ? 'active' : '' }}">
                                         <i data-feather="package"></i><span>Catalogue</span>
                                     </a>
                                     <ul
-                                        class="dropdown-menu {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') || Route::is('menu-jour.*') ? 'show' : '' }}">
+                                        class="dropdown-menu {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') || Route::is('menu-jour.*') || Route::is('plats.*') ? 'show' : '' }}">
                                         @canany(['catalogue.categories', 'catalogue.sous-categories'])
                                             @can('catalogue.categories')
                                                 <li class="nav-item {{ Route::is('category.*') ? 'active' : '' }}">
@@ -309,6 +309,9 @@
                                             </li>
                                             <li class="nav-item {{ Route::is('menu-jour.*') ? 'active' : '' }}">
                                                 <a href="{{ route('menu-jour.index') }}" class="nav-link">Menu du jour</a>
+                                            </li>
+                                            <li class="nav-item {{ Route::is('plats.*') ? 'active' : '' }}">
+                                                <a href="{{ route('plats.index') }}" class="nav-link">Plats</a>
                                             </li>
                                         @endcan
                                     </ul>
@@ -506,6 +509,9 @@
                                         @can('rapports.vente')
                                             <li class="nav-item {{ Route::is('rapport.vente') ? 'active' : '' }}">
                                                 <a href="{{ route('rapport.vente') }}" class="nav-link">Ventes</a>
+                                            </li>
+                                            <li class="nav-item {{ Route::is('rapport.venteMenu') ? 'active' : '' }}">
+                                                <a href="{{ route('rapport.venteMenu') }}" class="nav-link">Ventes menu du jour</a>
                                             </li>
                                         @endcan
                                     </ul>

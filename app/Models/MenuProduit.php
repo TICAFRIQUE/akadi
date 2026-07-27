@@ -13,6 +13,7 @@ class MenuProduit extends Model
 
     protected $fillable = [
         'menu_jour_id',
+        'plat_id',
         'nom',
         'description',
         'prix',
@@ -27,6 +28,11 @@ class MenuProduit extends Model
     public function menuJour(): BelongsTo
     {
         return $this->belongsTo(MenuJour::class);
+    }
+
+    public function plat(): BelongsTo
+    {
+        return $this->belongsTo(Plat::class);
     }
 
     public function orders(): BelongsToMany

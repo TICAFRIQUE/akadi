@@ -276,11 +276,12 @@ class OrderController extends Controller
 
     public function getAllOrder(Request $request)
     {
-        $status    = $request->input('status');
-        $source    = $request->input('source');
-        $dateDebut = $request->input('date_debut');
-        $dateFin   = $request->input('date_fin');
-        $allDates  = $request->boolean('all_dates');
+        $status     = $request->input('status');
+        $source     = $request->input('source');
+        $typeVente  = $request->input('type_vente');
+        $dateDebut  = $request->input('date_debut');
+        $dateFin    = $request->input('date_fin');
+        $allDates   = $request->boolean('all_dates');
 
         $allowedStatuses = orderStatusesAllowed();
 
@@ -330,7 +331,12 @@ class OrderController extends Controller
         $baseQuery = Order::with(['user', 'paymentMethod', 'caisse', 'createdBy'])
             ->when($allowedStatuses !== null, fn($q) => $q->whereIn('status', $allowedStatuses))
             ->when($status && $status !== 'all', fn($q) => $q->where('status', $status))
-            ->when($source, fn($q) => $q->where('source', $source));
+            ->when($source, fn($q) => $q->where('source', $source))
+            // type_vente est un accessor (basé sur total_menu/subtotal), pas une colonne :
+            // on traduit sa logique en conditions SQL équivalentes.
+            ->when($typeVente === Order::TYPE_VENTE_NORMAL, fn($q) => $q->where(fn($qq) => $qq->whereNull('total_menu')->orWhere('total_menu', '<=', 0)))
+            ->when($typeVente === Order::TYPE_VENTE_MENU, fn($q) => $q->where('total_menu', '>', 0)->whereColumn('subtotal', '<=', 'total_menu'))
+            ->when($typeVente === Order::TYPE_VENTE_MIXTE, fn($q) => $q->where('total_menu', '>', 0)->whereColumn('subtotal', '>', 'total_menu'));
 
         // Application filtre de date avec bridage sur la période autorisée
         if ($hasPeriodRestriction) {
@@ -366,12 +372,13 @@ class OrderController extends Controller
         ];
 
         // ✅ Montants SANS annulées ni précommandes (non encore actives)
+        // total_menu = part du CA attribuable aux plats du menu du jour ; le reste = produits classiques
         $statsNonAnnulee = (clone $baseQuery)
             ->whereNotIn('status', ['annulée', 'precommande'])
-            ->selectRaw('SUM(total) as montant_total, SUM(solde_restant) as montant_solde')
+            ->selectRaw('SUM(total) as montant_total, SUM(solde_restant) as montant_solde, SUM(total_menu) as montant_total_menu')
             ->first();
 
-        // ✅ Montant REVENU = uniquement commandes LIVRÉES
+        // ✅ Montant REVENU = uniquement commandes LIVRÉES (un seul total, produits + menu confondus)
         $revenueStats = (clone $baseQuery)
             ->where('status', 'livrée')
             ->selectRaw('SUM(total) as montant_revenu')
@@ -391,6 +398,9 @@ class OrderController extends Controller
             'montantTotal'        => (float) ($statsNonAnnulee?->montant_total ?? 0), //SANS les annulées
             'montantSolde'        => (float) ($statsNonAnnulee?->montant_solde ?? 0), //SANS les annulées
             'montantRevenu'       => (float) ($revenueStats?->montant_revenu ?? 0), //UNIQUEMENT livrées
+            // CA Total dissocié produits classiques / menu du jour (Revenu reste un seul total combiné)
+            'montantTotalMenu'    => (float) ($statsNonAnnulee?->montant_total_menu ?? 0),
+            'montantTotalNormal'  => (float) ($statsNonAnnulee?->montant_total ?? 0) - (float) ($statsNonAnnulee?->montant_total_menu ?? 0),
         ];
 
         // ✅ Réponse Ajax DataTables Server-Side
@@ -475,7 +485,7 @@ class OrderController extends Controller
                 ->filterColumn('code', function ($query, $keyword) {
                     $query->where('code', 'like', "%{$keyword}%");
                 })
-                ->rawColumns(['status_badge', 'source_badge', 'solde_fmt', 'actions'])
+                ->rawColumns(['status_badge', 'type_vente_badge', 'source_badge', 'solde_fmt', 'actions'])
                 ->make(true);
         }
 
@@ -587,7 +597,7 @@ class OrderController extends Controller
     public function invoice($id)
     {
         $orders = Order::whereId($id)
-            ->with(['user', 'products', 'paymentMethod'])
+            ->with(['user', 'products', 'menuProduits', 'paymentMethod'])
             ->orderBy('created_at', 'DESC')
             ->firstOrFail();
 
@@ -831,6 +841,8 @@ class OrderController extends Controller
                 'source'       => $order->source,
                 'source_label' => Order::$sources[$order->source]['label'] ?? $order->source,
                 'source_icon'  => Order::$sources[$order->source]['icon'] ?? 'fa-question',
+                'type_vente_label' => $order->type_vente_label,
+                'type_vente_color' => $order->type_vente_color,
                 'nom_client'   => $order->nom_client,
                 'tel_client'   => $order->tel_client,
                 'total'        => (float) $order->total,

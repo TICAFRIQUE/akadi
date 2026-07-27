@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MenuJour;
 use App\Models\MenuProduit;
+use App\Models\Plat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -27,7 +28,9 @@ class MenuJourController extends Controller
      */
     public function create()
     {
-        return view('admin.pages.menu-jour.create');
+        $plats = Plat::where('actif', true)->orderBy('nom')->get(['id', 'nom', 'description', 'prix']);
+
+        return view('admin.pages.menu-jour.create', compact('plats'));
     }
 
     /**
@@ -39,6 +42,7 @@ class MenuJourController extends Controller
             'date'                 => 'required|date|unique:menus_jour,date',
             'note'                 => 'nullable|string',
             'plats'                => 'required|array|min:1',
+            'plats.*.plat_id'      => 'nullable|integer|exists:plats,id',
             'plats.*.nom'          => 'required|string|max:150',
             'plats.*.description'  => 'nullable|string',
             'plats.*.prix'         => 'required|numeric|min:0',
@@ -61,6 +65,7 @@ class MenuJourController extends Controller
 
         foreach ($request->plats as $plat) {
             $menuJour->menuProduits()->create([
+                'plat_id'     => $plat['plat_id'] ?? null,
                 'nom'         => $plat['nom'],
                 'description' => $plat['description'] ?? null,
                 'prix'        => $plat['prix'],
@@ -79,7 +84,29 @@ class MenuJourController extends Controller
     {
         $menuJour->load('menuProduits');
 
-        return view('admin.pages.menu-jour.edit', compact('menuJour'));
+        $plats = Plat::where('actif', true)->orderBy('nom')->get(['id', 'nom', 'description', 'prix']);
+
+        // Inclure aussi les plats désactivés déjà utilisés dans ce menu, pour que
+        // leur ligne reste correctement affichée/sélectionnée dans le select2.
+        $platIdsUtilises = $menuJour->menuProduits->pluck('plat_id')->filter()->unique();
+        $platIdsManquants = $platIdsUtilises->diff($plats->pluck('id'));
+        if ($platIdsManquants->isNotEmpty()) {
+            $plats = $plats
+                ->concat(Plat::whereIn('id', $platIdsManquants)->get(['id', 'nom', 'description', 'prix']))
+                ->sortBy('nom')
+                ->values();
+        }
+
+        $existingPlats = $menuJour->menuProduits->map(fn ($p) => [
+            'id'          => $p->id,
+            'nom'         => $p->nom,
+            'description' => $p->description,
+            'prix'        => $p->prix,
+            'disponible'  => $p->disponible,
+            'plat_id'     => $p->plat_id,
+        ])->values();
+
+        return view('admin.pages.menu-jour.edit', compact('menuJour', 'plats', 'existingPlats'));
     }
 
     /**
@@ -92,6 +119,7 @@ class MenuJourController extends Controller
             'note'                 => 'nullable|string',
             'plats'                => 'required|array|min:1',
             'plats.*.id'           => 'nullable|integer|exists:menu_produits,id',
+            'plats.*.plat_id'      => 'nullable|integer|exists:plats,id',
             'plats.*.nom'          => 'required|string|max:150',
             'plats.*.description'  => 'nullable|string',
             'plats.*.prix'         => 'required|numeric|min:0',
@@ -118,6 +146,7 @@ class MenuJourController extends Controller
                 $menuProduit = MenuProduit::where('menu_jour_id', $menuJour->id)->find($plat['id']);
                 if ($menuProduit) {
                     $menuProduit->update([
+                        'plat_id'     => $plat['plat_id'] ?? null,
                         'nom'         => $plat['nom'],
                         'description' => $plat['description'] ?? null,
                         'prix'        => $plat['prix'],
@@ -128,6 +157,7 @@ class MenuJourController extends Controller
             }
 
             $nouveau = $menuJour->menuProduits()->create([
+                'plat_id'     => $plat['plat_id'] ?? null,
                 'nom'         => $plat['nom'],
                 'description' => $plat['description'] ?? null,
                 'prix'        => $plat['prix'],

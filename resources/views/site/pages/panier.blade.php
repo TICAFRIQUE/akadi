@@ -285,7 +285,7 @@
 
         @if (session('cart') || session('cart_menu'))
             @php $sousTotal = 0; @endphp
-            @foreach (session('cart') as $id => $details)
+            @foreach (session('cart', []) as $id => $details)
                 @php $sousTotal += $details['price'] * $details['quantity']; @endphp
             @endforeach
             @foreach (session('cart_menu', []) as $id => $details)
@@ -307,7 +307,7 @@
 
                     {{-- Items list --}}
                     <div class="d-flex flex-column gap-3">
-                        @foreach (session('cart') as $id => $details)
+                        @foreach (session('cart', []) as $id => $details)
                             @php $itemTotal = $details['price'] * $details['quantity']; @endphp
                             <div class="ak-cart-item" id="row_{{ $id }}">
                                 {{-- Image --}}

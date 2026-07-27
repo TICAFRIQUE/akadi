@@ -3,8 +3,9 @@
 @if ($canFilter ?? false)
 
 @php
-    $currentStatus = request('status', 'all');
-    $currentSource = request('source', '');
+    $currentStatus    = request('status', 'all');
+    $currentSource    = request('source', '');
+    $currentTypeVente = request('type_vente', '');
 @endphp
 
 <div class="filter-bar">
@@ -47,6 +48,27 @@
                         <option value="{{ $srcKey }}" {{ $currentSource == $srcKey ? 'selected' : '' }}>
 
                             {{ $src['label'] }}
+
+                        </option>
+                    @endforeach
+
+                </select>
+
+            </div>
+
+            {{-- TYPE DE VENTE --}}
+            <div class="filter-group filter-grow">
+
+                <label>Type</label>
+
+                <select name="type_vente" class="form-control form-control-sm">
+
+                    <option value="">Tous les types</option>
+
+                    @foreach (\App\Models\Order::$typesVente as $typeKey => $typeItem)
+                        <option value="{{ $typeKey }}" {{ $currentTypeVente == $typeKey ? 'selected' : '' }}>
+
+                            {{ $typeItem['label'] }}
 
                         </option>
                     @endforeach
