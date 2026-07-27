@@ -56,6 +56,7 @@ class PosController extends Controller
         );
 
         $menuJour = MenuJour::with(['menuProduits' => fn($q) => $q->where('disponible', true)])
+            ->where('actif', true)
             ->whereDate('date', today())
             ->first();
 
@@ -704,6 +705,7 @@ class PosController extends Controller
         );
 
         $menuJour = MenuJour::with(['menuProduits' => fn($q) => $q->where('disponible', true)])
+            ->where('actif', true)
             ->whereDate('date', today())
             ->first();
 

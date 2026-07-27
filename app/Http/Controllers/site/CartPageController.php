@@ -168,7 +168,7 @@ class CartPageController extends Controller
     public function addMenuToCart($id)
     {
         $menuProduit = MenuProduit::where('disponible', true)
-            ->whereHas('menuJour', fn($q) => $q->whereDate('date', today()))
+            ->whereHas('menuJour', fn($q) => $q->where('actif', true)->whereDate('date', today()))
             ->findOrFail($id);
 
         $cartMenu = session()->get('cart_menu', []);
