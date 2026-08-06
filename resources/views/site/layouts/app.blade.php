@@ -784,6 +784,8 @@
     @yield('content')
     <!-- ========== End content ========== -->
 
+    @includeWhen(now()->format('m-d') >= '08-06' && now()->format('m-d') <= '08-08' || request()->boolean('preview_indep'), 'site.sections.popup-independance')
+
 
 
     <footer class="ak-footer">

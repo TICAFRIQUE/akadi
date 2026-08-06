@@ -356,7 +356,11 @@
         @endif
         <div class="total-row">
             <span>LIVRAISON</span>
-            <span>{{ format_price($orders->delivery_price) }} F</span>
+            @if ($orders->mode_livraison === 'Livraison Yango Moto')
+                <span>À la charge du client</span>
+            @else
+                <span>{{ format_price($orders->delivery_price) }} F</span>
+            @endif
         </div>
         <div class="total-row grand">
             <span>TOTAL</span>
