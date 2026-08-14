@@ -11,6 +11,7 @@ class MenuJour extends Model
     protected $table = 'menus_jour';
 
     protected $fillable = [
+        'menu_semaine_id',
         'date',
         'actif',
         'note',
@@ -30,6 +31,11 @@ class MenuJour extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function menuSemaine(): BelongsTo
+    {
+        return $this->belongsTo(MenuSemaine::class);
     }
 
     /** Le menu du jour actuel (aujourd'hui) */

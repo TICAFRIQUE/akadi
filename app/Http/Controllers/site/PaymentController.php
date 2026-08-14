@@ -5,6 +5,7 @@ namespace App\Http\Controllers\site;
 use Exception;
 use App\Models\Order;
 use App\Models\PaymentMethod;
+use App\Models\MenuSemaineReservation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\WavePaymentService;
@@ -470,6 +471,12 @@ class PaymentController extends Controller
             $order = Order::where('wave_session_id', $sessionId)->first();
 
             if (!$order) {
+                // Peut-être une réservation menu semaine plutôt qu'une commande classique
+                $reservation = MenuSemaineReservation::where('wave_session_id', $sessionId)->first();
+                if ($reservation) {
+                    return $this->handleMenuSemaineWebhook($reservation, $status);
+                }
+
                 Log::error('Wave Webhook - commande introuvable', [
                     'session_id' => $sessionId,
                     'searched_in_db' => true
@@ -579,6 +586,94 @@ class PaymentController extends Controller
     }
 
     /**
+     * Traite la confirmation Wave d'une réservation menu semaine : contrairement à une
+     * commande classique (déjà créée avant le paiement), c'est ICI, une fois le paiement
+     * confirmé, que les commandes (une par jour réservé) sont réellement créées — la
+     * réservation ne "devient" des ventes qu'après paiement effectif.
+     */
+    protected function handleMenuSemaineWebhook(MenuSemaineReservation $reservation, ?string $status)
+    {
+        switch (strtolower((string) $status)) {
+            case 'complete':
+            case 'completed':
+            case 'success':
+            case 'succeeded':
+                // Idempotence : le webhook peut être appelé plusieurs fois par Wave.
+                if ($reservation->statut === MenuSemaineReservation::STATUT_PAYEE) {
+                    Log::info('Menu Semaine Webhook - déjà traitée', ['reservation_id' => $reservation->id]);
+                    break;
+                }
+
+                $reservation->load('items.menuProduit');
+
+                DB::transaction(function () use ($reservation) {
+                    $reservation->update([
+                        'payment_status' => 'completed',
+                        'statut'         => MenuSemaineReservation::STATUT_PAYEE,
+                    ]);
+
+                    foreach ($reservation->items->groupBy(fn ($item) => $item->date->format('Y-m-d')) as $date => $itemsDuJour) {
+                        $totalJour = $itemsDuJour->sum(fn ($item) => $item->quantity * $item->prix_unitaire);
+
+                        $order = Order::create([
+                            'menu_semaine_reservation_id' => $reservation->id,
+                            'user_id'          => $reservation->user_id,
+                            'client_name'      => $reservation->client_name,
+                            'client_phone'     => $reservation->client_phone,
+                            'quantity_product' => $itemsDuJour->sum('quantity'),
+                            'subtotal'         => 0,
+                            'total_menu'       => $totalJour,
+                            'total'            => $totalJour,
+                            'delivery_price'   => 0,
+                            'status'           => $date > now()->format('Y-m-d') ? Order::STATUS_PRECOMMANDE : Order::STATUS_ATTENTE,
+                            'source'           => Order::SOURCE_WEB,
+                            'type_order'       => 'normal',
+                            'payment_method_id' => $reservation->payment_method_id,
+                            'payment_status'   => 'completed',
+                            'payment_completed_at' => now(),
+                            'acompte'          => $totalJour,
+                            'date_order'       => $date,
+                        ]);
+
+                        $cartShape = [];
+                        foreach ($itemsDuJour as $item) {
+                            $cartShape[$item->menu_produit_id] = [
+                                'quantity' => $item->quantity,
+                                'price'    => $item->prix_unitaire,
+                            ];
+                        }
+                        $this->stockService->attachMenuCartToOrder($order, $cartShape);
+                    }
+                });
+
+                Log::info('Menu Semaine Reservation Completed - Orders Created', [
+                    'reservation_id' => $reservation->id,
+                    'orders_count'   => $reservation->orders()->count(),
+                ]);
+                break;
+
+            case 'failed':
+            case 'failure':
+                $reservation->update(['payment_status' => 'failed', 'statut' => MenuSemaineReservation::STATUT_ANNULEE]);
+                break;
+
+            case 'cancelled':
+            case 'canceled':
+                $reservation->update(['payment_status' => 'cancelled', 'statut' => MenuSemaineReservation::STATUT_ANNULEE]);
+                break;
+
+            default:
+                Log::warning('Menu Semaine Webhook - statut inconnu', ['status' => $status, 'reservation_id' => $reservation->id]);
+        }
+
+        return response()->json([
+            'status'         => 'success',
+            'reservation_id' => $reservation->id,
+            'message'        => 'Menu semaine webhook processed successfully',
+        ], 200);
+    }
+
+    /**
      * Envoyer les notifications de commande (email, WhatsApp)
      */
     protected function sendOrderNotifications($order)
@@ -668,6 +763,11 @@ class PaymentController extends Controller
                 ->with('message', 'Votre paiement est en cours de traitement.');
         }
 
+        // Réservation menu semaine (référence RESA_123) : flux distinct des commandes classiques
+        if (str_starts_with($ref, 'RESA_')) {
+            return $this->waveSuccessMenuSemaine(str_replace('RESA_', '', $ref));
+        }
+
         // Extraire l'ID de la commande depuis la référence (ORDER_123)
         $orderId = str_replace('ORDER_', '', $ref);
         $order = Order::find($orderId);
@@ -713,6 +813,19 @@ class PaymentController extends Controller
     {
         $ref = $request->query('ref');
 
+        if ($ref && str_starts_with($ref, 'RESA_')) {
+            $reservation = MenuSemaineReservation::find(str_replace('RESA_', '', $ref));
+            if ($reservation) {
+                $reservation->update([
+                    'payment_status' => 'cancelled',
+                    'statut'         => MenuSemaineReservation::STATUT_ANNULEE,
+                ]);
+            }
+
+            return redirect()->route('carte-menu', $reservation?->menuSemaine?->lien_token ?? '')
+                ->with('error', 'Le paiement a échoué ou a été annulé. Veuillez réessayer.');
+        }
+
         if ($ref) {
             $orderId = str_replace('ORDER_', '', $ref);
             $order = Order::find($orderId);
@@ -727,6 +840,41 @@ class PaymentController extends Controller
 
         return redirect()->route('payment.select')
             ->with('error', 'Le paiement a échoué ou a été annulé. Veuillez réessayer.');
+    }
+
+    /**
+     * Callback de succès Wave pour une réservation menu semaine.
+     */
+    protected function waveSuccessMenuSemaine($reservationId)
+    {
+        $reservation = MenuSemaineReservation::with('menuSemaine')->find($reservationId);
+
+        if (!$reservation) {
+            Log::error('Wave Success Menu Semaine - réservation introuvable', ['id' => $reservationId]);
+            return redirect()->route('page-acceuil')->with('error', 'Réservation introuvable');
+        }
+
+        if ($reservation->statut === MenuSemaineReservation::STATUT_PAYEE) {
+            Session::forget('cart_menu_semaine');
+            return redirect()->route('menu-semaine.reservation-success', $reservation->id)
+                ->with('success', 'Votre réservation a été confirmée avec succès');
+        }
+
+        // Attendre que le webhook confirme le paiement (max 10 secondes)
+        for ($i = 0; $i < 5; $i++) {
+            sleep(2);
+            $reservation->refresh();
+
+            if ($reservation->statut === MenuSemaineReservation::STATUT_PAYEE) {
+                Session::forget('cart_menu_semaine');
+                return redirect()->route('menu-semaine.reservation-success', $reservation->id)
+                    ->with('success', 'Votre réservation a été confirmée avec succès');
+            }
+        }
+
+        return view('site.pages.payment-pending')
+            ->with('message', 'Votre paiement est en cours de vérification. Veuillez patienter...')
+            ->with('order_id', $reservation->id);
     }
 
     /**

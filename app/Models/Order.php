@@ -75,6 +75,7 @@ class Order extends Model
 
     protected $fillable = [
         'code',
+        'menu_semaine_reservation_id', // rattache une commande générée par jour à sa réservation menu semaine
         'signature', // champ pour signature commande pour eviter les doublons
         'quantity_product',
         'subtotal',
@@ -156,6 +157,12 @@ class Order extends Model
     public function paymentMethod(): BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class);
+    }
+
+    /** Réservation menu semaine dont cette commande est le jour livré */
+    public function menuSemaineReservation(): BelongsTo
+    {
+        return $this->belongsTo(MenuSemaineReservation::class);
     }
 
     public function products(): BelongsToMany

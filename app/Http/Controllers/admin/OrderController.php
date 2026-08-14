@@ -336,7 +336,12 @@ class OrderController extends Controller
             // on traduit sa logique en conditions SQL équivalentes.
             ->when($typeVente === Order::TYPE_VENTE_NORMAL, fn($q) => $q->where(fn($qq) => $qq->whereNull('total_menu')->orWhere('total_menu', '<=', 0)))
             ->when($typeVente === Order::TYPE_VENTE_MENU, fn($q) => $q->where('total_menu', '>', 0)->whereColumn('subtotal', '<=', 'total_menu'))
-            ->when($typeVente === Order::TYPE_VENTE_MIXTE, fn($q) => $q->where('total_menu', '>', 0)->whereColumn('subtotal', '>', 'total_menu'));
+            ->when($typeVente === Order::TYPE_VENTE_MIXTE, fn($q) => $q->where('total_menu', '>', 0)->whereColumn('subtotal', '>', 'total_menu'))
+            // Les commandes issues d'une réservation "menu de la semaine" sont gérées à part
+            // (voir /admin/commandes-menu) et ne rejoignent la liste de vente qu'une fois livrées.
+            ->when(!$request->boolean('include_menu_semaine'), fn($q) => $q->where(
+                fn($qq) => $qq->whereNull('menu_semaine_reservation_id')->orWhere('status', Order::STATUS_LIVREE)
+            ));
 
         // Application filtre de date avec bridage sur la période autorisée
         if ($hasPeriodRestriction) {
