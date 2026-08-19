@@ -134,12 +134,18 @@
                             <span>Livraison</span>
                             <span class="fw-bold">
                                 @if ($deliveryPrice == 0)
-                                    <span class="free-tag">Gratuit</span>
+                                    <span class="free-tag">{{ $deliveryMode ?: 'Gratuit' }}</span>
                                 @else
                                     {{ number_format($deliveryPrice, 0, ',', ' ') }} FCFA
                                 @endif
                             </span>
                         </div>
+                        @if ($deliveryDestination)
+                        <div class="pay-summary-row">
+                            <span>Destination</span>
+                            <span class="fw-bold" style="font-weight:500;">{{ $deliveryDestination }}</span>
+                        </div>
+                        @endif
                         @if (isset($discount) && $discount > 0)
                         <div class="pay-summary-row">
                             <span>Remise</span>

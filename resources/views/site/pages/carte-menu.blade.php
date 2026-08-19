@@ -1,6 +1,6 @@
 @extends('site.layouts.app')
 
-@section('title', $menuSemaine->titre)
+@section('title', $menuSemaine->titre_affiche)
 
 @section('content')
 
@@ -62,6 +62,9 @@
 .ak-cm-plat-body { flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
 .ak-cm-plat-name { font-size: .92rem; font-weight: 700; color: #1a1a1a; }
 .ak-cm-plat-desc { font-size: .78rem; color: #888; flex: 1; }
+.ak-cm-plat-price { display: flex; align-items: baseline; gap: 8px; margin-top: 2px; }
+.ak-cm-plat-price-normal { font-size: .95rem; font-weight: 800; color: #1a1a1a; }
+.ak-cm-plat-price-reduit { font-size: .74rem; color: #11998e; font-weight: 600; }
 .ak-cm-empty-day { color: #aaa; font-size: .85rem; font-style: italic; }
 
 .ak-cm-plat-footer {
@@ -138,7 +141,7 @@
     <div class="container">
         <h1 class="ak-breadcrumb-title">
             <span class="ak-breadcrumb-icon"><i class="fas fa-calendar-week"></i></span>
-            {{ $menuSemaine->titre }}
+            {{ $menuSemaine->titre_affiche }}
         </h1>
         <ul class="ak-breadcrumb-nav">
             <li><a href="{{ route('page-acceuil') }}">Accueil</a></li>
@@ -153,17 +156,10 @@
 
         <div class="ak-cm-pricing">
             <div class="ak-cm-pricing-item">
-                <div class="ak-cm-pricing-icon normal"><i class="fas fa-utensils"></i></div>
-                <div>
-                    <p class="ak-cm-pricing-label">Prix normal</p>
-                    <p class="ak-cm-pricing-value">{{ number_format($menuSemaine->prix_normal, 0, ',', ' ') }} FCFA / plat</p>
-                </div>
-            </div>
-            <div class="ak-cm-pricing-item">
                 <div class="ak-cm-pricing-icon reduit"><i class="fas fa-tags"></i></div>
                 <div>
-                    <p class="ak-cm-pricing-label">À partir de {{ $menuSemaine->seuil_jours }} jours commandés</p>
-                    <p class="ak-cm-pricing-value">{{ number_format($menuSemaine->prix_reduit, 0, ',', ' ') }} FCFA / plat</p>
+                    <p class="ak-cm-pricing-label">Tarif réduit automatique</p>
+                    <p class="ak-cm-pricing-value">Dès {{ $menuSemaine->seuil_jours }} jour(s) commandés</p>
                 </div>
             </div>
         </div>
@@ -186,6 +182,10 @@
                                     @if ($plat->description)
                                         <div class="ak-cm-plat-desc">{{ $plat->description }}</div>
                                     @endif
+                                    <div class="ak-cm-plat-price">
+                                        <span class="ak-cm-plat-price-normal">{{ number_format($plat->prix_normal, 0, ',', ' ') }} FCFA</span>
+                                        <span class="ak-cm-plat-price-reduit">{{ number_format($plat->prix_reduit, 0, ',', ' ') }} F dès {{ $menuSemaine->seuil_jours }}j</span>
+                                    </div>
                                 </div>
                                 <div class="ak-cm-plat-footer">
                                     <div class="ak-cm-qty" data-date="{{ $dateStr }}" data-menu-produit-id="{{ $plat->id }}">
@@ -206,7 +206,7 @@
         @endforelse
 
         <div class="text-center mt-4">
-            <a href="https://wa.me/+2250758838338?text=Bonjour Akadi, je suis intéressé(e) par le menu de la semaine « {{ $menuSemaine->titre }} »"
+            <a href="https://wa.me/+2250758838338?text=Bonjour Akadi, je suis intéressé(e) par le menu de la semaine « {{ $menuSemaine->titre_affiche }} »"
                target="_blank" class="btn"
                style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--ak-orange,#f85d05);color:#fff;font-size:.9rem;font-weight:700;border-radius:8px;text-decoration:none;">
                 <i class="fab fa-whatsapp"></i> Réserver via WhatsApp
@@ -236,6 +236,7 @@
 <script>
 (function () {
     const menuSemaineId = {{ $menuSemaine->id }};
+    const seuilJours = {{ $menuSemaine->seuil_jours }};
     const addToCartUrl = "{{ route('menu-semaine.add-to-cart') }}";
     const summaryBar = document.getElementById('ak-cm-summary-bar');
     const summaryTotal = document.getElementById('ak-cm-summary-total');
@@ -254,8 +255,9 @@
         }
         summaryTotal.textContent = formatFcfa(data.montant_total);
         summaryJours.textContent = data.nombre_jours;
-        summaryTier.textContent = data.prix_unitaire === {{ $menuSemaine->prix_reduit }} ? 'Tarif réduit' : 'Tarif normal';
-        summaryTier.className = 'ak-cm-summary-tier ' + (data.prix_unitaire === {{ $menuSemaine->prix_reduit }} ? 'reduit' : 'normal');
+        const isReduit = data.nombre_jours >= seuilJours;
+        summaryTier.textContent = isReduit ? 'Tarif réduit' : 'Tarif normal';
+        summaryTier.className = 'ak-cm-summary-tier ' + (isReduit ? 'reduit' : 'normal');
     }
 
     function sendQuantity(date, menuProduitId, quantity) {

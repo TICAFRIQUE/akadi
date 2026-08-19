@@ -687,6 +687,17 @@
 }
 .empty-cart h3 { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; }
 .empty-cart p { color: #888; margin-bottom: 24px; }
+
+/* ── Simple error toast (no fancy animation) ── */
+.ak-simple-toast {
+    box-shadow: 0 1px 6px rgba(0,0,0,.12) !important;
+    border: 1px solid #f3c2c9;
+    border-left: 4px solid #b3001b;
+    border-radius: 6px !important;
+}
+.ak-simple-toast .swal2-title { font-size: .95rem; font-weight: 600; padding: .5em .8em; }
+.ak-simple-toast .swal2-icon { transform: scale(.65); margin: 8px 0 8px 8px; }
+.ak-simple-toast .swal2-icon.swal2-error [class^='swal2-x-mark-line'] { animation: none !important; }
 </style>
 
 {{-- ══════════════════ LIBS ══════════════════ --}}
@@ -915,26 +926,43 @@
         onPrecommandeDateChange($(this).val().trim());
     });
 
+    function showErrorToast(title) {
+        Swal.fire({
+            toast: true,
+            icon: 'error',
+            title: title,
+            position: 'top',
+            width: 'auto',
+            background: '#fff',
+            color: '#b3001b',
+            iconColor: '#b3001b',
+            showConfirmButton: false,
+            timer: 3000,
+            animation: false,
+            customClass: { popup: 'ak-simple-toast' }
+        });
+    }
+
     $('.btn_loading').hide();
     $('.confirmOrder').click(function(e) {
         e.preventDefault();
         var deliveryId = $('.delivery').val();
-        var address_yango = $('#address_yango').val();
-        var address = $('#address').val();
+        var address_yango = $('#address_yango input').val();
+        var address = $('#address input').val();
         var delivery_mode = $('.delivery_mode').val();
         var note = $('#note').val();
         var date_precommande = $('#date_precommande').val();
 
         if (!delivery_mode) {
-            Swal.fire({ toast:true, icon:'error', width:'100%', title:'Veuillez choisir un mode de livraison', position:'top', background:'#eb0029', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:5000, timerProgressBar:true });
+            showErrorToast('Veuillez choisir un mode de livraison');
         } else if ($('.delivery').is(':visible') && !deliveryId) {
-            Swal.fire({ toast:true, icon:'error', width:'100%', title:'Veuillez choisir un lieu de livraison', position:'top', background:'#eb0029', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:5000, timerProgressBar:true });
+            showErrorToast('Veuillez choisir un lieu de livraison');
         } else if ($('#address').is(':visible') && !address) {
-            Swal.fire({ toast:true, icon:'error', width:'100%', title:'Veuillez préciser le lieu exact', position:'top', background:'#eb0029', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:5000, timerProgressBar:true });
+            showErrorToast('Veuillez préciser le lieu exact');
         } else if ($('#address_yango').is(':visible') && !address_yango) {
-            Swal.fire({ toast:true, icon:'error', width:'100%', title:'Veuillez préciser la destination', position:'top', background:'#eb0029', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:5000, timerProgressBar:true });
+            showErrorToast('Veuillez préciser la destination');
         } else if (type_cmd === 'cmd_precommande' && !date_precommande) {
-            Swal.fire({ toast:true, icon:'error', width:'100%', title:'Veuillez choisir une date de précommande', position:'top', background:'#eb0029', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:5000, timerProgressBar:true });
+            showErrorToast('Veuillez choisir une date de précommande');
         } else {
             $('.btn_loading').show();
             $('.confirmOrder').hide();

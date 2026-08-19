@@ -254,4 +254,25 @@ class Order extends Model
     {
         return self::$typesVente[$this->type_vente]['color'] ?? 'secondary';
     }
+
+    /** Libellé du mode de livraison : privilégie la valeur persistée, avec repli déduit pour les anciennes commandes */
+    public function getDeliveryModeLabelAttribute(): string
+    {
+        if (!empty($this->mode_livraison)) {
+            return $this->mode_livraison;
+        }
+        if (!empty($this->address_yango)) {
+            return 'Livraison Yango Moto';
+        }
+        if (!empty($this->address) || !empty($this->delivery_name)) {
+            return 'Livraison à domicile';
+        }
+        return 'Retrait en boutique';
+    }
+
+    /** Adresse de destination affichable (Yango en priorité, sinon adresse classique) */
+    public function getDeliveryDestinationAttribute(): ?string
+    {
+        return $this->address_yango ?: $this->address ?: null;
+    }
 }

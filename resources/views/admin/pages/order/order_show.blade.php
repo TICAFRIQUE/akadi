@@ -378,6 +378,9 @@
                     @if ($orders->address)
                         <div class="info-row"><span>Adresse</span><span>{{ $orders->address }}</span></div>
                     @endif
+                    @if ($orders->address_yango)
+                        <div class="info-row"><span>Destination</span><span>{{ $orders->address_yango }}</span></div>
+                    @endif
                     @if ($orders->delivery_planned)
                         <div class="info-row"><span>Date prévue</span><span>{{ $orders->delivery_planned }}</span></div>
                     @endif

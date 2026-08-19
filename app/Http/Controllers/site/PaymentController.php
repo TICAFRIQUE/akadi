@@ -53,9 +53,11 @@ class PaymentController extends Controller
         // Récupérer les informations de livraison si disponibles
         $deliveryInfo = Session::get('delivery_info');
         $deliveryPrice = $deliveryInfo['price'] ?? 0;
+        $deliveryMode = $deliveryInfo['mode'] ?? null;
+        $deliveryDestination = $deliveryInfo['address_yango'] ?? $deliveryInfo['address'] ?? null;
         $total = $subtotal + $deliveryPrice;
 
-        return view('site.pages.payment-selection', compact('paymentMethods', 'subtotal', 'deliveryPrice', 'total'));
+        return view('site.pages.payment-selection', compact('paymentMethods', 'subtotal', 'deliveryPrice', 'deliveryMode', 'deliveryDestination', 'total'));
     }
 
     /**

@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Auth;
 
 class MenuSemaineController extends Controller
 {
-    private const JOURS_LABELS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-
     /**
      * Liste des menus de la semaine (les plus récents en premier)
      */
@@ -32,42 +30,48 @@ class MenuSemaineController extends Controller
     public function create()
     {
         $plats = Plat::where('actif', true)->orderBy('nom')->get(['id', 'nom', 'description', 'prix']);
-        $joursLabels = self::JOURS_LABELS;
 
-        return view('admin.pages.menu-semaine.create', compact('plats', 'joursLabels'));
+        return view('admin.pages.menu-semaine.create', compact('plats'));
     }
 
     /**
-     * Enregistrer un nouveau menu de la semaine avec ses jours et leurs plats
+     * Enregistrer un nouveau menu de la semaine avec ses jours et leurs plats.
+     * Les jours sont fournis sous forme de tableau clé par date (Y-m-d), déterminée
+     * côté client par l'intervalle date_debut → date_fin.
      */
     public function store(Request $request)
     {
         $validator = \Validator::make($request->all(), [
-            'titre'                     => 'required|string|max:150',
-            'date_debut'                => 'required|date',
-            'prix_normal'               => 'required|numeric|min:0',
-            'prix_reduit'               => 'required|numeric|min:0',
-            'seuil_jours'               => 'required|integer|min:1|max:7',
-            'jours'                     => 'required|array',
-            'jours.*.actif'             => 'nullable|boolean',
-            'jours.*.plats'             => 'nullable|array',
-            'jours.*.plats.*.plat_id'   => 'nullable|integer|exists:plats,id',
-            'jours.*.plats.*.nom'       => 'required_with:jours.*.plats|string|max:150',
-            'jours.*.plats.*.description' => 'nullable|string',
-            'jours.*.plats.*.prix'      => 'required_with:jours.*.plats|numeric|min:0',
+            'titre'                        => 'nullable|string|max:150',
+            'date_debut'                   => 'required|date',
+            'date_fin'                     => 'required|date|after_or_equal:date_debut',
+            'seuil_jours'                  => 'required|integer|min:1',
+            'jours'                        => 'required|array',
+            'jours.*.actif'                => 'nullable|boolean',
+            'jours.*.plats'                => 'nullable|array',
+            'jours.*.plats.*.plat_id'      => 'nullable|integer|exists:plats,id',
+            'jours.*.plats.*.nom'          => 'required_with:jours.*.plats|string|max:150',
+            'jours.*.plats.*.description'  => 'nullable|string',
+            'jours.*.plats.*.prix_normal'  => 'required_with:jours.*.plats|numeric|min:0',
+            'jours.*.plats.*.prix_reduit'  => 'required_with:jours.*.plats|numeric|min:0',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $dateDebut = Carbon::parse($request->date_debut);
+        $dateDebut = Carbon::parse($request->date_debut)->startOfDay();
+        $dateFin = Carbon::parse($request->date_fin)->startOfDay();
 
-        // Ne garder que les jours réellement activés avec au moins un plat
+        // Ne garder que les jours réellement activés avec au moins un plat, dans l'intervalle choisi
         $joursActifs = [];
-        foreach ($request->jours as $offset => $jour) {
+        foreach ($request->jours as $date => $jour) {
+            $d = Carbon::parse($date)->startOfDay();
+            if ($d->lt($dateDebut) || $d->gt($dateFin)) {
+                continue;
+            }
             if (!empty($jour['actif']) && !empty($jour['plats'])) {
-                $joursActifs[(int) $offset] = $jour['plats'];
+                $joursActifs[$d->format('Y-m-d')] = $jour['plats'];
             }
         }
 
@@ -76,10 +80,7 @@ class MenuSemaineController extends Controller
         }
 
         // Vérifier qu'aucun menu du jour n'existe déjà sur ces dates
-        $datesConcernees = collect(array_keys($joursActifs))
-            ->map(fn ($offset) => $dateDebut->copy()->addDays($offset)->format('Y-m-d'));
-
-        $conflits = MenuJour::whereIn('date', $datesConcernees)->pluck('date');
+        $conflits = MenuJour::whereIn('date', array_keys($joursActifs))->pluck('date');
         if ($conflits->isNotEmpty()) {
             $listeConflits = $conflits->map(fn ($d) => Carbon::parse($d)->format('d/m/Y'))->implode(', ');
             return redirect()->back()
@@ -88,20 +89,18 @@ class MenuSemaineController extends Controller
         }
 
         $menuSemaine = MenuSemaine::create([
-            'titre'       => $request->titre,
+            'titre'       => $request->titre ?: null,
             'date_debut'  => $dateDebut->format('Y-m-d'),
-            'date_fin'    => $dateDebut->copy()->addDays(max(array_keys($joursActifs)))->format('Y-m-d'),
+            'date_fin'    => $dateFin->format('Y-m-d'),
             'actif'       => $request->has('actif') ? 1 : 0,
-            'prix_normal' => $request->prix_normal,
-            'prix_reduit' => $request->prix_reduit,
             'seuil_jours' => $request->seuil_jours,
             'created_by'  => Auth::id(),
         ]);
 
-        foreach ($joursActifs as $offset => $plats) {
+        foreach ($joursActifs as $date => $plats) {
             $menuJour = MenuJour::create([
                 'menu_semaine_id' => $menuSemaine->id,
-                'date'            => $dateDebut->copy()->addDays($offset)->format('Y-m-d'),
+                'date'            => $date,
                 'actif'           => true,
                 'created_by'      => Auth::id(),
             ]);
@@ -111,7 +110,9 @@ class MenuSemaineController extends Controller
                     'plat_id'     => $plat['plat_id'] ?? null,
                     'nom'         => $plat['nom'],
                     'description' => $plat['description'] ?? null,
-                    'prix'        => $plat['prix'],
+                    'prix'        => $plat['prix_normal'],
+                    'prix_normal' => $plat['prix_normal'],
+                    'prix_reduit' => $plat['prix_reduit'],
                     'disponible'  => true,
                 ]);
             }

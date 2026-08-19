@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 @section('title', 'Commandes Menu')
-@section('sub-title', $reservation->menuSemaine->titre)
+@section('sub-title', $reservation->menuSemaine->titre_affiche)
 
 @section('content')
 <section class="section">
@@ -46,11 +46,12 @@
                             </div>
                             <div class="col-md-3">
                                 <strong>Semaine :</strong><br>
-                                {{ $reservation->menuSemaine->titre }}
+                                {{ $reservation->menuSemaine->titre_affiche }}
                             </div>
                             <div class="col-md-2">
                                 <strong>Jours :</strong><br>
-                                {{ $reservation->nombre_jours }} × {{ number_format($reservation->prix_unitaire_applique, 0, ',', ' ') }} F/plat
+                                {{ $reservation->nombre_jours }} jour(s)
+                                <span class="text-muted">(moy. {{ number_format($reservation->prix_unitaire_applique, 0, ',', ' ') }} F/plat)</span>
                             </div>
                             <div class="col-md-2">
                                 <strong>Montant total :</strong><br>

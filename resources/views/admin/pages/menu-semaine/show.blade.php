@@ -1,15 +1,15 @@
 @extends('admin.layouts.app')
 @section('title', 'Menu de la semaine')
-@section('sub-title', $menuSemaine->titre)
+@section('sub-title', $menuSemaine->titre_affiche)
 
 @section('content')
 <section class="section">
     <div class="section-header">
-        <h1>{{ $menuSemaine->titre }}</h1>
+        <h1>{{ $menuSemaine->titre_affiche }}</h1>
         <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="{{ route('dashboard.index') }}">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="{{ route('menu-semaine.index') }}">Menu de la semaine</a></div>
-            <div class="breadcrumb-item">{{ $menuSemaine->titre }}</div>
+            <div class="breadcrumb-item">{{ $menuSemaine->titre_affiche }}</div>
         </div>
     </div>
 
@@ -43,21 +43,17 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <strong>Période :</strong><br>
                                 {{ \Carbon\Carbon::parse($menuSemaine->date_debut)->format('d/m/Y') }}
                                 → {{ \Carbon\Carbon::parse($menuSemaine->date_fin)->format('d/m/Y') }}
                             </div>
-                            <div class="col-md-3">
-                                <strong>Prix normal :</strong><br>
-                                {{ number_format($menuSemaine->prix_normal, 0, ',', ' ') }} FCFA / plat
+                            <div class="col-md-4">
+                                <strong>Tarif réduit :</strong><br>
+                                Appliqué automatiquement à partir de {{ $menuSemaine->seuil_jours }} jour(s) commandés
+                                <span class="text-muted">(prix normal/réduit défini par plat ci-dessous)</span>
                             </div>
-                            <div class="col-md-3">
-                                <strong>Prix réduit :</strong><br>
-                                {{ number_format($menuSemaine->prix_reduit, 0, ',', ' ') }} FCFA / plat
-                                <span class="text-muted">(dès {{ $menuSemaine->seuil_jours }} jours)</span>
-                            </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <strong>Statut :</strong><br>
                                 @if($menuSemaine->actif)
                                     <span class="badge badge-success">Actif</span>
@@ -84,6 +80,8 @@
                                             <tr>
                                                 <th>Plat</th>
                                                 <th>Description</th>
+                                                <th>Prix normal</th>
+                                                <th>Prix réduit</th>
                                                 <th>Statut</th>
                                             </tr>
                                         </thead>
@@ -92,6 +90,8 @@
                                                 <tr>
                                                     <td>{{ $plat->nom }}</td>
                                                     <td>{{ $plat->description }}</td>
+                                                    <td>{{ number_format($plat->prix_normal, 0, ',', ' ') }} FCFA</td>
+                                                    <td class="text-success">{{ number_format($plat->prix_reduit, 0, ',', ' ') }} FCFA</td>
                                                     <td>
                                                         @if($plat->disponible)
                                                             <span class="badge badge-success">Disponible</span>

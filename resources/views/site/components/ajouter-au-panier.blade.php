@@ -3,7 +3,7 @@
     $('.addCart').click(function(e) {
         e.preventDefault();
 
-        var getId = e.target.dataset.id;
+        var getId = $(this).data('id');
         $.ajax({
             type: "GET",
             url: "/add-to-cart/" + getId,

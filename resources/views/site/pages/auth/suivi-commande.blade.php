@@ -204,12 +204,18 @@
                             <span class="kpi-label">Livraison</span>
                             <span class="kpi-val">
                                 @if($order['delivery_price'] == 0)
-                                    <span class="kpi-free">Gratuit</span>
+                                    <span class="kpi-free">{{ $order->delivery_mode_label }}</span>
                                 @else
                                     {{ number_format($order['delivery_price'], 0, ',', ' ') }} FCFA
                                 @endif
                             </span>
                         </div>
+                        @if($order->delivery_destination)
+                        <div class="track-kpi">
+                            <span class="kpi-label">Destination</span>
+                            <span class="kpi-val" style="font-weight:400;">{{ $order->delivery_destination }}</span>
+                        </div>
+                        @endif
                         @if(isset($order['discount']) && $order['discount'] > 0)
                         <div class="track-kpi">
                             <span class="kpi-label">Remise</span>

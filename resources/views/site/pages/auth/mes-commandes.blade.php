@@ -121,15 +121,18 @@
                 {{-- Footer --}}
                 <div class="histo-card-ft">
                     <div class="histo-totals">
-                        @if ($item['delivery_price'] > 0)
                         <div class="histo-total-item">
                             <span class="ht-label">Livraison</span>
-                            <span class="ht-val">{{ number_format($item['delivery_price'], 0, ',', ' ') }} FCFA</span>
+                            @if ($item['delivery_price'] > 0)
+                                <span class="ht-val">{{ number_format($item['delivery_price'], 0, ',', ' ') }} FCFA</span>
+                            @else
+                                <span class="ht-free">{{ $item->delivery_mode_label }}</span>
+                            @endif
                         </div>
-                        @else
+                        @if ($item->delivery_destination)
                         <div class="histo-total-item">
-                            <span class="ht-label">Livraison</span>
-                            <span class="ht-free">Gratuit</span>
+                            <span class="ht-label">Destination</span>
+                            <span class="ht-val" style="font-weight:400;">{{ $item->delivery_destination }}</span>
                         </div>
                         @endif
                         <div class="histo-total-item histo-total-main">

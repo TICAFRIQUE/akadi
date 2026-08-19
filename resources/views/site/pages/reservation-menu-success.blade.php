@@ -33,7 +33,7 @@
         <div class="ak-rs-header">
             <div class="ak-rs-icon"><i class="fas fa-check"></i></div>
             <h1>Réservation confirmée !</h1>
-            <p>Merci {{ $reservation->client_name }}, votre menu de la semaine « {{ $reservation->menuSemaine->titre }} » est réservé.</p>
+            <p>Merci {{ $reservation->client_name }}, votre menu de la semaine « {{ $reservation->menuSemaine->titre_affiche }} » est réservé.</p>
         </div>
 
         @foreach ($joursAffiches as $date => $lignes)

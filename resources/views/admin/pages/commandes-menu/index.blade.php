@@ -64,7 +64,7 @@
                                                 <strong>{{ $reservation->client_name }}</strong><br>
                                                 <small class="text-muted">{{ $reservation->client_phone }}</small>
                                             </td>
-                                            <td>{{ $reservation->menuSemaine->titre }}</td>
+                                            <td>{{ $reservation->menuSemaine->titre_affiche }}</td>
                                             <td>{{ $reservation->nombre_jours }}</td>
                                             <td>{{ number_format($reservation->montant_total, 0, ',', ' ') }} FCFA</td>
                                             <td>

@@ -161,12 +161,18 @@
                             <span class="cr-label">Livraison</span>
                             <span class="cr-val">
                                 @if($order->delivery_price == 0)
-                                    <span class="tag-free">Gratuit</span>
+                                    <span class="tag-free">{{ $order->delivery_mode_label }}</span>
                                 @else
                                     {{ number_format($order->delivery_price, 0, ',', ' ') }} FCFA
                                 @endif
                             </span>
                         </div>
+                        @if($order->delivery_destination)
+                        <div class="confirm-row">
+                            <span class="cr-label">Destination</span>
+                            <span class="cr-val">{{ $order->delivery_destination }}</span>
+                        </div>
+                        @endif
                         @if($order->discount > 0)
                         <div class="confirm-row">
                             <span class="cr-label">Remise</span>

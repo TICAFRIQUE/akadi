@@ -248,9 +248,9 @@ class MenuSemainePageController extends Controller
 
     /**
      * Calcule, à partir d'une sélection { date: { menu_produit_id: quantity } }, le nombre de
-     * jours distincts commandés, le tarif applicable (normal ou réduit selon le seuil de la
-     * semaine) et le détail des lignes avec leur prix figé. Ne fait jamais confiance à un prix
-     * envoyé par le client — toujours recalculé ici à partir de MenuSemaine::prixPourJours().
+     * jours distincts commandés, puis le prix de chaque ligne (normal ou réduit selon le seuil
+     * de la semaine, propre à chaque plat). Ne fait jamais confiance à un prix envoyé par le
+     * client — toujours recalculé ici à partir de MenuProduit::prixPourJours().
      */
     private function calculerSelection(array $cartJours, MenuSemaine $menuSemaine): array
     {
@@ -280,20 +280,23 @@ class MenuSemainePageController extends Controller
             }
         }
 
-        $prixUnitaire = $menuSemaine->prixPourJours($nombreJours);
         $montantTotal = 0;
+        $quantiteTotale = 0;
         $items = [];
 
         foreach ($itemsBruts as $item) {
+            $prixUnitaire = $item['menu_produit']->prixPourJours($nombreJours, $menuSemaine->seuil_jours);
             $total = $item['quantity'] * $prixUnitaire;
             $montantTotal += $total;
+            $quantiteTotale += $item['quantity'];
             $items[] = $item + ['prix_unitaire' => $prixUnitaire, 'total' => $total];
         }
 
         return [
             'nombreJours'  => $nombreJours,
             'items'        => $items,
-            'prixUnitaire' => $prixUnitaire,
+            // Prix moyen pondéré, à titre informatif uniquement — chaque ligne a son propre prix (voir 'items').
+            'prixUnitaire' => $quantiteTotale > 0 ? $montantTotal / $quantiteTotale : 0,
             'montantTotal' => $montantTotal,
         ];
     }

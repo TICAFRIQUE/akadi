@@ -49,7 +49,7 @@
                                         <th>#</th>
                                         <th>Titre</th>
                                         <th>Période</th>
-                                        <th>Tarifs</th>
+                                        <th>Seuil tarif réduit</th>
                                         <th>Jours</th>
                                         <th>Statut</th>
                                         <th>Actions</th>
@@ -59,18 +59,14 @@
                                     @forelse($menusSemaine as $menuSemaine)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td><strong>{{ $menuSemaine->titre }}</strong></td>
+                                            <td><strong>{{ $menuSemaine->titre_affiche }}</strong></td>
                                             <td>
                                                 {{ \Carbon\Carbon::parse($menuSemaine->date_debut)->format('d/m/Y') }}
                                                 →
                                                 {{ \Carbon\Carbon::parse($menuSemaine->date_fin)->format('d/m/Y') }}
                                             </td>
                                             <td>
-                                                {{ number_format($menuSemaine->prix_normal, 0, ',', ' ') }} F
-                                                <span class="text-muted">/ plat</span>
-                                                <br>
-                                                <span class="text-success">{{ number_format($menuSemaine->prix_reduit, 0, ',', ' ') }} F</span>
-                                                <span class="text-muted">à partir de {{ $menuSemaine->seuil_jours }}j</span>
+                                                <span class="text-muted">Dès {{ $menuSemaine->seuil_jours }} jour(s) commandés</span>
                                             </td>
                                             <td>{{ $menuSemaine->menus_jour_count }} jour(s)</td>
                                             <td>

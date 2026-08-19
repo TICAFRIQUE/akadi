@@ -1,6 +1,6 @@
 @extends('site.layouts.app')
 
-@section('title', 'Panier — ' . $menuSemaine->titre)
+@section('title', 'Panier — ' . $menuSemaine->titre_affiche)
 
 @section('content')
 
@@ -68,7 +68,7 @@
     <div class="container">
         <h1 class="ak-breadcrumb-title">
             <span class="ak-breadcrumb-icon"><i class="far fa-shopping-bag"></i></span>
-            Mon panier — {{ $menuSemaine->titre }}
+            Mon panier — {{ $menuSemaine->titre_affiche }}
         </h1>
         <ul class="ak-breadcrumb-nav">
             <li><a href="{{ route('page-acceuil') }}">Accueil</a></li>
@@ -123,13 +123,13 @@
                         <strong>{{ $nombreJours }}</strong>
                     </div>
                     <div class="ak-ps-summary-row">
-                        <span>Prix par plat</span>
+                        <span>Prix moyen / plat</span>
                         <strong>{{ number_format($prixUnitaire, 0, ',', ' ') }} FCFA</strong>
                     </div>
 
                     @if ($nombreJours < $menuSemaine->seuil_jours)
                         <div class="ak-ps-summary-row" style="color:#11998e">
-                            <span>💡 Ajoutez {{ $menuSemaine->seuil_jours - $nombreJours }} jour(s) de plus pour profiter du tarif réduit à {{ number_format($menuSemaine->prix_reduit, 0, ',', ' ') }} FCFA/plat</span>
+                            <span>💡 Ajoutez {{ $menuSemaine->seuil_jours - $nombreJours }} jour(s) de plus pour profiter automatiquement du tarif réduit sur chaque plat</span>
                         </div>
                     @endif
 
