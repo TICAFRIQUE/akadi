@@ -69,8 +69,7 @@
                                                     <td><span class="font-weight-bold">{{ $plat['nom'] }}</span></td>
                                                     <td>{{ number_format($plat['prix'], 0, ',', ' ') }} FCFA</td>
                                                     <td>{{ $plat['total_quantite'] }}</td>
-                                                    <td>{{ number_format($plat['total_chiffre_affaires'], 0, ',', ' ') }}
-                                                        FCFA</td>
+                                                    <td>{{ number_format($plat['total_chiffre_affaires'], 0, ',', ' ') }} FCFA</td>
                                                 </tr>
                                             @empty
                                                 <tr>
@@ -118,8 +117,7 @@
                                                 <tr>
                                                     <td><span class="font-weight-bold">{{ $plat['nom'] }}</span></td>
                                                     <td>{{ $plat['total_quantite'] }}</td>
-                                                    <td>{{ number_format($plat['total_chiffre_affaires'], 0, ',', ' ') }}
-                                                        FCFA</td>
+                                                    <td>{{ number_format($plat['total_chiffre_affaires'], 0, ',', ' ') }} FCFA</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -137,18 +135,14 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-md-4">
-                                                <p><strong>Nombre de commandes avec menu :</strong>
-                                                    {{ $totalCommandesMenu }}</p>
+                                            <div class="col-md-6">
+                                                <p style="font-size:1.1rem;"><strong>Nombre de commandes avec menu :</strong>
+                                                    <span style="font-size:1.4rem;font-weight:800;color:#f85d05;">{{ $totalCommandesMenu }}</span>
+                                                </p>
                                             </div>
-                                            <div class="col-md-4">
-                                                <p><strong>Total ventes menu :</strong>
-                                                    {{ number_format($totalVenteMenu, 0, ',', ' ') }} FCFA</p>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <p class="h4 text-success">
-                                                    <strong>Panier moyen menu :</strong>
-                                                    {{ number_format($panierMoyenMenu, 0, ',', ' ') }} FCFA
+                                            <div class="col-md-6">
+                                                <p style="font-size:1.1rem;"><strong>Total ventes menu :</strong>
+                                                    <span style="font-size:1.4rem;font-weight:800;color:#eb0029;">{{ number_format($totalVenteMenu, 0, ',', ' ') }} FCFA</span>
                                                 </p>
                                             </div>
                                         </div>

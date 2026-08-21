@@ -340,15 +340,14 @@ class AuthPageController extends Controller
     | REDIRECTION
     |--------------------------------------------------------------------------
     */
-        $url = session('cart')
-            ? 'finaliser-ma-commande'
-            : '/';
+        $url = session()->pull('url.intended')
+            ?? (session('cart') ? 'finaliser-ma-commande' : '/');
 
         Alert::success(
             'Compte créé avec succès. Bienvenue !'
         );
 
-        return redirect($url)->with(
+        return redirect()->to($url)->with(
             'success',
             'Compte créé avec succès. Bienvenue !'
         );
@@ -365,12 +364,13 @@ class AuthPageController extends Controller
 
             $phone = trim($request->phone);
 
-            $url = session('cart') ? 'finaliser-ma-commande' : '/';
+            $url = session()->pull('url.intended')
+                ?? (session('cart') ? 'finaliser-ma-commande' : '/');
 
             // Tentative normale : numéro = identifiant ET mot de passe
             if (Auth::attempt(['phone' => $phone, 'password' => $phone])) {
                 Alert::success('Connexion réussie. Bienvenue !');
-                return redirect()->away($url);
+                return redirect()->to($url);
             }
 
             // Fallback pour les anciens comptes clients uniquement
@@ -383,7 +383,7 @@ class AuthPageController extends Controller
                 $user->update(['password' => Hash::make($phone)]);
                 Auth::login($user);
                 Alert::success('Connexion réussie. Bienvenue !');
-                return redirect()->away($url);
+                return redirect()->to($url);
             }
 
             return redirect()->route('login-form')->withError('Numéro de téléphone introuvable.');

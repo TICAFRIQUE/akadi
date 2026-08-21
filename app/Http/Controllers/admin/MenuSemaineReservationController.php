@@ -4,24 +4,147 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\MenuJour;
+use App\Models\MenuProduit;
+use App\Models\MenuSemaine;
 use App\Models\MenuSemaineReservation;
 use App\Models\MenuSemaineReservationItem;
 use App\Models\Order;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class MenuSemaineReservationController extends Controller
 {
     /**
-     * Liste des réservations menu de la semaine (payées ou en attente de paiement).
+     * Liste des menus semaine ayant au moins une réservation, regroupés.
      */
     public function index()
     {
-        $reservations = MenuSemaineReservation::with(['menuSemaine', 'orders'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $menus = MenuSemaine::withCount([
+                'reservations',
+                'reservations as reservations_payees_count'   => fn ($q) => $q->where('statut', 'payee'),
+                'reservations as reservations_attente_count'  => fn ($q) => $q->where('statut', 'en_attente_paiement'),
+                'reservations as reservations_annulees_count' => fn ($q) => $q->where('statut', 'annulee'),
+            ])
+            ->withSum('reservations as montant_total_encaisse', 'montant_total')
+            ->has('reservations')
+            ->orderBy('date_debut', 'desc')
+            ->paginate(15);
 
-        return view('admin.pages.commandes-menu.index', compact('reservations'));
+        return view('admin.pages.commandes-menu.index', compact('menus'));
+    }
+
+    /**
+     * Réservations d'un menu semaine précis, avec KPIs.
+     */
+    public function byMenu(MenuSemaine $menuSemaine)
+    {
+        $reservations = MenuSemaineReservation::with(['user', 'orders', 'paymentMethod'])
+            ->where('menu_semaine_id', $menuSemaine->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $allOrders = $reservations->flatMap(fn ($r) => $r->orders);
+        $joursLivres  = $allOrders->where('status', Order::STATUS_LIVREE)->count();
+        $joursTotal   = $allOrders->count();
+
+        $kpis = [
+            'total'         => $reservations->count(),
+            'ca'            => $reservations->where('statut', 'payee')->sum('montant_total'),
+            'jours_livres'  => $joursLivres,
+            'jours_restants'=> $joursTotal - $joursLivres,
+        ];
+
+        return view('admin.pages.commandes-menu.by-menu', compact('menuSemaine', 'reservations', 'kpis'));
+    }
+
+    /**
+     * Fiche de préparation : quantités à préparer par jour et par plat.
+     */
+    public function fichePreparation(MenuSemaine $menuSemaine)
+    {
+        // Tous les items des réservations payées de ce menu
+        $items = MenuSemaineReservationItem::whereHas(
+                'reservation',
+                fn ($q) => $q->where('menu_semaine_id', $menuSemaine->id)->where('statut', 'payee')
+            )
+            ->with('menuProduit')
+            ->get();
+
+        // Jours triés → plats → quantité totale
+        $parJour = $items
+            ->groupBy(fn ($i) => $i->date->format('Y-m-d'))
+            ->sortKeys()
+            ->map(fn ($group) =>
+                $group->groupBy('menu_produit_id')->map(fn ($g) => [
+                    'plat'     => $g->first()->menuProduit,
+                    'quantite' => $g->sum('quantity'),
+                ])->values()
+            );
+
+        // Total général par plat (toutes dates confondues) pour le résumé
+        $totalParPlat = $items
+            ->groupBy('menu_produit_id')
+            ->map(fn ($g) => [
+                'plat'     => $g->first()->menuProduit,
+                'quantite' => $g->sum('quantity'),
+            ])
+            ->sortByDesc('quantite')
+            ->values();
+
+        $pdf = Pdf::loadView(
+            'admin.pages.commandes-menu.preparation',
+            compact('menuSemaine', 'parJour', 'totalParPlat')
+        )->setPaper('a4', 'portrait');
+
+        $slug = \Illuminate\Support\Str::slug($menuSemaine->titre_affiche);
+        return $pdf->download("preparation-{$slug}.pdf");
+    }
+
+    /**
+     * Export PDF de la liste des clients d'un menu semaine.
+     */
+    public function downloadClients(MenuSemaine $menuSemaine)
+    {
+        $reservations = MenuSemaineReservation::with('paymentMethod')
+            ->where('menu_semaine_id', $menuSemaine->id)
+            ->where('statut', 'payee')
+            ->orderBy('client_name')
+            ->get();
+
+        $pdf = Pdf::loadView('admin.pages.commandes-menu.clients-pdf', compact('menuSemaine', 'reservations'))
+            ->setPaper('a4', 'landscape');
+
+        $slug = \Illuminate\Support\Str::slug($menuSemaine->titre_affiche);
+        return $pdf->download("clients-{$slug}.pdf");
+    }
+
+    /**
+     * Ticket de caisse PDF pour une commande (un jour) d'un menu semaine.
+     */
+    public function ticketOrder(Order $order)
+    {
+        $order->load(['menuSemaineReservation.menuSemaine', 'menuSemaineReservation.paymentMethod', 'menuProduits']);
+
+        $pdf = Pdf::loadView('admin.pages.commandes-menu.ticket', compact('order'))
+            ->setPaper([0, 0, 226.77, 650], 'portrait'); // 80 mm de large
+
+        $code = $order->code ?? $order->id;
+        return $pdf->download("ticket-{$code}.pdf");
+    }
+
+    /**
+     * Facture PDF d'une réservation complète.
+     */
+    public function facture(MenuSemaineReservation $reservation)
+    {
+        $reservation->load(['menuSemaine', 'items.menuProduit', 'orders', 'paymentMethod', 'user']);
+
+        $pdf = Pdf::loadView('admin.pages.commandes-menu.facture', compact('reservation'))
+            ->setPaper('a4', 'portrait');
+
+        $nom = \Illuminate\Support\Str::slug($reservation->client_name);
+        return $pdf->download("facture-menu-{$nom}.pdf");
     }
 
     /**

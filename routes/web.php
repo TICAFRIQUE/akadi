@@ -161,7 +161,12 @@ Route::middleware(['admin'])->group(function () {
     /** Commandes menu de la semaine (réservations, à part de la liste de vente jusqu'à livraison) **/
     Route::prefix('admin/commandes-menu')->middleware('can:ventes.commandes')->controller(MenuSemaineReservationController::class)->group(function () {
         route::get('', 'index')->name('commandes-menu.index');
+        route::get('menu/{menuSemaine}', 'byMenu')->name('commandes-menu.by-menu');
+        route::get('menu/{menuSemaine}/clients', 'downloadClients')->name('commandes-menu.download-clients');
+        route::get('menu/{menuSemaine}/preparation', 'fichePreparation')->name('commandes-menu.preparation');
         route::get('show/{reservation}', 'show')->name('commandes-menu.show');
+        route::get('facture/{reservation}', 'facture')->name('commandes-menu.facture');
+        route::get('ticket/{order}', 'ticketOrder')->name('commandes-menu.ticket');
         route::post('order/{order}/modifier-plat', 'modifierPlat')->name('commandes-menu.modifier-plat');
     });
 
@@ -325,6 +330,7 @@ Route::middleware(['admin'])->group(function () {
         route::get('detail-depense', 'detail_depense')->name('rapport.detail');
         route::get('vente', 'rapportVente')->name('rapport.vente');
         route::get('vente-menu', 'rapportVenteMenu')->name('rapport.venteMenu');
+        route::get('top-produits', 'topProduits')->name('rapport.top-produits');
     });
 
     /** Caisses **/

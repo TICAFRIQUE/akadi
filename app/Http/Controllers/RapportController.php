@@ -421,4 +421,73 @@ class RapportController extends Controller
             return back()->with('error', 'Erreur lors de la génération du rapport: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Top produits les plus commandés (catalogue + menu semaine)
+     */
+    public function topProduits(Request $request)
+    {
+        $dateDebut = $request->filled('date_debut') ? Carbon::parse($request->date_debut)->startOfDay() : null;
+        $dateFin   = $request->filled('date_fin')   ? Carbon::parse($request->date_fin)->endOfDay()   : null;
+
+        $applyDates = function ($q) use ($dateDebut, $dateFin) {
+            if ($dateDebut && $dateFin) {
+                $q->whereBetween('orders.created_at', [$dateDebut, $dateFin]);
+            } elseif ($dateDebut) {
+                $q->where('orders.created_at', '>=', $dateDebut);
+            } elseif ($dateFin) {
+                $q->where('orders.created_at', '<=', $dateFin);
+            }
+        };
+
+        // ── Top produits catalogue ──
+        $topProduits = Product::whereHas('orders', function ($q) use ($applyDates) {
+                $q->where('orders.status', '!=', 'annule');
+                $applyDates($q);
+            })
+            ->with(['orders' => function ($q) use ($applyDates) {
+                $q->where('orders.status', '!=', 'annule');
+                $applyDates($q);
+            }])
+            ->get()
+            ->map(fn ($p) => [
+                'nom'      => $p->title,
+                'qte'      => $p->orders->sum(fn ($o) => $o->pivot->quantity),
+                'ca'       => $p->orders->sum(fn ($o) => $o->pivot->quantity * $o->pivot->unit_price),
+                'type'     => 'catalogue',
+            ])
+            ->sortByDesc('qte')
+            ->values()
+            ->take(15);
+
+        // ── Top plats menu semaine ──
+        $topPlatsMenu = MenuProduit::whereHas('orders', function ($q) use ($applyDates) {
+                $q->where('orders.status', '!=', 'annule');
+                $applyDates($q);
+            })
+            ->with(['orders' => function ($q) use ($applyDates) {
+                $q->where('orders.status', '!=', 'annule');
+                $applyDates($q);
+            }])
+            ->get()
+            ->groupBy('nom')
+            ->map(fn ($groupe, $nom) => [
+                'nom'  => $nom,
+                'qte'  => $groupe->sum(fn ($p) => $p->orders->sum(fn ($o) => $o->pivot->quantity)),
+                'ca'   => $groupe->sum(fn ($p) => $p->orders->sum(fn ($o) => $o->pivot->quantity * $o->pivot->unit_price)),
+                'type' => 'menu',
+            ])
+            ->sortByDesc('qte')
+            ->values()
+            ->take(15);
+
+        $maxQteCatalogue = $topProduits->max('qte') ?: 1;
+        $maxQteMenu      = $topPlatsMenu->max('qte') ?: 1;
+
+        return view('admin.pages.rapport.top_produits', compact(
+            'topProduits', 'topPlatsMenu',
+            'maxQteCatalogue', 'maxQteMenu',
+            'dateDebut', 'dateFin'
+        ));
+    }
 }

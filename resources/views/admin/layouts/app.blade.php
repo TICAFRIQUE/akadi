@@ -320,11 +320,11 @@
                                 <li class="dropdown">
                                     <a href="#"
                                         class="menu-toggle nav-link has-dropdown
-                                    {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') || Route::is('menu-semaine.*') || Route::is('plats.*') ? 'active' : '' }}">
+                                    {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') ? 'active' : '' }}">
                                         <i data-feather="package"></i><span>Catalogue</span>
                                     </a>
                                     <ul
-                                        class="dropdown-menu {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') || Route::is('menu-semaine.*') || Route::is('plats.*') ? 'show' : '' }}">
+                                        class="dropdown-menu {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') ? 'show' : '' }}">
                                         @canany(['catalogue.categories', 'catalogue.sous-categories'])
                                             @can('catalogue.categories')
                                                 <li class="nav-item {{ Route::is('category.*') ? 'active' : '' }}">
@@ -342,11 +342,31 @@
                                             <li class="nav-item {{ Route::is('product.*') ? 'active' : '' }}">
                                                 <a href="{{ route('product.index') }}" class="nav-link">Produits</a>
                                             </li>
-                                            <li class="nav-item {{ Route::is('menu-semaine.*') ? 'active' : '' }}">
-                                                <a href="{{ route('menu-semaine.index') }}" class="nav-link">Menu de la semaine</a>
-                                            </li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endcanany
+
+                            {{-- Menu Semaine --}}
+                            @canany(['catalogue.produits', 'ventes.commandes'])
+                                <li class="dropdown">
+                                    <a href="#"
+                                        class="menu-toggle nav-link has-dropdown
+                                    {{ Route::is('menu-semaine.*') || Route::is('plats.*') || Route::is('commandes-menu.*') ? 'active' : '' }}">
+                                        <i data-feather="calendar"></i><span>Menu Semaine</span>
+                                    </a>
+                                    <ul class="dropdown-menu {{ Route::is('menu-semaine.*') || Route::is('plats.*') || Route::is('commandes-menu.*') ? 'show' : '' }}">
+                                        @can('catalogue.produits')
                                             <li class="nav-item {{ Route::is('plats.*') ? 'active' : '' }}">
-                                                <a href="{{ route('plats.index') }}" class="nav-link">Plats</a>
+                                                <a href="{{ route('plats.index') }}" class="nav-link">Catalogue de plats</a>
+                                            </li>
+                                            <li class="nav-item {{ Route::is('menu-semaine.*') ? 'active' : '' }}">
+                                                <a href="{{ route('menu-semaine.index') }}" class="nav-link">Menus de la semaine</a>
+                                            </li>
+                                        @endcan
+                                        @can('ventes.commandes')
+                                            <li class="nav-item {{ Route::is('commandes-menu.*') ? 'active' : '' }}">
+                                                <a href="{{ route('commandes-menu.index') }}" class="nav-link">Commandes Menu</a>
                                             </li>
                                         @endcan
                                     </ul>
@@ -359,11 +379,11 @@
                                 <li class="dropdown">
                                     <a href="#"
                                         class="menu-toggle nav-link has-dropdown
-                                    {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') || Route::is('client.*') || Route::is('commandes-menu.*') ? 'active' : '' }}">
+                                    {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') || Route::is('client.*') ? 'active' : '' }}">
                                         <i data-feather="shopping-cart"></i><span>Ventes</span>
                                     </a>
                                     <ul
-                                        class="dropdown-menu {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') || Route::is('client.*') || Route::is('commandes-menu.*') ? 'show' : '' }}">
+                                        class="dropdown-menu {{ Route::is('order.*') || Route::is('coupon.*') || Route::is('delivery.*') || Route::is('pos.*') || Route::is('client.*') ? 'show' : '' }}">
                                         @canany(['ventes.pos', 'p-confirmation'])
                                             <li class="nav-item {{ Route::is('pos.create') ? 'active' : '' }}">
                                                 <a href="{{ route('pos.create') }}" class="nav-link">
@@ -376,11 +396,6 @@
                                                 <a href="{{ route('order.index') }}" class="nav-link">Commandes</a>
                                             </li>
                                         @endcanany
-                                        @can('ventes.commandes')
-                                            <li class="nav-item {{ Route::is('commandes-menu.*') ? 'active' : '' }}">
-                                                <a href="{{ route('commandes-menu.index') }}" class="nav-link">Commandes Menu</a>
-                                            </li>
-                                        @endcan
                                         @can('ventes.clients')
                                             <li class="nav-item {{ Route::is('client.*') ? 'active' : '' }}">
                                                 <a href="{{ route('client.list') }}" class="nav-link">Clients</a>

@@ -144,9 +144,15 @@
                         <a href="{{ route('suivi-commande', $item['code']) }}" class="histo-btn histo-btn-ghost">
                             <i class="fas fa-map-marker-alt"></i> Suivre
                         </a>
-                        <a href="{{ route('detail-produit', $item['products'][0]['slug'] ?? '#') }}" class="histo-btn histo-btn-primary">
-                            <i class="fas fa-eye"></i> Détails
-                        </a>
+                        @if($item->menu_semaine_reservation_id || $item->products->isEmpty())
+                            <a href="{{ route('suivi-commande', $item['code']) }}" class="histo-btn histo-btn-primary">
+                                <i class="fas fa-eye"></i> Détails
+                            </a>
+                        @else
+                            <a href="{{ route('detail-produit', $item['products'][0]['slug'] ?? '#') }}" class="histo-btn histo-btn-primary">
+                                <i class="fas fa-eye"></i> Détails
+                            </a>
+                        @endif
                     </div>
                 </div>
 

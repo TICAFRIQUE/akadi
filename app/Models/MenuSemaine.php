@@ -42,6 +42,11 @@ class MenuSemaine extends Model
         return $this->hasMany(MenuJour::class);
     }
 
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(MenuSemaineReservation::class);
+    }
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

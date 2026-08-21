@@ -150,9 +150,9 @@ class MenuSemainePageController extends Controller
     public function checkout(Request $request)
     {
         if (!Auth::check()) {
+            Session::put('url.intended', route('menu-semaine.panier'));
             return redirect()->route('login')
-                ->with('error', 'Vous devez être connecté pour réserver le menu de la semaine.')
-                ->with('intended', route('menu-semaine.panier'));
+                ->with('error', 'Vous devez être connecté pour réserver le menu de la semaine.');
         }
 
         $request->validate([
