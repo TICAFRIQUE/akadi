@@ -34,12 +34,10 @@ use App\Http\Controllers\admin\depense\DepenseController;
 use App\Http\Controllers\admin\depense\LibelleDepenseController;
 use App\Http\Controllers\admin\depense\CategorieDepenseController;
 use App\Http\Controllers\InventaireController;
-use App\Http\Controllers\MenuJourController;
 use App\Http\Controllers\admin\MenuSemaineController;
 use App\Http\Controllers\admin\MenuSemaineReservationController;
 use App\Http\Controllers\site\MenuSemainePageController;
 use App\Http\Controllers\PlatController;
-use App\Http\Controllers\site\MenuPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -148,22 +146,15 @@ Route::middleware(['admin'])->group(function () {
         route::post('availableProduct/{id}', 'availableProduct')->name('product.available');
     });
 
-    /** Menu du jour **/
-    Route::prefix('admin/menu-jour')->middleware('can:catalogue.produits')->controller(MenuJourController::class)->group(function () {
-        route::get('', 'index')->name('menu-jour.index');
-        route::get('create', 'create')->name('menu-jour.create');
-        route::post('', 'store')->name('menu-jour.store');
-        route::get('edit/{menuJour}', 'edit')->name('menu-jour.edit');
-        route::post('update/{menuJour}', 'update')->name('menu-jour.update');
-        route::delete('destroy/{menuJour}', 'destroy')->name('menu-jour.destroy');
-    });
-
-    /** Menu de la semaine **/
+    /** Menu de la semaine (carte menu) **/
     Route::prefix('admin/menu-semaine')->middleware('can:catalogue.produits')->controller(MenuSemaineController::class)->group(function () {
         route::get('', 'index')->name('menu-semaine.index');
         route::get('create', 'create')->name('menu-semaine.create');
         route::post('', 'store')->name('menu-semaine.store');
         route::get('show/{menuSemaine}', 'show')->name('menu-semaine.show');
+        route::get('pdf/{menuSemaine}', 'pdf')->name('menu-semaine.pdf');
+        route::get('edit/{menuSemaine}', 'edit')->name('menu-semaine.edit');
+        route::put('update/{menuSemaine}', 'update')->name('menu-semaine.update');
         route::delete('destroy/{menuSemaine}', 'destroy')->name('menu-semaine.destroy');
     });
 
@@ -396,10 +387,8 @@ Route::controller(ProductPageController::class)->group(function () {
     Route::get('produit/q', 'recherche')->name('recherche');
 });
 
-// Menu du jour (site public)
-Route::get('menu-du-jour', [MenuPageController::class, 'menuDuJour'])->name('menu-du-jour');
-
 // Carte menu de la semaine (site public, lien partageable par token)
+Route::get('carte-menu', [MenuSemainePageController::class, 'carteMenuIndisponible'])->name('carte-menu.indisponible');
 Route::get('carte-menu/{token}', [MenuSemainePageController::class, 'carteMenu'])->name('carte-menu');
 Route::get('menu-semaine/panier/ajouter', [MenuSemainePageController::class, 'addToCart'])->name('menu-semaine.add-to-cart');
 Route::get('menu-semaine/panier', [MenuSemainePageController::class, 'panier'])->name('menu-semaine.panier');

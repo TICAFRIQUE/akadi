@@ -20,6 +20,8 @@ class MenuSemaineReservation extends Model
         'nombre_jours',
         'prix_unitaire_applique',
         'montant_total',
+        'mode_livraison',
+        'address_yango',
         'payment_method_id',
         'wave_session_id',
         'payment_status',

@@ -627,6 +627,8 @@ class PaymentController extends Controller
                             'total_menu'       => $totalJour,
                             'total'            => $totalJour,
                             'delivery_price'   => 0,
+                            'mode_livraison'   => $reservation->mode_livraison,
+                            'address_yango'    => $reservation->address_yango,
                             'status'           => $date > now()->format('Y-m-d') ? Order::STATUS_PRECOMMANDE : Order::STATUS_ATTENTE,
                             'source'           => Order::SOURCE_WEB,
                             'type_order'       => 'normal',

@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Publicite;
 use App\Models\SubCategory;
 use App\Models\ProductBase;
+use App\Models\MenuSemaine;
 use App\Observers\OrderObserver;
 use App\Observers\ProductObserver;
 use App\Observers\ProductBaseObserver;
@@ -161,8 +162,24 @@ class AppServiceProvider extends ServiceProvider
                         fn() =>
                         Publicite::whereType('annonce')->whereStatus('active')->first()
                     ),
+
+                    // Carte menu de la semaine actuellement en cours (remplace l'ancien "menu du jour")
+                    'menuSemaineActive' => Cache::remember(
+                        'menu_semaine_active_' . today()->toDateString(),
+                        300,
+                        fn() =>
+                        MenuSemaine::with(['menusJour' => fn($q) => $q->where('actif', true)->orderBy('date'),
+                            'menusJour.menuProduits' => fn($q) => $q->where('disponible', true)])
+                            ->where('actif', true)
+                            ->whereDate('date_fin', '>=', today())
+                            ->orderBy('date_debut')
+                            ->first()
+                    ),
                 ];
             }
+
+            // Propre à la session courante : jamais mis en cache comme le reste de $front ci-dessus.
+            $front['cartMenuSemaineJours'] = count(session('cart_menu_semaine.jours', []));
 
             $view->with($front);
         });
@@ -181,6 +198,9 @@ class AppServiceProvider extends ServiceProvider
                     Order::orderBy('created_at', 'DESC')
                         // ->where('source', 'web')
                         ->where('payment_status', 'completed')
+                        // Les commandes issues d'une réservation menu de la semaine ont leur propre
+                        // notification (voir orders_menu_new ci-dessous), pas de doublon ici.
+                        ->whereNull('menu_semaine_reservation_id')
                         ->where(function ($query) {
                             // Commandes en attente normale : toujours affichées
                             $query->where('status', 'attente')
@@ -190,6 +210,17 @@ class AppServiceProvider extends ServiceProvider
                                         ->whereDate('delivery_planned', '<=', now()->format('Y-m-d'));
                                 });
                         })
+                        ->latest()->limit(100)->get()
+                );
+
+                // Commandes issues d'une réservation "menu de la semaine", payées et pas encore livrées.
+                $orders_menu_new = Cache::remember(
+                    'orders_menu_new',
+                    30,
+                    fn() =>
+                    Order::whereNotNull('menu_semaine_reservation_id')
+                        ->where('payment_status', 'completed')
+                        ->where('status', '!=', Order::STATUS_LIVREE)
                         ->latest()->limit(100)->get()
                 );
 
@@ -225,8 +256,9 @@ class AppServiceProvider extends ServiceProvider
 
                     // orders_new chargé avant le tableau pour pouvoir
                     // dériver orders_attente sans requête supplémentaire
-                    'orders_new'     => $orders_new,
-                    'orders_attente' => $orders_new->where('status', 'attente')->values(),
+                    'orders_new'      => $orders_new,
+                    'orders_attente'  => $orders_new->where('status', 'attente')->values(),
+                    'orders_menu_new' => $orders_menu_new,
 
                     'user_upcoming_birthday' => Cache::remember(
                         'users_birthday_upcoming',

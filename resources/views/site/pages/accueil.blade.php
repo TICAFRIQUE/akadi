@@ -9,9 +9,9 @@
 
     {{-- @includeWhen(!Auth::check(), 'site.sections.popup-register' ) --}}
 
-    <!-- ========== Start bandeau menu du jour ========== -->
+    <!-- ========== Start bandeau carte menu ========== -->
     @include('site.sections.bandeau-menu-jour')
-    <!-- ========== End bandeau menu du jour ========== -->
+    <!-- ========== End bandeau carte menu ========== -->
 
     <!-- ========== Start slider ========== -->
     @include('site.sections.slider')
@@ -34,9 +34,9 @@
     @include('site.sections.pub.top_promo')
     <!-- ========== End top promo ========== -->
 
-    <!-- ========== Start menu du jour ========== -->
+    <!-- ========== Start carte menu ========== -->
     @include('site.sections.menu-du-jour')
-    <!-- ========== End menu du jour ========== -->
+    <!-- ========== End carte menu ========== -->
 
 
     <!-- ========== Start categorie-with-plats-recent ========== -->

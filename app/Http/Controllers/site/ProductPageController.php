@@ -5,7 +5,6 @@ namespace App\Http\Controllers\site;
 use Exception;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\MenuJour;
 use App\Models\Publicite;
 use App\Models\Commentaire;
 use App\Models\SubCategory;
@@ -16,18 +15,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductPageController extends Controller
 {
-    /** Menu du jour actif (même clé de cache que HomePageController pour partager le cache) */
-    private function menuJourActif()
-    {
-        return Cache::remember('menu_du_jour_' . today()->toDateString(), 300, fn () =>
-            MenuJour::with(['menuProduits' => fn ($q) => $q->where('disponible', true)])
-                ->where('actif', true)
-                ->whereDate('date', today())
-                ->first()
-        );
-    }
-
-
     /********** Get shop List of category  */
     // public function liste_produit(Request $request)
     // {
@@ -84,8 +71,6 @@ class ProductPageController extends Controller
     // }
     public function liste_produit(Request $request)
     {
-        $menuJour = $this->menuJourActif();
-
         try {
             $category      = $request->query('categorie');
             $subcategory   = $request->query('sous-categorie');
@@ -143,7 +128,7 @@ class ProductPageController extends Controller
                 );
             }
 
-            return view('site.pages.produit', compact('product', 'name_category', 'menuJour'));
+            return view('site.pages.produit', compact('product', 'name_category'));
         } catch (Exception $e) {
             $page    = $request->query('page', 1);
 
@@ -157,7 +142,7 @@ class ProductPageController extends Controller
                     ->paginate(12)->withQueryString()
             );
 
-            return view('site.pages.produit', compact('product', 'menuJour'));
+            return view('site.pages.produit', compact('product'));
         }
     }
 
@@ -231,8 +216,6 @@ class ProductPageController extends Controller
             // ->take(50)
             ->paginate(12)->withQueryString();
 
-        $menuJour = $this->menuJourActif();
-
-        return view('site.pages.produit', compact('product', 'menuJour'));
+        return view('site.pages.produit', compact('product'));
     }
 }

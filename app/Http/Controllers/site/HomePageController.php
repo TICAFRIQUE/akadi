@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\site;
 
-use App\Models\MenuJour;
 use App\Models\Product;
 use App\Models\Publicite;
 use App\Models\Temoignage;
@@ -44,15 +43,7 @@ class HomePageController extends Controller
             Temoignage::orderBy('created_at', 'DESC')->get()
         );
 
-        // Menu du jour : clé incluant la date pour une invalidation naturelle chaque jour
-        $menuJour = Cache::remember('menu_du_jour_' . today()->toDateString(), 300, fn () =>
-            MenuJour::with(['menuProduits' => fn ($q) => $q->where('disponible', true)])
-                ->where('actif', true)
-                ->whereDate('date', today())
-                ->first()
-        );
-
-        // $annonce est déjà fourni par le ViewComposer (AppServiceProvider → site.*)
-        return view('site.pages.accueil', compact('sliders', 'background', 'top_promo', 'feedback', 'pack', 'menuJour'));
+        // $annonce et $menuSemaineActive sont déjà fournis par le ViewComposer (AppServiceProvider → site.*)
+        return view('site.pages.accueil', compact('sliders', 'background', 'top_promo', 'feedback', 'pack'));
     }
 }

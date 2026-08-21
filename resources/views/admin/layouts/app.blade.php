@@ -165,6 +165,41 @@
                         </li>
                         <!-- ========== End notification orders ========== -->
 
+                        <!-- ========== Start notification commandes menu ========== -->
+                        <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
+                                class="nav-link nav-link-lg message-toggle" title="Commandes Menu"><i
+                                    data-feather="calendar" class="bell"></i>
+                                <span id="orderMenuNew" class="badge headerBadge1">
+                                    {{ $orders_menu_new->count() }}</span> </a>
+                            <div class="dropdown-menu dropdown-list dropdown-menu-right pullDown">
+                                <div class="dropdown-header">
+                                    Commandes Menu
+                                </div>
+                                <div class="dropdown-list-content dropdown-list-message dropdown-list-order">
+                                    @foreach ($orders_menu_new as $item)
+                                        <a href="{{ route('commandes-menu.show', $item['menu_semaine_reservation_id']) }}" class="dropdown-item"> <span
+                                                class="dropdown-item-avatar
+											text-dark"> <i
+                                                    data-feather="calendar"></i>
+                                            </span> <span class="dropdown-item-desc"> <span
+                                                    class="message-user text-info fw-bold">{{ $item['code'] }}</span>
+                                                <span
+                                                    class="badge {{ $item['status'] == 'attente' ? 'badge-primary' : ($item['status'] == 'précommande' ? 'badge-dark' : 'badge-secondary') }} text-white p-1 px-3">
+                                                    {{ $item['status'] }}
+                                                </span> <span class="time text-capitalize text-dark fst-italic">
+                                                    {{ \Carbon\Carbon::parse($item['created_at'])->diffForHumans() }}</span>
+                                            </span>
+                                        </a>
+                                    @endforeach
+                                </div>
+                                <div class="dropdown-footer text-center">
+                                    <a href="{{ route('commandes-menu.index') }}">Voir toutes les commandes menu <i
+                                            class="fas fa-chevron-right"></i></a>
+                                </div>
+                            </div>
+                        </li>
+                        <!-- ========== End notification commandes menu ========== -->
+
 
                         <!-- ========== Start notification birthdays ========== -->
                         <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
@@ -285,11 +320,11 @@
                                 <li class="dropdown">
                                     <a href="#"
                                         class="menu-toggle nav-link has-dropdown
-                                    {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') || Route::is('menu-jour.*') || Route::is('menu-semaine.*') || Route::is('plats.*') ? 'active' : '' }}">
+                                    {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') || Route::is('menu-semaine.*') || Route::is('plats.*') ? 'active' : '' }}">
                                         <i data-feather="package"></i><span>Catalogue</span>
                                     </a>
                                     <ul
-                                        class="dropdown-menu {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') || Route::is('menu-jour.*') || Route::is('plats.*') ? 'show' : '' }}">
+                                        class="dropdown-menu {{ Route::is('category.*') || Route::is('sub-category.*') || Route::is('product.*') || Route::is('menu-semaine.*') || Route::is('plats.*') ? 'show' : '' }}">
                                         @canany(['catalogue.categories', 'catalogue.sous-categories'])
                                             @can('catalogue.categories')
                                                 <li class="nav-item {{ Route::is('category.*') ? 'active' : '' }}">
@@ -306,9 +341,6 @@
                                         @can('catalogue.produits')
                                             <li class="nav-item {{ Route::is('product.*') ? 'active' : '' }}">
                                                 <a href="{{ route('product.index') }}" class="nav-link">Produits</a>
-                                            </li>
-                                            <li class="nav-item {{ Route::is('menu-jour.*') ? 'active' : '' }}">
-                                                <a href="{{ route('menu-jour.index') }}" class="nav-link">Menu du jour</a>
                                             </li>
                                             <li class="nav-item {{ Route::is('menu-semaine.*') ? 'active' : '' }}">
                                                 <a href="{{ route('menu-semaine.index') }}" class="nav-link">Menu de la semaine</a>
@@ -579,13 +611,15 @@
 
 
 
-            <footer class="main-footer">
-                <div class="text-center">
-                    <a href="https://ticafrique.com/" target="_blank">Conçu par Ticafrique</a></a>
-                </div>
-                <div class="footer-right">
-                </div>
-            </footer>
+            @if (Route::currentRouteName() !== 'auth.login')
+                <footer class="main-footer">
+                    <div class="text-center">
+                        <a href="https://ticafrique.com/" target="_blank">Conçu par Ticafrique</a></a>
+                    </div>
+                    <div class="footer-right">
+                    </div>
+                </footer>
+            @endif
         </div>
     </div>
     <!-- General JS Scripts -->

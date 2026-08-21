@@ -393,7 +393,7 @@
                                                 </span>
 
                                             </td>
-                                            <td>{{ $item['user']['name'] }} </td>
+                                            <td>{{ $item->nom_client }} </td>
                                             {{-- <td>{{ $item['delivery_name'] }} - {{ $item['delivery_price'] }} </td> --}}
                                             <td>{{ $item['total'] }} </td>
                                             <td>

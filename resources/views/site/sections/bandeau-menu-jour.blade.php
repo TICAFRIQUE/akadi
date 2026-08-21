@@ -1,4 +1,9 @@
-@if ($menuJour && $menuJour->menuProduits->count() > 0)
+@php
+    $totalPlatsSemaine = $menuSemaineActive
+        ? $menuSemaineActive->menusJour->sum(fn ($j) => $j->menuProduits->count())
+        : 0;
+@endphp
+@if ($menuSemaineActive && $totalPlatsSemaine > 0)
 <style>
 .ak-mdj-banner {
     background: var(--ak-gradient, linear-gradient(90deg, #eb0029, #f85d05));
@@ -127,11 +132,11 @@
         <div class="ak-mdj-banner-inner">
             <div class="ak-mdj-banner-icon"><i class="fas fa-utensils"></i></div>
             <p class="ak-mdj-banner-text">
-                <strong>Menu du jour disponible !</strong>
-                {{ $menuJour->menuProduits->count() }} plat{{ $menuJour->menuProduits->count() > 1 ? 's' : '' }} à découvrir aujourd'hui.
+                <strong>Carte menu de la semaine disponible !</strong>
+                {{ $totalPlatsSemaine }} plat{{ $totalPlatsSemaine > 1 ? 's' : '' }} à découvrir.
             </p>
-            <a href="{{ route('menu-du-jour') }}" class="ak-mdj-banner-btn">
-                Voir le menu <i class="fas fa-arrow-right"></i>
+            <a href="{{ route('carte-menu', $menuSemaineActive->lien_token) }}" class="ak-mdj-banner-btn">
+                Voir la carte menu <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </div>

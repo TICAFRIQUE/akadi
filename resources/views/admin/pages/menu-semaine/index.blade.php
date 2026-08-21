@@ -80,8 +80,14 @@
                                                 <a href="{{ route('menu-semaine.show', $menuSemaine) }}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Voir">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
+                                                <a href="{{ route('menu-semaine.edit', $menuSemaine) }}" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Modifier">
+                                                    <i class="fas fa-pen"></i>
+                                                </a>
                                                 <a href="{{ route('carte-menu', $menuSemaine->lien_token) }}" target="_blank" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Ouvrir la carte menu partageable">
                                                     <i class="fas fa-share-alt"></i>
+                                                </a>
+                                                <a href="{{ route('menu-semaine.pdf', $menuSemaine) }}" class="btn btn-sm btn-secondary" data-toggle="tooltip" title="Télécharger en PDF">
+                                                    <i class="fas fa-file-pdf"></i>
                                                 </a>
                                                 <form action="{{ route('menu-semaine.destroy', $menuSemaine) }}" method="POST" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce menu de la semaine ?')">
                                                     @csrf

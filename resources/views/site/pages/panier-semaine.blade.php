@@ -62,6 +62,22 @@
     transition: all .2s;
 }
 .ak-ps-btn-pay:hover { background: #d44d00; color: #fff; }
+
+.ak-ps-field-group { margin-bottom: 14px; }
+.ak-ps-field-label { display: block; font-size: .78rem; font-weight: 700; color: #555; margin-bottom: 6px; }
+.ak-ps-field-select, .ak-ps-field-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #eee;
+    border-radius: 8px;
+    font-size: .85rem;
+    color: #1a1a1a;
+    background: #fff;
+}
+.ak-ps-field-select:focus, .ak-ps-field-input:focus {
+    outline: none;
+    border-color: var(--ak-orange, #f85d05);
+}
 </style>
 
 <div class="ak-breadcrumb">
@@ -122,10 +138,6 @@
                         <span>Jours sélectionnés</span>
                         <strong>{{ $nombreJours }}</strong>
                     </div>
-                    <div class="ak-ps-summary-row">
-                        <span>Prix moyen / plat</span>
-                        <strong>{{ number_format($prixUnitaire, 0, ',', ' ') }} FCFA</strong>
-                    </div>
 
                     @if ($nombreJours < $menuSemaine->seuil_jours)
                         <div class="ak-ps-summary-row" style="color:#11998e">
@@ -138,8 +150,42 @@
                         <span>{{ number_format($montantTotal, 0, ',', ' ') }} FCFA</span>
                     </div>
 
-                    <form action="{{ route('menu-semaine.checkout') }}" method="POST">
+                    <form action="{{ route('menu-semaine.checkout') }}" method="POST" id="ps-checkout-form">
                         @csrf
+
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                @foreach ($errors->all() as $error)
+                                    <div>{{ $error }}</div>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <div class="ak-ps-field-group">
+                            <label class="ak-ps-field-label">Mode de livraison</label>
+                            <select class="ak-ps-field-select" name="mode_livraison" id="ps_mode_livraison" required>
+                                <option disabled selected value="">Choisir un mode</option>
+                                <option value="yango" {{ old('mode_livraison') == 'yango' ? 'selected' : '' }}>🛵 Livraison Yango Moto</option>
+                                <option value="recuperer" {{ old('mode_livraison') == 'recuperer' ? 'selected' : '' }}>🏪 Je passe récupérer</option>
+                            </select>
+                        </div>
+
+                        <div class="ak-ps-field-group" id="ps_address_yango_wrap" style="display:none">
+                            <label class="ak-ps-field-label">Adresse de destination (rue)</label>
+                            <input type="text" name="address_yango" id="ps_address_yango" class="ak-ps-field-input" placeholder="Ex : Rue K14, Marcory" value="{{ old('address_yango') }}">
+                        </div>
+
+                        @if (app()->environment('local'))
+                            {{-- TEMPORAIRE : Wave indisponible en local, permet de tester la réception "Commandes Menu". Invisible hors environnement local. --}}
+                            <div class="ak-ps-field-group">
+                                <label class="ak-ps-field-label">Paiement (test local)</label>
+                                <select class="ak-ps-field-select" name="payment_method">
+                                    <option value="wave" {{ old('payment_method', 'wave') == 'wave' ? 'selected' : '' }}>Wave</option>
+                                    <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>Espèces (test)</option>
+                                </select>
+                            </div>
+                        @endif
+
                         <button type="submit" class="ak-ps-btn-pay">
                             <i class="fas fa-lock"></i> Payer et réserver (Wave)
                         </button>
@@ -150,5 +196,26 @@
         </div>
     </div>
 </section>
+
+<script>
+(function () {
+    var select = document.getElementById('ps_mode_livraison');
+    var wrap = document.getElementById('ps_address_yango_wrap');
+    var input = document.getElementById('ps_address_yango');
+
+    function toggle() {
+        if (select.value === 'yango') {
+            wrap.style.display = '';
+            input.required = true;
+        } else {
+            wrap.style.display = 'none';
+            input.required = false;
+        }
+    }
+
+    select.addEventListener('change', toggle);
+    toggle();
+})();
+</script>
 
 @endsection

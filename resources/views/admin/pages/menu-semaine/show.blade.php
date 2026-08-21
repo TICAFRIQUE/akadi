@@ -34,6 +34,10 @@
                             </div>
                         </div>
                         <small class="text-muted">Partagez ce lien (WhatsApp, réseaux sociaux...) pour que vos clients consultent la carte menu de la semaine.</small>
+                        <hr>
+                        <a href="{{ route('menu-semaine.pdf', $menuSemaine) }}" class="btn btn-outline-danger">
+                            <i class="fas fa-file-pdf"></i> Télécharger la carte menu en PDF
+                        </a>
                     </div>
                 </div>
 
@@ -111,6 +115,9 @@
 
                 <a href="{{ route('menu-semaine.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+                <a href="{{ route('menu-semaine.edit', $menuSemaine) }}" class="btn btn-warning">
+                    <i class="fas fa-pen"></i> Modifier
                 </a>
             </div>
         </div>

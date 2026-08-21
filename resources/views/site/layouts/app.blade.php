@@ -1054,6 +1054,12 @@
 
     @stack('js')
 
+    {{-- Bandeau "panier menu de la semaine en attente" : sur tout le site, sauf sur les pages
+         qui ont déjà leur propre panier menu visible (carte menu et panier menu lui-même). --}}
+    @unless(request()->routeIs('carte-menu', 'carte-menu.indisponible', 'menu-semaine.panier'))
+        @include('site.sections.menu-semaine-indicator')
+    @endunless
+
 </body>
 
 </html>

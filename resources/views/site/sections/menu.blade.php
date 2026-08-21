@@ -11,7 +11,7 @@
                     <a href="{{ route('page-acceuil') }}">Accueil</a>
                 </li>
                 <li class="menu-item-has-children">
-                    <a href="{{ route('menu-du-jour') }}">Menu du jour</a>
+                    <a href="{{ $menuSemaineActive ? route('carte-menu', $menuSemaineActive->lien_token) : route('carte-menu.indisponible') }}">Carte menu</a>
                 </li>
                 @foreach ($categories as $item)
                     <li class="menu-item-has-children">
@@ -88,9 +88,9 @@
                            class="ak-nav-link {{ request()->routeIs('page-acceuil') ? 'ak-nav-active' : '' }}">
                             Accueil
                         </a>
-                        <a href="{{ route('menu-du-jour') }}"
-                           class="ak-nav-link {{ request()->routeIs('menu-du-jour') ? 'ak-nav-active' : '' }}">
-                            <i class="fas fa-utensils" style="font-size:.75rem"></i> Menu du jour
+                        <a href="{{ $menuSemaineActive ? route('carte-menu', $menuSemaineActive->lien_token) : route('carte-menu.indisponible') }}"
+                           class="ak-nav-link {{ request()->routeIs('carte-menu') || request()->routeIs('carte-menu.indisponible') ? 'ak-nav-active' : '' }}">
+                            <i class="fas fa-utensils" style="font-size:.75rem"></i> Carte menu
                         </a>
                         @foreach ($categories as $item)
                             <div class="ak-nav-dropdown">
@@ -154,6 +154,14 @@
                                 </div>
                             </div>
                         @endauth
+
+                        {{-- Panier menu de la semaine --}}
+                        @if($menuSemaineActive)
+                        <a href="{{ route('menu-semaine.panier') }}" class="ak-cart-btn ak-menu-cart-btn" title="Mon panier menu">
+                            <i class="fas fa-calendar-week"></i>
+                            <span class="ak-cart-badge badge" style="{{ ($cartMenuSemaineJours ?? 0) == 0 ? 'display:none' : '' }}">{{ $cartMenuSemaineJours ?? 0 }}</span>
+                        </a>
+                        @endif
 
                         {{-- Panier --}}
                         <a href="{{ route('panier') }}" class="ak-cart-btn" title="Mon panier">
@@ -426,6 +434,12 @@ a.ak-info-item:hover { color: var(--ak-orange); text-decoration: none; }
     line-height: 1;
 }
 .ak-cart-btn:hover .ak-cart-badge { background: #fff; color: var(--ak-red); border-color: var(--ak-red); }
+
+/* Panier menu de la semaine : même gabarit, accent orange pour le distinguer du panier normal */
+.ak-menu-cart-btn { color: var(--ak-orange); background: rgba(248,93,5,.08); }
+.ak-menu-cart-btn:hover { background: var(--ak-orange); color: #fff; }
+.ak-menu-cart-btn .ak-cart-badge { background: var(--ak-orange); }
+.ak-menu-cart-btn:hover .ak-cart-badge { background: #fff; color: var(--ak-orange); border-color: var(--ak-orange); }
 
 /* CTA commander */
 .ak-cta-btn {
