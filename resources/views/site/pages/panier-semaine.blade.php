@@ -175,17 +175,6 @@
                             <input type="text" name="address_yango" id="ps_address_yango" class="ak-ps-field-input" placeholder="Ex : Rue K14, Marcory" value="{{ old('address_yango') }}">
                         </div>
 
-                        @if (app()->environment('local'))
-                            {{-- TEMPORAIRE : Wave indisponible en local, permet de tester la réception "Commandes Menu". Invisible hors environnement local. --}}
-                            <div class="ak-ps-field-group">
-                                <label class="ak-ps-field-label">Paiement (test local)</label>
-                                <select class="ak-ps-field-select" name="payment_method">
-                                    <option value="wave" {{ old('payment_method', 'wave') == 'wave' ? 'selected' : '' }}>Wave</option>
-                                    <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>Espèces (test)</option>
-                                </select>
-                            </div>
-                        @endif
-
                         <button type="submit" class="ak-ps-btn-pay">
                             <i class="fas fa-lock"></i> Payer et réserver (Wave)
                         </button>

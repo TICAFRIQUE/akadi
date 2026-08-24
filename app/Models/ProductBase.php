@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class ProductBase extends Model
 {
@@ -86,25 +87,49 @@ class ProductBase extends Model
     }
 
     /**
-     * Incrémenter le stock lors d'un achat
+     * Incrémenter le stock lors d'un achat.
+     * Verrouille la ligne (SELECT ... FOR UPDATE) pour que deux achats
+     * concurrents sur le même produit de base ne s'écrasent pas l'un
+     * l'autre (lire-puis-écrire non protégé auparavant).
      */
     public function incrementerStock($quantite)
     {
-        $this->stock += $quantite;
-        $this->save();
+        DB::transaction(function () use ($quantite) {
+            $fresh = static::whereKey($this->id)->lockForUpdate()->first();
+            if (!$fresh) {
+                return;
+            }
+            $fresh->stock += $quantite;
+            $fresh->save();
+            $this->stock = $fresh->stock;
+        });
     }
 
     /**
-     * Décrémenter le stock lors d'une vente
+     * Décrémenter le stock lors d'une vente.
+     * Le contrôle de disponibilité et la décrémentation se font sur une
+     * ligne verrouillée (SELECT ... FOR UPDATE) dans une transaction : deux
+     * ventes concurrentes sur le même produit de base ne peuvent plus
+     * s'écraser mutuellement comme avec un lire-puis-écrire non protégé.
+     * On passe par save() (et non une requête de masse) pour que les
+     * observers (invalidation du cache "product_bases_list", etc.)
+     * continuent de se déclencher normalement.
      */
     public function decrementerStock($quantite)
     {
-        if ($this->stock >= $quantite) {
-            $this->stock -= $quantite;
-            $this->save();
+        return DB::transaction(function () use ($quantite) {
+            $fresh = static::whereKey($this->id)->lockForUpdate()->first();
+
+            if (!$fresh || $fresh->stock < $quantite) {
+                return false;
+            }
+
+            $fresh->stock -= $quantite;
+            $fresh->save();
+            $this->stock = $fresh->stock;
+
             return true;
-        }
-        return false;
+        });
     }
 
     /**

@@ -19,6 +19,7 @@ class AchatController extends Controller
     {
         $achats = Achat::with(['lignes.productBase', 'user'])
             ->orderBy('date_achat', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return view('admin.pages.achat.index', compact('achats'));

@@ -247,13 +247,6 @@ class AppServiceProvider extends ServiceProvider
                         Publicite::whereType('annonce')->whereStatus('active')->first()
                     ),
 
-                    'productBases' => Cache::remember(
-                        'product_bases_list',
-                        120,
-                        fn() =>
-                        ProductBase::orderBy('nom', 'ASC')->get()
-                    ),
-
                     // orders_new chargé avant le tableau pour pouvoir
                     // dériver orders_attente sans requête supplémentaire
                     'orders_new'      => $orders_new,

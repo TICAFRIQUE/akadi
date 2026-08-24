@@ -158,7 +158,6 @@ class MenuSemainePageController extends Controller
         $request->validate([
             'mode_livraison'  => 'required|in:yango,recuperer',
             'address_yango'   => 'required_if:mode_livraison,yango|nullable|string|max:255',
-            'payment_method'  => 'nullable|in:wave,cash',
         ], [
             'mode_livraison.required' => 'Veuillez choisir un mode de livraison.',
             'address_yango.required_if' => 'Veuillez préciser la destination.',
@@ -179,84 +178,6 @@ class MenuSemainePageController extends Controller
         $user = Auth::user();
         $modeLivraison = $request->input('mode_livraison');
         $addressYango = $modeLivraison === 'yango' ? $request->input('address_yango') : null;
-
-        // ── TEMPORAIRE (test local — Wave indisponible en local) : paiement espèces direct.
-        // À retirer une fois les tests de réception "Commandes Menu" terminés.
-        if ($request->input('payment_method') === 'cash') {
-            $cashMethod = PaymentMethod::where('code', 'cash')->where('actif', true)->first();
-            if (!$cashMethod) {
-                return back()->with('error', "Le paiement en espèces n'est pas disponible.");
-            }
-
-            $reservation = DB::transaction(function () use ($menuSemaine, $calcul, $cashMethod, $user, $modeLivraison, $addressYango) {
-                $reservation = MenuSemaineReservation::create([
-                    'menu_semaine_id'        => $menuSemaine->id,
-                    'user_id'                => $user->id,
-                    'client_name'            => $user->name,
-                    'client_phone'           => $user->phone ?? '',
-                    'nombre_jours'           => $calcul['nombreJours'],
-                    'prix_unitaire_applique' => $calcul['prixUnitaire'],
-                    'montant_total'          => $calcul['montantTotal'],
-                    'mode_livraison'         => $modeLivraison === 'yango' ? 'Livraison Yango Moto' : 'Je passe récupérer',
-                    'address_yango'          => $addressYango,
-                    'payment_method_id'      => $cashMethod->id,
-                    'payment_status'         => 'completed',
-                    'statut'                 => MenuSemaineReservation::STATUT_PAYEE,
-                ]);
-
-                foreach ($calcul['items'] as $item) {
-                    $reservation->items()->create([
-                        'date'            => $item['date'],
-                        'menu_produit_id' => $item['menu_produit_id'],
-                        'quantity'        => $item['quantity'],
-                        'prix_unitaire'   => $item['prix_unitaire'],
-                    ]);
-                }
-
-                $reservation->load('items.menuProduit');
-                foreach ($reservation->items->groupBy(fn ($item) => $item->date->format('Y-m-d')) as $date => $itemsDuJour) {
-                    $totalJour = $itemsDuJour->sum(fn ($item) => $item->quantity * $item->prix_unitaire);
-
-                    $order = Order::create([
-                        'menu_semaine_reservation_id' => $reservation->id,
-                        'user_id'          => $reservation->user_id,
-                        'client_name'      => $reservation->client_name,
-                        'client_phone'     => $reservation->client_phone,
-                        'quantity_product' => $itemsDuJour->sum('quantity'),
-                        'subtotal'         => 0,
-                        'total_menu'       => $totalJour,
-                        'total'            => $totalJour,
-                        'delivery_price'   => 0,
-                        'mode_livraison'   => $reservation->mode_livraison,
-                        'address_yango'    => $reservation->address_yango,
-                        'status'           => $date > now()->format('Y-m-d') ? Order::STATUS_PRECOMMANDE : Order::STATUS_ATTENTE,
-                        'source'           => Order::SOURCE_WEB,
-                        'type_order'       => 'normal',
-                        'payment_method_id' => $cashMethod->id,
-                        'payment_status'   => 'completed',
-                        'payment_completed_at' => now(),
-                        'acompte'          => $totalJour,
-                        'date_order'       => $date,
-                    ]);
-
-                    $cartShape = [];
-                    foreach ($itemsDuJour as $item) {
-                        $cartShape[$item->menu_produit_id] = [
-                            'quantity' => $item->quantity,
-                            'price'    => $item->prix_unitaire,
-                        ];
-                    }
-                    $this->stockService->attachMenuCartToOrder($order, $cartShape);
-                }
-
-                return $reservation;
-            });
-
-            Session::forget('cart_menu_semaine');
-
-            return redirect()->route('menu-semaine.reservation-success', $reservation->id)
-                ->with('success', 'Réservation enregistrée (paiement espèces).');
-        }
 
         $waveMethod = PaymentMethod::where('code', 'wave')->where('actif', true)->first();
         if (!$waveMethod) {

@@ -58,10 +58,16 @@ class Achat extends Model
             }
         });
 
-        // Recalculer après suppression (les lignes seront supprimées en cascade)
+        // Recalculer après suppression
         static::deleted(function ($achat) {
-            // Les lignes déclenchent leur propre événement deleted
-            // qui décrémente le stock et recalcule le prix moyen
+            // Achat utilise SoftDeletes : delete() ne fait qu'un UPDATE deleted_at,
+            // donc la contrainte onDelete('cascade') d'achat_lignes ne se déclenche
+            // jamais au niveau SQL. Il faut donc supprimer les lignes explicitement
+            // ici pour que leur événement AchatLigne::deleted (qui décrémente le
+            // stock et recalcule le prix moyen) se déclenche réellement.
+            foreach ($achat->lignes as $ligne) {
+                $ligne->delete();
+            }
         });
     }
 
