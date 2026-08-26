@@ -23,6 +23,35 @@
                         @include('admin.components.validationMessage')
 
                         <div class="card-body">
+                            {{-- Filtre de dates --}}
+                            <form method="GET" action="{{ route('achat.index') }}" class="mb-4">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="date_debut">Date de début</label>
+                                            <input type="date" class="form-control" id="date_debut" name="date_debut"
+                                                value="{{ $dateDebut }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="date_fin">Date de fin</label>
+                                            <input type="date" class="form-control" id="date_fin" name="date_fin"
+                                                value="{{ $dateFin }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>&nbsp;</label>
+                                        <button type="submit" class="btn btn-primary w75 mt-4">
+                                            <i class="fas fa-filter"></i> Filtrer
+                                        </button>
+                                        <a href="{{ route('achat.index') }}" class="btn btn-secondary mt-4">
+                                            <i class="fas fa-undo"></i> Réinitialiser
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+
                             <div class="table-responsive">
                                 <table class="table table-striped" id="tableExport">
                                     <thead>
@@ -44,7 +73,8 @@
                                                 <td>
                                                     <strong>{{ $achat->numero }}</strong>
                                                 </td>
-                                                <td>{{ $achat->date_achat->format('d/m/Y') }}</td>
+                                                <td data-order="{{ $achat->date_achat->format('Y-m-d') }} {{ $achat->created_at->format('H:i:s') }}">
+                                                    {{ $achat->date_achat->format('d/m/Y') }}</td>
                                                 <td>{{ $achat->fournisseur ?? '-' }}</td>
                                                 <td>
                                                     <span class="badge badge-info">

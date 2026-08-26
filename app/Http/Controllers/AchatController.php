@@ -15,14 +15,19 @@ class AchatController extends Controller
     /**
      * Afficher la liste des achats
      */
-    public function index()
+    public function index(Request $request)
     {
+        $dateDebut = $request->input('date_debut');
+        $dateFin   = $request->input('date_fin');
+
         $achats = Achat::with(['lignes.productBase', 'user'])
+            ->when($dateDebut, fn ($q) => $q->whereDate('date_achat', '>=', $dateDebut))
+            ->when($dateFin, fn ($q) => $q->whereDate('date_achat', '<=', $dateFin))
             ->orderBy('date_achat', 'desc')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('admin.pages.achat.index', compact('achats'));
+        return view('admin.pages.achat.index', compact('achats', 'dateDebut', 'dateFin'));
     }
 
     /**

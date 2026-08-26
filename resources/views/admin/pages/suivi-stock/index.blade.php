@@ -98,6 +98,7 @@
                                             <th rowspan="2">#</th>
                                             <th rowspan="2">Produit</th>
                                             <th rowspan="2">Unité</th>
+                                            <th rowspan="2">Stock initial</th>
                                             <th colspan="3" class="text-center bg-info">Mouvements période</th>
                                             <th colspan="4" class="text-center bg-success">État actuel</th>
                                             <th rowspan="2">Prix achat moyen</th>
@@ -119,6 +120,7 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td><strong>{{ $stock['produit'] }}</strong></td>
                                                 <td>{{ $stock['unite'] }}</td>
+                                                <td>{{ format_price($stock['stock_initial']) }}</td>
                                                 <td class="text-success">+{{ format_price($stock['stock_ajoute']) }}
                                                 </td>
                                                 <td class="text-danger">-{{ format_price($stock['stock_vendu']) }}</td>
@@ -146,7 +148,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="12" class="text-center">Aucun mouvement de stock pour cette
+                                                <td colspan="13" class="text-center">Aucun mouvement de stock pour cette
                                                     période</td>
                                             </tr>
                                         @endforelse

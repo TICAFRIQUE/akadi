@@ -22,15 +22,15 @@
                 }
 
                 // Toast succès
-                var alertHtml = `
+                var $alert = $(`
                     <div style="position:fixed;top:80px;right:20px;z-index:9999;background:#3da108;color:#fff;padding:14px 20px;border-radius:10px;font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:0 6px 20px rgba(0,0,0,.15);animation:slideInRight .3s ease;">
                         <i class="fas fa-check-circle"></i> Plat ajouté au panier !
                     </div>
-                `;
-                $('body').append(alertHtml);
+                `);
+                $('body').append($alert);
                 setTimeout(function() {
-                    $('body').find('[style*="Plat ajouté"]').fadeOut(300, function() { $(this).remove(); });
-                }, 2000);
+                    $alert.fadeOut(300, function() { $(this).remove(); });
+                }, 1000);
             }
         });
     });
@@ -50,15 +50,15 @@
                     $('.ak-cart-badge.badge').css('display', 'flex');
                 }
 
-                var alertHtml = `
+                var $alert = $(`
                     <div style="position:fixed;top:80px;right:20px;z-index:9999;background:#3da108;color:#fff;padding:14px 20px;border-radius:10px;font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:0 6px 20px rgba(0,0,0,.15);animation:slideInRight .3s ease;">
                         <i class="fas fa-check-circle"></i> Plat du menu du jour ajouté au panier !
                     </div>
-                `;
-                $('body').append(alertHtml);
+                `);
+                $('body').append($alert);
                 setTimeout(function() {
-                    $('body').find('[style*="menu du jour ajouté"]').fadeOut(300, function() { $(this).remove(); });
-                }, 2000);
+                    $alert.fadeOut(300, function() { $(this).remove(); });
+                }, 3000);
             }
         });
     });

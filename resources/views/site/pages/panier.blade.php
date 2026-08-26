@@ -246,6 +246,49 @@
 }
 .ak-empty-cart-cta:hover { background: #c4001f; color: #fff; text-decoration: none; }
 
+/* ── SweetAlert : toasts & confirmation, stylés comme le reste du site ── */
+.ak-swal-toast {
+    border-radius: 12px !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,.18) !important;
+    padding: 4px 8px !important;
+}
+.ak-swal-toast .swal2-title {
+    font-size: .85rem !important;
+    font-weight: 700 !important;
+    padding: .4em .6em !important;
+}
+.ak-swal-toast .swal2-icon { transform: scale(.7); margin: 6px 4px 6px 8px; }
+
+.ak-swal-popup {
+    border-radius: 18px !important;
+    padding: 28px 24px 24px !important;
+    font-family: inherit !important;
+}
+.ak-swal-title {
+    font-size: 1.1rem !important;
+    font-weight: 800 !important;
+    color: #1a1a1a !important;
+}
+.ak-swal-text { font-size: .9rem !important; color: #666 !important; }
+.ak-swal-confirm {
+    background: var(--ak-red,#eb0029) !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    font-size: .88rem !important;
+    padding: 11px 26px !important;
+    box-shadow: 0 4px 14px rgba(235,0,41,.3) !important;
+}
+.ak-swal-cancel {
+    background: #f2f2f2 !important;
+    color: #555 !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    font-size: .88rem !important;
+    padding: 11px 26px !important;
+    box-shadow: none !important;
+}
+.ak-swal-actions { gap: 10px !important; }
+
 /* Responsive */
 @media (max-width: 767px) {
     .ak-cart-list-header { display: none; }
@@ -484,7 +527,7 @@
                 $('#totalPriceQty' + id).html(itemTotal);
                 updateSummary(response.sousTotal);
                 $('.badge').html(response.totalQte);
-                Swal.fire({ toast:true, icon:'success', title:'Quantité mise à jour', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1500, timerProgressBar:true });
+                Swal.fire({ toast:true, icon:'success', title:'Quantité mise à jour', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1500, timerProgressBar:true, customClass:{ popup:'ak-swal-toast' } });
             }
         });
     }
@@ -507,7 +550,7 @@
                 $('#totalPriceQty' + id).html(itemTotal);
                 updateSummary(response.sousTotal);
                 $('.badge').html(response.totalQte);
-                Swal.fire({ toast:true, icon:'success', title:'Panier mis à jour', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1500, timerProgressBar:true });
+                Swal.fire({ toast:true, icon:'success', title:'Quantité mise à jour', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1500, timerProgressBar:true, customClass:{ popup:'ak-swal-toast' } });
             }
         });
     }
@@ -529,7 +572,7 @@
                 $('#totalPriceQtyMenu' + id).html(itemTotal);
                 updateSummary(response.sousTotal);
                 $('.badge').not('.ak-cart-item-name .badge').html(response.totalQte);
-                Swal.fire({ toast:true, icon:'success', title:'Quantité mise à jour', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1500, timerProgressBar:true });
+                Swal.fire({ toast:true, icon:'success', title:'Quantité mise à jour', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1500, timerProgressBar:true, customClass:{ popup:'ak-swal-toast' } });
             }
         });
     }
@@ -552,7 +595,7 @@
                 $('#totalPriceQtyMenu' + id).html(itemTotal);
                 updateSummary(response.sousTotal);
                 $('.badge').not('.ak-cart-item-name .badge').html(response.totalQte);
-                Swal.fire({ toast:true, icon:'success', title:'Panier mis à jour', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1500, timerProgressBar:true });
+                Swal.fire({ toast:true, icon:'success', title:'Quantité mise à jour', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1500, timerProgressBar:true, customClass:{ popup:'ak-swal-toast' } });
             }
         });
     }
@@ -563,12 +606,21 @@
         Swal.fire({
             title: 'Retirer du panier',
             text: "Voulez-vous retirer ce plat du panier ?",
+            icon: 'warning',
+            iconColor: '#eb0029',
             width: '360px',
             showCancelButton: true,
             cancelButtonText: 'Annuler',
-            confirmButtonColor: '#eb0029',
-            cancelButtonColor: '#aaa',
-            confirmButtonText: 'Oui, retirer'
+            confirmButtonText: 'Oui, retirer',
+            buttonsStyling: false,
+            customClass: {
+                popup: 'ak-swal-popup',
+                title: 'ak-swal-title',
+                htmlContainer: 'ak-swal-text',
+                confirmButton: 'ak-swal-confirm',
+                cancelButton: 'ak-swal-cancel',
+                actions: 'ak-swal-actions'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -580,7 +632,7 @@
                         $('.badge').not('.ak-cart-item-name .badge').html(response.totalQte);
                         $('.quantityProduct').html((response.totalQte));
                         $('#menu_row_' + menuProduitId).fadeOut(300, function() { $(this).remove(); });
-                        Swal.fire({ toast:true, icon:'success', title:'Plat retiré du panier', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1200, timerProgressBar:true });
+                        Swal.fire({ toast:true, icon:'success', title:'Plat retiré du panier', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1200, timerProgressBar:true, customClass:{ popup:'ak-swal-toast' } });
                         if (response.totalQte == 0) {
                             setTimeout(function() { window.location.href = "{{ route('panier') }}"; }, 1400);
                         }
@@ -596,12 +648,21 @@
         Swal.fire({
             title: 'Retirer du panier',
             text: "Voulez-vous retirer ce plat du panier ?",
+            icon: 'warning',
+            iconColor: '#eb0029',
             width: '360px',
             showCancelButton: true,
             cancelButtonText: 'Annuler',
-            confirmButtonColor: '#eb0029',
-            cancelButtonColor: '#aaa',
-            confirmButtonText: 'Oui, retirer'
+            confirmButtonText: 'Oui, retirer',
+            buttonsStyling: false,
+            customClass: {
+                popup: 'ak-swal-popup',
+                title: 'ak-swal-title',
+                htmlContainer: 'ak-swal-text',
+                confirmButton: 'ak-swal-confirm',
+                cancelButton: 'ak-swal-cancel',
+                actions: 'ak-swal-actions'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -613,7 +674,7 @@
                         $('.badge').html(response.totalQte);
                         $('.quantityProduct').html(response.countCart);
                         $('#row_' + IdProduct).fadeOut(300, function() { $(this).remove(); });
-                        Swal.fire({ toast:true, icon:'success', title:'Plat retiré du panier', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1200, timerProgressBar:true });
+                        Swal.fire({ toast:true, icon:'success', title:'Plat retiré du panier', animation:false, position:'top-right', background:'#3da108e0', iconColor:'#fff', color:'#fff', showConfirmButton:false, timer:1200, timerProgressBar:true, customClass:{ popup:'ak-swal-toast' } });
                         if (response.countCart == 0) {
                             setTimeout(function() { window.location.href = "{{ route('panier') }}"; }, 1400);
                         }

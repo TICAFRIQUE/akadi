@@ -35,6 +35,11 @@ class SuiviStockController extends Controller
 
         $suiviStock = [];
 
+        // Point de référence pour reconstruire le stock initial : tout mouvement
+        // survenu entre le début de la période et maintenant doit être "annulé"
+        // pour remonter du stock actuel au stock qui existait au début de période.
+        $debutDateTime = $dateDebut . ' 00:00:00';
+
         foreach ($productBases as $pb) {
             // Calculs
             $stockAjoute = $pb->achatLignes->sum('quantite');
@@ -73,6 +78,40 @@ class SuiviStockController extends Controller
             $stockDisponible = $stockActuel - $stockMin;
             $stockRestant = $stockActuel;
 
+            // ── Stock initial (avant la période) ────────────────────────────────
+            // Stock qui existait avant les ventes/sorties de la période, reconstruit
+            // en remontant depuis le stock actuel : on "annule" les achats/ventes/
+            // sorties survenus entre le début de la période et maintenant (ce sont
+            // les mouvements affichés dans les colonnes "Mouvements période", donc
+            // stock_initial + ajouté - vendu - sortie = stock_actuel).
+            // Les écarts d'inventaire (comptage physique) ne sont PAS annulés : une
+            // correction d'inventaire ne "crée" pas du stock à ce moment précis, elle
+            // corrige une valeur déjà existante — donc le stock corrigé est considéré
+            // comme faisant partie du stock initial, pas comme un mouvement de la période.
+            $achatsDepuisDebut = DB::table('achat_lignes')
+                ->join('achats', 'achat_lignes.achat_id', '=', 'achats.id')
+                ->where('achat_lignes.product_base_id', $pb->id)
+                ->whereNull('achats.deleted_at')
+                ->where('achats.date_achat', '>=', $dateDebut)
+                ->sum('achat_lignes.quantite');
+
+            $ventesDepuisDebut = DB::table('order_product_base')
+                ->join('orders', 'order_product_base.order_id', '=', 'orders.id')
+                ->where('order_product_base.product_base_id', $pb->id)
+                ->where('orders.created_at', '>=', $debutDateTime)
+                ->where('orders.status', '!=', 'annulée')
+                ->sum('order_product_base.quantity_consumed');
+
+            $sortiesDepuisDebut = DB::table('sortie_stocks')
+                ->where('product_base_id', $pb->id)
+                ->where('date_sortie', '>=', $dateDebut)
+                ->sum('quantite');
+
+            $stockInitial = $stockActuel
+                - $achatsDepuisDebut
+                + $ventesDepuisDebut
+                + $sortiesDepuisDebut;
+
             // Filtrer selon le critère
             $inclure = true;
             if ($filtre === 'ajoute' && $stockAjoute == 0) $inclure = false;
@@ -86,6 +125,7 @@ class SuiviStockController extends Controller
                     'id' => $pb->id,
                     'produit' => $pb->nom,
                     'unite' => $pb->unite,
+                    'stock_initial' => $stockInitial,
                     'stock_ajoute' => $stockAjoute,
                     'stock_vendu' => $stockVendu,
                     'stock_sortie' => $stockSortie,
