@@ -132,7 +132,7 @@
 
             $('#btn-add-plat').on('click', resetModalToCreate);
 
-            $('.btn-edit-plat').on('click', function() {
+            $(document).on('click', '.btn-edit-plat', function() {
                 const id = $(this).data('id');
                 $form.attr('action', "{{ url('admin/plats/update') }}/" + id);
                 $modalLabel.text('Modifier le plat');
@@ -142,7 +142,7 @@
                 $('#plat-actif').prop('checked', $(this).data('actif') == 1);
             });
 
-            $('.delete-plat').on('click', function(e) {
+            $(document).on('click', '.delete-plat', function(e) {
                 e.preventDefault();
                 var id = $(this).data('id');
                 swal({
