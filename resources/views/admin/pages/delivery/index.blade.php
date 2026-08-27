@@ -76,7 +76,7 @@
 
 <script>
     $(document).ready(function () {
-        $('.delete').on("click", function(e) {
+        $(document).on("click", ".delete", function(e) {
                 e.preventDefault();
                 var Id = $(this).attr('data-id');
                 swal({
