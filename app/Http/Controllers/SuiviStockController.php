@@ -6,7 +6,6 @@ use App\Models\Order;
 use App\Models\ProductBase;
 use App\Models\StockMovement;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class SuiviStockController extends Controller
 {
@@ -19,78 +18,68 @@ class SuiviStockController extends Controller
         $dateFin = $request->input('date_fin', now()->endOfMonth()->format('Y-m-d'));
         $filtre = $request->input('filtre', 'tous'); // tous, vendu, sortie, ajoute, existant, disponible
 
-        $productBases = ProductBase::with([
-            'achatLignes' => function ($query) use ($dateDebut, $dateFin, $filtre) {
-                if ($filtre === 'ajoute' || $filtre === 'tous') {
-                    $query->whereHas('achat', function ($q) use ($dateDebut, $dateFin) {
-                        $q->whereBetween('date_achat', [$dateDebut, $dateFin]);
-                    });
-                }
-            },
-            'sorties' => function ($query) use ($dateDebut, $dateFin, $filtre) {
-                if ($filtre === 'sortie' || $filtre === 'tous') {
-                    $query->whereBetween('date_sortie', [$dateDebut, $dateFin]);
-                }
-            }
-        ])->orderBy('nom')->get();
+        $productBases = ProductBase::orderBy('nom')->get();
 
         $suiviStock = [];
 
         $debutDateTime = $dateDebut . ' 00:00:00';
+        $finDateTime   = $dateFin . ' 23:59:59';
 
         foreach ($productBases as $pb) {
-            // Calculs
-            $stockAjoute = $pb->achatLignes->sum('quantite');
-            $stockSortie = $pb->sorties->sum('quantite');
-
-
-            // Stock vendu (nouvelle logique multi-bases)
-            // $stockVendu = 0;
-            // if ($filtre === 'vendu' || $filtre === 'tous') {
-            //     $stockVendu = DB::table('order_product')
-            //         ->join('orders', 'order_product.order_id', '=', 'orders.id')
-            //         ->join('product_product_base', 'product_product_base.product_id', '=', 'order_product.product_id')
-            //         ->where('product_product_base.product_base_id', $pb->id)
-            //         ->whereBetween('orders.created_at', [
-            //             $dateDebut . ' 00:00:00',
-            //             $dateFin   . ' 23:59:59'
-            //         ])
-            //         ->where('orders.status', '!=', 'annulée')
-            //         ->sum(DB::raw('order_product.quantity * product_product_base.coefficient'));
-            // }
-
-            // Suivi --> Nouvelle logique de calcul du stock vendu directement à partir de la table pivot order_product_base
-            $stockVendu = DB::table('order_product_base')
-                ->join('orders', 'order_product_base.order_id', '=', 'orders.id')
-                ->where('order_product_base.product_base_id', $pb->id)
-                ->whereBetween('orders.created_at', [
-                    $dateDebut . ' 00:00:00',
-                    $dateFin   . ' 23:59:59'
+            // ── Point de départ : dernier inventaire/ajustement, ou début de période ──
+            // Un inventaire (ou une modification manuelle) fixe le stock à une valeur
+            // connue avec certitude : il n'y a plus de raison de remonter plus loin que
+            // ça. S'il a eu lieu PENDANT la période choisie, il devient le nouveau
+            // "Stock début" à partir de son propre instant (peu importe la date de
+            // début choisie) — tout ce qui précède ce reset est superflu.
+            $dernierReset = StockMovement::where('product_base_id', $pb->id)
+                ->whereIn('type', [
+                    StockMovement::TYPE_CORRECTION_INVENTAIRE,
+                    StockMovement::TYPE_AJUSTEMENT_MANUEL,
                 ])
-                ->where('orders.status', '!=', 'annulée')
-                ->sum('order_product_base.quantity_consumed'); // ← direct, plus besoin de multiplier
+                ->where('created_at', '<=', $finDateTime)
+                ->orderByDesc('created_at')
+                ->orderByDesc('id')
+                ->first();
 
+            if ($dernierReset && $dernierReset->created_at >= $debutDateTime) {
+                // Le dernier inventaire/ajustement a eu lieu PENDANT la période : il
+                // remplace le stock début, et on ne compte que ce qui s'est passé après lui.
+                $stockInitial = (float) $dernierReset->stock_apres;
+                $mouvementsPeriode = StockMovement::where('product_base_id', $pb->id)
+                    ->where('id', '>', $dernierReset->id)
+                    ->where('created_at', '<=', $finDateTime)
+                    ->get();
+            } else {
+                // Aucun reset pendant la période : comportement normal, stock début =
+                // dernier mouvement connu avant la date de début choisie.
+                $dernierMouvementAvant = StockMovement::where('product_base_id', $pb->id)
+                    ->where('created_at', '<', $debutDateTime)
+                    ->orderByDesc('created_at')
+                    ->orderByDesc('id')
+                    ->first();
+
+                $stockInitial = $dernierMouvementAvant ? (float) $dernierMouvementAvant->stock_apres : 0;
+                $mouvementsPeriode = StockMovement::where('product_base_id', $pb->id)
+                    ->whereBetween('created_at', [$debutDateTime, $finDateTime])
+                    ->get();
+            }
+
+            // Tout vient de la même source (stock_movements) : "Ajouté/Vendu/Sortie"
+            // ne peuvent plus jamais diverger de "Stock début"/"Stock actuel" pour des
+            // raisons de sources différentes (ancien souci). Comme le point de départ
+            // ci-dessus est toujours le dernier reset connu, il ne peut plus rester de
+            // correction_inventaire/ajustement_manuel dans $mouvementsPeriode — seules
+            // les annulations de vente sont regroupées dans "Ajustements" désormais.
+            $stockAjoute      = (float) $mouvementsPeriode->where('type', StockMovement::TYPE_ACHAT)->sum('quantity');
+            $stockVendu       = (float) abs($mouvementsPeriode->where('type', StockMovement::TYPE_VENTE)->sum('quantity'));
+            $stockSortie      = (float) abs($mouvementsPeriode->where('type', StockMovement::TYPE_SORTIE)->sum('quantity'));
+            $stockAjustements = (float) $mouvementsPeriode->where('type', StockMovement::TYPE_ANNULATION_VENTE)->sum('quantity');
 
             $stockActuel = $pb->stock;
             $stockMin = $pb->stock_alerte ?? 0;
             $stockDisponible = $stockActuel - $stockMin;
             $stockRestant = $stockActuel;
-
-            // ── Stock début de période ────────────────────────────────────────────
-            // Lu directement dans le registre stock_movements (colonne stock_apres
-            // du dernier mouvement AVANT le début de la période) : c'est exact et
-            // correctement borné à date_debut, contrairement à l'ancien recalcul qui
-            // remontait jusqu'à "maintenant" et ignorait les corrections d'inventaire
-            // et modifications manuelles (d'où des chiffres incohérents avec les
-            // colonnes "Mouvements période" ci-dessous dès que date_fin != aujourd'hui).
-            // 0 si aucun mouvement connu avant cette date.
-            $dernierMouvementAvant = StockMovement::where('product_base_id', $pb->id)
-                ->where('created_at', '<', $debutDateTime)
-                ->orderByDesc('created_at')
-                ->orderByDesc('id')
-                ->first();
-
-            $stockInitial = $dernierMouvementAvant ? (float) $dernierMouvementAvant->stock_apres : 0;
 
             // Filtrer selon le critère
             $inclure = true;
@@ -100,6 +89,10 @@ class SuiviStockController extends Controller
             if ($filtre === 'existant' && $stockActuel == 0) $inclure = false;
             if ($filtre === 'disponible' && $stockDisponible <= 0) $inclure = false;
 
+            $stockTotal     = $stockInitial + $stockAjoute;
+            $stockTheorique = $stockTotal + $stockAjustements - $stockVendu - $stockSortie;
+            $ecart          = $stockActuel - $stockTheorique;
+
             if ($inclure) {
                 $suiviStock[] = [
                     'id' => $pb->id,
@@ -107,8 +100,12 @@ class SuiviStockController extends Controller
                     'unite' => $pb->unite,
                     'stock_initial' => $stockInitial,
                     'stock_ajoute' => $stockAjoute,
+                    'stock_total' => $stockTotal,
                     'stock_vendu' => $stockVendu,
                     'stock_sortie' => $stockSortie,
+                    'stock_ajustements' => $stockAjustements,
+                    'stock_theorique' => $stockTheorique,
+                    'ecart' => $ecart,
                     'stock_actuel' => $stockActuel,
                     'stock_min' => $stockMin,
                     'stock_max' => $stockMin * 2, // Stock max = 2x le seuil d'alerte

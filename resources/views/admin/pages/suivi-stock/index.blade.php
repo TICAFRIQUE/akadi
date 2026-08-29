@@ -97,44 +97,57 @@
                                         <tr>
                                             <th rowspan="2">#</th>
                                             <th rowspan="2">Produit</th>
-                                            <th rowspan="2">Unité</th>
-                                            <th rowspan="2">Stock début de période</th>
-                                            <th colspan="3" class="text-center bg-info">Mouvements période</th>
-                                            <th colspan="4" class="text-center bg-success">État actuel</th>
-                                            <th rowspan="2">Prix achat moyen</th>
+                                            <th rowspan="2">Stock début</th>
+                                            <th colspan="4" class="text-center bg-info">Mouvements de la période</th>
+                                            <th rowspan="2">Stock actuel</th>
+                                            <th rowspan="2" title="Différence entre le stock actuel et ce que prédisent les mouvements suivis. Survolez le badge pour le détail du calcul.">Écart</th>
                                             <th rowspan="2">Statut</th>
-                                            <th rowspan="2">Détail</th>
                                         </tr>
                                         <tr>
                                             <th class="bg-light">Ajouté</th>
+                                            <th class="bg-light" title="Stock début + Ajouté">Stock total</th>
                                             <th class="bg-light">Vendu</th>
                                             <th class="bg-light">Sortie</th>
-                                            <th class="bg-light">Stock actuel</th>
-                                            <th class="bg-light">Stock min</th>
-                                            <th class="bg-light">Stock max</th>
-                                            <th class="bg-light">Disponible</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse($suiviStock as $stock)
                                             <tr class="{{ $stock['alerte'] ? 'table-warning' : '' }}">
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td><strong>{{ $stock['produit'] }}</strong></td>
-                                                <td>{{ $stock['unite'] }}</td>
+                                                <td>
+                                                    <a href="{{ route('suivi-stock.detail', ['productBase' => $stock['id'], 'date_debut' => $dateDebut, 'date_fin' => $dateFin]) }}"
+                                                        title="Voir le détail des ventes">
+                                                        <strong>{{ $stock['produit'] }}</strong>
+                                                    </a><br>
+                                                    <small style="color:#007bff">{{ $stock['unite'] }}</small>
+                                                </td>
                                                 <td>{{ format_price($stock['stock_initial']) }}</td>
                                                 <td class="text-success">+{{ format_price($stock['stock_ajoute']) }}
                                                 </td>
+                                                <td class="text-muted">{{ format_price($stock['stock_total']) }}</td>
                                                 <td class="text-danger">-{{ format_price($stock['stock_vendu']) }}</td>
                                                 <td class="text-warning">-{{ format_price($stock['stock_sortie']) }}
                                                 </td>
                                                 <td><strong>{{ format_price($stock['stock_actuel']) }}</strong></td>
-                                                <td class="text-muted">{{ format_price($stock['stock_min']) }}</td>
-                                                <td class="text-muted">{{ format_price($stock['stock_max']) }}</td>
-                                                <td
-                                                    class="{{ $stock['stock_disponible'] > 0 ? 'text-success' : 'text-danger' }}">
-                                                    <strong>{{ format_price($stock['stock_disponible']) }}</strong>
+                                                <td>
+                                                    @php
+                                                        $detailEcart = "Théorique : " . format_price($stock['stock_theorique'])
+                                                            . " (Début " . format_price($stock['stock_initial'])
+                                                            . " + Ajouté " . format_price($stock['stock_ajoute'])
+                                                            . " + Annulé " . format_price($stock['stock_ajustements'])
+                                                            . " - Vendu " . format_price($stock['stock_vendu'])
+                                                            . " - Sortie " . format_price($stock['stock_sortie']) . ")"
+                                                            . " | Stock début = valeur du dernier inventaire/ajustement s'il y en a eu un pendant la période, sinon stock avant la période";
+                                                    @endphp
+                                                    @if (abs($stock['ecart']) > 0.009)
+                                                        <span class="badge {{ $stock['ecart'] < 0 ? 'badge-danger' : 'badge-info' }}"
+                                                            data-toggle="tooltip" title="{{ $detailEcart }}">
+                                                            {{ $stock['ecart'] > 0 ? '+' : '' }}{{ format_price($stock['ecart']) }}
+                                                        </span>
+                                                    @else
+                                                        <span class="badge badge-success" data-toggle="tooltip" title="{{ $detailEcart }}">OK</span>
+                                                    @endif
                                                 </td>
-                                                <td>{{ format_price($stock['prix_achat_moyen']) }} FCFA</td>
                                                 <td>
                                                     @if ($stock['alerte'])
                                                         <span class="badge badge-danger">
@@ -146,16 +159,10 @@
                                                         <span class="badge badge-success">Normal</span>
                                                     @endif
                                                 </td>
-                                                <td>
-                                                    <a href="{{ route('suivi-stock.detail', ['productBase' => $stock['id'], 'date_debut' => $dateDebut, 'date_fin' => $dateFin]) }}"
-                                                        class="btn btn-sm btn-outline-primary" title="Voir le détail des ventes">
-                                                        <i class="fas fa-list"></i> Détail
-                                                    </a>
-                                                </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="14" class="text-center">Aucun mouvement de stock pour cette
+                                                <td colspan="10" class="text-center">Aucun mouvement de stock pour cette
                                                     période</td>
                                             </tr>
                                         @endforelse
@@ -183,7 +190,7 @@
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/French.json"
                 },
                 "order": [
-                    [2, "desc"]
+                    [1, "asc"]
                 ],
                 dom: 'Bfrtip',
                 buttons: [{
