@@ -45,7 +45,11 @@ class StockService
                 $quantiteVendue = $pivotData['quantity'];
                 $quantiteADecrementer = $quantiteVendue * $coefficient;
 
-                $success = $productBase->decrementerStock($quantiteADecrementer);
+                $success = $productBase->decrementerStock($quantiteADecrementer, [
+                    'type'           => \App\Models\StockMovement::TYPE_VENTE,
+                    'reference_type' => 'order',
+                    'reference_id'   => $order->id,
+                ]);
 
                 if ($success) {
                     Log::info('Stock décrémenté avec succès', [
@@ -77,7 +81,11 @@ class StockService
             $quantiteVendue = $pivotData['quantity'];
             $quantiteADecrementer = $quantiteVendue * $product->coefficient;
 
-            $success = $product->productBase->decrementerStock($quantiteADecrementer);
+            $success = $product->productBase->decrementerStock($quantiteADecrementer, [
+                'type'           => \App\Models\StockMovement::TYPE_VENTE,
+                'reference_type' => 'order',
+                'reference_id'   => $order->id,
+            ]);
 
             if ($success) {
                 Log::info('Stock décrémenté avec succès', [
@@ -213,7 +221,11 @@ class StockService
                         $quantiteVendue        = $product->pivot->quantity;
                         $coefficient           = $productBase->pivot->coefficient;
                         $quantiteAReincrementer = $quantiteVendue * $coefficient;
-                        $productBase->incrementerStock($quantiteAReincrementer);
+                        $productBase->incrementerStock($quantiteAReincrementer, [
+                            'type'           => \App\Models\StockMovement::TYPE_ANNULATION_VENTE,
+                            'reference_type' => 'order',
+                            'reference_id'   => $order->id,
+                        ]);
 
                         Log::info('Stock réincrémenté (fallback) suite à annulation', [
                             'order_id'               => $order->id,
@@ -226,7 +238,11 @@ class StockService
                     $quantiteVendue        = $product->pivot->quantity;
                     $coefficient           = $product->pivot->coefficient;
                     $quantiteAReincrementer = $quantiteVendue * $coefficient;
-                    $product->productBase->incrementerStock($quantiteAReincrementer);
+                    $product->productBase->incrementerStock($quantiteAReincrementer, [
+                        'type'           => \App\Models\StockMovement::TYPE_ANNULATION_VENTE,
+                        'reference_type' => 'order',
+                        'reference_id'   => $order->id,
+                    ]);
 
                     Log::info('Stock réincrémenté (fallback ancien) suite à annulation', [
                         'order_id'               => $order->id,
@@ -244,7 +260,11 @@ class StockService
             $productBase = ProductBase::find($snap->product_base_id);
             if (!$productBase) continue;
 
-            $productBase->incrementerStock($snap->quantity_consumed);
+            $productBase->incrementerStock($snap->quantity_consumed, [
+                'type'           => \App\Models\StockMovement::TYPE_ANNULATION_VENTE,
+                'reference_type' => 'order',
+                'reference_id'   => $order->id,
+            ]);
 
             Log::info('Stock réincrémenté (snapshot) suite à annulation', [
                 'order_id'               => $order->id,

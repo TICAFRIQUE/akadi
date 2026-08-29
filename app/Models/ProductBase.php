@@ -27,7 +27,6 @@ class ProductBase extends Model
             'id'                               // clé locale sur products
         );
     }
-    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'code',
@@ -91,10 +90,13 @@ class ProductBase extends Model
      * Verrouille la ligne (SELECT ... FOR UPDATE) pour que deux achats
      * concurrents sur le même produit de base ne s'écrasent pas l'un
      * l'autre (lire-puis-écrire non protégé auparavant).
+     *
+     * @param array $meta Optionnel : ['type' => ..., 'reference_type' => ..., 'reference_id' => ..., 'user_id' => ..., 'note' => ...]
+     *                     enregistré dans le registre stock_movements pour traçabilité.
      */
-    public function incrementerStock($quantite)
+    public function incrementerStock($quantite, array $meta = [])
     {
-        DB::transaction(function () use ($quantite) {
+        DB::transaction(function () use ($quantite, $meta) {
             $fresh = static::whereKey($this->id)->lockForUpdate()->first();
             if (!$fresh) {
                 return;
@@ -102,6 +104,13 @@ class ProductBase extends Model
             $fresh->stock += $quantite;
             $fresh->save();
             $this->stock = $fresh->stock;
+
+            \App\Models\StockMovement::create(array_merge([
+                'product_base_id' => $fresh->id,
+                'type'            => \App\Models\StockMovement::TYPE_AJUSTEMENT_MANUEL,
+                'quantity'        => $quantite,
+                'stock_apres'     => $fresh->stock,
+            ], $meta));
         });
     }
 
@@ -114,10 +123,12 @@ class ProductBase extends Model
      * On passe par save() (et non une requête de masse) pour que les
      * observers (invalidation du cache "product_bases_list", etc.)
      * continuent de se déclencher normalement.
+     *
+     * @param array $meta Voir incrementerStock().
      */
-    public function decrementerStock($quantite)
+    public function decrementerStock($quantite, array $meta = [])
     {
-        return DB::transaction(function () use ($quantite) {
+        return DB::transaction(function () use ($quantite, $meta) {
             $fresh = static::whereKey($this->id)->lockForUpdate()->first();
 
             if (!$fresh || $fresh->stock < $quantite) {
@@ -127,6 +138,13 @@ class ProductBase extends Model
             $fresh->stock -= $quantite;
             $fresh->save();
             $this->stock = $fresh->stock;
+
+            \App\Models\StockMovement::create(array_merge([
+                'product_base_id' => $fresh->id,
+                'type'            => \App\Models\StockMovement::TYPE_AJUSTEMENT_MANUEL,
+                'quantity'        => -$quantite,
+                'stock_apres'     => $fresh->stock,
+            ], $meta));
 
             return true;
         });

@@ -98,11 +98,12 @@
                                             <th rowspan="2">#</th>
                                             <th rowspan="2">Produit</th>
                                             <th rowspan="2">Unité</th>
-                                            <th rowspan="2">Stock initial</th>
+                                            <th rowspan="2">Stock début de période</th>
                                             <th colspan="3" class="text-center bg-info">Mouvements période</th>
                                             <th colspan="4" class="text-center bg-success">État actuel</th>
                                             <th rowspan="2">Prix achat moyen</th>
                                             <th rowspan="2">Statut</th>
+                                            <th rowspan="2">Détail</th>
                                         </tr>
                                         <tr>
                                             <th class="bg-light">Ajouté</th>
@@ -145,10 +146,16 @@
                                                         <span class="badge badge-success">Normal</span>
                                                     @endif
                                                 </td>
+                                                <td>
+                                                    <a href="{{ route('suivi-stock.detail', ['productBase' => $stock['id'], 'date_debut' => $dateDebut, 'date_fin' => $dateFin]) }}"
+                                                        class="btn btn-sm btn-outline-primary" title="Voir le détail des ventes">
+                                                        <i class="fas fa-list"></i> Détail
+                                                    </a>
+                                                </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="13" class="text-center">Aucun mouvement de stock pour cette
+                                                <td colspan="14" class="text-center">Aucun mouvement de stock pour cette
                                                     période</td>
                                             </tr>
                                         @endforelse

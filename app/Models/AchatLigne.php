@@ -47,7 +47,11 @@ class AchatLigne extends Model
         static::created(function ($ligne) {
             $productBase = $ligne->productBase;
             if ($productBase) {
-                $productBase->incrementerStock($ligne->quantite);
+                $productBase->incrementerStock($ligne->quantite, [
+                    'type'           => \App\Models\StockMovement::TYPE_ACHAT,
+                    'reference_type' => 'achat_ligne',
+                    'reference_id'   => $ligne->id,
+                ]);
             }
         });
 
@@ -59,11 +63,18 @@ class AchatLigne extends Model
                     $ancienneQuantite = $ligne->getOriginal('quantite');
                     $nouvelleQuantite = $ligne->quantite;
                     $difference = $nouvelleQuantite - $ancienneQuantite;
-                    
+
+                    $meta = [
+                        'type'           => \App\Models\StockMovement::TYPE_ACHAT,
+                        'reference_type' => 'achat_ligne',
+                        'reference_id'   => $ligne->id,
+                        'note'           => 'Correction de quantité sur ligne d\'achat',
+                    ];
+
                     if ($difference > 0) {
-                        $productBase->incrementerStock($difference);
+                        $productBase->incrementerStock($difference, $meta);
                     } else {
-                        $productBase->decrementerStock(abs($difference));
+                        $productBase->decrementerStock(abs($difference), $meta);
                     }
                 }
             }
@@ -73,7 +84,12 @@ class AchatLigne extends Model
         static::deleted(function ($ligne) {
             $productBase = $ligne->productBase;
             if ($productBase) {
-                $productBase->decrementerStock($ligne->quantite);
+                $productBase->decrementerStock($ligne->quantite, [
+                    'type'           => \App\Models\StockMovement::TYPE_ACHAT,
+                    'reference_type' => 'achat_ligne',
+                    'reference_id'   => $ligne->id,
+                    'note'           => 'Suppression de la ligne d\'achat',
+                ]);
             }
         });
     }

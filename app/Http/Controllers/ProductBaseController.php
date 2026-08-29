@@ -103,6 +103,8 @@ class ProductBaseController extends Controller
                 ->withInput();
         }
 
+        $ancienStock = (float) $productBase->stock;
+
         $productBase->update([
             'nom' => $request->nom,
             'description' => $request->description,
@@ -112,6 +114,18 @@ class ProductBaseController extends Controller
             'prix_achat_moyen' => $request->prix_achat_moyen,
             'actif' => $request->has('actif'),
         ]);
+
+        $delta = (float) $productBase->stock - $ancienStock;
+        if (abs($delta) > 0.00001) {
+            \App\Models\StockMovement::create([
+                'product_base_id' => $productBase->id,
+                'type'            => \App\Models\StockMovement::TYPE_AJUSTEMENT_MANUEL,
+                'quantity'        => $delta,
+                'stock_apres'     => $productBase->stock,
+                'user_id'         => auth()->id(),
+                'note'            => 'Modification manuelle via le formulaire produit de base',
+            ]);
+        }
 
         return redirect()->route('product-base.index')
             ->with('success', 'Produit de base mis à jour avec succès');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\ProductBase;
+use App\Models\StockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -35,9 +36,6 @@ class SuiviStockController extends Controller
 
         $suiviStock = [];
 
-        // Point de référence pour reconstruire le stock initial : tout mouvement
-        // survenu entre le début de la période et maintenant doit être "annulé"
-        // pour remonter du stock actuel au stock qui existait au début de période.
         $debutDateTime = $dateDebut . ' 00:00:00';
 
         foreach ($productBases as $pb) {
@@ -78,39 +76,21 @@ class SuiviStockController extends Controller
             $stockDisponible = $stockActuel - $stockMin;
             $stockRestant = $stockActuel;
 
-            // ── Stock initial (avant la période) ────────────────────────────────
-            // Stock qui existait avant les ventes/sorties de la période, reconstruit
-            // en remontant depuis le stock actuel : on "annule" les achats/ventes/
-            // sorties survenus entre le début de la période et maintenant (ce sont
-            // les mouvements affichés dans les colonnes "Mouvements période", donc
-            // stock_initial + ajouté - vendu - sortie = stock_actuel).
-            // Les écarts d'inventaire (comptage physique) ne sont PAS annulés : une
-            // correction d'inventaire ne "crée" pas du stock à ce moment précis, elle
-            // corrige une valeur déjà existante — donc le stock corrigé est considéré
-            // comme faisant partie du stock initial, pas comme un mouvement de la période.
-            $achatsDepuisDebut = DB::table('achat_lignes')
-                ->join('achats', 'achat_lignes.achat_id', '=', 'achats.id')
-                ->where('achat_lignes.product_base_id', $pb->id)
-                ->whereNull('achats.deleted_at')
-                ->where('achats.date_achat', '>=', $dateDebut)
-                ->sum('achat_lignes.quantite');
+            // ── Stock début de période ────────────────────────────────────────────
+            // Lu directement dans le registre stock_movements (colonne stock_apres
+            // du dernier mouvement AVANT le début de la période) : c'est exact et
+            // correctement borné à date_debut, contrairement à l'ancien recalcul qui
+            // remontait jusqu'à "maintenant" et ignorait les corrections d'inventaire
+            // et modifications manuelles (d'où des chiffres incohérents avec les
+            // colonnes "Mouvements période" ci-dessous dès que date_fin != aujourd'hui).
+            // 0 si aucun mouvement connu avant cette date.
+            $dernierMouvementAvant = StockMovement::where('product_base_id', $pb->id)
+                ->where('created_at', '<', $debutDateTime)
+                ->orderByDesc('created_at')
+                ->orderByDesc('id')
+                ->first();
 
-            $ventesDepuisDebut = DB::table('order_product_base')
-                ->join('orders', 'order_product_base.order_id', '=', 'orders.id')
-                ->where('order_product_base.product_base_id', $pb->id)
-                ->where('orders.created_at', '>=', $debutDateTime)
-                ->where('orders.status', '!=', 'annulée')
-                ->sum('order_product_base.quantity_consumed');
-
-            $sortiesDepuisDebut = DB::table('sortie_stocks')
-                ->where('product_base_id', $pb->id)
-                ->where('date_sortie', '>=', $dateDebut)
-                ->sum('quantite');
-
-            $stockInitial = $stockActuel
-                - $achatsDepuisDebut
-                + $ventesDepuisDebut
-                + $sortiesDepuisDebut;
+            $stockInitial = $dernierMouvementAvant ? (float) $dernierMouvementAvant->stock_apres : 0;
 
             // Filtrer selon le critère
             $inclure = true;
@@ -143,5 +123,35 @@ class SuiviStockController extends Controller
         // dd($suiviStock);
 
         return view('admin.pages.suivi-stock.index', compact('suiviStock', 'dateDebut', 'dateFin', 'filtre'));
+    }
+
+    /**
+     * Détail des ventes d'un produit de base sur une période : pour chaque vente,
+     * le stock disponible juste avant, la quantité vendue, et le stock résultant.
+     */
+    public function detail(ProductBase $productBase, Request $request)
+    {
+        $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
+        $dateFin   = $request->input('date_fin', now()->endOfMonth()->format('Y-m-d'));
+
+        $mouvements = StockMovement::where('product_base_id', $productBase->id)
+            ->where('type', StockMovement::TYPE_VENTE)
+            ->whereBetween('created_at', [$dateDebut . ' 00:00:00', $dateFin . ' 23:59:59'])
+            ->orderBy('created_at')
+            ->get()
+            ->map(function ($m) {
+                $order = $m->reference_type === 'order' ? Order::find($m->reference_id) : null;
+
+                return [
+                    'date'             => $m->created_at,
+                    'commande_code'    => $order->code ?? ('#' . $m->reference_id),
+                    'order_id'         => $m->reference_id,
+                    'stock_avant'      => (float) $m->stock_apres - (float) $m->quantity,
+                    'quantite_vendue'  => abs((float) $m->quantity),
+                    'stock_apres'      => (float) $m->stock_apres,
+                ];
+            });
+
+        return view('admin.pages.suivi-stock.detail', compact('productBase', 'mouvements', 'dateDebut', 'dateFin'));
     }
 }

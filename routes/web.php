@@ -226,6 +226,7 @@ Route::middleware(['admin'])->group(function () {
     /** Suivi de Stock **/
     Route::prefix('admin/suivi-stock')->middleware('can:gestion-de-stock.suivi')->controller(SuiviStockController::class)->group(function () {
         route::get('', 'index')->name('suivi-stock.index');
+        route::get('detail/{productBase}', 'detail')->name('suivi-stock.detail');
     });
 
     //orders

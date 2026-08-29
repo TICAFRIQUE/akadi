@@ -43,6 +43,17 @@ class SortieStock extends Model
             if ($productBase) {
                 $productBase->stock -= $sortie->quantite;
                 $productBase->save();
+
+                \App\Models\StockMovement::create([
+                    'product_base_id' => $productBase->id,
+                    'type'            => \App\Models\StockMovement::TYPE_SORTIE,
+                    'quantity'        => -$sortie->quantite,
+                    'stock_apres'     => $productBase->stock,
+                    'reference_type'  => 'sortie_stock',
+                    'reference_id'    => $sortie->id,
+                    'user_id'         => $sortie->user_id,
+                    'note'            => $sortie->motif,
+                ]);
             }
         });
 
@@ -52,6 +63,16 @@ class SortieStock extends Model
             if ($productBase) {
                 $productBase->stock += $sortie->quantite;
                 $productBase->save();
+
+                \App\Models\StockMovement::create([
+                    'product_base_id' => $productBase->id,
+                    'type'            => \App\Models\StockMovement::TYPE_SORTIE,
+                    'quantity'        => $sortie->quantite,
+                    'stock_apres'     => $productBase->stock,
+                    'reference_type'  => 'sortie_stock',
+                    'reference_id'    => $sortie->id,
+                    'note'            => 'Suppression de la sortie de stock',
+                ]);
             }
         });
     }

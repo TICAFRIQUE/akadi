@@ -218,7 +218,7 @@ class InventaireController extends Controller
                     $resultat = 'perte';
                 }
 
-                InventoryLine::create([
+                $inventoryLine = InventoryLine::create([
                     'inventaire_id'            => $inventaire->id,
                     'product_base_id'          => $ligne['product_base_id'],
                     'date_debut'               => $ligne['date_debut'],   // 👈 depuis le hidden input
@@ -237,6 +237,19 @@ class InventaireController extends Controller
                 // Mettre à jour le stock et stock_physique du produit
                 ProductBase::where('id', $ligne['product_base_id'])
                     ->update(['stock' => $stock_physique, 'stock_physique' => $stock_physique]); // 👈 update direct, pas besoin de find()
+
+                if (abs($ecart) > 0.00001) {
+                    \App\Models\StockMovement::create([
+                        'product_base_id' => $ligne['product_base_id'],
+                        'type'            => \App\Models\StockMovement::TYPE_CORRECTION_INVENTAIRE,
+                        'quantity'        => $ecart,
+                        'stock_apres'     => $stock_physique,
+                        'reference_type'  => 'inventory_line',
+                        'reference_id'    => $inventoryLine->id,
+                        'user_id'         => Auth::id(),
+                        'note'            => 'Correction suite à inventaire (' . $resultat . ')',
+                    ]);
+                }
             }
 
             DB::commit();
