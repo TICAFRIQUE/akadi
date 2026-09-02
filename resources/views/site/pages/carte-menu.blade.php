@@ -72,11 +72,11 @@
 }
 .ak-cm-plat-name {
     font-size: .86rem; font-weight: 700; color: #1a1a1a;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    overflow-wrap: break-word;
 }
 .ak-cm-plat-desc {
     font-size: .72rem; color: #888;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    overflow-wrap: break-word;
 }
 .ak-cm-plat-price { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
 .ak-cm-plat-price-normal { font-size: .86rem; font-weight: 800; color: #1a1a1a; }
@@ -242,7 +242,7 @@
             @if ($menuJour->menuProduits->count() > 0)
                 <div class="row gy-4">
                     @foreach ($menuJour->menuProduits as $plat)
-                        <div class="col-xl-4 col-lg-6 col-sm-6">
+                        <div class="col-lg-6 col-sm-6">
                             <div class="ak-cm-plat-card">
                                 <div class="ak-cm-plat-icon"><i class="fas fa-utensils"></i></div>
                                 <div class="ak-cm-plat-body">
