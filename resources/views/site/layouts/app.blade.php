@@ -27,7 +27,7 @@
 
     <meta property="og:title" content="Akadi - @yield('title')" />
     <meta property="og:description" content="Akadi-@yield('description')" />
-    <meta property="og:image" content="@yield('image')" />
+    <meta property="og:image" content="@yield('image', asset('site/assets/img/custom/AKADI.png'))" />
     <meta property="og:url" content="{{ url()->current() }}" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Akadi" />
@@ -36,6 +36,10 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Akadi" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Akadi - @yield('title')" />
+    <meta name="twitter:description" content="Akadi-@yield('description')" />
+    <meta name="twitter:image" content="@yield('image', asset('site/assets/img/custom/AKADI.png'))" />
     <meta name="robots" content="INDEX,FOLLOW">
 
     <!-- Mobile Specific Metas -->
