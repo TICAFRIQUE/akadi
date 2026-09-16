@@ -413,20 +413,20 @@
                                                             Detail</a>
 
                                                         @if ($item['status'] != 'livrée')
-                                                            <a href="/admin/order/changeState?cs=confirmée && id={{ $item['id'] }}"
+                                                            <a href="/admin/order/changeState?cs=confirmée&id={{ $item['id'] }}"
                                                                 class="dropdown-item has-icon"><i
                                                                     class="fas fa-check"></i>
                                                                 Confirmée</a>
-                                                            <a href="/admin/order/changeState?cs=livrée && id={{ $item['id'] }}"
+                                                            <a href="/admin/order/changeState?cs=livrée&id={{ $item['id'] }}"
                                                                 class="dropdown-item has-icon"><i
                                                                     class="fas fa-shipping-fast"></i>
                                                                 Livrée</a>
-                                                            <a href="/admin/order/changeState?cs=attente && id={{ $item['id'] }}"
+                                                            <a href="/admin/order/changeState?cs=attente&id={{ $item['id'] }}"
                                                                 class="dropdown-item has-icon"><i
                                                                     class="fas fa-arrow-down"></i>
                                                                 Attente</a>
 
-                                                            <a href="/admin/order/changeState?cs=annulée && id={{ $item['id'] }}"
+                                                            <a href="/admin/order/changeState?cs=annulée&id={{ $item['id'] }}"
                                                                 role="button" data-id="{{ $item['id'] }}"
                                                                 class="dropdown-item has-icon text-danger delete"><i
                                                                     data-feather="x-circle"></i> Annuler</a>

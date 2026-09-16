@@ -235,8 +235,10 @@ class AchatController extends Controller
             // IDs des lignes envoyées
             $lignesIds = collect($request->lignes)->pluck('id')->filter();
 
-            // Supprimer les lignes qui ne sont plus dans la requête
-            $achat->lignes()->whereNotIn('id', $lignesIds)->delete();
+            // Supprimer les lignes qui ne sont plus dans la requête. On charge puis supprime
+            // chaque ligne individuellement (pas de suppression en masse) pour que l'événement
+            // AchatLigne::deleted() se déclenche et retire bien la quantité du stock.
+            $achat->lignes()->whereNotIn('id', $lignesIds)->get()->each(fn ($ligne) => $ligne->delete());
 
             // Mettre à jour ou créer les lignes
             $montantTotal = 0;

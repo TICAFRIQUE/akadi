@@ -1048,14 +1048,10 @@ class PosController extends Controller
             ]);
 
             // ── Restaurer le stock depuis les anciens snapshots ───────────────────────
-            $oldSnapshots = DB::table('order_product_base')
-                ->where('order_id', $order->id)
-                ->get();
-
-            foreach ($oldSnapshots as $snap) {
-                ProductBase::where('id', $snap->product_base_id)
-                    ->increment('stock', $snap->quantity_consumed);
-            }
+            // Passe par le même service que l'annulation de commande : incrementerStock()
+            // verrouille la ligne et trace le mouvement dans stock_movements (contrairement
+            // à un ->increment('stock', ...) brut, invisible du "Suivi de stock").
+            $this->stockService->reincrementStockOnCancellation($order);
 
             // Supprimer les anciens snapshots
             DB::table('order_product_base')->where('order_id', $order->id)->delete();
@@ -1095,8 +1091,22 @@ class PosController extends Controller
                             'updated_at'        => now(),
                         ]);
 
-                        // ← Cette ligne était commentée, c'est le bug
-                        $base->decrement('stock', $quantityConsumed);
+                        // decrementerStock() (verrouillage + trace stock_movements) au lieu d'un
+                        // decrement('stock', ...) brut, pour que "Suivi de stock" reste exact.
+                        $success = $base->decrementerStock($quantityConsumed, [
+                            'type'           => \App\Models\StockMovement::TYPE_VENTE,
+                            'reference_type' => 'order',
+                            'reference_id'   => $order->id,
+                        ]);
+
+                        if (!$success) {
+                            \Illuminate\Support\Facades\Log::warning('Stock insuffisant lors de la modification de commande POS', [
+                                'order_id'         => $order->id,
+                                'product_base_id'  => $base->id,
+                                'quantite_requise' => $quantityConsumed,
+                                'stock_disponible' => $base->fresh()->stock,
+                            ]);
+                        }
                     }
                 }
             }

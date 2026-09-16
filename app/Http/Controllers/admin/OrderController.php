@@ -613,7 +613,7 @@ class OrderController extends Controller
     //changer le status de la commande
     public function changeState(Request $request)
     {
-        $state   = request('cs'); // cs => change state
+        $state   = trim((string) request('cs')); // cs => change state
         $orderId = request('id');
 
         $allowedStatuses = array_keys(Order::$statuts);
@@ -672,6 +672,14 @@ class OrderController extends Controller
             'new_status' => $state,
             'user_id'    => Auth::id(),
         ]);
+
+        // Restaurer le stock si la commande passe à "annulée" par ce biais (dropdown de
+        // changement de statut) — sans ce garde-fou, le stock ne se remettait jamais à
+        // jour tant que l'annulation ne passait pas par orderCancel(). On protège contre
+        // une double restauration si le statut était déjà "annulée".
+        if ($state === Order::STATUS_ANNULEE && $oldStatus !== Order::STATUS_ANNULEE) {
+            $this->stockService->reincrementStockOnCancellation($order);
+        }
 
         // Envoyer SMS seulement si confirmée
         if ($state === Order::STATUS_CONFIRMEE) {
