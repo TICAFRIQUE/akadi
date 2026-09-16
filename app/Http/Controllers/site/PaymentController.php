@@ -532,6 +532,13 @@ class PaymentController extends Controller
 
                 case 'failed':
                 case 'failure':
+                    // Restaure le stock avant le changement de statut : reincrementStockOnCancellation()
+                    // se base sur les snapshots order_product_base et le statut courant de la commande,
+                    // pas sur le pivot produits/coefficients actuel (qui a pu changer depuis la vente).
+                    if ($order->status !== Order::STATUS_ANNULEE) {
+                        $this->stockService->reincrementStockOnCancellation($order);
+                    }
+
                     $order->update([
                         'payment_status' => 'failed',
                         'status' => Order::STATUS_ANNULEE
@@ -545,6 +552,10 @@ class PaymentController extends Controller
 
                 case 'cancelled':
                 case 'canceled':
+                    if ($order->status !== Order::STATUS_ANNULEE) {
+                        $this->stockService->reincrementStockOnCancellation($order);
+                    }
+
                     $order->update([
                         'payment_status' => 'cancelled',
                         'status' => Order::STATUS_ANNULEE
@@ -834,7 +845,9 @@ class PaymentController extends Controller
             $orderId = str_replace('ORDER_', '', $ref);
             $order = Order::find($orderId);
 
-            if ($order) {
+            if ($order && $order->status !== Order::STATUS_ANNULEE) {
+                $this->stockService->reincrementStockOnCancellation($order);
+
                 $order->update([
                     'payment_status' => 'cancelled',
                     'status' => Order::STATUS_ANNULEE,

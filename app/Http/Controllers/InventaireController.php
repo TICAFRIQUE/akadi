@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class InventaireController extends Controller
 {
@@ -234,7 +235,20 @@ class InventaireController extends Controller
                     'resultat'                 => $resultat,
                 ]);
 
-                // Mettre à jour le stock et stock_physique du produit
+                // Mettre à jour le stock et stock_physique du produit. On verrouille la ligne
+                // (lockForUpdate) pour que l'écriture ne s'intercale pas avec une vente/sortie
+                // concurrente, et on logue un écart si le stock a bougé depuis le chargement du
+                // formulaire (stock_restant, figé côté client) — ce mouvement serait sinon écrasé
+                // silencieusement par la correction d'inventaire.
+                $produitVerrouille = ProductBase::whereKey($ligne['product_base_id'])->lockForUpdate()->first();
+                if ($produitVerrouille && abs($produitVerrouille->stock - $stock_restant) > 0.00001) {
+                    Log::warning('Inventaire : stock modifié depuis le chargement du formulaire', [
+                        'product_base_id' => $ligne['product_base_id'],
+                        'stock_restant_formulaire' => $stock_restant,
+                        'stock_actuel_avant_correction' => $produitVerrouille->stock,
+                    ]);
+                }
+
                 ProductBase::where('id', $ligne['product_base_id'])
                     ->update(['stock' => $stock_physique, 'stock_physique' => $stock_physique]); // 👈 update direct, pas besoin de find()
 
