@@ -59,6 +59,20 @@ class ProductBaseController extends Controller
             'actif' => $request->has('actif'),
         ]);
 
+        // Trace le stock de départ dans le registre : sans ça, "Suivi de stock" calcule
+        // un stock théorique qui part de 0 au lieu de la vraie valeur initiale, ce qui
+        // crée un écart permanent égal au stock de départ.
+        if ((float) $productBase->stock > 0) {
+            \App\Models\StockMovement::create([
+                'product_base_id' => $productBase->id,
+                'type'            => \App\Models\StockMovement::TYPE_CORRECTION_INVENTAIRE,
+                'quantity'        => $productBase->stock,
+                'stock_apres'     => $productBase->stock,
+                'user_id'         => auth()->id(),
+                'note'            => 'Stock initial à la création du produit',
+            ]);
+        }
+
         return redirect()->route('product-base.index')
             ->with('success', 'Produit de base créé avec succès');
     }
