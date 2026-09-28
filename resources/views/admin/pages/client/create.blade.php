@@ -164,23 +164,6 @@
 @section('script')
     <script src="{{ asset('admin/assets/bundles/select2/dist/js/select2.full.min.js') }}"></script>
 
-    {{-- <script>
-        const motifSelect = document.getElementById('motif');
-        const autreWrapper = document.getElementById('motif_autre_wrapper');
-        const autreInput = document.getElementById('motif_autre');
-
-        function toggleAutre() {
-            const isAutre = motifSelect.value === 'autre';
-            autreWrapper.style.display = isAutre ? 'block' : 'none';
-            autreInput.required = isAutre;
-        }
-
-        // Au chargement (pour old('motif') après erreur de validation)
-        toggleAutre();
-
-        motifSelect.addEventListener('change', toggleAutre);
-    </script> --}}
-
     <script>
         $(document).ready(function() {
             // Afficher/masquer le champ motif_autre

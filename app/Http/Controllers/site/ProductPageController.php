@@ -16,59 +16,6 @@ use Illuminate\Support\Facades\Auth;
 class ProductPageController extends Controller
 {
     /********** Get shop List of category  */
-    // public function liste_produit(Request $request)
-    // {
-    //     try {
-    //         $category    = $request->query('categorie');
-    //         $subcategory = $request->query('sous-categorie');
-    //         $name_category = '';
-
-    //         if ($category) {
-    //             $name_category = Cache::remember("category_name_{$category}", 600, fn () =>
-    //                 Category::whereId($category)->select('id', 'name')->first()
-    //             );
-
-    //             $product = Cache::remember("products_by_category_{$category}", 180, fn () =>
-    //                 Product::whereHas('categories',
-    //                     fn ($q) => $q->where('category_product.category_id', $category)->active()
-    //                 )->with(['media', 'categories', 'subcategorie'])
-    //                     ->whereDisponibilite(1)
-    //                     ->orderBy('created_at', 'DESC')
-    //                     ->paginate(1)->withQueryString()
-    //             );
-    //         } elseif ($subcategory) {
-    //             $name_category = Cache::remember("subcategory_name_{$subcategory}", 600, fn () =>
-    //                 SubCategory::whereId($subcategory)->select('id', 'name')->first()
-    //             );
-
-    //             $product = Cache::remember("products_by_subcategory_{$subcategory}", 180, fn () =>
-    //                 Product::with(['media', 'categories', 'subcategorie'])
-    //                     ->where('sub_category_id', $subcategory)
-    //                     ->whereDisponibilite(1)
-    //                     ->orderBy('created_at', 'DESC')
-    //                     ->paginate(12)->withQueryString()
-    //             );
-    //         } else {
-    //             $product = Cache::remember('products_all_active', 180, fn () =>
-    //                 Product::with(['media', 'categories', 'subcategorie'])
-    //                     ->whereHas('categories', fn ($q) => $q->active())
-    //                     ->whereDisponibilite(1)
-    //                     ->orderBy('created_at', 'DESC')
-    //                     ->paginate(12)->withQueryString()
-    //             );
-    //         }
-
-    //         return view('site.pages.produit', compact('product', 'name_category'));
-    //     } catch (Exception $e) {
-    //         $product = Cache::remember('products_all_available', 180, fn () =>
-    //             Product::with(['media', 'categories', 'subcategorie'])
-    //                 ->whereDisponibilite(1)
-    //                 ->orderBy('created_at', 'DESC')
-    //                 ->paginate(12)->withQueryString()
-    //         );
-    //         return view('site.pages.produit', compact('product'));
-    //     }
-    // }
     public function liste_produit(Request $request)
     {
         try {

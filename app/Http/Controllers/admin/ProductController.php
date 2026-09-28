@@ -35,10 +35,6 @@ class ProductController extends Controller
     public function create()
     {
         //
-        // $category = Category::orderBy('name', 'ASC')
-        // ->whereType('principale')
-        // ->get();
-
         $subcategories = SubCategory::orderBy('name')->get();
         $allProductBases = ProductBase::orderBy('nom')->get();
 
@@ -91,12 +87,6 @@ class ProductController extends Controller
         //insert category in pivot table
         if ($request->has('categories')) {
             $product->categories()->attach($request['categories']);
-
-            // DB::table('category_product')->insert([
-            //     'category_id' => $request['categories'],
-            //     'product_id' => $product->id
-            // ]);
-
         }
 
 
@@ -131,46 +121,6 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    // public function edit(string $id)
-    // {
-    //     $product = Product::with([
-    //         'categories',
-    //         'subcategorie',
-    //         'media',
-    //         'productBases'
-    //     ])
-    //         ->whereId($id)
-    //         ->first();
-
-    //     // Récupérer l'ID de la catégorie correctement (depuis l'objet)
-    //     $catId = $product->categories->first()?->id;
-
-    //     // Sous-catégories existantes
-    //     $subcategory_exist = SubCategory::where('category_id', $catId)
-    //         ->orderBy('name', 'ASC')
-    //         ->get();
-
-    //     // Toutes les catégories pour le formulaire
-    //     $category_backend = Category::orderBy('name', 'ASC')->get();
-
-    //     // Images du produit
-    //     $images = $product->media->toArray();
-
-    //     // Tous les produits de base pour le formulaire
-    //     $allProductBases = ProductBase::orderBy('nom')->get();
-    //     $productBases = $product->productBases;
-
-    //     // dd($productBases->toArray());
-
-    //     return view('admin.pages.product.edit', compact(
-    //         'product',
-    //         'category_backend',
-    //         'subcategory_exist',
-    //         'images',
-    //         'allProductBases',
-    //         'productBases'
-    //     ));
-    // }
     public function edit(string $id)
     {
         $product = Product::with([
@@ -275,7 +225,6 @@ class ProductController extends Controller
         //insert category in pivot table
         if ($request->has('categories')) {
             $product->categories()->detach();
-            // $product->categories()->detach($request['categories']);
             $product->categories()->attach($request['categories']);
         }
 

@@ -161,49 +161,6 @@ class StockService
      * @param Order $order
      * @return void
      */
-    // public function reincrementStockOnCancellation(Order $order)
-    // {
-    //     foreach ($order->products as $product) {
-    //         // Chercher les multiples productBases via la relation pivot
-    //         $productBases = $product->productBases()->get();
-
-    //         // Si le produit a des productBases via la pivot, les traiter tous
-    //         if ($productBases->count() > 0) {
-    //             foreach ($productBases as $productBase) {
-    //                 $quantiteVendue = $product->pivot->quantity;
-    //                 $coefficient = $productBase->pivot->coefficient;
-    //                 $quantiteAReincrémenter = $quantiteVendue * $coefficient;
-
-    //                 $productBase->incrementerStock($quantiteAReincrémenter);
-
-    //                 Log::info('Stock réincrémenté suite à annulation', [
-    //                     'order_id' => $order->id,
-    //                     'product_id' => $product->id,
-    //                     'product_base_id' => $productBase->id,
-    //                     'quantite_reincrémentée' => $quantiteAReincrémenter,
-    //                     'stock_actuel' => $productBase->stock,
-    //                 ]);
-    //             }
-    //         }
-    //         // Fallback: si pas de pivot, utiliser l'ancienne logique
-    //         elseif ($product->productBase && $product->pivot->coefficient) {
-    //             $quantiteVendue = $product->pivot->quantity;
-    //             $coefficient = $product->pivot->coefficient;
-    //             $quantiteAReincrémenter = $quantiteVendue * $coefficient;
-
-    //             $product->productBase->incrementerStock($quantiteAReincrémenter);
-
-    //             Log::info('Stock réincrémenté suite à annulation', [
-    //                 'order_id' => $order->id,
-    //                 'product_id' => $product->id,
-    //                 'product_base_id' => $product->productBase->id,
-    //                 'quantite_reincrémentée' => $quantiteAReincrémenter,
-    //                 'stock_actuel' => $product->productBase->stock,
-    //             ]);
-    //         }
-    //     }
-    // }
-
     public function reincrementStockOnCancellation(Order $order)
     {
         // Utiliser les snapshots figés au moment de la vente

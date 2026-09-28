@@ -177,38 +177,6 @@ class Product extends Model implements HasMedia
     }
 
     //Conversion & optimisation d'image avec Spatie Media Library
-
-    // public function registerMediaConversions(?Media $media = null): void
-    // {
-    //     $this->addMediaConversion('thumb')
-    //         ->width(400)
-    //         ->height(400)
-    //         ->fit('contain')   // string en v10
-    //         ->queued();
-
-    //     $this->addMediaConversion('webp')
-    //         ->width(800)
-    //         ->height(800)
-    //         ->fit('contain')
-    //         ->queued();
-    // }
-
-    // public function registerMediaConversions(?Media $media = null): void
-    // {
-    //     $this->addMediaConversion('thumb')
-    //         ->width(400)
-    //         ->height(400)
-    //         ->fit('crop')
-    //         ->queued();
-
-    //     $this->addMediaConversion('bigthumb')
-    //         ->width(800)
-    //         ->height(800)
-    //         ->fit('crop')
-    //         ->queued();
-    // }
-
-
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')

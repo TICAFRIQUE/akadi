@@ -17,64 +17,8 @@ class DepenseController extends Controller
     //
     /**
      * Display a listing of the resource.
+     * Version optimisée avec une meilleure gestion des filtres et une logique plus claire pour la sélection de la période.
      */
-    // public function index(Request $request)
-    // {
-    //     //
-    //     try {
-    //         $query = Depense::OrderBy('created_at', 'DESC');
-    //         $data_libelle_depense = LibelleDepense::OrderBy('created_at', 'ASC')->get();
-    //         $categorie_depense = CategorieDepense::get();
-
-    //         $dateDebut = $request->input('date_debut');
-    //         $dateFin = $request->input('date_fin');
-    //         $categorie = $request->input('categorie');
-    //         $periode = $request->input('periode');
-
-
-    //         // Formatage des dates
-    //         $dateDebut = $request->filled('date_debut') ? Carbon::parse($dateDebut)->format('Y-m-d') : null;
-    //         $dateFin = $request->filled('date_fin') ? Carbon::parse($dateFin)->format('Y-m-d') : null;
-
-    //         // Application des filtres de date
-    //         if ($dateDebut && $dateFin) {
-    //             $query->whereBetween('created_at', [$dateDebut, $dateFin]);
-    //         } elseif ($dateDebut) {
-    //             $query->where('created_at', '>=', $dateDebut);
-    //         } elseif ($dateFin) {
-    //             $query->where('created_at', '<=', $dateFin);
-    //         }
-
-    //         // Application du filtre de statut
-    //         if ($request->filled('categorie')) {
-    //             $query->where('categorie_depense_id', $categorie);
-    //         }
-
-    //         // Application du filtre de periode
-    //         // periode=> jour, semaine, mois, année
-    //         if ($request->filled('periode')) {
-    //             if ($periode == 'jour') {
-    //                 $query->whereDate('created_at', Carbon::today());
-    //             } elseif ($periode == 'semaine') {
-    //                 $query->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
-    //             } elseif ($periode == 'mois') {
-    //                 $query->whereMonth('created_at', Carbon::now()->month);
-    //             } elseif ($periode == 'annee') {
-    //                 $query->whereYear('created_at', Carbon::now()->year);
-    //             }
-    //         }
-
-    //         $data_depense = $query->orderBy('created_at', 'desc')->get();
-
-    //         // dd($categorie_depense->toArray());
-    //         return view('admin.pages.depense.index', compact('data_depense', 'categorie_depense', 'data_libelle_depense'));
-    //     } catch (\Throwable $th) {
-    //         //throw $th;
-    //         return $th->getMessage();
-    //     }
-    // }
-
-    // version optimisée de index avec une meilleure gestion des filtres et une logique plus claire pour la sélection de la période
     public function index(Request $request)
     {
         try {

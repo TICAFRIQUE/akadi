@@ -42,80 +42,6 @@ class CouponController extends Controller
     }
 
 
-    // public function store(Request $request)
-    // {
-    //     // dd($request->toArray());
-
-    //     // gestion validation
-    //     $request->validate([
-    //         'code' => 'required|unique:coupons,code',
-    //         'nom' => 'required',
-    //         'quantite' => 'required',
-    //         'utilisation_max' => 'required',
-    //         'type_remise' => 'required',
-    //         'valeur_remise' => 'required',
-    //         'montant_min' => 'required',
-    //         'montant_max' => '',
-    //         'date_debut' => 'required',
-    //         'date_fin' => 'required',
-    //     ], [
-    //         'code.unique' => 'Ce code coupon existe déjà',
-    //         'date_debut.after_or_equal' => 'La date de début doit être aujourd\'hui ou future',
-    //         'date_fin.after' => 'La date de fin doit être après la date de début'
-    //     ]);
-
-    //     try {
-
-    //         //verifier si le code existe dejà
-    //         $code_exist = Coupon::where('code', $request->code)
-    //             ->where('date_fin', $request->date_fin)
-    //             ->exists();
-
-    //         if ($code_exist) {
-    //             return back()->with('error', '⚠️ Ce coupon existe déjà et est encore en cours d’utilisation.');
-    //         }
-
-    //         $coupon = Coupon::create([
-    //             'code' => $request['code'],
-    //             'nom' => $request['nom'],
-    //             'quantite' => $request['quantite'],
-    //             'utilisation_max' => $request['utilisation_max'],
-    //             'type_remise' => $request['type_remise'],
-    //             'valeur_remise' => $request['valeur_remise'],
-    //             'montant_min' => $request['montant_min'],
-    //             'montant_max' => $request['montant_max'] ?? 0,
-    //             'date_debut' => $request['date_debut'],
-    //             'date_fin' => $request['date_fin'],
-    //             'type_coupon' => $request['type_coupon'],
-    //             'expiration' => $request['date_fin'],
-    //         ]);
-
-
-
-    //         // if ($request['customers']) {
-    //         //     $coupon->users()->attach($request['customers']);
-    //         // }
-
-    //         if ($request->filled('customers')) {
-    //             $coupon->users()->attach($request->customers);
-    //         }
-
-    //         // if ($request['products']) {
-
-    //         //     $coupon->products()->attach($request['products']);
-    //         // }
-
-    //         // if ($request['customers']) {
-    //         //     # code...
-    //         // }
-
-    //         return back()->withSuccess('Coupon crée avec success');
-    //     } catch (\Throwable $th) {
-    //         return $th->getMessage();
-    //     }
-    // }
-
-
     public function store(Request $request)
     {
         // ✅ Validation des champs
@@ -137,15 +63,6 @@ class CouponController extends Controller
             'date_fin.after' => 'La date de fin doit être après la date de début.',
             
         ]);
-
-            //   // ✅ Vérifie si un coupon actif existe déjà avec ce code
-            // $code_exist = Coupon::where('code', $request->code)
-            //     ->where('date_fin', '>=', now()) // coupon encore valide
-            //     ->exists();
-
-            // if ($code_exist) {
-            //     return back()->with('error', '⚠️ Ce coupon existe déjà et est encore en cours d’utilisation.');
-            // }
 
         try {
       

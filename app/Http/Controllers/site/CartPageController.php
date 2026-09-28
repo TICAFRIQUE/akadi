@@ -311,23 +311,6 @@ class CartPageController extends Controller
         // recalculer le sous total
         $new_sousTotal =   $sousTotal - $new_total;
 
-
-
-
-
-        //supprimer l'utilisateur qui a utiliser le coupon
-        // $coupon = Coupon::whereCode($code_coupon)->first();
-        // DB::table('coupon_product')->where('coupon_id', $coupon['id'])
-        //     ->where('product_id', $id)->delete();
-
-
-        // $product = Product::findOrFail($id);
-
-        // $cart[$id]["coupon"] = $product->coupon[0]->code;
-        // $cart[$id]["pourcentage_coupon"] = $product->coupon[0]->pourcentage_coupon;
-        // $cart[$id]["status"] = $product->coupon[0]->status;
-        // session()->put('cart', $cart);
-
         return response()->json([
             'new_total' => $new_total,
             'new_sousTotal' => $new_sousTotal,
@@ -433,48 +416,6 @@ class CartPageController extends Controller
 
         return view('site.pages.caisse', compact('delivery', 'product_coupon'));
     }
-
-
-    // public function sendWhatsAppNotification($order)
-    // {
-    //     // Numéro destinataire (client et admin)
-    //     $clientPhone = 'whatsapp:+225' . Auth::user()->phone;
-    //     // $adminPhone  = 'whatsapp:+2250101010101';
-
-    //     // Identifiants Twilio
-    //     $sid    = env('TWILIO_SUBACCOUNT_SID');
-    //     $token  = env('TWILIO_SUBACCOUNT_TOKEN');
-    //     $mg     = env('TWILIO_MESSAGING_SERVICE_SID'); // ⚠️ Utilise un Messaging Service relié à ton sender WhatsApp
-    //     $contentSid = 'HX77c9fe48037b991fdc743eed78ae88a6'; // ton template
-
-    //     if (!$sid || !$token || !$mg) {
-    //         return response()->json(['error' => 'Identifiants Twilio manquants !']);
-    //     }
-
-    //     $twilio = new \Twilio\Rest\Client($sid, $token);
-
-    //     // $recipients = [$clientPhone , $adminPhone];
-
-    //     try {
-    //         // foreach ($recipients as $to) {
-    //         //     $twilio->messages->create($to, [
-    //         //         'messagingServiceSid' => $mg,
-    //         //         'contentSid'          => $contentSid,
-    //         //         // pas de contentVariables car message statique
-    //         //     ]);
-    //         // }
-
-    //         $twilio->messages->create($clientPhone, [
-    //             'messagingServiceSid' => $mg,
-    //             'contentSid'          => $contentSid,
-    //         ]);
-
-    //         return response()->json(['message' => 'Template WhatsApp envoyé avec succès ✅']);
-    //     } catch (\Exception $e) {
-    //         return response()->json(['error' => $e->getMessage()]);
-    //     }
-    // }
-
 
 
     public function sendWhatsAppNotification($order)
@@ -603,11 +544,6 @@ class CartPageController extends Controller
                     'discount' => $discount,
                     'coupon_id' => $coupon_id,
                     'date_order' => $type_commande === 'cmd_precommande' ? Carbon::createFromFormat('d/m/Y H:i:s', $date_order)->format('Y-m-d ') : Carbon::parse($date_order)->format('Y-m-d'),
-                    // 'delivery_date' => Carbon::createFromFormat(
-                    //     'd/m/Y H:i:s',
-                    //     $date_order
-                    // )->format('Y-m-d H:i:s'),
-
                 ]);
 
                 // Rediriger vers la page de sélection de paiement

@@ -13,46 +13,6 @@ class AchatObserver
     /**
      * Handle the Achat "created" event.
      */
-    // public function created(Achat $achat): void
-    // {
-    //     //
-
-    //     //les champs de la depense seront :
-    //     //date_depense : date_achat
-    //     //montant : somme des lignes d'achat (quantite * prix_unitaire)
-    //     //description : "Dépense liée à l'achat #ID"
-    //     //categorie_depense_id : "achats-stock"
-    //     //libelle_depense_id : "achats-stock"
-    //     //user_id : user_id de l'achat
-
-    //     //recuperons la categorie depense achat
-    //     $categorieDepense = CategorieDepense::where('slug', 'achats-stock')->first();
-    //     //recuperons le libelle categorie depense achat
-    //     $libelleDepense = LibelleDepense::where('slug', 'achats-stock')->first();
-
-
-    //     $depense = new Depense();
-    //     $depense->date_depense = $achat->date_achat;
-    //     $depense->montant = $achat->lignes->sum(function ($ligne) {
-    //         return $ligne->quantite * $ligne->prix_unitaire;
-    //     });
-    //     $depense->description = 'Dépense liée à l\'achat #' . $achat->id;
-    //     $depense->categorie_depense_id = $categorieDepense->id;
-    //     $depense->libelle_depense_id = $libelleDepense->id;
-    //     $depense->user_id = $achat->user_id;
-    //     $depense->save();
-
-    //     //mettre dans log la création de la dépense
-    //     Log::info('Dépense créée pour l\'achat', [
-    //         'achat_id' => $achat->id,
-    //         'depense_id' => $depense->id,
-    //         'montant' => $depense->montant,
-    //         'date_depense' => $depense->date_depense,
-    //         'user_id' => $depense->user_id,
-    //     ]);
-    // }
-
-
     public function created(Achat $achat): void
     {
 
