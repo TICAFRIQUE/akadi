@@ -9,6 +9,10 @@
 
     {{-- @includeWhen(!Auth::check(), 'site.sections.popup-register' ) --}}
 
+    <!-- ========== Start annonce ========== -->
+    @include('site.sections.pub.annonce')
+    <!-- ========== End annonce ========== -->
+
     <!-- ========== Start bandeau carte menu ========== -->
     @include('site.sections.bandeau-menu-jour')
     <!-- ========== End bandeau carte menu ========== -->
@@ -16,10 +20,6 @@
     <!-- ========== Start slider ========== -->
     @include('site.sections.slider')
     <!-- ========== End slider ========== -->
-
-    <!-- ========== Start annonce ========== -->
-    @include('site.sections.pub.annonce')
-    <!-- ========== End annonce ========== -->
 
 
 

@@ -244,13 +244,15 @@ Route::middleware(['admin'])->group(function () {
     //publicite
 
 
-    Route::prefix('admin/publicite')->controller(PubliciteController::class)->group(function () {
+    Route::prefix('admin/publicite')->controller(PubliciteController::class)->middleware('can:contenu.medias')->group(function () {
         route::get('', 'index')->name('publicite.index');
         route::post('', 'store')->name('publicite.store');
         route::get('edit/{id}', 'edit')->name('publicite.edit');
         route::post('update/{id}', 'update')->name('publicite.update');
         route::get('changeState', 'changeState')->name('publicite.changeState'); // activer , desactiver une publicite
         route::post('destroy/{id}', 'destroy')->name('publicite.destroy');
+        // Page de gestion dédiée à un seul type (slider, arriere-plan, top-promo, annonce)
+        route::get('{type}', 'manage')->name('publicite.manage');
     });
 
 
@@ -386,6 +388,8 @@ Route::middleware(['admin'])->group(function () {
 Route::controller(HomePageController::class)->group(function () {
     route::get('/', 'page_acceuil')->name('page-acceuil');
 });
+
+Route::get('promo/{publicite}', [\App\Http\Controllers\site\PromoPageController::class, 'show'])->name('promo.show');
 
 Route::controller(ProductPageController::class)->group(function () {
     route::get('produit/detail/{slug}', 'detail_produit')->name('detail-produit');

@@ -453,9 +453,20 @@
                                     <ul
                                         class="dropdown-menu {{ Route::is('publicite.*') || Route::is('temoignage.*') ? 'show' : '' }}">
                                         @can('contenu.medias')
-                                            <li class="nav-item {{ Route::is('publicite.*') ? 'active' : '' }}">
-                                                <a href="{{ route('publicite.index') }}" class="nav-link">Médias /
-                                                    Publicités</a>
+                                            <li class="nav-item {{ request()->routeIs('publicite.manage') && request()->route('type') == 'slider' ? 'active' : '' }}">
+                                                <a href="{{ route('publicite.manage', 'slider') }}" class="nav-link">Slider</a>
+                                            </li>
+                                            <li class="nav-item {{ request()->routeIs('publicite.manage') && request()->route('type') == 'arriere-plan' ? 'active' : '' }}">
+                                                <a href="{{ route('publicite.manage', 'arriere-plan') }}" class="nav-link">Image de fond</a>
+                                            </li>
+                                            <li class="nav-item {{ request()->routeIs('publicite.manage') && request()->route('type') == 'top-promo' ? 'active' : '' }}">
+                                                <a href="{{ route('publicite.manage', 'top-promo') }}" class="nav-link">Top Promo</a>
+                                            </li>
+                                            <li class="nav-item {{ request()->routeIs('publicite.manage') && request()->route('type') == 'annonce' ? 'active' : '' }}">
+                                                <a href="{{ route('publicite.manage', 'annonce') }}" class="nav-link">Annonce</a>
+                                            </li>
+                                            <li class="nav-item {{ Route::is('publicite.index') ? 'active' : '' }}">
+                                                <a href="{{ route('publicite.index') }}" class="nav-link">Toutes les publicités</a>
                                             </li>
                                         @endcan
                                         @can('contenu.temoignages')
