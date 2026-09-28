@@ -9,10 +9,8 @@ use App\Models\Depense;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use PHPMailer\PHPMailer\PHPMailer;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Twilio\Rest\Client;
 
 class DashboardController extends Controller
@@ -21,43 +19,6 @@ class DashboardController extends Controller
     //home dashboard
     public function index()
     {
-        // get user birthday 
-
-
-
-        if (Config::get('app.env') == 'production') {
-
-            // si le user n'a pas de permis
-
-
-
-
-            $mail = new PHPMailer(true);
-            // require base_path("vendor/autoload.php");
-
-            /* Email SMTP Settings */
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = 'mail.akadi.ci';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'info@akadi.ci';
-            $mail->Password = 'S$UBfu.8s(#z';
-            $mail->SMTPSecure = 'ssl';
-            $mail->Port = 465;
-
-            $mail->setFrom('info@akadi.ci', 'info@akadi.ci');
-            $mail->addAddress('Restaurantakadi@gmail.com');
-
-            $mail->isHTML(true);
-
-
-            $mail->Subject = 'Anniversaire';
-            $mail->Body =
-                '<b> Bonjour Akadi, C\'est bientot l\'anniversaire de vos client  <br> Veuillez consulter les notifications sur le dashboard  <b>';
-
-            $mail->send();
-        }
-
         $orders_attente = Order::orderBy('created_at', 'DESC')
             ->whereIn('status', ['attente'])
             ->get();

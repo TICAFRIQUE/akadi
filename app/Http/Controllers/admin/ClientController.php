@@ -275,63 +275,6 @@ class ClientController extends Controller
         return view('admin.pages.client.create', compact('motifs'));
     }
 
-    // public function store(Request $request)
-    // {
-
-    //     // Bloquer les bots via honeypot
-    //     if ($request->filled('website')) {
-    //         return back()->withError('Inscription bloquée.');
-    //     }
-
-    //     $user_verify_phone = User::wherePhone($request['phone'])->first();
-
-    //     if ($user_verify_phone != null) {
-    //         return back()->withError('Ce numéro de téléphone est déjà associé à un compte, veuillez utiliser un autre');
-    //     }
-
-    //     if ($request->filled('email') && User::whereEmail($request['email'])->exists()) {
-    //         return back()->withError('Cet email est déjà associé à un compte, veuillez utiliser un autre');
-    //     }
-
-    //     $request->validate([
-    //         'name'     => 'required|min:3|max:100',
-    //         'phone'    => 'required|digits_between:8,15|unique:users,phone',
-    //         'email'    => 'nullable|email',
-    //         'password' => 'required|min:8',
-    //     ]);
-
-    //     $date_anniv = '';
-    //     if ($request->jour && $request->mois) {
-    //         $date_anniv = $request->jour . '-' . $request->mois;
-    //     }
-
-    //     $pwd_generate = $request->filled('password') ? null : 'password';
-    //     $password     = $request->filled('password') ? $request->password : $pwd_generate;
-
-
-
-
-    //     $user = User::create([
-    //         'name'              => $request['name'],
-    //         'phone'             => $request['phone'],
-    //         'email'             => $request->filled('email') ? $request->email : null,
-    //         'shop_name'         => $request->shop_name,
-    //         'role'              => 'client',
-    //         'type_client'       => 'prospect',
-    //         'localisation'      => $request->localisation,
-    //         'date_anniversaire' => $date_anniv,
-    //         'password'          => Hash::make($password),
-    //         'motif'             => $request->motif,
-    //         'motif_autre'       => $request->motif == 'autre' ? $request->motif_autre : null,
-    //     ]);
-
-    //     $user->assignRole('client');
-
-    //     return back()->with('success', 'Client ajouté avec succès');
-    // }
-
-    // CONTROLLER COMPLET
-
     public function store(Request $request)
     {
         // Honeypot anti-bot

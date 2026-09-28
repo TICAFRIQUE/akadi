@@ -55,7 +55,7 @@ use App\Http\Controllers\PlatController;
 ##login  for dashboard
 Route::controller(AuthAdminController::class)->group(function () {
     route::get('/sign-in', 'login')->name('auth.login');
-    route::post('/sign-in', 'login')->name('auth.login');
+    route::post('/sign-in', 'login')->name('auth.login')->middleware('throttle:5,1');
 });
 
 Route::middleware(['admin'])->group(function () {
@@ -438,7 +438,7 @@ Route::get('/test-whatsapp', [CartPageController::class, 'sendWhatsAppNotificati
 //Authentification user
 Route::controller(AuthPageController::class)->group(function () {
     route::get('/se-connecter', 'login')->name('login-form');
-    route::post('/se-connecter', 'login')->name('login');
+    route::post('/se-connecter', 'login')->name('login')->middleware('throttle:5,1');
     route::get('/inscription', 'register')->name('register-form');
     route::post('/inscription', 'register')->name('register')->middleware('throttle:3,1');
     route::get('/mes-commandes', 'userOrder')->name('user-order');
@@ -446,9 +446,9 @@ Route::controller(AuthPageController::class)->group(function () {
 
     //forget password
     Route::get('forget-password', 'showForgetPasswordForm')->name('forget.password.get');
-    Route::post('forget-password',  'submitForgetPasswordForm')->name('forget.password.post');
+    Route::post('forget-password',  'submitForgetPasswordForm')->name('forget.password.post')->middleware('throttle:3,1');
     Route::get('reset-password', 'showResetPasswordForm')->name('reset.password.get');
-    Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
+    Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post')->middleware('throttle:5,1');
 });
 
 

@@ -34,6 +34,11 @@
             <form action="{{ route('login') }}" method="POST" class="auth-form">
                 @csrf
 
+                {{-- Honeypot anti-bot (invisible) --}}
+                <div style="display:none !important" aria-hidden="true">
+                    <input type="text" name="website" value="" tabindex="-1" autocomplete="off">
+                </div>
+
                 <div class="auth-field">
                     <label class="auth-label">Numéro de téléphone</label>
                     <div class="auth-phone-input">

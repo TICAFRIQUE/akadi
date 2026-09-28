@@ -728,56 +728,6 @@ class OrderController extends Controller
     }
 
 
-    // public function orderCancel(Request $request)  // cancel order with reason
-    // {
-    //     $motif = "";
-    //     if ($request['motif'] == 'autre') {
-    //         $motif = $request['motif_autre'];
-    //     } else {
-    //         $motif = $request['motif'];
-    //     }
-    //     Order::whereId($request['commandeId'])->update([
-    //         'status' => 'annulée',
-    //         'raison_annulation_cmd' => $motif
-    //     ]);
-
-    //     // Remettre à jour le stock du product_base pour chaque produit de la commande
-    //     $order = Order::with('products.productBase', 'user')->whereId($request['commandeId'])->first();
-    //     // appelle de la fonction service pour incrementer le stock de chaque product_base lié à la commande annulée
-    //     if ($order) {
-    //         $this->stockService->reincrementStockOnCancellation($order);
-    //     }
-
-    //     // if ($order) {
-    //     //     foreach ($order->products as $product) {
-    //     //         if ($product->product_base_id && $product->productBase) {
-    //     //             $coefficient = $product->coefficient > 0 ? $product->coefficient : 1;
-    //     //             $quantite = $product->pivot->quantity;
-    //     //             $product->productBase->incrementerStock($quantite * $coefficient);
-    //     //         }
-    //     //     }
-    //     // }
-
-    //     //envoyer email d'annulation via queue
-    //     if (!empty($order->user->email)) {
-    //         SendEmailJob::dispatch(
-    //             $order->user->email,
-    //             'Annulation de commande',
-    //             'emails.order-status',
-    //             [
-    //                 'imagePath' => asset('site/assets/img/custom/AKADI.png'),
-    //                 'clientName' => $order->user->name,
-    //                 'orderCode' => $order->code,
-    //                 'status' => 'annulée',
-    //                 'raison' => $motif
-    //             ],
-    //             'info@akadi.ci',
-    //             'Akadi'
-    //         );
-    //     }
-
-    //     return back()->withSuccess('Commande annulée avec success');
-    // }
     public function orderCancel(Request $request)
     {
         $motif = $request['motif'] == 'autre'
